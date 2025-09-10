@@ -12,19 +12,19 @@ namespace ERP_System_Project.Models.Configuration
             builder.HasKey(b => b.brand_Id);
 
             builder.Property(b => b.brand_name)
-                .HasColumnType("NVARCHAR(255)")
+                .HasMaxLength(40)
                 .IsRequired();
 
             builder.Property(b => b.brand_description)
-                .HasColumnType("NVARCHAR(MAX)")
                 .IsRequired();
 
             builder.Property(b => b.logo_url)
-                .HasColumnType("NVARCHAR(255)")
+                .HasMaxLength(255)
                 .IsRequired();
 
             builder.Property(b => b.website_url)
-                .HasColumnType("NVARCHAR(255)");
+                .HasMaxLength(255)
+                .IsRequired(false);
 
 
             // relationships
