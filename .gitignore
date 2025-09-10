@@ -13,3 +13,5 @@ obj/
 Properties/
 appsettings.json
 .github
+
+Migrations/
