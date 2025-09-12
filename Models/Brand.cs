@@ -7,14 +7,14 @@ namespace ERP_System_Project.Models
         [Key]
         public int Brand_Id { get; set; }
 
-        [Required(ErrorMessage = "Brand Name Is Requierd")]
+        [Required(ErrorMessage = "Brand Name Is Required")]
         [StringLength(255, ErrorMessage = "Brand Name Must Be Less Than 255 Characters")]
         public string Brand_Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Brand Description Is Requierd")]
+        [Required(ErrorMessage = "Brand Description Is Required")]
         public string Brand_Description { get; set; } = null!;
 
-        [Required(ErrorMessage = "Logo URL Is Requierd")]
+        [Required(ErrorMessage = "Logo URL Is Required")]
         [StringLength(255, ErrorMessage = "Logo URL Must Be Less Than 255 Characters")]
         public string Logo_URL { get; set; } = null!;
 

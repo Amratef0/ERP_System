@@ -9,11 +9,11 @@ namespace ERP_System_Project.Models
         [Key]
         public int Product_Id { get; set; }
 
-        [Required(ErrorMessage = "Product Name Is Requierd")]
+        [Required(ErrorMessage = "Product Name Is Required")]
         [StringLength(100, ErrorMessage = "Category Name Must Be Less Than 100 Characters")]
         public string Product_Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Product Description Is Requierd")]
+        [Required(ErrorMessage = "Product Description Is Required")]
         public string Product_Description { get; set;} = null!;
 
         [Range(0.01, 10_000_000, ErrorMessage = "The Price must be greater than 0.")]

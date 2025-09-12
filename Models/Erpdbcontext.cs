@@ -8,6 +8,15 @@ namespace ERP_System_Project.Models
         public Erpdbcontext(DbContextOptions<Erpdbcontext> options) : base(options) { }
 
 
+        #region CoreTables
+        public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Branch> Branches { get; set; }
+        #endregion
+
+
+
 
         #region Ecommerce&Inventory
         public DbSet<Brand> Brands { get; set; } 
@@ -19,6 +28,7 @@ namespace ERP_System_Project.Models
         public DbSet<ProductVariant> Product_Variants { get; set; }
         public DbSet<VariantAttributeValue> VariantAttributeValues { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Warehouse> Warehouses { get; set; }
         #endregion
 
 
@@ -30,6 +40,15 @@ namespace ERP_System_Project.Models
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            #region CoreTables
+            // Composite Key
+            builder.Entity<Currency>().HasIndex(c => c.Currency_Code).IsUnique();
+
+            builder.Entity<Country>().HasIndex(c => c.Country_Code).IsUnique();
+
+            #endregion
+
 
             #region Ecommerce&Inventory
             // Composite Key

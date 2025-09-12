@@ -8,11 +8,11 @@ namespace ERP_System_Project.Models
         [Key]
         public int Category_Id { get; set; }
 
-        [Required(ErrorMessage = "Category Name Is Requierd")]
+        [Required(ErrorMessage = "Category Name Is Required")]
         [StringLength(50, ErrorMessage = "Category Name Must Be Less Than 50 Characters")]
         public string Category_Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Category Description Is Requierd")]
+        [Required(ErrorMessage = "Category Description Is Required")]
         public string Category_Description { get; set;} = null!;
         public string Category_Image_URL { get; set; }
         public bool Is_Active { get; set; } = true;
