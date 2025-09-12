@@ -42,11 +42,9 @@ namespace ERP_System_Project.Models
             base.OnModelCreating(builder);
 
             #region CoreTables
-            // Composite Key
             builder.Entity<Currency>().HasIndex(c => c.Currency_Code).IsUnique();
 
             builder.Entity<Country>().HasIndex(c => c.Country_Code).IsUnique();
-
             #endregion
 
 
