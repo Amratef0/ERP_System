@@ -1,3 +1,4 @@
+using ERP_System_Project.Extensions;
 using ERP_System_Project.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,9 @@ builder.Services.AddControllersWithViews();
 // Add DbContext
 builder.Services.AddDbContext<Erpdbcontext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// add Repositories and UnitOfWork
+builder.Services.AddDataSevices();
 
 var app = builder.Build();
 
