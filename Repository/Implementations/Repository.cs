@@ -35,5 +35,11 @@ namespace ERP_System_Project.Repository.Implementations
             if (entity != null)
                 _dbSet.Remove(entity);
         }
+
+        public async Task<List<T>> SkipAndTake(int skip, int take)
+            => await _dbSet.Skip(skip).Take(take).ToListAsync();
+
+        public async Task<int> Count()
+            => await _dbSet.CountAsync();
     }
 }

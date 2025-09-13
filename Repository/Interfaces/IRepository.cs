@@ -10,5 +10,10 @@ namespace ERP_System_Project.Repository.Interfaces
         void Update(T entity);
         void Delete(int id);
         Task<bool> IsExistAsync(int id);
+
+        Task<List<T>> SkipAndTake(int skip, int take);
+
+        Task<int> Count();
+        
     }
 }
