@@ -31,7 +31,7 @@ namespace ERP_System_Project.Models
 
         [ForeignKey("Country")]
         public int Country_Id { get; set; }
-        public Country Country { get; set; } = null!;
+        public Country Country { get; set; }
 
         public ICollection<Branch> branches { get; set; } = new List<Branch>();
         public ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();

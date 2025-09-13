@@ -25,12 +25,14 @@ namespace ERP_System_Project.Models
 
         [ForeignKey("Branch")]
         public int Branch_Id { get; set; }
-        public Branch Branch { get; set; } = null!;
+        public Branch Branch { get; set; }
 
         [ForeignKey("Address")]
         public int? Address_Id { get; set; }
         public Address? Address { get; set; }
 
+
+        public ICollection<ProductInventory> Products { get; set; } = new List<ProductInventory>();
 
 
     }

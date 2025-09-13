@@ -35,11 +35,11 @@ namespace ERP_System_Project.Models
 
         [ForeignKey("Brand")]
         public int Brand_Id { get; set; }
-        public Brand Brand { get; set; } = null!;
+        public Brand Brand { get; set; }
         
         [ForeignKey("Category")]
         public int Category_Id { get; set; }
-        public Category Category { get; set; } = null!;
+        public Category Category { get; set; }
 
         [ForeignKey("Product_Type")]
         public int? Product_Type_Id { get; set; }
@@ -51,5 +51,6 @@ namespace ERP_System_Project.Models
 
 
         public ICollection<ProductVariant> productVariants { get; set; } = new List<ProductVariant>();
+        public ICollection<ProductInventory> Warehouses { get; set; } = new List<ProductInventory>();
     }
 }

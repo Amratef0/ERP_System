@@ -21,6 +21,7 @@ namespace ERP_System_Project.UOF
         public IRepository<UnitOfMeasure> UnitsOfMeasure { get; }
         public IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         public IRepository<Warehouse> Warehouses { get; }
+        public IRepository<ProductInventory> ProductsInventory { get; }
 
         public UnitOfWork(Erpdbcontext db)
         {
@@ -39,8 +40,7 @@ namespace ERP_System_Project.UOF
             UnitsOfMeasure =new Repository<UnitOfMeasure>(_db);
             VariantAttributeValues = new Repository<VariantAttributeValue>(_db);
             Warehouses = new Repository<Warehouse>(_db);
-
-
+            ProductsInventory = new Repository<ProductInventory>(_db);
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();

@@ -28,7 +28,7 @@ namespace ERP_System_Project.Models
 
         [ForeignKey("Address")]
         public int Address_Id { get; set; }
-        public Address Address { get; set; } = null!;
+        public Address Address { get; set; }
 
         public ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
 

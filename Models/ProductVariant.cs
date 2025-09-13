@@ -39,7 +39,7 @@ namespace ERP_System_Project.Models
 
         [ForeignKey("Product")]
         public int Product_Id { get; set; }
-        public Product Product { get; set; } = null!;
+        public Product Product { get; set; }
 
 
         public ICollection<VariantAttributeValue> ProductAttributes { get; set; } = new List<VariantAttributeValue>();

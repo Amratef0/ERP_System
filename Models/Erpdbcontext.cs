@@ -26,9 +26,10 @@ namespace ERP_System_Project.Models
         public DbSet<UnitOfMeasure> Units_Of_Measure { get; set; }
         public DbSet<ProductAttribute> Product_Attributes { get; set; }
         public DbSet<ProductVariant> Product_Variants { get; set; }
-        public DbSet<VariantAttributeValue> VariantAttributeValues { get; set; }
+        public DbSet<VariantAttributeValue> Variant_Attribute_Values { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<ProductInventory> Product_Inventory { get; set; }
         #endregion
 
 
@@ -51,6 +52,10 @@ namespace ERP_System_Project.Models
             #region Ecommerce&Inventory
             // Composite Key
             builder.Entity<VariantAttributeValue>().HasKey(vav => new { vav.Variant_Id, vav.Atrribute_Id });
+
+
+            // unique attributes
+            builder.Entity<ProductInventory>().HasIndex(pi => new { pi.Product_Id, pi.Warehouse_Id }).IsUnique();
 
             #endregion
         }

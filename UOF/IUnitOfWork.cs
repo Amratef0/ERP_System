@@ -19,6 +19,7 @@ namespace ERP_System_Project.UOF
         IRepository<UnitOfMeasure> UnitsOfMeasure { get; }
         IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         IRepository<Warehouse> Warehouses { get; }
+        IRepository<ProductInventory> ProductsInventory { get; }
 
         Task<int> CompleteAsync();
 
