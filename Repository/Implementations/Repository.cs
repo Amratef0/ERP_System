@@ -17,12 +17,15 @@ namespace ERP_System_Project.Repository.Implementations
         }
 
         #region Retriving
-        public async Task<List<TEntity>> GetAllAsync()
-            => await _dbSet.ToListAsync();
 
         public async Task<TEntity?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
-        public IQueryable<TEntity> GetAllToIQueryable() => _dbSet;
+        public async Task<List<TEntity>> GetAllAsync()
+            => await _dbSet.ToListAsync();
+        public async Task<List<TEntity>> GetAllAsNoTrackedAsync()
+            => await _dbSet.AsNoTracking().ToListAsync();
+
+        public IQueryable<TEntity> GetAllAsIQueryable() => _dbSet;
 
 
         public Task<TResult?> GetAsync<TResult>(
@@ -139,6 +142,8 @@ namespace ERP_System_Project.Repository.Implementations
 
         public async Task<bool> AllAsync(Expression<Func<TEntity, bool>> filter)
             => await _dbSet.AllAsync(filter);
+
+        
         #endregion
 
 

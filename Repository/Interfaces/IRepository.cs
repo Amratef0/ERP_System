@@ -8,9 +8,9 @@ namespace ERP_System_Project.Repository.Interfaces
     {
         #region Retriving
         Task<TEntity?> GetByIdAsync(int id);
-        IQueryable<TEntity> GetAllToIQueryable();
         Task<List<TEntity>> GetAllAsync();
-
+        Task<List<TEntity>> GetAllAsNoTrackedAsync();
+        IQueryable<TEntity> GetAllAsIQueryable();
 
 
         Task<TResult?> GetAsync<TResult>(
