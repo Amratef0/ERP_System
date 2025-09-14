@@ -1,7 +1,7 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Repository.Interfaces;
 
-namespace ERP_System_Project.UOF
+namespace ERP_System_Project.UOW
 {
     public interface IUnitOfWork
     {
@@ -20,6 +20,7 @@ namespace ERP_System_Project.UOF
         IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         IRepository<Warehouse> Warehouses { get; }
         IRepository<ProductInventory> ProductsInventory { get; }
+        IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
 
         Task<int> CompleteAsync();
 

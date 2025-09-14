@@ -1,6 +1,6 @@
 ﻿using ERP_System_Project.Repository.Implementations;
 using ERP_System_Project.Repository.Interfaces;
-using ERP_System_Project.UOF;
+using ERP_System_Project.UOW;
 
 namespace ERP_System_Project.Extensions
 {
@@ -12,11 +12,6 @@ namespace ERP_System_Project.Extensions
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
-        }
-
-        public static IServiceCollection AddBuisnessSevices(this IServiceCollection services)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -2,7 +2,7 @@
 using ERP_System_Project.Repository.Implementations;
 using ERP_System_Project.Repository.Interfaces;
 
-namespace ERP_System_Project.UOF
+namespace ERP_System_Project.UOW
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -22,6 +22,8 @@ namespace ERP_System_Project.UOF
         public IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         public IRepository<Warehouse> Warehouses { get; }
         public IRepository<ProductInventory> ProductsInventory { get; }
+        public IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
+
 
         public UnitOfWork(Erpdbcontext db)
         {
@@ -41,6 +43,7 @@ namespace ERP_System_Project.UOF
             VariantAttributeValues = new Repository<VariantAttributeValue>(_db);
             Warehouses = new Repository<Warehouse>(_db);
             ProductsInventory = new Repository<ProductInventory>(_db);
+            InventoryTransactionTypes = new Repository<InventoryTransactionType>(_db);
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();
