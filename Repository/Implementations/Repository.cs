@@ -2,7 +2,6 @@
 using ERP_System_Project.Models;
 using ERP_System_Project.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace ERP_System_Project.Repository.Implementations
@@ -26,7 +25,10 @@ namespace ERP_System_Project.Repository.Implementations
         public IQueryable<T> GetAllToIQueryable() => _dbSet;
 
 
-        public Task<T?> GetAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] Includes)
+        public Task<TResult?> GetAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>> filter,
+            params Expression<Func<T, object>>[] Includes) where TResult : class
         {
             IQueryable<T> query = _dbSet;
 
@@ -35,12 +37,14 @@ namespace ERP_System_Project.Repository.Implementations
             foreach (var include in Includes)
                 query = query.Include(include);
 
-            return query.FirstOrDefaultAsync();
+            return query.Select(selector).FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            params Expression<Func<T, object>>[] Includes)
+        public async Task<List<TResult>> GetAllAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            params Expression<Func<T, object>>[] Includes) where TResult : class
         {
             IQueryable<T> query = _dbSet;
 
@@ -54,15 +58,16 @@ namespace ERP_System_Project.Repository.Implementations
             if (orderBy != null)
                 query = orderBy(query);
 
-            return await query.ToListAsync();
+            return await query.Select(selector).ToListAsync();
         }
 
 
-        public async Task<PageSourcePagination<T>> GetAllPaginatedAsync(
+        public async Task<PageSourcePagination<TResult>> GetAllPaginatedAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
             int pageNumber = 1, int pageSize = 10,
-            Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            params Expression<Func<T, object>>[] Includes)
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            params Expression<Func<T, object>>[] Includes) where TResult : class
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 10) pageSize = 10;
@@ -80,12 +85,15 @@ namespace ERP_System_Project.Repository.Implementations
                 query = orderBy(query);
 
 
-            var result = _dbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
-            var totalRecords = await _dbSet.CountAsync();
+            var result = query.Select(selector);
+
+
+            var totalRecords = await query.CountAsync();
             var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
-            return new PageSourcePagination<T>
+            return new PageSourcePagination<TResult>
             {
                 PageNumber = pageNumber,
                 PageSize = pageSize,
@@ -110,14 +118,29 @@ namespace ERP_System_Project.Repository.Implementations
         }
         #endregion
 
-        #region Otheres
-        public async Task<bool> IsExistAsync(int id)
-            => await _dbSet.FindAsync(id) == null ? false : true;
+        #region Count
         public async Task<int> Count()
             => await _dbSet.CountAsync();
+
+        public async Task<int> Count(Expression<Func<T, bool>> filter)
+            => await _dbSet.Where(filter).CountAsync();
+        #endregion
+
+        #region Existance
+        public async Task<bool> IsExistAsync(int id)
+            => await _dbSet.FindAsync(id) == null ? false : true;
+
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>>? filter = null)
+        {
+            if(filter != null)
+                return await _dbSet.AnyAsync(filter);
+            return await _dbSet.AnyAsync();
+        }
+
+        public async Task<bool> AllAsync(Expression<Func<T, bool>> filter)
+            => await _dbSet.AllAsync(filter);
         #endregion
 
 
-        
     }
 }

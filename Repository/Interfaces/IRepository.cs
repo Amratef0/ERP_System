@@ -13,22 +13,25 @@ namespace ERP_System_Project.Repository.Interfaces
 
 
 
-        Task<T?> GetAsync(
+        Task<TResult?> GetAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
             Expression<Func<T, bool>> filter,
             params Expression<Func<T, object>>[] Includes
-            );
+            ) where TResult : class;
 
-        Task<List<T>> GetAllAsync(
-            Expression<Func<T, bool>> filter,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy,
+        Task<List<TResult>> GetAllAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
             params Expression<Func<T, object>>[] Includes
-            );
-        Task<PageSourcePagination<T>> GetAllPaginatedAsync(
+            ) where TResult : class;
+        Task<PageSourcePagination<TResult>> GetAllPaginatedAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
             int pageNumber = 1, int pageSize = 10,
-            Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
             params Expression<Func<T, object>>[] Includes
-            );
+            ) where TResult : class;
         #endregion
 
         #region Add_Update_Delete
@@ -37,9 +40,15 @@ namespace ERP_System_Project.Repository.Interfaces
         void Delete(int id);
         #endregion
 
-        #region Others
-        Task<bool> IsExistAsync(int id);
+        #region Count
         Task<int> Count();
+        Task<int> Count(Expression<Func<T,bool>> filter);
+        #endregion
+
+        #region Existance
+        Task<bool> IsExistAsync(int id);
+        Task<bool> AnyAsync(Expression<Func<T, bool>>? filter = null);
+        Task<bool> AllAsync(Expression<Func<T, bool>> filter);
         #endregion
 
     }
