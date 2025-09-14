@@ -6,31 +6,31 @@ using System.Linq.Expressions;
 
 namespace ERP_System_Project.Repository.Implementations
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly Erpdbcontext _db;
-        private readonly DbSet<T> _dbSet;
+        private readonly DbSet<TEntity> _dbSet;
         public Repository(Erpdbcontext db)
         {
             _db = db;
-            _dbSet = db.Set<T>();
+            _dbSet = db.Set<TEntity>();
         }
 
         #region Retriving
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<TEntity>> GetAllAsync()
             => await _dbSet.ToListAsync();
 
-        public async Task<T?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
+        public async Task<TEntity?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
-        public IQueryable<T> GetAllToIQueryable() => _dbSet;
+        public IQueryable<TEntity> GetAllToIQueryable() => _dbSet;
 
 
         public Task<TResult?> GetAsync<TResult>(
-            Expression<Func<T, TResult>> selector,
-            Expression<Func<T, bool>> filter,
-            params Expression<Func<T, object>>[] Includes) where TResult : class
+            Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>> filter,
+            params Expression<Func<TEntity, object>>[] Includes) where TResult : class
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<TEntity> query = _dbSet;
 
             query = query.Where(filter);
 
@@ -41,12 +41,12 @@ namespace ERP_System_Project.Repository.Implementations
         }
 
         public async Task<List<TResult>> GetAllAsync<TResult>(
-            Expression<Func<T, TResult>> selector,
-            Expression<Func<T, bool>>? filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-            params Expression<Func<T, object>>[] Includes) where TResult : class
+            Expression<Func<TEntity, TResult>> selector,
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            params Expression<Func<TEntity, object>>[] Includes) where TResult : class
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
                 query = query.Where(filter);
@@ -63,16 +63,16 @@ namespace ERP_System_Project.Repository.Implementations
 
 
         public async Task<PageSourcePagination<TResult>> GetAllPaginatedAsync<TResult>(
-            Expression<Func<T, TResult>> selector,
+            Expression<Func<TEntity, TResult>> selector,
             int pageNumber = 1, int pageSize = 10,
-            Expression<Func<T, bool>>? filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-            params Expression<Func<T, object>>[] Includes) where TResult : class
+            Expression<Func<TEntity, bool>>? filter = null,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            params Expression<Func<TEntity, object>>[] Includes) where TResult : class
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 10) pageSize = 10;
 
-            IQueryable<T> query = _dbSet;
+            IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
                 query = query.Where(filter);
@@ -105,9 +105,9 @@ namespace ERP_System_Project.Repository.Implementations
         #endregion
 
         #region Add_Update_Delete
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(TEntity entity)
             => await _dbSet.AddAsync(entity);
-        public void Update(T entity)
+        public void Update(TEntity entity)
             => _dbSet.Update(entity);
 
         public void Delete(int id)
@@ -122,7 +122,7 @@ namespace ERP_System_Project.Repository.Implementations
         public async Task<int> Count()
             => await _dbSet.CountAsync();
 
-        public async Task<int> Count(Expression<Func<T, bool>> filter)
+        public async Task<int> Count(Expression<Func<TEntity, bool>> filter)
             => await _dbSet.Where(filter).CountAsync();
         #endregion
 
@@ -130,14 +130,14 @@ namespace ERP_System_Project.Repository.Implementations
         public async Task<bool> IsExistAsync(int id)
             => await _dbSet.FindAsync(id) == null ? false : true;
 
-        public async Task<bool> AnyAsync(Expression<Func<T, bool>>? filter = null)
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? filter = null)
         {
             if(filter != null)
                 return await _dbSet.AnyAsync(filter);
             return await _dbSet.AnyAsync();
         }
 
-        public async Task<bool> AllAsync(Expression<Func<T, bool>> filter)
+        public async Task<bool> AllAsync(Expression<Func<TEntity, bool>> filter)
             => await _dbSet.AllAsync(filter);
         #endregion
 
