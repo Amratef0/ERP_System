@@ -51,5 +51,7 @@ namespace ERP_System_Project.Repository.Interfaces
         Task<bool> AllAsync(Expression<Func<TEntity, bool>> filter);
         #endregion
 
+        Task<int> SaveAsync();
+
     }
 }

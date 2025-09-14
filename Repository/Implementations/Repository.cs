@@ -143,8 +143,13 @@ namespace ERP_System_Project.Repository.Implementations
         public async Task<bool> AllAsync(Expression<Func<TEntity, bool>> filter)
             => await _dbSet.AllAsync(filter);
 
-        
+
+
+
         #endregion
+
+
+        public async Task<int> SaveAsync() => await _db.SaveChangesAsync();
 
 
     }
