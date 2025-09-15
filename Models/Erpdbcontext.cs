@@ -36,6 +36,8 @@ namespace ERP_System_Project.Models
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<ProductInventory> Product_Inventory { get; set; }
         public DbSet<InventoryTransactionType> Inventory_Transaction_Types { get; set; }
+        public DbSet<InventoryTransaction> Inventory_Transactions { get; set; }
+        public DbSet<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; set; }
         #endregion
 
 
