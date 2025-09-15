@@ -4,7 +4,7 @@ using ERP_System_Project.UOW;
 
 namespace ERP_System_Project.Extensions
 {
-    public static class ServiceExtensions
+    public static class ServicesExtension
     {
         public static IServiceCollection AddDataSevices(this IServiceCollection services)
         {
