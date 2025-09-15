@@ -27,6 +27,10 @@ namespace ERP_System_Project.UOW
         public IRepository<Warehouse> Warehouses { get; }
         public IRepository<ProductInventory> ProductsInventory { get; }
         public IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
+        public IRepository<InventoryTransaction> InventoryTransactions { get; }
+        public IRepository<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; }
+        public IRepository<InventoryRequisition> InventoryRequisitions { get; }
+        public IRepository<InventoryRequisitionItem> InventoryRequisitionItems { get; }
 
 
         public UnitOfWork(Erpdbcontext db)
@@ -48,6 +52,10 @@ namespace ERP_System_Project.UOW
             Warehouses = new Repository<Warehouse>(_db);
             ProductsInventory = new Repository<ProductInventory>(_db);
             InventoryTransactionTypes = new Repository<InventoryTransactionType>(_db);
+            InventoryTransactions = new Repository<InventoryTransaction>(_db);
+            InventoryRequisitionStatusCodes = new Repository<InventoryRequisitionStatusCode>(_db);
+            InventoryRequisitions = new Repository<InventoryRequisition>(_db);
+            InventoryRequisitionItems = new Repository<InventoryRequisitionItem>(_db);
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();

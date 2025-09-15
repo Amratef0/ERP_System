@@ -25,6 +25,10 @@ namespace ERP_System_Project.UOW
         IRepository<Warehouse> Warehouses { get; }
         IRepository<ProductInventory> ProductsInventory { get; }
         IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
+        IRepository<InventoryTransaction> InventoryTransactions { get; }
+        IRepository<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; }
+        IRepository<InventoryRequisition> InventoryRequisitions { get; }
+        IRepository<InventoryRequisitionItem> InventoryRequisitionItems { get; }
 
         Task<int> CompleteAsync();
 

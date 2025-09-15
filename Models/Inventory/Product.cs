@@ -8,46 +8,46 @@ namespace ERP_System_Project.Models.Inventory
     public class Product
     {
         [Key]
-        public int Product_Id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Product Name Is Required")]
         [StringLength(100, ErrorMessage = "Category Name Must Be Less Than 100 Characters")]
-        public string Product_Name { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         [Required(ErrorMessage = "Product Description Is Required")]
-        public string Product_Description { get; set;} = null!;
+        public string Description { get; set;} = null!;
 
         [Range(0.01, 10_000_000, ErrorMessage = "The Price must be greater than 0.")]
         [Precision(10, 2)]
-        public decimal Unit_Cost { get; set; } = 0;
+        public decimal UnitCost { get; set; } = 0;
 
         [DecimalPrecisionScale(10,2)]
-        public decimal Standard_Price { get; set; }
+        public decimal StandardPrice { get; set; }
         public decimal? Weight { get; set; }
         public decimal? Length { get; set; }
         public decimal? Width { get; set; }
-        public decimal? heigth { get; set; }
-        public bool Is_Active { get; set; } = true;
-        public decimal Reorder_Point { get; set; } = 0;
-        public bool Low_Stock_Alert { get; set; } = false;
-        public DateTime Created_Date { get; set; } = DateTime.Now;
-        public DateTime? Modified_Date { get; set; }
+        public decimal? Heigth { get; set; }
+        public bool IsActive { get; set; } = true;
+        public decimal ReorderPoint { get; set; } = 0;
+        public bool LowStockAlert { get; set; } = false;
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime? ModifiedDate { get; set; }
 
         [ForeignKey("Brand")]
-        public int Brand_Id { get; set; }
+        public int BrandId { get; set; }
         public Brand Brand { get; set; }
         
         [ForeignKey("Category")]
-        public int Category_Id { get; set; }
+        public int CategoryId { get; set; }
         public Category Category { get; set; }
 
-        [ForeignKey("Product_Type")]
-        public int? Product_Type_Id { get; set; }
-        public ProductType? Product_Type { get; set; }
+        [ForeignKey("ProductType")]
+        public int? ProductTypeId { get; set; }
+        public ProductType? ProductType { get; set; }
 
-        [ForeignKey("Unit_Of_Measure")]
-        public int? UOM_Id { get; set; }
-        public UnitOfMeasure? Unit_Of_Measure { get; set; }
+        [ForeignKey("UnitOfMeasure")]
+        public int? UOMId { get; set; }
+        public UnitOfMeasure? UnitOfMeasure { get; set; }
 
 
         public ICollection<ProductVariant> productVariants { get; set; } = new List<ProductVariant>();
