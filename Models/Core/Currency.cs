@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices.Marshalling;
 
-namespace ERP_System_Project.Models
+namespace ERP_System_Project.Models.HR
 {
     public class Currency
     {

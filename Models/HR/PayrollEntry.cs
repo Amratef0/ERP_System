@@ -1,0 +1,6 @@
+﻿namespace ERP_System_Project.Models.HR
+{
+    public class PayrollEntry
+    {
+    }
+}

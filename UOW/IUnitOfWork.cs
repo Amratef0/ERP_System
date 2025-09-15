@@ -1,4 +1,6 @@
 ﻿using ERP_System_Project.Models;
+using ERP_System_Project.Models.Core;
+using ERP_System_Project.Models.HR;
 using ERP_System_Project.Repository.Interfaces;
 
 namespace ERP_System_Project.UOW
