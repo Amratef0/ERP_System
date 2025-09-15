@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ERP_System_Project.Models
+namespace ERP_System_Project.Models.Inventory
 {
     public class InventoryTransactionType
     {

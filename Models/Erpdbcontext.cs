@@ -1,5 +1,7 @@
 ﻿using ERP_System_Project.Models.Core;
+using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
+using ERP_System_Project.Models.Inventory;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

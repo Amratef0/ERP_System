@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ERP_System_Project.Models
+namespace ERP_System_Project.Models.Inventory
 {
     public class VariantAttributeValue
     {

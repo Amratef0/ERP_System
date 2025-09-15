@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ERP_System_Project.Models.ValidationAttributes;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ERP_System_Project.Models
+namespace ERP_System_Project.Models.Inventory
 {
     public class Product
     {
@@ -20,8 +21,7 @@ namespace ERP_System_Project.Models
         [Precision(10, 2)]
         public decimal Unit_Cost { get; set; } = 0;
 
-        [Range(0.01, 10_000_000, ErrorMessage = "The Price must be greater than 0.")]
-        [Precision(10, 2)]
+        [DecimalPrecisionScale(10,2)]
         public decimal Standard_Price { get; set; }
         public decimal? Weight { get; set; }
         public decimal? Length { get; set; }

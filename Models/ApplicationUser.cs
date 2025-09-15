@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ERP_System_Project.Models.ECommerece;
+using Microsoft.AspNetCore.Identity;
 
 namespace ERP_System_Project.Models
 {

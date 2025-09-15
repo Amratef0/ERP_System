@@ -1,6 +1,8 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Models.Core;
+using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
+using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Repository.Implementations;
 using ERP_System_Project.Repository.Interfaces;
 

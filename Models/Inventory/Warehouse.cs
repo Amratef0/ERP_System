@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 
-namespace ERP_System_Project.Models
+namespace ERP_System_Project.Models.Inventory
 {
     //work
     public class Warehouse
