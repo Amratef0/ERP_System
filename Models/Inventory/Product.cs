@@ -52,5 +52,6 @@ namespace ERP_System_Project.Models.Inventory
 
         public ICollection<ProductVariant> productVariants { get; set; } = new List<ProductVariant>();
         public ICollection<ProductInventory> Warehouses { get; set; } = new List<ProductInventory>();
+        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
     }
 }

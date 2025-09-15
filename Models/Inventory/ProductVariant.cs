@@ -39,5 +39,7 @@ namespace ERP_System_Project.Models.Inventory
 
 
         public ICollection<VariantAttributeValue> ProductAttributes { get; set; } = new List<VariantAttributeValue>();
+        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
+
     }
 }

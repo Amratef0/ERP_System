@@ -34,6 +34,8 @@ namespace ERP_System_Project.Models.Inventory
 
 
         public ICollection<ProductInventory> Products { get; set; } = new List<ProductInventory>();
+        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
+
 
 
     }

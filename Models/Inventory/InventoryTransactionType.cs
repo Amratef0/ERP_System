@@ -18,5 +18,9 @@ namespace ERP_System_Project.Models.Inventory
         public string Type_Name { get; set; } = null!;
         public string? Description { get; set; }
         public bool Is_Active { get; set; } = true;
+
+
+        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
+
     }
 }
