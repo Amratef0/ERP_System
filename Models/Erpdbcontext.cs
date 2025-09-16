@@ -4,6 +4,7 @@ using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace ERP_System_Project.Models
 {
@@ -25,10 +26,10 @@ namespace ERP_System_Project.Models
         #endregion
 
         #region Inventory
-        public DbSet<Brand> Brands { get; set; } 
-        public DbSet<Category> Categories { get; set; } 
-        public DbSet<Product> Products { get; set; } 
-        public DbSet<ProductType> ProductTypes { get; set; } 
+        public DbSet<Brand> Brands { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductType> ProductTypes { get; set; }
         public DbSet<UnitOfMeasure> UnitsOfMeasure { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
         public DbSet<ProductVariant> ProductVariants { get; set; }
@@ -66,6 +67,41 @@ namespace ERP_System_Project.Models
             // unique attributes
             builder.Entity<ProductInventory>().HasIndex(pi => new { pi.ProductId, pi.WarehouseId }).IsUnique();
             builder.Entity<InventoryRequisition>().HasIndex(ir => ir.Number).IsUnique();
+
+            #endregion
+
+            #region HR
+            builder.Entity<Employee>(e =>
+            {
+                e.HasIndex(e => e.Code).IsUnique();
+
+                e.HasIndex(e => e.NationalId).IsUnique()
+                    .HasFilter("[NationalId] IS NOT NULL");
+
+                e.HasIndex(e => e.PassportNumber).IsUnique()
+                    .HasFilter("[PassportNumber] IS NOT NULL");
+
+                e.HasIndex(e => e.WorkEmail).IsUnique()
+                    .HasFilter("[WorkEmail] IS NOT NULL");
+
+                e.HasIndex(e => e.WorkPhone).IsUnique()
+                    .HasFilter("[WorkPhone] IS NOT NULL");
+
+                e.HasIndex(e => e.PersonalEmail).IsUnique()
+                    .HasFilter("[PersonalEmail] IS NOT NULL");
+
+                e.HasIndex(e => e.PersonalPhone).IsUnique()
+                    .HasFilter("[PersonalPhone] IS NOT NULL");
+
+                e.HasIndex(e => e.BankAccountNumber).IsUnique()
+                    .HasFilter("[BankAccountNumber] IS NOT NULL");
+
+                e.Property(e => e.CreatedDate)
+                    .HasDefaultValueSql("GETDATE()");
+
+                e.Property(e => e.ModifiedDate)
+                      .HasDefaultValueSql("GETDATE()");
+            });
 
             #endregion
         }

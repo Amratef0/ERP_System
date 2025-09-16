@@ -2,7 +2,7 @@
 
 namespace ERP_System_Project.Models.HR
 {
-    public class EmployeeTypes
+    public class EmployeeType
     {
         [Key]
         public int Id { get; set; }
