@@ -19,5 +19,9 @@ namespace ERP_System_Project.Models.Inventory
         public string? Description { get; set; }
 
         public bool IsActive { get; set; } = true;
+
+
+        public ICollection<InventoryRequisition> InventoryRequisitions { get; set; } = new List<InventoryRequisition>();
+
     }
 }

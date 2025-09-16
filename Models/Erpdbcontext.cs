@@ -38,6 +38,8 @@ namespace ERP_System_Project.Models
         public DbSet<InventoryTransactionType> InventoryTransactionTypes { get; set; }
         public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
         public DbSet<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; set; }
+        public DbSet<InventoryRequisition> InventoryRequisitions { get; set; }
+        public DbSet<InventoryRequisitionItem> InventoryRequisitionItems { get; set; }
         #endregion
 
 
@@ -63,6 +65,7 @@ namespace ERP_System_Project.Models
 
             // unique attributes
             builder.Entity<ProductInventory>().HasIndex(pi => new { pi.ProductId, pi.WarehouseId }).IsUnique();
+            builder.Entity<InventoryRequisition>().HasIndex(ir => ir.Number).IsUnique();
 
             #endregion
         }

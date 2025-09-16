@@ -19,7 +19,7 @@ namespace ERP_System_Project.Models.Inventory
         public string LogoURL { get; set; } = null!;
 
         [StringLength(255, ErrorMessage = "Website URL Must Be Less Than 255 Characters")]
-        public string WebsiteURL { get; set; }
+        public string? WebsiteURL { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 

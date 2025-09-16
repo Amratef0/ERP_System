@@ -30,7 +30,7 @@ namespace ERP_System_Project.Models.Inventory
         public int? ReferenceId { get; set; }
 
         [StringLength(1000, ErrorMessage = "Reference Type Must Be Less Than 1000 Characters")]
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [ForeignKey("Product")]

@@ -31,7 +31,7 @@ namespace ERP_System_Project.Models.Inventory
         public decimal ReorderPoint { get; set; } = 0;
         public bool LowStockAlert { get; set; } = false;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; } = DateTime.Now;
 
         [ForeignKey("Brand")]
         public int BrandId { get; set; }
@@ -53,5 +53,7 @@ namespace ERP_System_Project.Models.Inventory
         public ICollection<ProductVariant> productVariants { get; set; } = new List<ProductVariant>();
         public ICollection<ProductInventory> Warehouses { get; set; } = new List<ProductInventory>();
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
+        public ICollection<InventoryRequisitionItem> InventoryRequestedProducts { get; set; } = new List<InventoryRequisitionItem>();
+
     }
 }
