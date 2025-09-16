@@ -55,16 +55,7 @@ namespace ERP_System_Project.Models
             // This will apply all configurations in the whole project
             builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
 
-            #region Inventory
-            // Composite Key
-            builder.Entity<VariantAttributeValue>().HasKey(vav => new { vav.VariantId, vav.AtrributeId });
-
-
-            // unique attributes
-            builder.Entity<ProductInventory>().HasIndex(pi => new { pi.ProductId, pi.WarehouseId }).IsUnique();
-            builder.Entity<InventoryRequisition>().HasIndex(ir => ir.Number).IsUnique();
-
-            #endregion
+            
 
 
         }
