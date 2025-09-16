@@ -3,7 +3,7 @@ using ERP_System_Project.Models.Inventory;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ERP_System_Project.Models
+namespace ERP_System_Project.Models.Core
 {
     public class Address
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices.Marshalling;
 
-namespace ERP_System_Project.Models.HR
+namespace ERP_System_Project.Models.Core
 {
     public class Currency
     {
@@ -15,11 +15,11 @@ namespace ERP_System_Project.Models.HR
 
         [Required(ErrorMessage = "Currency Name Is Required")]
         [StringLength(30, ErrorMessage = "Currency Name must be less than 30 characters")]
-        public string Name { get; set;} = null!;
+        public string Name { get; set; } = null!;
 
         [Required(ErrorMessage = "Symbol Is Required")]
         [StringLength(5, ErrorMessage = "Symbol must be less than 5 characters")]
-        public string Symbol { get; set;} = null!;
+        public string Symbol { get; set; } = null!;
         public bool IsActive { get; set; } = true;
     }
 }

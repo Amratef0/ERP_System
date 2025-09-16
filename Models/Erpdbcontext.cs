@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.Core;
+﻿using ERP_System_Project.Models.Config.HRConfig;
+using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
@@ -47,17 +48,12 @@ namespace ERP_System_Project.Models
 
 
 
-
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            #region Core
-            builder.Entity<Currency>().HasIndex(c => c.Code).IsUnique();
-
-            builder.Entity<Country>().HasIndex(c => c.Code).IsUnique();
-            #endregion
+            // This will apply all configurations in the whole project
+            builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
 
             #region Inventory
             // Composite Key
@@ -70,40 +66,7 @@ namespace ERP_System_Project.Models
 
             #endregion
 
-            #region HR
-            builder.Entity<Employee>(e =>
-            {
-                e.HasIndex(e => e.Code).IsUnique();
 
-                e.HasIndex(e => e.NationalId).IsUnique()
-                    .HasFilter("[NationalId] IS NOT NULL");
-
-                e.HasIndex(e => e.PassportNumber).IsUnique()
-                    .HasFilter("[PassportNumber] IS NOT NULL");
-
-                e.HasIndex(e => e.WorkEmail).IsUnique()
-                    .HasFilter("[WorkEmail] IS NOT NULL");
-
-                e.HasIndex(e => e.WorkPhone).IsUnique()
-                    .HasFilter("[WorkPhone] IS NOT NULL");
-
-                e.HasIndex(e => e.PersonalEmail).IsUnique()
-                    .HasFilter("[PersonalEmail] IS NOT NULL");
-
-                e.HasIndex(e => e.PersonalPhone).IsUnique()
-                    .HasFilter("[PersonalPhone] IS NOT NULL");
-
-                e.HasIndex(e => e.BankAccountNumber).IsUnique()
-                    .HasFilter("[BankAccountNumber] IS NOT NULL");
-
-                e.Property(e => e.CreatedDate)
-                    .HasDefaultValueSql("GETDATE()");
-
-                e.Property(e => e.ModifiedDate)
-                      .HasDefaultValueSql("GETDATE()");
-            });
-
-            #endregion
         }
     }
 }
