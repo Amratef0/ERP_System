@@ -4,7 +4,7 @@ using ERP_System_Project.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace ERP_System_Project.Repository.Implementations
+namespace ERP_System_Project.Repository.Implementation
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {

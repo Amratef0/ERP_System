@@ -13,6 +13,9 @@ builder.Services.AddDbContext<Erpdbcontext>(options =>
 // add Repositories and UnitOfWork
 builder.Services.AddDataSevices();
 
+// add Email Service and SMTP
+builder.Services.AddEmailServiceSevices(builder.Configuration);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
