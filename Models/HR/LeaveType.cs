@@ -19,9 +19,9 @@ namespace ERP_System_Project.Models.HR
 
         public int? MaxDaysPerYear { get; set; }
 
-        public bool IsPaid { get; set; } = true;
+        public bool IsPaid { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         // Rest of navigation properties can be added here as needed
     }

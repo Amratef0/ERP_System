@@ -8,37 +8,41 @@ namespace ERP_System_Project.Models.Config.HRConfig
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.HasIndex(e => e.Code).IsUnique();
+            builder.HasIndex(e => e.Code)
+                   .IsUnique();
 
             builder.HasIndex(e => e.NationalId).IsUnique()
-                .HasFilter("[NationalId] IS NOT NULL");
+                   .HasFilter("[NationalId] IS NOT NULL");
 
             builder.HasIndex(e => e.PassportNumber).IsUnique()
-                .HasFilter("[PassportNumber] IS NOT NULL");
+                   .HasFilter("[PassportNumber] IS NOT NULL");
 
             builder.HasIndex(e => e.WorkEmail).IsUnique()
-                .HasFilter("[WorkEmail] IS NOT NULL");
+                   .HasFilter("[WorkEmail] IS NOT NULL");
 
             builder.HasIndex(e => e.WorkPhone).IsUnique()
-                .HasFilter("[WorkPhone] IS NOT NULL");
+                   .HasFilter("[WorkPhone] IS NOT NULL");
 
             builder.HasIndex(e => e.PersonalEmail).IsUnique()
-                .HasFilter("[PersonalEmail] IS NOT NULL");
+                   .HasFilter("[PersonalEmail] IS NOT NULL");
 
             builder.HasIndex(e => e.PersonalPhone).IsUnique()
-                .HasFilter("[PersonalPhone] IS NOT NULL");
+                   .HasFilter("[PersonalPhone] IS NOT NULL");
 
             builder.HasIndex(e => e.BankAccountNumber).IsUnique()
-                .HasFilter("[BankAccountNumber] IS NOT NULL");
+                   .HasFilter("[BankAccountNumber] IS NOT NULL");
+
+            builder.Property(e => e.BaseSalary)
+                   .HasPrecision(15, 4);
 
             builder.Property(e => e.IsActive)
                    .HasDefaultValue(true);
 
             builder.Property(e => e.CreatedDate)
-                .HasDefaultValueSql("GETDATE()");
+                   .HasDefaultValueSql("GETDATE()");
 
             builder.Property(e => e.ModifiedDate)
-                  .HasDefaultValueSql("GETDATE()");
+                   .HasDefaultValueSql("GETDATE()");
         }
     }
 }

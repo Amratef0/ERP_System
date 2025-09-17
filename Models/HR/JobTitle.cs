@@ -22,17 +22,15 @@ namespace ERP_System_Project.Models.HR
         public int? JobGrade { get; set; }
 
         [DecimalPrecisionScale(15, 4)] // Custom validation attribute to enforce precision and scale
-        [Column(TypeName = "decimal(15, 4)")]
         public decimal? MinSalary { get; set; }
 
         [DecimalPrecisionScale(15, 4)] // Custom validation attribute to enforce precision and scale
-        [Column(TypeName = "decimal(15, 4)")]
         public decimal? MaxSalary { get; set; }
 
         [MaxLength(100)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         // Rest of navigation properties can be added here as needed
 

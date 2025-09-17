@@ -71,7 +71,6 @@ namespace ERP_System_Project.Models.HR
 
         [Required]
         [DecimalPrecisionScale(15, 4)]
-        [Column(TypeName = "decimal(15, 4)")]
         public decimal BaseSalary { get; set; }
 
         [MaxLength(50)]
@@ -82,7 +81,7 @@ namespace ERP_System_Project.Models.HR
         [MinLength(1)]
         public string? BankName { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
@@ -93,7 +92,6 @@ namespace ERP_System_Project.Models.HR
         [ForeignKey("Branch")]
         public int BranchId { get; set; }
         public Branch Branch { get; set; }
-
 
         [ForeignKey("Type")]
         public int TypeId { get; set; }

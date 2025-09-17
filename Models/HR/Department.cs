@@ -21,14 +21,14 @@ namespace ERP_System_Project.Models.HR
 
         [MaxLength(50)]
         [MinLength(1)]
-        public string CostCenterCode { get; set; }
+        public string? CostCenterCode { get; set; }
 
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         // Navigation Properties
         [ForeignKey("ParentDepartment")]
         public int? ParentDepartmentId { get; set; }
-        public Department ParentDepartment { get; set; }
+        public Department? ParentDepartment { get; set; }
 
         // Rest of navigation properties can be added here as needed
     }
