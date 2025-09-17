@@ -5,6 +5,8 @@ using ERP_System_Project.Models.ValidationAttributes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+﻿using ERP_System_Project.Models.CRM;
+using Microsoft.Identity.Client;
 
 namespace ERP_System_Project.Models.ECommerece
 {
@@ -79,5 +81,7 @@ namespace ERP_System_Project.Models.ECommerece
 
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
+        public Customer Customer { get; set; }
+        public int CustomerId { get; set; }
     }
 }

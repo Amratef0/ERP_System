@@ -1,6 +1,7 @@
 ﻿using ERP_System_Project.Models.Config.HRConfig;
 using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.ECommerce;
+using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Inventory;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -18,6 +19,11 @@ namespace ERP_System_Project.Models
         public DbSet<Country> Countries { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Branch> Branches { get; set; }
+        #endregion
+
+        #region CRM
+        public DbSet<Customer> Customers{ get; set; }
+
         #endregion
 
         #region ECommerce
