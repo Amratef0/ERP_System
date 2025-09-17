@@ -81,7 +81,5 @@ namespace ERP_System_Project.Models.ECommerece
 
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
-        public Customer Customer { get; set; }
-        public int CustomerId { get; set; }
     }
 }
