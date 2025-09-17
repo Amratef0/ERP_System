@@ -36,9 +36,11 @@ namespace ERP_System_Project.Models.CRM
 
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
 
-        public DateTime LastLoginDate { get; set; } = DateTime.Now;
+        public DateTime? LastLoginDate { get; set; } = DateTime.Now;
 
         public bool IsActive { get; set; } = true;
+        public DateTime? DeactivatedAt { get; set; }
+
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
@@ -46,12 +48,12 @@ namespace ERP_System_Project.Models.CRM
 
         // Foreign key for ApplicationUser (Identity)
         public string? ApplicationUserId { get; set; }
-        public string? CustomerTypeId { get; set; }
+        public int? CustomerTypeId { get; set; }
 
         // Navigation properties  (remove virtual if not lazy loading!)
-        [ForeignKey("ApplicationUserId")]
         public virtual ApplicationUser? ApplicationUser { get; set; }
-        //public virtual CustomerType?  CustomerType{ get; set; }
+        // add Default Value in fluent API
+        public virtual CustomerType? CustomerType { get; set; } 
 
         public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; } = new HashSet<CustomerAddress>();
         public virtual ICollection<CustomerFavorite> CustomerFavorites { get; set; } = new HashSet<CustomerFavorite>();
@@ -59,9 +61,9 @@ namespace ERP_System_Project.Models.CRM
 
         //public virtual ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
         //public virtual ShoppingCart ShoppingCart { get; set; }
-        //public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
-        //public virtual ICollection<Wishlist> Wishlists { get; set; } = new HashSet<Wishlist>();
-        public virtual ICollection<CustomerType> CustomerTypes { get; set; } = new HashSet<CustomerType>(); // one to many or many yo many?????
+        public virtual ICollection<CustomerReview> Reviews { get; set; } = new HashSet<CustomerReview>();
+        public virtual ICollection<CustomerWishlist> Wishlists { get; set; } = new HashSet<CustomerWishlist>();
+
 
 
 
