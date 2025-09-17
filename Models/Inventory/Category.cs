@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ERP_System_Project.Models.ECommerce;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.Inventory
@@ -24,6 +25,8 @@ namespace ERP_System_Project.Models.Inventory
 
 
         public ICollection<Product> Products { get; set; } = new List<Product>();
+        public ICollection<OfferCategory> Offers { get; set; } = new List<OfferCategory>();
+
 
     }
 }

@@ -43,8 +43,7 @@ namespace ERP_System_Project.Models.Inventory
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
         public ICollection<InventoryRequisitionItem> InventoryRequestedVariantProducts { get; set; } = new List<InventoryRequisitionItem>();
         public ICollection<OrderItem> OrderedItems { get; set; } = new List<OrderItem>();
-
-
+        public ICollection<OfferProduct> Offers { get; set; } = new List<OfferProduct>();
 
     }
 }
