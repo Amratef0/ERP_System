@@ -18,7 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Controllers\CRM\" />
     <Folder Include="Helpers\" />
+    <Folder Include="ViewModels\CRM\" />
   </ItemGroup>
 
 </Project>
