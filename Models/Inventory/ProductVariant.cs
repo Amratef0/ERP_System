@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.ValidationAttributes;
+﻿using ERP_System_Project.Models.ECommerce;
+using ERP_System_Project.Models.ValidationAttributes;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -41,6 +42,8 @@ namespace ERP_System_Project.Models.Inventory
         public ICollection<VariantAttributeValue> ProductAttributes { get; set; } = new List<VariantAttributeValue>();
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
         public ICollection<InventoryRequisitionItem> InventoryRequestedVariantProducts { get; set; } = new List<InventoryRequisitionItem>();
+        public ICollection<OrderItem> OrderedItems { get; set; } = new List<OrderItem>();
+
 
 
     }

@@ -1,11 +1,10 @@
 ﻿using ERP_System_Project.Models.Config.HRConfig;
 using ERP_System_Project.Models.Core;
+using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
-using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace ERP_System_Project.Models
 {
@@ -23,6 +22,12 @@ namespace ERP_System_Project.Models
 
         #region ECommerce
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderStatusCode> OrderStatusCodes { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<PaymentMethodType> PaymentMethodTypes { get; set; }
+        public DbSet<PaymentStatusCode> PaymentStatusCodes { get; set; }
+        public DbSet<ShippingMethod> ShippingMethods { get; set; }
 
         #endregion
 

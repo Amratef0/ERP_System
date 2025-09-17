@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ERP_System_Project.Models.ECommerece;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices.Marshalling;
 
 namespace ERP_System_Project.Models.Core
 {
@@ -21,5 +20,9 @@ namespace ERP_System_Project.Models.Core
         [StringLength(5, ErrorMessage = "Symbol must be less than 5 characters")]
         public string Symbol { get; set; } = null!;
         public bool IsActive { get; set; } = true;
+
+
+
+        public ICollection<Order> Orders { get; set; }  = new List<Order>();
     }
 }
