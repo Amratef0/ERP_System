@@ -9,7 +9,7 @@ namespace ERP_System_Project.Models.Inventory
 {
     public class InventoryTransaction
     {
-        [Key]
+        [Key] 
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Transaction Date is required")]

@@ -8,7 +8,7 @@ namespace ERP_System_Project.Models.Config.CoreConfig
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-
+            builder.Property(a => a.IsActive).HasDefaultValue(true);
         }
     }
 }

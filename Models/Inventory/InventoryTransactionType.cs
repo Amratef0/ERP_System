@@ -6,7 +6,7 @@ namespace ERP_System_Project.Models.Inventory
 {
     public class InventoryTransactionType
     {
-        [Key]
+        [Key] 
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Type Code Is Required")]

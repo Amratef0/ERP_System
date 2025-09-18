@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ERP_System_Project.Models.Config.EcommerceConfig
 {
-    public class OfferTypeConfig : IEntityTypeConfiguration<OfferType>
+    public class PaymentMethodConfig : IEntityTypeConfiguration<PaymentMethod>
     {
-        public void Configure(EntityTypeBuilder<OfferType> builder)
+        public void Configure(EntityTypeBuilder<PaymentMethod> builder)
         {
-            builder.Property(ot => ot.IsActive).HasDefaultValue(true);
+            builder.Property(pm => pm.CreatedDate).HasDefaultValue(DateTime.Now);
         }
     }
 }

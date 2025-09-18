@@ -8,7 +8,8 @@ namespace ERP_System_Project.Models.Config.CoreConfig
     {
         public void Configure(EntityTypeBuilder<Branch> builder)
         {
-
+            builder.Property(b => b.IsMainBranch).HasDefaultValue(false);
+            builder.Property(b => b.IsMainBranch).HasDefaultValue(true);
         }
     }
 }

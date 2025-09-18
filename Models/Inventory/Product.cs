@@ -18,8 +18,7 @@ namespace ERP_System_Project.Models.Inventory
         [Required(ErrorMessage = "Product Description Is Required")]
         public string Description { get; set;} = null!;
 
-        [Range(0.01, 10_000_000, ErrorMessage = "The Price must be greater than 0.")]
-        [Precision(10, 2)]
+        [DecimalPrecisionScale(10, 2)]
         public decimal UnitCost { get; set; } = 0;
 
         [DecimalPrecisionScale(10,2)]

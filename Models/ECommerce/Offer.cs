@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.ECommerce
 {
-    public class Offer
+    public class Offer 
     {
         [Key]
         public int Id { get; set; }

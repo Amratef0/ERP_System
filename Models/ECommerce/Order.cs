@@ -5,9 +5,6 @@ using ERP_System_Project.Models.ValidationAttributes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-﻿using ERP_System_Project.Models.CRM;
-using Microsoft.Identity.Client;
-
 namespace ERP_System_Project.Models.ECommerece
 {
     public class Order
