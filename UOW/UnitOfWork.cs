@@ -1,6 +1,7 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.CRM;
+using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
@@ -13,13 +14,14 @@ namespace ERP_System_Project.UOW
     public class UnitOfWork : IUnitOfWork
     {
         private readonly Erpdbcontext _db;
+
+        #region Inventory
         public IRepository<Currency> Currencies { get; }
         public IRepository<Country> Countries { get; }
         public IRepository<Address> Addresses { get; }
         public IRepository<Branch> Branches { get; }
         public IRepository<Brand> Brands { get; }
         public IRepository<Category> Categories { get; }
-        public IRepository<Order> Orders { get; }
         public IRepository<Product> Products { get; }
         public IRepository<ProductAttribute> ProductAttributes { get; }
         public IRepository<ProductType> ProductTypes { get; }
@@ -33,8 +35,23 @@ namespace ERP_System_Project.UOW
         public IRepository<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; }
         public IRepository<InventoryRequisition> InventoryRequisitions { get; }
         public IRepository<InventoryRequisitionItem> InventoryRequisitionItems { get; }
+        #endregion
 
-        #region
+        #region ECommerce
+        public IRepository<Offer> Offers { get; }
+        public IRepository<OfferCategory> OfferCategories { get; }
+        public IRepository<OfferProduct> OfferProducts { get; }
+        public IRepository<OfferType> OfferTypes { get; }
+        public IRepository<Order> Orders { get; }
+        public IRepository<OrderItem> OrderItems { get; }
+        public IRepository<OrderStatusCode> OrderStatusCodes { get; }
+        public IRepository<PaymentMethod> PaymentMethods { get; }
+        public IRepository<PaymentMethodType> PaymentMethodTypes { get; }
+        public IRepository<PaymentStatusCode> PaymentStatusCodes { get; }
+        public IRepository<ShippingMethod> ShippingMethods { get; }
+        #endregion
+
+        #region CRM
         public IRepository<Customer> Customers { get;}
         public IRepository<CustomerAddress> CustomerAddresses { get; }
         public IRepository<CustomerFavorite> CustomerFavorites { get; }
@@ -49,14 +66,15 @@ namespace ERP_System_Project.UOW
         public UnitOfWork(Erpdbcontext db)
         {
             _db = db;
+
             Currencies = new Repository<Currency>(_db);
             Countries = new Repository<Country>(_db);
             Branches = new Repository<Branch>(_db);
-            Products = new Repository<Product>(_db);
             Addresses = new Repository<Address>(_db);
+
+            Products = new Repository<Product>(_db);
             Brands = new Repository<Brand>(_db);
             Categories = new Repository<Category>(_db);
-            Orders = new Repository<Order>(_db);
             ProductAttributes = new Repository<ProductAttribute>(_db);
             ProductTypes = new Repository<ProductType>(_db);
             ProductVariants = new Repository<ProductVariant>(_db);
@@ -70,7 +88,20 @@ namespace ERP_System_Project.UOW
             InventoryRequisitions = new Repository<InventoryRequisition>(_db);
             InventoryRequisitionItems = new Repository<InventoryRequisitionItem>(_db);
 
-        Customers = new Repository<Customer>(_db);
+            Offers = new Repository<Offer>(_db);
+            OfferCategories = new Repository<OfferCategory>(_db);
+            OfferProducts = new Repository<OfferProduct>(_db);
+            OfferTypes = new Repository<OfferType>(_db);
+            Orders = new Repository<Order>(_db);
+            OrderItems = new Repository<OrderItem>(_db);
+            OrderStatusCodes = new Repository<OrderStatusCode>(_db);
+            PaymentMethods = new Repository<PaymentMethod>(_db);
+            PaymentMethodTypes = new Repository<PaymentMethodType>(_db);
+            PaymentStatusCodes = new Repository<PaymentStatusCode>(_db);
+            ShippingMethods = new Repository<ShippingMethod>(_db);
+
+
+            Customers = new Repository<Customer>(_db);
             CustomerAddresses = new Repository<CustomerAddress>(_db);
             CustomerFavorites = new Repository<CustomerFavorite>(_db);
             CustomerReviews = new Repository<CustomerReview>(_db);
