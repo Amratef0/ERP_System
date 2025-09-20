@@ -1,0 +1,18 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Update Customer";
+}
+
+<h1>Update</h1>
+
+
+
+<form asp-action="Update">
+    <div asp-validation-summary="All"></div>
+    <partial name="PartialViews/CreateUpdateCustomerPartialView" />
+
+
+    <br />
+
+    <input value="Save" type="submit"  class="btn btn-success" /> | <a asp-action="Index" class="btn btn-light">Back to List</a>
+</form>

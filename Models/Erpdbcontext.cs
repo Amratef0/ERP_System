@@ -23,6 +23,12 @@ namespace ERP_System_Project.Models
 
         #region CRM
         public DbSet<Customer> Customers{ get; set; }
+        public DbSet<CustomerAddress> CustomerAddresses{ get; set; }
+        public DbSet<CustomerFavorite>  CustomerFavorites{ get; set; }
+        public DbSet<CustomerReview> CustomerReviews{ get; set; }
+        public DbSet<CustomerType> CustomerTypes { get; set; }
+        public DbSet<CustomerWishlist> CustomerWishlists { get; set; }
+
 
         #endregion
 

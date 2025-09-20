@@ -1,10 +1,12 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Models.Core;
+using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP_System_Project.UOW
 {
@@ -32,6 +34,17 @@ namespace ERP_System_Project.UOW
         public IRepository<InventoryRequisition> InventoryRequisitions { get; }
         public IRepository<InventoryRequisitionItem> InventoryRequisitionItems { get; }
 
+        #region
+        public IRepository<Customer> Customers { get;}
+        public IRepository<CustomerAddress> CustomerAddresses { get; }
+        public IRepository<CustomerFavorite> CustomerFavorites { get; }
+        public IRepository<CustomerReview> CustomerReviews { get; }
+        public IRepository<CustomerType> CustomerTypes { get; }
+        public IRepository<CustomerWishlist> CustomerWishlists { get; }
+
+
+        #endregion
+
 
         public UnitOfWork(Erpdbcontext db)
         {
@@ -56,10 +69,24 @@ namespace ERP_System_Project.UOW
             InventoryRequisitionStatusCodes = new Repository<InventoryRequisitionStatusCode>(_db);
             InventoryRequisitions = new Repository<InventoryRequisition>(_db);
             InventoryRequisitionItems = new Repository<InventoryRequisitionItem>(_db);
+
+        Customers = new Repository<Customer>(_db);
+            CustomerAddresses = new Repository<CustomerAddress>(_db);
+            CustomerFavorites = new Repository<CustomerFavorite>(_db);
+            CustomerReviews = new Repository<CustomerReview>(_db);
+            CustomerTypes = new Repository<CustomerType>(_db);
+            CustomerWishlists = new Repository<CustomerWishlist>(_db);
+
+
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();
 
         public void Dispose() => _db.Dispose();
+
+        public IRepository<T> Repository<T>() where T : class
+        {
+            return new Repository<T>(_db);
+        }
     }
 }

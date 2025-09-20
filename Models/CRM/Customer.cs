@@ -1,5 +1,6 @@
 ﻿using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
+using ERP_System_Project.Models.ValidationAttributes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -25,6 +26,8 @@ namespace ERP_System_Project.Models.CRM
         [MinLength(3, ErrorMessage = "Last Name at least 3")]
         public string LastName { get; set; }
 
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
         [Required]
         [EmailAddress]
         public string Email { get; set; }
@@ -33,19 +36,24 @@ namespace ERP_System_Project.Models.CRM
         public string PhoneNumber { get; set; }
 
         [Required]
+        [DateOfBirthValidation(18)]
+        [DataType(DataType.Date)]
         public DateOnly DateOfBirth { get; set; }
-
+        [DataType(DataType.DateTime)]
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
-
+        [DataType(DataType.DateTime)]
         public DateTime? LastLoginDate { get; set; } = DateTime.Now;
 
+       
+        [DataType(DataType.DateTime)]
+        public DateTime? ModifiedDate { get; set; }
+
+        [DataType(DataType.DateTime)]
         public bool IsActive { get; set; } = true;
         public DateTime? DeactivatedAt { get; set; }
 
 
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public DateTime? ModifiedDate { get; set; }
 
         // Foreign key for ApplicationUser (Identity)
         public string? ApplicationUserId { get; set; }
@@ -60,14 +68,10 @@ namespace ERP_System_Project.Models.CRM
         public virtual ICollection<CustomerFavorite> CustomerFavorites { get; set; } = new HashSet<CustomerFavorite>();
 
         //public virtual ShoppingCart ShoppingCart { get; set; }
-        //public virtual ICollection<Review> Reviews { get; set; } = new HashSet<Review>();
-        //public virtual ICollection<Wishlist> Wishlists { get; set; } = new HashSet<Wishlist>();
         public virtual ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>(); // one to many or many yo many?????
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<CustomerReview> Reviews { get; set; } = new HashSet<CustomerReview>();
         public virtual ICollection<CustomerWishlist> Wishlists { get; set; } = new HashSet<CustomerWishlist>();
-
-
 
 
     }

@@ -1,0 +1,23 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Create Customer";
+
+}
+
+
+<h1>Create New Customer</h1>
+
+<br />
+<br />  
+
+<form asp-action="Create" enctype="multipart/form-data">
+   
+    <partial name="PartialViews/CreateUpdateCustomerPartialView" />
+    <br />
+
+    <input type="submit" class="btn btn-success"/> | <a asp-action="Index" class="btn btn-light">Back to List</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
