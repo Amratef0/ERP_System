@@ -6,15 +6,15 @@
         {
 
             if (file == null || file.Length == 0)
-                throw new ArgumentNullException("File cannot be null or empty.");
+                throw new ArgumentNullException("File Cannot Be Empty");
 
             if (file.Length > maximumSize)
-                throw new Exception($"File size exceeds the maximum limit of {maximumSize}MB.");
+                throw new Exception($"File size exceeds the maximum limit of {maximumSize}MB");
 
             var extension = Path.GetExtension(file.FileName).ToLower();
 
-            if(!validExtensions.Contains(extension))
-                throw new Exception($"Invalid file extension: {extension}. Expected: {String.Join(", ", validExtensions)} .");
+            if(validExtensions.Contains(extension))
+                throw new Exception($"Invalid file extension: {extension}. Expected: {String.Join(", ", validExtensions)}");
 
             return true;
         }
