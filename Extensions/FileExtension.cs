@@ -13,8 +13,8 @@
 
             var extension = Path.GetExtension(file.FileName).ToLower();
 
-            if(validExtensions.Contains(extension))
-                throw new Exception($"Invalid file extension: {extension}. Expected: {String.Join(", ", validExtensions)}.");
+            if(!validExtensions.Contains(extension))
+                throw new Exception($"Invalid file extension: {extension}. Expected: {String.Join(", ", validExtensions)} .");
 
             return true;
         }
