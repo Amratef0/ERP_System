@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ERP_System_Project.Models.HR;
 
 namespace ERP_System_Project.Models
 {

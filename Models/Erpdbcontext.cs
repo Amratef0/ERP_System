@@ -6,6 +6,7 @@ using ERP_System_Project.Models.Inventory;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ERP_System_Project.Models.HR;
+using ERP_System_Project.Models.ECommerece;
 
 namespace ERP_System_Project.Models
 {

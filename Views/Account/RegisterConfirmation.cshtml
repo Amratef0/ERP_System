@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Registration Confirmation";
+}
+
+<h2>Registration Successful!</h2>
+<p>
+    Your registration is almost complete. Please check your email for the
+    verification token.
+</p>
+<a href="@Url.Action("VerifyEmail", "Account")" class="btn btn-success">
+    Enter
+    Verification Token
+</a> 

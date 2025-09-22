@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using ERP_System_Project.Models;
 using ERP_System_Project.Interface;
-using ERP_System_Project.Migrations;
 using System.Net;
 using System.Web;
 

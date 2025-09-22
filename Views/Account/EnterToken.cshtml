@@ -1,0 +1,15 @@
+﻿@model ERP_System_Project.Models.EnterTokenViewModel
+
+<h2>Enter Reset Token</h2>
+
+<form asp-action="SaveEnterToken" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Token"></label>
+        <input asp-for="Token" class="form-control" />
+        <span asp-validation-for="Token" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Verify Token</button>
+</form>
