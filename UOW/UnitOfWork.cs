@@ -62,6 +62,21 @@ namespace ERP_System_Project.UOW
 
         #endregion
 
+        #region HR
+        public IRepository<AttendanceRecord> AttendanceRecords { get; }
+        public IRepository<AttendanceStatusCode> AttendanceStatusCodes { get; }
+        public IRepository<Department> Departments { get; }
+        public IRepository<Employee> Employees { get; }
+        public IRepository<EmployeeLeaveBalance> EmployeeLeaveBalances { get; }
+        public IRepository<EmployeeType> EmployeeTypes { get; }
+        public IRepository<JobTitle> JobTitles { get; }
+        public IRepository<LeaveRequest> LeaveRequests { get; }
+        public IRepository<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; }
+        public IRepository<LeaveType> LeaveTypes { get; }
+        public IRepository<PayrollEntry> PayrollEntries { get; }
+        public IRepository<PayrollRun> PayrollRuns { get; }
+        #endregion
+
 
         public UnitOfWork(Erpdbcontext db)
         {
