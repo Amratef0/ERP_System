@@ -7,16 +7,19 @@ namespace ERP_System_Project.Models.HR
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        [MinLength(2)]
+        [Required(ErrorMessage = "Status Name is required.")]
+        [MaxLength(100, ErrorMessage = "Status Name cannot exceed 100 characters.")]
+        [MinLength(2, ErrorMessage = "Status Name must be at least 2 characters.")]
+        [Display(Name = "Status Name")]
         public string Name { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        [MinLength(1)]
+        [Required(ErrorMessage = "Status Code is required.")]
+        [MaxLength(50, ErrorMessage = "Status Code cannot exceed 50 characters.")]
+        [MinLength(1, ErrorMessage = "Status Code must be at least 1 character.")]
+        [Display(Name = "Status Code")]
         public string Code { get; set; }
 
-        // Rest of navigation properties can be added here as needed
+        // Navigation properties
+        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
     }
 }

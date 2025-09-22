@@ -1,4 +1,5 @@
 ﻿using ERP_System_Project.Models.ECommerece;
+using ERP_System_Project.Models.HR;
 using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.Core
@@ -22,7 +23,17 @@ namespace ERP_System_Project.Models.Core
         public bool IsActive { get; set; } = true;
 
 
+        // Navigation Properties
+        [Display(Name = "Orders with this Currency")]
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
 
-        public ICollection<Order> Orders { get; set; }  = new List<Order>();
+        [Display(Name = "Payroll Runs with this Currency")]
+        public ICollection<PayrollRun> PayrollRuns { get; set; } = new List<PayrollRun>();
+
+        [Display(Name = "Payroll Entries with this Currency")]
+        public ICollection<PayrollEntry> PayrollEntries { get; set; } = new List<PayrollEntry>();
+
+        [Display(Name = "Employees with this Currency as Salary Currency")]
+        public ICollection<Employee> EmployeesByCurrency { get; set; } = new List<Employee>();
     }
 }

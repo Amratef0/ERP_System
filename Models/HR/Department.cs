@@ -7,29 +7,36 @@ namespace ERP_System_Project.Models.HR
     public class Department
     {
         [Key]
+        [Display(Name = "Department ID")]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        [MinLength(2)]
+        [Required(ErrorMessage = "Department name is required.")]
+        [MaxLength(100, ErrorMessage = "Department name cannot exceed 100 characters.")]
+        [MinLength(2, ErrorMessage = "Department name must be at least 2 characters long.")]
+        [Display(Name = "Department Name")]
         public string Name { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        [MinLength(1)]
+        [Required(ErrorMessage = "Department code is required.")]
+        [MaxLength(50, ErrorMessage = "Department code cannot exceed 50 characters.")]
+        [MinLength(1, ErrorMessage = "Department code must be at least 1 character long.")]
+        [Display(Name = "Department Code")]
         public string Code { get; set; }
 
-        [MaxLength(50)]
-        [MinLength(1)]
+        [MaxLength(50, ErrorMessage = "Cost center code cannot exceed 50 characters.")]
+        [MinLength(1, ErrorMessage = "Cost center code must be at least 1 character long.")]
+        [Display(Name = "Cost Center Code")]
         public string? CostCenterCode { get; set; }
 
+        [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
         // Navigation Properties
         [ForeignKey("ParentDepartment")]
+        [Display(Name = "Parent Department")]
         public int? ParentDepartmentId { get; set; }
         public Department? ParentDepartment { get; set; }
 
-        // Rest of navigation properties can be added here as needed
+        [Display(Name = "Employees")]
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

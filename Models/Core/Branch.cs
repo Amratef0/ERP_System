@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.Inventory;
+﻿using ERP_System_Project.Models.HR;
+using ERP_System_Project.Models.Inventory;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,7 +16,7 @@ namespace ERP_System_Project.Models.Core
 
         [Required(ErrorMessage = "Branch Code Is Required")]
         [StringLength(10, ErrorMessage = "Branch Code Must be less than 10 characters")]
-        public string Code { get; set;} = null!;
+        public string Code { get; set; } = null!;
 
         [StringLength(50, ErrorMessage = "Phone Number Must be less than 50 Number")]
         [Phone(ErrorMessage = "Invalid Phone Format")]
@@ -25,13 +26,19 @@ namespace ERP_System_Project.Models.Core
         [EmailAddress(ErrorMessage = "Invalid Email Format")]
         public string? Email { get; set; }
         public bool IsMainBranch { get; set; } = false;
-        public bool IsActive { get; set;} = true;
+        public bool IsActive { get; set; } = true;
 
+
+        // Navigation Properties 
         [ForeignKey("Address")]
+        [Display(Name = "Address")]
         public int AddressId { get; set; }
         public Address Address { get; set; }
 
+        [Display(Name = "Warehouses")]
         public ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
 
+        [Display(Name = "Employees")]
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

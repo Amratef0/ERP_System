@@ -2,14 +2,14 @@
 using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.CRM;
-using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Inventory;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ERP_System_Project.Models.HR;
 
 namespace ERP_System_Project.Models
 {
-    public class Erpdbcontext : IdentityDbContext<ApplicationUser>
+    public partial class Erpdbcontext : IdentityDbContext<ApplicationUser>
     {
         public Erpdbcontext(DbContextOptions<Erpdbcontext> options) : base(options) { }
 
@@ -22,10 +22,10 @@ namespace ERP_System_Project.Models
         #endregion
 
         #region CRM
-        public DbSet<Customer> Customers{ get; set; }
-        public DbSet<CustomerAddress> CustomerAddresses{ get; set; }
-        public DbSet<CustomerFavorite>  CustomerFavorites{ get; set; }
-        public DbSet<CustomerReview> CustomerReviews{ get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerAddress> CustomerAddresses { get; set; }
+        public DbSet<CustomerFavorite> CustomerFavorites { get; set; }
+        public DbSet<CustomerReview> CustomerReviews { get; set; }
         public DbSet<CustomerType> CustomerTypes { get; set; }
         public DbSet<CustomerWishlist> CustomerWishlists { get; set; }
 
@@ -65,7 +65,20 @@ namespace ERP_System_Project.Models
         public DbSet<InventoryRequisitionItem> InventoryRequisitionItems { get; set; }
         #endregion
 
-
+        #region HR
+        public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+        public DbSet<AttendanceStatusCode> AttendanceStatusCodes { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
+        public DbSet<EmployeeType> EmployeeTypes { get; set; }
+        public DbSet<JobTitle> JobTitles { get; set; }
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; set; }
+        public DbSet<LeaveType> LeaveTypes { get; set; }
+        public DbSet<PayrollEntry> PayrollEntries { get; set; }
+        public DbSet<PayrollRun> PayrollRuns { get; set; }
+        #endregion
 
 
 
@@ -75,10 +88,6 @@ namespace ERP_System_Project.Models
 
             // This will apply all configurations in the whole project
             builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
-
-            
-
-
         }
     }
 }

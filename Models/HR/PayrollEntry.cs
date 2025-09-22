@@ -8,57 +8,71 @@ namespace ERP_System_Project.Models.HR
     public class PayrollEntry
     {
         [Key]
+        [Display(Name = "Payroll Entry ID")]
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Base Salary Amount is required.")]
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Base Salary Amount")]
         public decimal BaseSalaryAmount { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Overtime Amount is required.")]
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Overtime Amount")]
         public decimal OvertimeAmount { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Bonus Amount is required.")]
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Bonus Amount")]
         public decimal BonusAmount { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Allowance Amount is required.")]
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Allowance Amount")]
         public decimal AllowanceAmount { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Deduction Amount is required.")]
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Deduction Amount")]
         public decimal DeductionAmount { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Tax Amount is required.")]
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Tax Amount")]
         public decimal TaxAmount { get; set; }
 
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Net Amount")]
         public decimal NetAmount { get; set; }
 
+        [Display(Name = "Payment Date")]
         public DateOnly? PaymentDate { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(100, ErrorMessage = "Bank Account Number cannot exceed 100 characters.")]
+        [Display(Name = "Bank Account Number")]
         public string? BankAccountNumber { get; set; }
 
-        [MaxLength(255)]
+        [MaxLength(255, ErrorMessage = "Notes cannot exceed 255 characters.")]
+        [Display(Name = "Notes")]
         public string? Notes { get; set; }
 
         // Navigation properties
 
-        [Required]
+        [Required(ErrorMessage = "Payroll Run is required.")]
         [ForeignKey("PayrollRun")]
+        [Display(Name = "Payroll Run")]
         public int PayrollRunId { get; set; }
         public PayrollRun PayrollRun { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Employee is required.")]
         [ForeignKey("Employee")]
+        [Display(Name = "Employee")]
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Currency is required.")]
         [ForeignKey("Currency")]
+        [Display(Name = "Currency")]
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; }
     }

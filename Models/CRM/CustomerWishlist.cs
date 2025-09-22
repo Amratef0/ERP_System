@@ -1,5 +1,4 @@
-﻿
-using ERP_System_Project.Models.Inventory;
+﻿using ERP_System_Project.Models.Inventory;
 
 namespace ERP_System_Project.Models.CRM
 {

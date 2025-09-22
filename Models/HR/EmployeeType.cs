@@ -5,18 +5,24 @@ namespace ERP_System_Project.Models.HR
     public class EmployeeType
     {
         [Key]
+        [Display(Name = "Employee Type ID")]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        [MinLength(2)]
+        [Required(ErrorMessage = "Employee type name is required.")]
+        [MaxLength(50, ErrorMessage = "Employee type name cannot exceed 50 characters.")]
+        [MinLength(2, ErrorMessage = "Employee type name must be at least 2 characters long.")]
+        [Display(Name = "Employee Type Name")]
         public string Name { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(100, ErrorMessage = "Description cannot exceed 100 characters.")]
+        [Display(Name = "Description")]
         public string? Description { get; set; }
 
+        [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
-        // Rest of navigation properties can be added here as needed
+        // Navigation Properties
+        [Display(Name = "Employees")]
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

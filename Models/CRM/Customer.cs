@@ -1,5 +1,4 @@
 ﻿using ERP_System_Project.Models.ECommerce;
-using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.ValidationAttributes;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -44,7 +43,7 @@ namespace ERP_System_Project.Models.CRM
         [DataType(DataType.DateTime)]
         public DateTime? LastLoginDate { get; set; } = DateTime.Now;
 
-       
+
         [DataType(DataType.DateTime)]
         public DateTime? ModifiedDate { get; set; }
 
@@ -62,7 +61,7 @@ namespace ERP_System_Project.Models.CRM
         // Navigation properties  (remove virtual if not lazy loading!)
         public virtual ApplicationUser? ApplicationUser { get; set; }
         // add Default Value in fluent API
-        public virtual CustomerType? CustomerType { get; set; } 
+        public virtual CustomerType? CustomerType { get; set; }
 
         public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; } = new HashSet<CustomerAddress>();
         public virtual ICollection<CustomerFavorite> CustomerFavorites { get; set; } = new HashSet<CustomerFavorite>();

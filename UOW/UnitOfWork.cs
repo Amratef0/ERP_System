@@ -52,7 +52,7 @@ namespace ERP_System_Project.UOW
         #endregion
 
         #region CRM
-        public IRepository<Customer> Customers { get;}
+        public IRepository<Customer> Customers { get; }
         public IRepository<CustomerAddress> CustomerAddresses { get; }
         public IRepository<CustomerFavorite> CustomerFavorites { get; }
         public IRepository<CustomerReview> CustomerReviews { get; }
@@ -60,6 +60,21 @@ namespace ERP_System_Project.UOW
         public IRepository<CustomerWishlist> CustomerWishlists { get; }
 
 
+        #endregion
+
+        #region HR
+        public IRepository<AttendanceRecord> AttendanceRecords { get; }
+        public IRepository<AttendanceStatusCode> AttendanceStatusCodes { get; }
+        public IRepository<Department> Departments { get; }
+        public IRepository<Employee> Employees { get; }
+        public IRepository<EmployeeLeaveBalance> EmployeeLeaveBalances { get; }
+        public IRepository<EmployeeType> EmployeeTypes { get; }
+        public IRepository<JobTitle> JobTitles { get; }
+        public IRepository<LeaveRequest> LeaveRequests { get; }
+        public IRepository<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; }
+        public IRepository<LeaveType> LeaveTypes { get; }
+        public IRepository<PayrollEntry> PayrollEntries { get; }
+        public IRepository<PayrollRun> PayrollRuns { get; }
         #endregion
 
 
@@ -78,7 +93,7 @@ namespace ERP_System_Project.UOW
             ProductAttributes = new Repository<ProductAttribute>(_db);
             ProductTypes = new Repository<ProductType>(_db);
             ProductVariants = new Repository<ProductVariant>(_db);
-            UnitsOfMeasure =new Repository<UnitOfMeasure>(_db);
+            UnitsOfMeasure = new Repository<UnitOfMeasure>(_db);
             VariantAttributeValues = new Repository<VariantAttributeValue>(_db);
             Warehouses = new Repository<Warehouse>(_db);
             ProductsInventory = new Repository<ProductInventory>(_db);
@@ -108,7 +123,18 @@ namespace ERP_System_Project.UOW
             CustomerTypes = new Repository<CustomerType>(_db);
             CustomerWishlists = new Repository<CustomerWishlist>(_db);
 
-
+            AttendanceRecords = new Repository<AttendanceRecord>(_db);
+            AttendanceStatusCodes = new Repository<AttendanceStatusCode>(_db);
+            Departments = new Repository<Department>(_db);
+            Employees = new Repository<Employee>(_db);
+            EmployeeLeaveBalances = new Repository<EmployeeLeaveBalance>(_db);
+            EmployeeTypes = new Repository<EmployeeType>(_db);
+            JobTitles = new Repository<JobTitle>(_db);
+            LeaveRequests = new Repository<LeaveRequest>(_db);
+            LeaveRequestStatusCodes = new Repository<LeaveRequestStatusCode>(_db);
+            LeaveTypes = new Repository<LeaveType>(_db);
+            PayrollEntries = new Repository<PayrollEntry>(_db);
+            PayrollRuns = new Repository<PayrollRun>(_db);
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();

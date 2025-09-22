@@ -1,4 +1,5 @@
 ﻿using ERP_System_Project.Models.Core;
+using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -31,11 +32,21 @@ namespace ERP_System_Project.Models.Core
         public string? AddressType { get; set; }
         public bool IsActive { get; set; } = true;
 
+
+
+        // Navigation Properties
         [ForeignKey("Country")]
+        [Required(ErrorMessage = "Country is required")]
         public int CountryId { get; set; }
         public Country Country { get; set; }
 
-        public ICollection<Branch> branches { get; set; } = new List<Branch>();
+        [Display(Name = "Branches with this Address")]
+        public ICollection<Branch> Branches { get; set; } = new List<Branch>();
+
+        [Display(Name = "Warehouses with this Address")]
         public ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
+
+        [Display(Name = "Employees with this Address")]
+        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

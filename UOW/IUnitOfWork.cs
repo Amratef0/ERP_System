@@ -51,6 +51,19 @@ namespace ERP_System_Project.UOW
         IRepository<CustomerType> CustomerTypes { get; }
         IRepository<CustomerWishlist> CustomerWishlists { get; }
 
+        IRepository<AttendanceRecord> AttendanceRecords { get; }
+        IRepository<AttendanceStatusCode> AttendanceStatusCodes { get; }
+        IRepository<Department> Departments { get; }
+        IRepository<Employee> Employees { get; }
+        IRepository<EmployeeLeaveBalance> EmployeeLeaveBalances { get; }
+        IRepository<EmployeeType> EmployeeTypes { get; }
+        IRepository<JobTitle> JobTitles { get; }
+        IRepository<LeaveRequest> LeaveRequests { get; }
+        IRepository<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; }
+        IRepository<LeaveType> LeaveTypes { get; }
+        IRepository<PayrollEntry> PayrollEntries { get; }
+        IRepository<PayrollRun> PayrollRuns { get; }
+
         Task<int> CompleteAsync();
 
     }

@@ -8,32 +8,43 @@ namespace ERP_System_Project.Models.HR
     public class PayrollRun
     {
         [Key]
+        [Display(Name = "Payroll Run ID")]
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Period Start date is required.")]
+        [Display(Name = "Period Start Date")]
         public DateOnly PeriodStart { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Period End date is required.")]
+        [Display(Name = "Period End Date")]
         public DateOnly PeriodEnd { get; set; }
 
-        [Required]
-        [MaxLength(150)]
+        [Required(ErrorMessage = "Payroll Run Name is required.")]
+        [MaxLength(150, ErrorMessage = "Payroll Run Name cannot exceed 150 characters.")]
+        [Display(Name = "Payroll Run Name")]
         public string Name { get; set; }
 
+        [Display(Name = "Processed Date")]
         public DateTime? ProcessedDate { get; set; }
 
+        [Display(Name = "Is Locked")]
         public bool IsLocked { get; set; }
 
         [DecimalPrecisionScale(15, 4)]
+        [Display(Name = "Total Amount")]
         public decimal? TotalAmount { get; set; }
 
+        [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
         // Navigation properties
-
-        [Required]
+        [Required(ErrorMessage = "Currency is required.")]
         [ForeignKey("Currency")]
+        [Display(Name = "Currency")]
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; }
+
+        [Display(Name = "Payroll Entries")]
+        public ICollection<PayrollEntry> PayrollEntries { get; set; } = new List<PayrollEntry>();
     }
 }
