@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ERP_System_Project.Models.HR;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.Core
 {
@@ -20,6 +21,9 @@ namespace ERP_System_Project.Models.Core
 
         // Navigation Properties
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
+
+        [Display(Name = "Public Holidays")]
+        public ICollection<PublicHoliday> PublicHolidays { get; set; } = new List<PublicHoliday>();
 
     }
 }

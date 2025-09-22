@@ -78,6 +78,8 @@ namespace ERP_System_Project.Models
         public DbSet<LeaveType> LeaveTypes { get; set; }
         public DbSet<PayrollEntry> PayrollEntries { get; set; }
         public DbSet<PayrollRun> PayrollRuns { get; set; }
+        public DbSet<PublicHoliday> PublicHolidays { get; set; }
+        public DbSet<WorkScheduleDay> WorkScheduleDays { get; set; }
         #endregion
 
 

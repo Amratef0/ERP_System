@@ -63,6 +63,8 @@ namespace ERP_System_Project.UOW
         IRepository<LeaveType> LeaveTypes { get; }
         IRepository<PayrollEntry> PayrollEntries { get; }
         IRepository<PayrollRun> PayrollRuns { get; }
+        IRepository<PublicHoliday> PublicHolidays { get; }
+        IRepository<WorkScheduleDay> WorkScheduleDays { get; }
 
         Task<int> CompleteAsync();
 
