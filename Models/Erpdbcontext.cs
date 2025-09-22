@@ -81,6 +81,17 @@ namespace ERP_System_Project.Models
         #endregion
 
 
+        #region Purchases
+        public DbSet<PaymentTerm> PaymentTerms { get; set; }
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public DbSet<PurchaseOrderItemStatusCode> PurchaseOrderItemStatusCodes { get; set; }
+        public DbSet<PurchaseOrderStatusCode> PurchaseOrderStatusCodes { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<SupplierCategory> SupplierCategories { get; set; }
+        public DbSet<SupplierProduct> SupplierProducts { get; set; }
+        #endregion
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
