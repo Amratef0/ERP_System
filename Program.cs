@@ -33,7 +33,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 // add Email Service and SMTP
-builder.Services.AddEmailServiceSevices(builder.Configuration);
+builder.Services.AddEmailService(builder.Configuration);
 
 var app = builder.Build();
 

@@ -17,7 +17,7 @@ namespace ERP_System_Project.Extensions
             return services;
         }
 
-        public static IServiceCollection AddEmailServiceSevices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
             services.AddTransient<IEmailService,EmailService>();
