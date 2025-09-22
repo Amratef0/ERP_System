@@ -65,6 +65,21 @@ namespace ERP_System_Project.Models
         public DbSet<InventoryRequisitionItem> InventoryRequisitionItems { get; set; }
         #endregion
 
+        #region HR
+        public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
+        public DbSet<AttendanceStatusCode> AttendanceStatusCodes { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; }
+        public DbSet<EmployeeType> EmployeeTypes { get; set; }
+        public DbSet<JobTitle> JobTitles { get; set; }
+        public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; set; }
+        public DbSet<LeaveType> LeaveTypes { get; set; }
+        public DbSet<PayrollEntry> PayrollEntries { get; set; }
+        public DbSet<PayrollRun> PayrollRuns { get; set; }
+        #endregion
+
         #region Purchases
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
