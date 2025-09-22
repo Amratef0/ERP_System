@@ -122,8 +122,19 @@ namespace ERP_System_Project.UOW
             CustomerReviews = new Repository<CustomerReview>(_db);
             CustomerTypes = new Repository<CustomerType>(_db);
             CustomerWishlists = new Repository<CustomerWishlist>(_db);
-
-
+            
+            AttendanceRecords = new Repository<AttendanceRecord>(_db);
+            AttendanceStatusCodes = new Repository<AttendanceStatusCode>(_db);
+            Departments = new Repository<Department>(_db);
+            Employees = new Repository<Employee>(_db);
+            EmployeeLeaveBalances = new Repository<EmployeeLeaveBalance>(_db);
+            EmployeeTypes = new Repository<EmployeeType>(_db);
+            JobTitles = new Repository<JobTitle>(_db);
+            LeaveRequests = new Repository<LeaveRequest>(_db);
+            LeaveRequestStatusCodes = new Repository<LeaveRequestStatusCode>(_db);
+            LeaveTypes = new Repository<LeaveType>(_db);
+            PayrollEntries = new Repository<PayrollEntry>(_db);
+            PayrollRuns = new Repository<PayrollRun>(_db);
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();
