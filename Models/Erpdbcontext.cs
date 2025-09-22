@@ -9,7 +9,7 @@ using ERP_System_Project.Models.HR;
 
 namespace ERP_System_Project.Models
 {
-    public partial class Erpdbcontext : IdentityDbContext<ApplicationUser>
+    public class Erpdbcontext : IdentityDbContext<ApplicationUser>
     {
         public Erpdbcontext(DbContextOptions<Erpdbcontext> options) : base(options) { }
 
