@@ -19,6 +19,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Date")]
         public DateOnly Date { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation Properties
         [Required(ErrorMessage = "Please select a country.")]
         [ForeignKey("Country")]

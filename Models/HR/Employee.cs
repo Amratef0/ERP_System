@@ -108,6 +108,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Modified Date")]
         public DateTime ModifiedDate { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation Properties
         [ForeignKey("Branch")]
         [Display(Name = "Branch")]

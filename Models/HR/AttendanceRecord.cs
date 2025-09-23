@@ -45,6 +45,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation Properties
         [Required(ErrorMessage = "Employee is required.")]
         [ForeignKey("Employee")]

@@ -21,6 +21,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Work End Time")]
         public TimeOnly? WorkEndTime { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             // Rule 1: If it's a workday, start and end times are required.

@@ -8,7 +8,21 @@ namespace ERP_System_Project.Models.Config.CoreConfig
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
+            builder.HasIndex(a => a.IsDeleted)
+                   .HasFilter("[IsDeleted] = 0");
+
             builder.Property(a => a.IsActive).HasDefaultValue(true);
+
+            builder.Property(a => a.IsDeleted)
+                   .HasDefaultValue(false);
+
+            builder.HasQueryFilter(a => !a.IsDeleted);
+
+            // Configure relationships with restrict delete behavior
+            builder.HasOne(a => a.Country)
+                   .WithMany(c => c.Addresses)
+                   .HasForeignKey(a => a.CountryId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

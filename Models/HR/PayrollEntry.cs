@@ -56,6 +56,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Notes")]
         public string? Notes { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation properties
 
         [Required(ErrorMessage = "Payroll Run is required.")]

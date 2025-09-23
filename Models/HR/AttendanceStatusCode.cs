@@ -27,6 +27,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation properties
         [Display(Name = "Attendance Records")]
         public ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();

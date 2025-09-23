@@ -32,6 +32,12 @@ namespace ERP_System_Project.Models.Core
         public string? AddressType { get; set; }
         public bool IsActive { get; set; } = true;
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
 
 
         // Navigation Properties

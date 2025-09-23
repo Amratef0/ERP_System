@@ -19,6 +19,12 @@ namespace ERP_System_Project.Models.Core
         [StringLength(10, ErrorMessage = "Phone Code Must be less than 10 characters")]
         public string? PhoneCode { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation Properties
         public ICollection<Address> Addresses { get; set; } = new List<Address>();
 

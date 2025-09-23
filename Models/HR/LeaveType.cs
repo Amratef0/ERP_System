@@ -28,6 +28,12 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
+        [Display(Name = "Is Deleted")]
+        public bool IsDeleted { get; set; }
+
+        [Display(Name = "Deleted At")]
+        public DateOnly? DeletedAt { get; set; }
+
         // Navigation properties
         [Display(Name = "Leave Requests")]
         public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();

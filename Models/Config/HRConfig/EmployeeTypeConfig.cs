@@ -8,8 +8,16 @@ namespace ERP_System_Project.Models.Config.HRConfig
     {
         public void Configure(EntityTypeBuilder<EmployeeType> builder)
         {
+            builder.HasIndex(et => et.IsDeleted)
+                   .HasFilter("[IsDeleted] = 0");
+
             builder.Property(et => et.IsActive)
                    .HasDefaultValue(true);
+
+            builder.Property(et => et.IsDeleted)
+                   .HasDefaultValue(false);
+
+            builder.HasQueryFilter(et => !et.IsDeleted);
         }
     }
 }

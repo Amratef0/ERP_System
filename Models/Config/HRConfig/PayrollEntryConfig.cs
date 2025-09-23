@@ -8,6 +8,9 @@ namespace ERP_System_Project.Models.Config.HRConfig
     {
         public void Configure(EntityTypeBuilder<PayrollEntry> builder)
         {
+            builder.HasIndex(pe => pe.IsDeleted)
+                   .HasFilter("[IsDeleted] = 0");
+
             builder.Property(pe => pe.BaseSalaryAmount)
                    .HasPrecision(15, 4)
                    .HasDefaultValue(0);
@@ -35,6 +38,27 @@ namespace ERP_System_Project.Models.Config.HRConfig
             builder.Property(pe => pe.NetAmount)
                    .HasPrecision(15, 4)
                    .HasComputedColumnSql("[BaseSalaryAmount] + [OvertimeAmount] + [BonusAmount] + [AllowanceAmount] - [DeductionAmount] - [TaxAmount]");
+
+            builder.Property(pe => pe.IsDeleted)
+                   .HasDefaultValue(false);
+
+            builder.HasQueryFilter(pe => !pe.IsDeleted);
+
+            // Configure relationships with restrict delete behavior
+            builder.HasOne(pe => pe.PayrollRun)
+                   .WithMany(pr => pr.PayrollEntries)
+                   .HasForeignKey(pe => pe.PayrollRunId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(pe => pe.Employee)
+                   .WithMany(e => e.PayrollEntries)
+                   .HasForeignKey(pe => pe.EmployeeId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(pe => pe.Currency)
+                   .WithMany(c => c.PayrollEntries)
+                   .HasForeignKey(pe => pe.CurrencyId)
+                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
