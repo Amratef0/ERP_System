@@ -14,8 +14,22 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
             builder.Property(o => o.TaxAmount).HasPrecision(15,4);
             builder.Property(o => o.ShippingAmount).HasPrecision(15,4);
             builder.Property(o => o.DiscountAmount).HasPrecision(15,4).HasDefaultValue(0);
-            builder.Property(o => o.CreatedDate).HasDefaultValue(DateTime.Now);
-            builder.Property(o => o.ModifiedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(o => o.CreatedDate).HasDefaultValueSql("GETDATE()").ValueGeneratedOnAdd();
+            builder.Property(o => o.ModifiedDate).HasDefaultValueSql("GETDATE()").ValueGeneratedOnAddOrUpdate();
+
+
+
+
+            builder.HasOne(o => o.ShippingAddress)
+                  .WithMany(a => a.OrderShippingAddresses)
+                  .HasForeignKey(o => o.ShippingAddressId)
+                  .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(o => o.BillingAddress)
+                   .WithMany(a => a.OrderBillingAddresses)
+                   .HasForeignKey(o => o.BillingAddressId)
+                   .OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }

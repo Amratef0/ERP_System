@@ -48,8 +48,8 @@ namespace ERP_System_Project.Models.CRM
         [DataType(DataType.DateTime)]
         public DateTime? ModifiedDate { get; set; }
 
-        [DataType(DataType.DateTime)]
         public bool IsActive { get; set; } = true;
+        [DataType(DataType.DateTime)]
         public DateTime? DeactivatedAt { get; set; }
 
 

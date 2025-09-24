@@ -16,6 +16,23 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
             builder.Property(p => p.CreatedDate).HasDefaultValue(DateTime.Now);
             builder.Property(p => p.ModifiedDate).HasDefaultValue(DateTime.Now);
 
+
+           builder.HasMany(p=> p.CustomerFavorites)
+                .WithOne(f=>f.Product)
+                .HasForeignKey(f=>f.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.HasMany(p => p.CustomerWishlists)
+                   .WithOne(w => w.Product)
+                   .HasForeignKey(w => w.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(p => p.CustomerReviews)
+                   .WithOne(r => r.Product)
+                   .HasForeignKey(r => r.ProductId)
+                   .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

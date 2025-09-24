@@ -28,7 +28,6 @@ namespace ERP_System_Project.Models.Config.CRMConfig
          
 
             builder.Property(c => c.ModifiedDate)
-                   .HasColumnName("modified_date")
                    .IsRequired(false);
 
 

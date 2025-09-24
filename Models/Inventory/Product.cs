@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.ECommerce;
+﻿using ERP_System_Project.Models.CRM;
+using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ValidationAttributes;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -50,12 +51,20 @@ namespace ERP_System_Project.Models.Inventory
         public UnitOfMeasure? UnitOfMeasure { get; set; }
 
 
-        public ICollection<ProductVariant> productVariants { get; set; } = new List<ProductVariant>();
+        public ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
         public ICollection<ProductInventory> Warehouses { get; set; } = new List<ProductInventory>();
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
         public ICollection<InventoryRequisitionItem> InventoryRequestedProducts { get; set; } = new List<InventoryRequisitionItem>();
         public ICollection<OrderItem> OrderedItems { get; set; } = new List<OrderItem>();
         public ICollection<OfferProduct> Offers { get; set; } = new List<OfferProduct>();
+
+
+
+
+        public ICollection < CustomerFavorite> CustomerFavorites { get; set; }= new List<CustomerFavorite>();
+        public ICollection < CustomerWishlist>  CustomerWishlists{ get; set; }= new List<CustomerWishlist>();
+        public ICollection <CustomerReview> CustomerReviews { get; set; } = new List<CustomerReview>();
+        
 
     }
 }

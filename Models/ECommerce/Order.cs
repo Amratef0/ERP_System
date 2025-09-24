@@ -50,7 +50,7 @@ namespace ERP_System_Project.Models.ECommerece
         public int? ShippingAddressId { get; set; }
         public CustomerAddress? ShippingAddress { get; set; }
 
-        [ForeignKey("ShippingAddress")]
+        [ForeignKey("BillingAddress")]
         public int BillingAddressId { get; set; }
         public CustomerAddress BillingAddress { get; set; }
 
