@@ -2,14 +2,14 @@
 {
     public static class FileExtension
     {
-        public static bool IsValidFile(this IFormFile file, List<string> validExtensions, int maximumSize = 1)
+        public static bool IsValidFile(this IFormFile file, List<string> validExtensions, int maximumSizeInMB = 1)
         {
 
             if (file == null || file.Length == 0)
                 throw new ArgumentNullException("File Cannot Be Empty");
 
-            if (file.Length > maximumSize * 1024 * 1024)
-                throw new Exception($"File size exceeds the maximum limit of {maximumSize}MB");
+            if (file.Length > maximumSizeInMB * 1024 * 1024)
+                throw new Exception($"File size exceeds the maximum limit of {maximumSizeInMB}MB");
 
             var extension = Path.GetExtension(file.FileName).ToLower();
 
