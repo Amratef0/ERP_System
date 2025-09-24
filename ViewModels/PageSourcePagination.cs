@@ -1,4 +1,4 @@
-﻿namespace ERP_System_Project.DTOs
+﻿namespace ERP_System_Project.ViewModels
 {
     public class PageSourcePagination<TEntity> where TEntity : class
     {

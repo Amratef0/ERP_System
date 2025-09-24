@@ -1,5 +1,4 @@
-﻿
-using ERP_System_Project.DTOs;
+﻿using ERP_System_Project.ViewModels;
 using System.Linq.Expressions;
 
 namespace ERP_System_Project.Repository.Interfaces
