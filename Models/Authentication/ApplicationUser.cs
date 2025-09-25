@@ -1,0 +1,13 @@
+﻿using ERP_System_Project.Models.CRM;
+using ERP_System_Project.Models.ECommerece;
+using Microsoft.AspNetCore.Identity;
+
+namespace ERP_System_Project.Models.Authentication
+{
+    public class ApplicationUser : IdentityUser
+    {
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public virtual Customer? Customer { get; set; }
+
+    }
+}

@@ -3,35 +3,31 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using ERP_System_Project.Models;
-using ERP_System_Project.Interface;
 using System.Net;
 using System.Web;
-using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Services.Interfaces;
 
 
-namespace ERP_System_Project.Controllers
+namespace ERP_System_Project.Controllers.Authentication
 {
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ERP_System_Project.Interface.IEmailSender _emailSender;
+        private readonly IEmailService _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
-        //private readonly CustomerService _customerService;
 
         public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
-        ERP_System_Project.Interface.IEmailSender emailSender)
-        //,CustomerService customerService)
+        IEmailService emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
-            //_customerService = customerService;
         }
 
         [HttpGet]
@@ -57,31 +53,50 @@ namespace ERP_System_Project.Controllers
             if (!ModelState.IsValid)
                 return View("Register", model);
 
-            var existingUser = await _userManager.FindByEmailAsync(model.Email);
-            if (existingUser != null)
+            var appuser = new ApplicationUser
             {
-                ModelState.AddModelError("", "This email is already registered.");
-                return View("Register", model);
+                UserName = model.UserName,
+                Email = model.Email,
+            };
+
+            var result = await _userManager.CreateAsync(appuser, model.Password);
+
+            if (!result.Succeeded)
+            {
+                var existingUser = await _userManager.FindByNameAsync(appuser.UserName);
+
+                if (existingUser != null && !await _userManager.IsEmailConfirmedAsync(existingUser))
+                {
+                    appuser = existingUser;
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View("Register", model);
+                }
             }
 
-            var token = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 6);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(appuser);
 
-            HttpContext.Session.SetObjectAsJson("PendingRegistration", new
-PendingRegistration
-            {
-                User = model,
-                Token = token
-            });
+            var confirmationLink = Url.Action("ConfirmEmailToken", "Account",
+                new { userId = appuser.Id, token = token }, Request.Scheme);
 
             await _emailSender.SendEmailAsync(
                 model.Email,
-                "Your verification token",
-                $"Your verification token is: <strong>{token}</strong>"
+                "Confirm your email",
+                $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>."
             );
+
+            if (!await _roleManager.RoleExistsAsync("User"))
+                await _roleManager.CreateAsync(new IdentityRole("User"));
+
+            await _userManager.AddToRoleAsync(appuser, "User");
 
             return View("RegisterConfirmation");
         }
-
 
 
         public IActionResult VerifyEmail()
@@ -89,54 +104,31 @@ PendingRegistration
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmEmailToken(string token)
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmailToken(string userId, string token)
         {
-            var pending =
-HttpContext.Session.GetObjectFromJson<PendingRegistration>("PendingRegistration");
-            if (pending == null)
+            if (userId == null || token == null)
             {
-                ModelState.AddModelError("", "No pending registration found.");
-                return View("VerifyEmail");
+                return View("Register");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return View("Register");
             }
 
 
-            if (pending.Token != token)
-            {
-                ModelState.AddModelError("", "Invalid token or email.");
-                return View("VerifyEmail");
-            }
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
-            var userModel = pending.User as RegisterViewModel;
-            var appuser = new ApplicationUser
-            {
-                UserName = userModel.UserName,
-                Email = userModel.Email,
-            };
-
-            var result = await _userManager.CreateAsync(appuser,
-userModel.Password);
             if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError("", error.Description);
-
-                return View("VerifyEmail");
+                return View("Register");
             }
-
-            if (!await _roleManager.RoleExistsAsync("User"))
-                await _roleManager.CreateAsync(new IdentityRole("User"));
-
-            await _userManager.AddToRoleAsync(appuser, "User");
-
-            HttpContext.Session.Remove("PendingRegistration");
 
             return View("ConfirmEmailSuccess");
         }
-
-
-
 
 
         [HttpPost]
@@ -179,13 +171,13 @@ userModel.Password);
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login", "Account");
-        } 
+        }
         [HttpGet]
         public IActionResult ForgotPassword()
         {
             return View();
-        } 
- 
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaveForgotPassword(ForgotPasswordViewModel
 model)
@@ -202,11 +194,11 @@ model)
                 var token = await
 _userManager.GeneratePasswordResetTokenAsync(user);
 
-                await _emailSender.SendEmailAsync(model.Email, "Password Reset Token", 
+                await _emailSender.SendEmailAsync(model.Email, "Password Reset Token",
                     $"Your reset token is: {token}");
 
                 TempData["Email"] = model.Email;
-                TempData["GeneratedToken"] = token; 
+                TempData["GeneratedToken"] = token;
 
                 return RedirectToAction("EnterToken");
             }
@@ -231,11 +223,11 @@ _userManager.GeneratePasswordResetTokenAsync(user);
 
                 if (email == null || token == null)
                 {
-                    ModelState.AddModelError("", "Token expired. Please try again."); 
+                    ModelState.AddModelError("", "Token expired. Please try again.");
                     return View(model);
                 }
 
-                if (model.Token == token) 
+                if (model.Token == token)
                 {
                     TempData["UserEmail"] = email;
                     TempData["ResetToken"] = token;
@@ -290,8 +282,8 @@ model)
 model.NewPassword);
             if (result.Succeeded)
             {
-                TempData["SuccessMessage"] = "✅ Your password has been successfully reset!"; 
-                return RedirectToAction("Login", "Account"); 
+                TempData["SuccessMessage"] = "✅ Your password has been successfully reset!";
+                return RedirectToAction("Login", "Account");
             }
 
             foreach (var error in result.Errors)
