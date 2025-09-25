@@ -7,6 +7,7 @@ using ERP_System_Project.Models;
 using ERP_System_Project.Interface;
 using System.Net;
 using System.Web;
+using ERP_System_Project.Services.Implementation.CRM;
 
 
 namespace ERP_System_Project.Controllers
@@ -17,17 +18,20 @@ namespace ERP_System_Project.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ERP_System_Project.Interface.IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
+        //private readonly CustomerService _customerService;
 
         public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         ERP_System_Project.Interface.IEmailSender emailSender)
+        //,CustomerService customerService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
+            //_customerService = customerService;
         }
 
         [HttpGet]
@@ -158,7 +162,7 @@ userModel.Password);
                     if (found)
                     {
                         await _signInManager.SignInAsync(appuser, UserViewModel.RememberMe);
-                        return RedirectToAction("Index", "Main");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
                 ModelState.AddModelError("", "User Or Password Wrong");

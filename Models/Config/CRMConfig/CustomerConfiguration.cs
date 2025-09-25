@@ -64,6 +64,10 @@ namespace ERP_System_Project.Models.Config.CRMConfig
 
             //shopping cart and payment methods will be added later
 
+            builder.HasMany(c=>c.PaymentMethods)
+                .WithOne(p => p.Customer)
+                .HasForeignKey(p => p.CustomerId)
+                .OnDelete( DeleteBehavior.NoAction);
 
 
 

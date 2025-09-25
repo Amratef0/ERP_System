@@ -80,7 +80,7 @@ var app = builder.Build();
 // Configure HTTP pipeline
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Main/Error");
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
@@ -97,6 +97,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Main}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
