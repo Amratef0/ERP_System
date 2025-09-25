@@ -1,6 +1,6 @@
 using ERP_System_Project.Extensions;
-using ERP_System_Project.Interface;
 using ERP_System_Project.Models;
+using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
@@ -60,7 +60,7 @@ builder.Services.AddSession(options =>
 
 // SMTP Email
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmailService, EmailSender>();
 
 // Repositories and UnitOfWork
 builder.Services.AddDataSevices();
@@ -74,13 +74,12 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
-
 var app = builder.Build();
 
 // Configure HTTP pipeline
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Main/Error");
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
@@ -97,6 +96,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Main}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
