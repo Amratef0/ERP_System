@@ -1,8 +1,19 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+<body>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (!User.Identity.IsAuthenticated)
+{
+    <a class="btn btn-outline-primary me-2" href="@Url.Action("Login",
+"Account")">Login</a>
+    <a class="btn btn-primary" href="@Url.Action("Register",
+"Account")">Register</a>
+}
+else
+{
+    <form method="post" asp-controller="Account" asp-action="SignOut">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
+
+}
+ 
+</body>
