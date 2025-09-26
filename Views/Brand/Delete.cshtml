@@ -1,0 +1,38 @@
+﻿@using ERP_System_Project.ViewModels.Inventory
+@model BrandVM
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<form method="post" asp-action="Delete">
+    <input asp-for="Id" hidden />
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Delete Brand</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" disabled class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" disabled class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="LogoURL"></label>
+            <input asp-for="LogoURL" disabled class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="WebsiteURL"></label>
+            <input asp-for="WebsiteURL" disabled class="form-control" />
+        </div>
+        <br />
+        <hr />
+        <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+        <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary" style="width:150px">
+            back to Brands
+        </a>
+    </div>
+</form>
+

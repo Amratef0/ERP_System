@@ -5,8 +5,10 @@ using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
 using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +84,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Register CRM services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+// Register Inventory services
+builder.Services.AddScoped<IBrandService, BrandService>();
 
 
 // Add AutoMapper
