@@ -1,6 +1,6 @@
 using ERP_System_Project.Extensions;
-using ERP_System_Project.Interface;
 using ERP_System_Project.Models;
+using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
@@ -15,14 +15,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Controllers with Views
 builder.Services.AddControllersWithViews();
 
 // Add DbContext
 builder.Services.AddDbContext<Erpdbcontext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-// amr Program.cs
+// Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
@@ -30,12 +30,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<Erpdbcontext>()
     .AddDefaultTokenProviders();
 
-
+// Token lifespan
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     options.TokenLifespan = TimeSpan.FromHours(2);
 });
 
+// Antiforgery
 builder.Services.AddAntiforgery(options =>
 {
     options.Cookie.Name = "AntiForgeryCookie";
@@ -44,15 +45,14 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.HttpOnly = true;
 });
 
-
-
-
+// Cookie Policy
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.None;
     options.Secure = CookieSecurePolicy.Always;
 });
 
+// Session
 builder.Services.AddSession(options =>
 {
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
@@ -60,43 +60,25 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
 });
 
-
-
+// SMTP Email
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IEmailService, EmailSender>();
 
-
-
-
-//--------------
-
-
-
-
-// add Repositories and UnitOfWork
+// Repositories and UnitOfWork
 builder.Services.AddDataSevices();
-
-builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>)); // generic repo
-builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>)); // generic Service 
-
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
-// Register CRM services
+// CRM Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
-// Register Inventory services
-builder.Services.AddScoped<IBrandService, BrandService>();
-
-
-// Add AutoMapper
+// AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
-// add Email Service and SMTP
-builder.Services.AddEmailService(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure HTTP pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -107,7 +89,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 
 app.UseCookiePolicy();
 app.UseSession();
