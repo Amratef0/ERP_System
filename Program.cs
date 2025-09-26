@@ -73,6 +73,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // CRM Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
+// Inventory Services
+builder.Services.AddScoped<IBrandService, BrandService>();
+
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
