@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Services.Interfaces;
+using ERP_System_Project.Services.Interfaces.CRM;
 
 
 namespace ERP_System_Project.Controllers.Authentication
@@ -16,18 +17,21 @@ namespace ERP_System_Project.Controllers.Authentication
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailSender;
+        private readonly ICustomerService _customerService;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
-        IEmailService emailSender)
+        IEmailService emailSender,
+        ICustomerService  customerService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
+            _customerService = customerService;
         }
 
         [HttpGet]
@@ -55,9 +59,14 @@ namespace ERP_System_Project.Controllers.Authentication
 
             var appuser = new ApplicationUser
             {
-                UserName = model.UserName,
+                FirstName = model.FirstName,
+                LastName= model.LastName,
                 Email = model.Email,
+                PhoneNumber= model.PhoneNumber,
+                DateOfBirth = model.DateOfBirth,
+                CreatedAt= DateTime.Now,
             };
+
 
             var result = await _userManager.CreateAsync(appuser, model.Password);
 
@@ -78,7 +87,7 @@ namespace ERP_System_Project.Controllers.Authentication
                     return View("Register", model);
                 }
             }
-
+           await _customerService.CreateCustomerByApplicationUserAsync(appuser, model);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(appuser);
 
             var confirmationLink = Url.Action("ConfirmEmailToken", "Account",

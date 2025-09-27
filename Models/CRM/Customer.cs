@@ -12,10 +12,7 @@ namespace ERP_System_Project.Models.CRM
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        [MinLength(3)]
-        public string CustomerCode { get; set; }
+       
 
         [Required(ErrorMessage = "Enter First Name")]
         [MaxLength(50)]
@@ -37,7 +34,7 @@ namespace ERP_System_Project.Models.CRM
         public string PhoneNumber { get; set; }
 
         [Required]
-        [DateOfBirthValidation(18)]
+        //[DateOfBirthValidation(18)]
         [DataType(DataType.Date)]
         public DateOnly DateOfBirth { get; set; }
         [DataType(DataType.DateTime)]
