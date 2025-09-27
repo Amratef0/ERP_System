@@ -6,8 +6,8 @@ namespace ERP_System_Project.Services.Implementation
 {
     public class GenericService<T> : IGenericService<T> where T : class
     {
-        private readonly IUnitOfWork _uow;
-        private readonly IRepository<T> _repository;
+        protected readonly IUnitOfWork _uow;
+        protected readonly IRepository<T> _repository;
         public GenericService(IUnitOfWork uow)
         {
             _uow = uow;
