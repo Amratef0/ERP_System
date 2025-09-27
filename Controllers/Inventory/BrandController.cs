@@ -15,11 +15,10 @@ namespace ERP_System_Project.Controllers.Inventory
             _brandService = brandService;
             _mapper = mapper;
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageNumber, int pageSize, string? searchByName = null)
         {
-            var brands = await _brandService.GetAllAsync();
-            var brandsVM = _mapper.Map<List<BrandVM>>(brands);
-            return View(brandsVM);
+            var brands = await _brandService.GetBrandsPaginated(pageNumber,pageSize,searchByName);
+            return View(brands);
         }
 
         public async Task<IActionResult> New()
