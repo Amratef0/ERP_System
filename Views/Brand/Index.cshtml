@@ -72,7 +72,7 @@
                    asp-route-pageNumber="@(Model.PageNumber - 1)"
                    asp-route-pageSize="5"
                    asp-route-searchByName="@currentSearch"
-                   class="btn btn-sm btn-primary fw-bold px-3">&lt;-</a>
+                   class="btn btn-sm btn-primary fw-bold px-3"><i class="bi bi-arrow-left"></i></a>
             }
             @if (Model.PageNumber < Model.TotalPages)
             {
@@ -81,7 +81,7 @@
                    asp-route-pageNumber="@(Model.PageNumber + 1)"
                    asp-route-pageSize="5"
                    asp-route-searchByName="@currentSearch"
-                   class="btn btn-sm btn-primary fw-bold px-3">-&gt;</a>
+                   class="btn btn-sm btn-primary fw-bold px-3"><i class="bi bi-arrow-right"></i></a>
             }
         }
     </div>
