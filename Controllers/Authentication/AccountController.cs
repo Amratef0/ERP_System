@@ -302,5 +302,64 @@ model.NewPassword);
 
             return View("ResetPassword", model);
         }
+        [HttpGet]
+public IActionResult GoogleLogin(string returnUrl = "/")
+{
+    var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
+    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+    return Challenge(properties, "Google");
+}
+
+
+
+
+
+[HttpGet]
+public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
+{
+    var info = await _signInManager.GetExternalLoginInfoAsync();
+    if (info == null)
+        return RedirectToAction("Login");
+
+    // محاولة تسجيل دخول باستخدام بيانات خارجية
+    var signInResult = await _signInManager.ExternalLoginSignInAsync(
+        info.LoginProvider,
+        info.ProviderKey,
+        isPersistent: false);
+
+    if (!signInResult.Succeeded)
+    {
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        if (email != null)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email
+                };
+                await _userManager.CreateAsync(user);
+
+                if (!await _roleManager.RoleExistsAsync("User"))
+                    await _roleManager.CreateAsync(new IdentityRole("User"));
+
+                await _userManager.AddToRoleAsync(user, "User");
+            }
+
+            var existingLogins = await _userManager.GetLoginsAsync(user);
+            if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+            {
+                await _userManager.AddLoginAsync(user, info);
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+        }
+    }
+
+    return LocalRedirect(returnUrl);
+}
     }
 }
+
