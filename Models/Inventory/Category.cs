@@ -15,13 +15,8 @@ namespace ERP_System_Project.Models.Inventory
 
         [Required(ErrorMessage = "Category Description Is Required")]
         public string Description { get; set;} = null!;
-        public string ImageURL { get; set; }
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-
-        [ForeignKey("ParentCategory")]
-        public int? ParentCategoryId { get; set; }
-        public Category? ParentCategory { get; set; }
 
 
         public ICollection<Product> Products { get; set; } = new List<Product>();

@@ -54,6 +54,8 @@ namespace ERP_System_Project.Controllers.Inventory
             if (ModelState.IsValid)
             {
                 var brand = await _brandService.GetByIdAsync(brandVM.Id);
+                // update using mapper
+                _mapper.Map(brandVM, brand); 
                 await _brandService.UpdateAsync(brand);
                 return RedirectToAction("Index");
             }

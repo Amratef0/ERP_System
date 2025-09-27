@@ -4,8 +4,8 @@ using ERP_System_Project.ViewModels.Inventory;
 
 namespace ERP_System_Project.Services.Interfaces.Inventory
 {
-    public interface IBrandService : IGenericService<Brand>
+    public interface ICategoryService : IGenericService<Category>
     {
-        Task<PageSourcePagination<BrandVM>> GetBrandsPaginated(int pageNumber, int pageSize, string? searchByName = null);
+        Task<PageSourcePagination<CategoryVM>> GetCategoriesPaginated(int pageNumber, int pageSize, string? searchByName = null);
     }
 }

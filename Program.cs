@@ -65,7 +65,7 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpS
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
 // Repositories and UnitOfWork
-builder.Services.AddDataSevices();
+//builder.Services.AddDataSevices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -75,6 +75,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 // Inventory Services
 builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
