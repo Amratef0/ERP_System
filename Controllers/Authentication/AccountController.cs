@@ -360,6 +360,55 @@ public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
 
     return LocalRedirect(returnUrl);
 }
+[HttpGet]
+public IActionResult FacebookLogin(string returnUrl = "/")
+{
+    var redirectUrl = Url.Action("FacebookResponse", "Account", new { ReturnUrl = returnUrl });
+    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+    return Challenge(properties, "Facebook");
+}
+
+[HttpGet]
+public async Task<IActionResult> FacebookResponse(string returnUrl = "/")
+{
+    var info = await _signInManager.GetExternalLoginInfoAsync();
+    if (info == null)
+        return RedirectToAction("Login");
+
+    var signInResult = await _signInManager.ExternalLoginSignInAsync(
+        info.LoginProvider,
+        info.ProviderKey,
+        isPersistent: false);
+
+    if (!signInResult.Succeeded)
+    {
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        if (email != null)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email
+                };
+                await _userManager.CreateAsync(user);
+
+                if (!await _roleManager.RoleExistsAsync("User"))
+                    await _roleManager.CreateAsync(new IdentityRole("User"));
+
+                await _userManager.AddToRoleAsync(user, "User");
+            }
+
+            await _userManager.AddLoginAsync(user, info);
+            await _signInManager.SignInAsync(user, isPersistent: false);
+        }
+    }
+
+    return LocalRedirect(returnUrl);
+}
     }
 }
+
 
