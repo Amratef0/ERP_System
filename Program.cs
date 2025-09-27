@@ -5,8 +5,10 @@ using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
 using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -63,13 +65,17 @@ builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpS
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
 // Repositories and UnitOfWork
-builder.Services.AddDataSevices();
+//builder.Services.AddDataSevices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // CRM Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+
+// Inventory Services
+builder.Services.AddScoped<IBrandService, BrandService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

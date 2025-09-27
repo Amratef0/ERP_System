@@ -25,8 +25,6 @@ namespace ERP_System_Project.Services.Implementation
             catch (Exception ex)
             {
                 return false;
-
-
             }
         }
 

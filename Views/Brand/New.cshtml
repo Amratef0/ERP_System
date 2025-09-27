@@ -1,0 +1,48 @@
+﻿@using ERP_System_Project.ViewModels.Inventory
+@model BrandVM
+@{
+    ViewData["Title"] = "New";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Brand</h2>
+            <hr />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LogoURL"></label>
+            <input asp-for="LogoURL" class="form-control" />
+            <span asp-validation-for="LogoURL" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="WebsiteURL"></label>
+            <input asp-for="WebsiteURL" class="form-control" />
+            <span asp-validation-for="WebsiteURL" class="text-danger"></span>
+        </div>
+
+        <br />
+        <hr />
+        <button type="submit" class="btn btn-success" style="width:150px">Add</button>
+        <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary" style="width:150px">
+            back to Brands
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,38 @@
+﻿@using ERP_System_Project.ViewModels.Inventory
+@model CategoryVM
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<form asp-action="Edit" asp-controller="Category" method="post">
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Edit Category</h2>
+            <hr />
+        </div>
+        @* <input asp-for="Id" hidden class="form-control"> *@
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <br />
+        <hr />
+        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
+        <a asp-action="Index" asp-controller="Category" class="btn btn-secondary" style="width:160px">
+            back to Categories
+        </a>
+    </div>
+</form>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

@@ -73,7 +73,7 @@ namespace ERP_System_Project.Repository.Implementation
             params Expression<Func<TEntity, object>>[] Includes) where TResult : class
         {
             if (pageNumber < 1) pageNumber = 1;
-            if (pageSize < 10) pageSize = 10;
+            if (pageSize < 5) pageSize = 5;
 
             IQueryable<TEntity> query = _dbSet;
 
@@ -87,14 +87,16 @@ namespace ERP_System_Project.Repository.Implementation
             if (orderBy != null)
                 query = orderBy(query);
 
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
             query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
             var result = query.Select(selector);
 
 
-            var totalRecords = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+            //var totalRecords = await query.CountAsync();
+            //var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
             return new PageSourcePagination<TResult>
             {
