@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ERP_System_Project.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class LeaveRequestStatusCode
+    public class LeaveRequestStatusCode : ISoftDeletable
     {
         [Key]
         public int Id { get; set; }
@@ -26,6 +27,6 @@ namespace ERP_System_Project.Models.HR
         public DateOnly? DeletedAt { get; set; }
 
         // Navigation properties
-        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+        public virtual ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
     }
 }

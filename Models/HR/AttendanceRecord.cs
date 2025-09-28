@@ -1,10 +1,11 @@
 ﻿using ERP_System_Project.Models.ValidationAttributes;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class AttendanceRecord
+    public class AttendanceRecord : ISoftDeletable
     {
         [Key]
         [Display(Name = "Record ID")]
@@ -58,7 +59,7 @@ namespace ERP_System_Project.Models.HR
         public int EmployeeId { get; set; }
 
         [Display(Name = "Employee")]
-        public Employee Employee { get; set; }
+        public virtual Employee Employee { get; set; }
 
         [Required(ErrorMessage = "Status code is required.")]
         [ForeignKey("StatusCode")]
@@ -66,6 +67,6 @@ namespace ERP_System_Project.Models.HR
         public int StatusCodeId { get; set; }
 
         [Display(Name = "Attendance Status")]
-        public AttendanceStatusCode StatusCode { get; set; }
+        public virtual AttendanceStatusCode StatusCode { get; set; }
     }
 }

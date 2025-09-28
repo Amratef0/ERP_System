@@ -81,9 +81,9 @@ namespace ERP_System_Project.Models
         public DbSet<PayrollEntry> PayrollEntries { get; set; }
         public DbSet<PayrollRun> PayrollRuns { get; set; }
         public DbSet<PublicHoliday> PublicHolidays { get; set; }
+        public DbSet<WorkSchedule> WorkSchedules { get; set; }
         public DbSet<WorkScheduleDay> WorkScheduleDays { get; set; }
         #endregion
-
 
         #region Purchases
         public DbSet<PaymentTerm> PaymentTerms { get; set; }
