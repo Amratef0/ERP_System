@@ -1,4 +1,4 @@
-﻿@model CategoryVM
+﻿@model CustomerTypeVM
 @{
     ViewData["Title"] = "Delete";
 }
@@ -7,7 +7,7 @@
     <input asp-for="Id" hidden />
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary">Delete Category</h2>
+            <h2 class="text-primary">Delete Brand</h2>
             <hr />
         </div>
         <div class="mb-3">
@@ -18,11 +18,12 @@
             <label asp-for="Description"></label>
             <input asp-for="Description" disabled class="form-control" />
         </div>
+        
         <br />
         <hr />
         <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
-        <a asp-action="Index" asp-controller="Category" class="btn btn-secondary" style="width:160px">
-            back to Categories
+        <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary" style="width:150px">
+            back to Brands
         </a>
     </div>
 </form>

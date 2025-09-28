@@ -1,16 +1,14 @@
-﻿@model CategoryVM
+﻿@model CustomerTypeVM
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "New";
 }
 
-<form asp-action="Edit" asp-controller="Category" method="post">
+<form method="post" enctype="multipart/form-data">
     <div class="border p-3 mt-4">
         <div class="row pb-2">
-            <h2 class="text-primary">Edit Category</h2>
+            <h2 class="text-primary">Add New Brand</h2>
             <hr />
         </div>
-        @* <input asp-for="Id" hidden class="form-control"> *@
-        <input type="hidden" asp-for="Id" />
         <div class="mb-3">
             <label asp-for="Name"></label>
             <input asp-for="Name" class="form-control" />
@@ -25,13 +23,13 @@
 
         <br />
         <hr />
-        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
-        <a asp-action="Index" asp-controller="Category" class="btn btn-secondary" style="width:160px">
-            back to Categories
+        <button type="submit" class="btn btn-success" style="width:150px">Add</button>
+        <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary" style="width:150px">
+            back to Brands
         </a>
     </div>
 </form>
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }
