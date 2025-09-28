@@ -1,0 +1,71 @@
+﻿@model WorkScheduleDayVM
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>WorkScheduleDay</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group d-none">
+                <label asp-for="@Model.Id" class="control-label"></label>
+                <input asp-for="@Model.Id" class="form-control" readonly />
+                <span asp-validation-for="@Model.Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Day" class="control-label"></label>
+                <input asp-for="@Model.Day" class="form-control" readonly />
+                <span asp-validation-for="@Model.Day" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="@Model.IsWorkDay" /> @Html.DisplayNameFor(model => model.IsWorkDay)
+                </label>
+            </div>
+            <div class="form-group d-none">
+                <label asp-for=@Model.WorkScheduleId" class="control-label"></label>
+                <input asp-for="@Model.WorkScheduleId" class="form-control" readonly />
+                <span asp-validation-for="@Model.WorkScheduleId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.WorkStartTime" class="control-label"></label>
+                <input type="time" asp-for="@Model.WorkStartTime" class="form-control" />
+                <span asp-validation-for="@Model.WorkStartTime" class="text-danger"></span>
+                <button id="clearStartTimeBtn" class="btn btn-outline-secondary" type="button">Clear</button>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="@Model.WorkEndTime" class="control-label"></label>
+                <input type="time" asp-for="@Model.WorkEndTime" class="form-control" />
+                <span asp-validation-for="@Model.WorkEndTime" class="text-danger"></span>
+                <button id="clearEndTimeBtn" class="btn btn-outline-secondary" type="button">Clear</button>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('clearStartTimeBtn').addEventListener('click', function() {
+            document.getElementById('WorkStartTime').value = '';
+        });
+
+        document.getElementById('clearEndTimeBtn').addEventListener('click', function() {
+            document.getElementById('WorkEndTime').value = '';
+        });
+    </script>
+}

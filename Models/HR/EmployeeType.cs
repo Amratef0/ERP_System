@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ERP_System_Project.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class EmployeeType
+    public class EmployeeType : ISoftDeletable
     {
         [Key]
         [Display(Name = "Employee Type ID")]
@@ -29,6 +30,6 @@ namespace ERP_System_Project.Models.HR
 
         // Navigation Properties
         [Display(Name = "Employees")]
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

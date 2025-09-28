@@ -1,12 +1,13 @@
 ﻿using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Models.ValidationAttributes;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class Employee
+    public class Employee : ISoftDeletable
     {
         [Key]
         [Display(Name = "Employee ID")]
@@ -118,57 +119,57 @@ namespace ERP_System_Project.Models.HR
         [ForeignKey("Branch")]
         [Display(Name = "Branch")]
         public int BranchId { get; set; }
-        public Branch Branch { get; set; }
+        public virtual Branch Branch { get; set; }
 
         [ForeignKey("Type")]
         [Display(Name = "Employee Type")]
         public int TypeId { get; set; }
-        public EmployeeType Type { get; set; }
+        public virtual EmployeeType Type { get; set; }
 
         [ForeignKey("JobTitle")]
         [Display(Name = "Job Title")]
         public int JobTitleId { get; set; }
-        public JobTitle JobTitle { get; set; }
+        public virtual JobTitle JobTitle { get; set; }
 
         [ForeignKey("Department")]
         [Display(Name = "Department")]
         public int DepartmentId { get; set; }
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
 
         [ForeignKey("Manager")]
         [Display(Name = "Manager")]
         public int? ManagerId { get; set; }
-        public Employee? Manager { get; set; }
+        public virtual Employee? Manager { get; set; }
 
         [ForeignKey("SalaryCurrence")]
         [Display(Name = "Salary Currency")]
         public int? SalaryCurrencyId { get; set; }
-        public Currency? SalaryCurrency { get; set; }
+        public virtual Currency? SalaryCurrency { get; set; }
 
         [ForeignKey("Address")]
         [Display(Name = "Address")]
         public int? AddressId { get; set; }
-        public Address? Address { get; set; }
+        public virtual Address? Address { get; set; }
 
         [Display(Name = "Inventory Transactions")]
-        public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
+        public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
 
         [Display(Name = "Requested Requisitions")]
-        public ICollection<InventoryRequisition> RequestedRequisitions { get; set; } = new List<InventoryRequisition>();
+        public virtual ICollection<InventoryRequisition> RequestedRequisitions { get; set; } = new List<InventoryRequisition>();
 
         [Display(Name = "Approved Requisitions")]
-        public ICollection<InventoryRequisition> ApprovedRequisitions { get; set; } = new List<InventoryRequisition>();
+        public virtual ICollection<InventoryRequisition> ApprovedRequisitions { get; set; } = new List<InventoryRequisition>();
 
         [Display(Name = "Payroll Entries")]
-        public ICollection<PayrollEntry> PayrollEntries { get; set; } = new List<PayrollEntry>();
+        public virtual ICollection<PayrollEntry> PayrollEntries { get; set; } = new List<PayrollEntry>();
 
         [Display(Name = "Leave Requests")]
-        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+        public virtual ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
 
         [Display(Name = "Approved Team Leave Requests")]
-        public ICollection<LeaveRequest> ApprovedTeamLeaveRequests { get; set; } = new List<LeaveRequest>();
+        public virtual ICollection<LeaveRequest> ApprovedTeamLeaveRequests { get; set; } = new List<LeaveRequest>();
 
         [Display(Name = "Employee Leave Balances")]
-        public ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; } = new List<EmployeeLeaveBalance>();
+        public virtual ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; } = new List<EmployeeLeaveBalance>();
     }
 }

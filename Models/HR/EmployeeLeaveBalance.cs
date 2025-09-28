@@ -1,10 +1,11 @@
 ﻿using ERP_System_Project.Models.ValidationAttributes;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class EmployeeLeaveBalance
+    public class EmployeeLeaveBalance : ISoftDeletable
     {
         [Key]
         [Display(Name = "Leave Balance ID")]
@@ -37,12 +38,12 @@ namespace ERP_System_Project.Models.HR
         [ForeignKey("Employee")]
         [Display(Name = "Employee")]
         public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public virtual Employee Employee { get; set; }
 
         [Required(ErrorMessage = "Leave type is required.")]
         [ForeignKey("LeaveType")]
         [Display(Name = "Leave Type")]
         public int LeaveTypeId { get; set; }
-        public LeaveType LeaveType { get; set; }
+        public virtual LeaveType LeaveType { get; set; }
     }
 }

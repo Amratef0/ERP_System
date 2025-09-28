@@ -5,11 +5,16 @@ using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
 using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
+using ERP_System_Project.Validators.HR;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +40,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    options.DefaultChallengeScheme = "Google"; 
+    options.DefaultChallengeScheme = "Google";
 })
 .AddGoogle("Google", options =>
 {
@@ -81,6 +86,11 @@ builder.Services.AddSession(options =>
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
+// Validators Service
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
+
 // Repositories and UnitOfWork
 //builder.Services.AddDataSevices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -93,6 +103,10 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 // Inventory Services
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+// HR Services
+builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
+builder.Services.AddScoped<IWorkScheduleDayService, WorkScheduleDayService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

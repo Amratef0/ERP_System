@@ -1,10 +1,10 @@
-﻿using ERP_System_Project.Models.Interfaces;
+﻿using ERP_System_Project.Models.HR;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ERP_System_Project.Models.HR
+namespace ERP_System_Project.ViewModels.HR
 {
-    public class WorkScheduleDay
+    public class WorkScheduleDayVM
     {
         [Key]
         public int Id { get; set; }
@@ -22,8 +22,7 @@ namespace ERP_System_Project.Models.HR
         public TimeOnly? WorkEndTime { get; set; }
 
         // Navigation Properties
-        [ForeignKey("WorkSchedule")]
+        [Required]
         public int WorkScheduleId { get; set; }
-        public virtual WorkSchedule WorkSchedule { get; set; }
     }
 }

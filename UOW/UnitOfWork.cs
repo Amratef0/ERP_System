@@ -76,6 +76,7 @@ namespace ERP_System_Project.UOW
         public IRepository<PayrollEntry> PayrollEntries { get; }
         public IRepository<PayrollRun> PayrollRuns { get; }
         public IRepository<PublicHoliday> PublicHolidays { get; }
+        public IRepository<WorkSchedule> WorkSchedules { get; set; }
         public IRepository<WorkScheduleDay> WorkScheduleDays { get; }
         #endregion
 
@@ -138,6 +139,7 @@ namespace ERP_System_Project.UOW
             PayrollEntries = new Repository<PayrollEntry>(_db);
             PayrollRuns = new Repository<PayrollRun>(_db);
             PublicHolidays = new Repository<PublicHoliday>(_db);
+            WorkSchedules = new Repository<WorkSchedule>(_db);
             WorkScheduleDays = new Repository<WorkScheduleDay>(_db);
         }
 

@@ -1,0 +1,54 @@
+﻿@model IEnumerable<WorkScheduleDay>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Day)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsWorkDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkStartTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WorkEndTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Day)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsWorkDay)
+                </td>
+                <td>
+                    @Html.TextBoxFor(modelItem => item.WorkStartTime,
+                                    new { type = "time", @readonly = "readonly", @class = "form-control" })
+                </td>
+                <td>
+                    @Html.TextBoxFor(modelItem => item.WorkEndTime,
+                                    new { type = "time", @readonly = "readonly", @class = "form-control" })
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

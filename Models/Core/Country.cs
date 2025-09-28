@@ -26,10 +26,10 @@ namespace ERP_System_Project.Models.Core
         public DateOnly? DeletedAt { get; set; }
 
         // Navigation Properties
-        public ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
         [Display(Name = "Public Holidays")]
-        public ICollection<PublicHoliday> PublicHolidays { get; set; } = new List<PublicHoliday>();
+        public virtual ICollection<PublicHoliday> PublicHolidays { get; set; } = new List<PublicHoliday>();
 
     }
 }

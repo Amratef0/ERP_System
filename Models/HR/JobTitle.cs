@@ -1,10 +1,11 @@
 ﻿using ERP_System_Project.Models.ValidationAttributes;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class JobTitle : IValidatableObject
+    public class JobTitle : IValidatableObject, ISoftDeletable
     {
         [Key]
         [Display(Name = "Job Title ID")]
@@ -48,7 +49,7 @@ namespace ERP_System_Project.Models.HR
 
         // Navigation Properties
         [Display(Name = "Employees")]
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

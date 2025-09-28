@@ -1,10 +1,11 @@
 ﻿using ERP_System_Project.Models.ValidationAttributes;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class LeaveRequest : IValidatableObject
+    public class LeaveRequest : IValidatableObject, ISoftDeletable
     {
         [Key]
         public int Id { get; set; }
@@ -44,24 +45,24 @@ namespace ERP_System_Project.Models.HR
         [ForeignKey("Employee")]
         [Display(Name = "Employee")]
         public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public virtual Employee Employee { get; set; }
 
         [Required(ErrorMessage = "Leave Type is required.")]
         [ForeignKey("LeaveType")]
         [Display(Name = "Leave Type")]
         public int LeaveTypeId { get; set; }
-        public LeaveType LeaveType { get; set; }
+        public virtual LeaveType LeaveType { get; set; }
 
         [Required(ErrorMessage = "Status is required.")]
         [ForeignKey("StatusCode")]
         [Display(Name = "Status")]
         public int StatusCodeId { get; set; }
-        public LeaveRequestStatusCode StatusCode { get; set; }
+        public virtual LeaveRequestStatusCode StatusCode { get; set; }
 
         [ForeignKey("ApprovedBy")]
         [Display(Name = "Approved By")]
         public int? ApprovedById { get; set; }
-        public Employee? ApprovedBy { get; set; }
+        public virtual Employee? ApprovedBy { get; set; }
 
         // Custom validation
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

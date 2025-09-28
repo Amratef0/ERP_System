@@ -1,11 +1,12 @@
 ﻿using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.ValidationAttributes;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class PayrollEntry
+    public class PayrollEntry : ISoftDeletable
     {
         [Key]
         [Display(Name = "Payroll Entry ID")]
@@ -68,18 +69,18 @@ namespace ERP_System_Project.Models.HR
         [ForeignKey("PayrollRun")]
         [Display(Name = "Payroll Run")]
         public int PayrollRunId { get; set; }
-        public PayrollRun PayrollRun { get; set; }
+        public virtual PayrollRun PayrollRun { get; set; }
 
         [Required(ErrorMessage = "Employee is required.")]
         [ForeignKey("Employee")]
         [Display(Name = "Employee")]
         public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public virtual Employee Employee { get; set; }
 
         [Required(ErrorMessage = "Currency is required.")]
         [ForeignKey("Currency")]
         [Display(Name = "Currency")]
         public int CurrencyId { get; set; }
-        public Currency Currency { get; set; }
+        public virtual Currency Currency { get; set; }
     }
 }
