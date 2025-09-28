@@ -37,11 +37,12 @@ namespace ERP_System_Project.Repository.Interfaces
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(int id);
+        void SoftDelete(int id);
         #endregion
 
         #region Count
         Task<int> Count();
-        Task<int> Count(Expression<Func<TEntity,bool>> filter);
+        Task<int> Count(Expression<Func<TEntity, bool>> filter);
         #endregion
 
         #region Existance

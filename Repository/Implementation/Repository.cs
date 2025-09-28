@@ -1,8 +1,10 @@
 ﻿using ERP_System_Project.Models;
+using ERP_System_Project.Models.Interfaces;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ERP_System_Project.Repository.Implementation
 {
@@ -121,6 +123,17 @@ namespace ERP_System_Project.Repository.Implementation
             if (entity != null)
                 _dbSet.Remove(entity);
         }
+
+        public void SoftDelete(int id)
+        {
+            var entity = _dbSet.Find(id);
+            if (entity != null && entity is ISoftDeletable deletableEntity)
+            {
+                deletableEntity.IsDeleted = true;
+                deletableEntity.DeletedAt = DateOnly.FromDateTime(DateTime.Now);
+                _dbSet.Update(entity);
+            }
+        }
         #endregion
 
         #region Count
@@ -137,7 +150,7 @@ namespace ERP_System_Project.Repository.Implementation
 
         public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? filter = null)
         {
-            if(filter != null)
+            if (filter != null)
                 return await _dbSet.AnyAsync(filter);
             return await _dbSet.AnyAsync();
         }

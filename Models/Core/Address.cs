@@ -44,15 +44,15 @@ namespace ERP_System_Project.Models.Core
         [ForeignKey("Country")]
         [Required(ErrorMessage = "Country is required")]
         public int CountryId { get; set; }
-        public Country Country { get; set; }
+        public virtual Country Country { get; set; }
 
         [Display(Name = "Branches with this Address")]
-        public ICollection<Branch> Branches { get; set; } = new List<Branch>();
+        public virtual ICollection<Branch> Branches { get; set; } = new List<Branch>();
 
         [Display(Name = "Warehouses with this Address")]
-        public ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
+        public virtual ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
 
         [Display(Name = "Employees with this Address")]
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

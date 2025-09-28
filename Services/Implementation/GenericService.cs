@@ -44,7 +44,7 @@ namespace ERP_System_Project.Services.Implementation
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var entity =  await _repository.GetByIdAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return false;
 
             _repository.Delete(id);
@@ -60,10 +60,9 @@ namespace ERP_System_Project.Services.Implementation
 
         public virtual async Task<T?> GetByIdAsync(int id)
         {
-           return await _repository.GetByIdAsync(id);
-            
+            return await _repository.GetByIdAsync(id);
         }
 
-        
+
     }
 }

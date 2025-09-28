@@ -8,13 +8,15 @@ namespace ERP_System_Project.Models.Config.HRConfig
     {
         public void Configure(EntityTypeBuilder<WorkScheduleDay> builder)
         {
-            builder.HasIndex(wsd => wsd.IsDeleted)
-                   .HasFilter("[IsDeleted] = 0");
-
-            builder.Property(wsd => wsd.IsDeleted)
-                   .HasDefaultValue(false);
-
-            builder.HasQueryFilter(wsd => !wsd.IsDeleted);
+            builder.HasData(
+                new WorkScheduleDay { Id = 1, WorkScheduleId = 1, Day = Days.Sunday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null },
+                new WorkScheduleDay { Id = 2, WorkScheduleId = 1, Day = Days.Monday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null },
+                new WorkScheduleDay { Id = 3, WorkScheduleId = 1, Day = Days.Tuesday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null },
+                new WorkScheduleDay { Id = 4, WorkScheduleId = 1, Day = Days.Wednesday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null },
+                new WorkScheduleDay { Id = 5, WorkScheduleId = 1, Day = Days.Thursday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null },
+                new WorkScheduleDay { Id = 6, WorkScheduleId = 1, Day = Days.Friday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null },
+                new WorkScheduleDay { Id = 7, WorkScheduleId = 1, Day = Days.Saturday, IsWorkDay = false, WorkStartTime = null, WorkEndTime = null }
+            );
         }
     }
 }

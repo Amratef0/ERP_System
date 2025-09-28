@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ERP_System_Project.Models.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class Department
+    public class Department : ISoftDeletable
     {
         [Key]
         [Display(Name = "Department ID")]
@@ -40,9 +41,9 @@ namespace ERP_System_Project.Models.HR
         [ForeignKey("ParentDepartment")]
         [Display(Name = "Parent Department")]
         public int? ParentDepartmentId { get; set; }
-        public Department? ParentDepartment { get; set; }
+        public virtual Department? ParentDepartment { get; set; }
 
         [Display(Name = "Employees")]
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }
