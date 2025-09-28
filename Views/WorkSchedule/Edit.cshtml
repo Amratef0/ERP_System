@@ -36,12 +36,14 @@
                 <label asp-for="@Model.WorkStartTime" class="control-label"></label>
                 <input type="time" asp-for="@Model.WorkStartTime" class="form-control" />
                 <span asp-validation-for="@Model.WorkStartTime" class="text-danger"></span>
+                <button id="clearStartTimeBtn" class="btn btn-outline-secondary" type="button">Clear</button>
             </div>
 
             <div class="form-group">
                 <label asp-for="@Model.WorkEndTime" class="control-label"></label>
                 <input type="time" asp-for="@Model.WorkEndTime" class="form-control" />
                 <span asp-validation-for="@Model.WorkEndTime" class="text-danger"></span>
+                <button id="clearEndTimeBtn" class="btn btn-outline-secondary" type="button">Clear</button>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -56,4 +58,14 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('clearStartTimeBtn').addEventListener('click', function() {
+            document.getElementById('WorkStartTime').value = '';
+        });
+
+        document.getElementById('clearEndTimeBtn').addEventListener('click', function() {
+            document.getElementById('WorkEndTime').value = '';
+        });
+    </script>
 }
