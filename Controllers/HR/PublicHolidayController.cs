@@ -107,7 +107,10 @@ namespace ERP_System_Project.Controllers.HR
         public async Task<IActionResult> SearchAsync(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                return Json(new List<PublicHoliday>());
+            {
+                IEnumerable<PublicHoliday> publicHolidays = await publicHolidayService.GetAllAsync();
+                return Json(publicHolidays);
+            }
 
             List<PublicHoliday>? filteredPublicHoliday = await publicHolidayService.SearchByNameAsync(name);
             return Json(filteredPublicHoliday ?? new List<PublicHoliday>());
