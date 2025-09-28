@@ -8,6 +8,9 @@ namespace ERP_System_Project.Models.Config.HRConfig
     {
         public void Configure(EntityTypeBuilder<PublicHoliday> builder)
         {
+            builder.HasIndex(ph => new { ph.CountryId, ph.Date })
+               .HasFilter("[IsDeleted] = 0");
+
             builder.HasIndex(ph => ph.IsDeleted)
                    .HasFilter("[IsDeleted] = 0");
 
