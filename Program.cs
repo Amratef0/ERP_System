@@ -4,10 +4,12 @@ using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
+using ERP_System_Project.Services.Implementation.Core;
 using ERP_System_Project.Services.Implementation.CRM;
 using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces;
+using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.CRM;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
@@ -82,13 +84,15 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
 });
 
+// Memory Cache
+builder.Services.AddMemoryCache();
+
 // SMTP Email
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
 // Validators Service
-builder.Services.AddFluentValidationAutoValidation()
-                .AddFluentValidationClientsideAdapters()
+builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
 
 // Repositories and UnitOfWork
@@ -107,6 +111,8 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 // HR Services
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
 builder.Services.AddScoped<IWorkScheduleDayService, WorkScheduleDayService>();
+builder.Services.AddScoped<IPublicHolidayService, PublicHolidayService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
