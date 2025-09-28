@@ -29,7 +29,7 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            List<PublicHoliday> publicHolidays = await publicHolidayService.GetAllAsync();
+            IEnumerable<PublicHoliday> publicHolidays = await publicHolidayService.GetAllAsync();
             return View("Index", publicHolidays);
         }
 
@@ -100,6 +100,17 @@ namespace ERP_System_Project.Controllers.HR
         {
             await publicHolidayService.DeleteAsync(id);
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SearchAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return Json(new List<PublicHoliday>());
+
+            List<PublicHoliday>? filteredPublicHoliday = await publicHolidayService.SearchByNameAsync(name);
+            return Json(filteredPublicHoliday ?? new List<PublicHoliday>());
         }
     }
 }

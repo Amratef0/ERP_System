@@ -27,7 +27,7 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            List<WorkScheduleDay> WorkScheduleDays = await workScheduleService.GetScheduleDaysByIdAsync(WorkScheduleId);
+            ICollection<WorkScheduleDay> WorkScheduleDays = await workScheduleService.GetScheduleDaysByIdAsync(WorkScheduleId);
             return View("Index", WorkScheduleDays);
         }
 

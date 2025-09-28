@@ -4,6 +4,6 @@ namespace ERP_System_Project.Services.Interfaces.HR
 {
     public interface IPublicHolidayService : IGenericService<PublicHoliday>
     {
-        Task<List<PublicHoliday>> GetAllAsync();
+        Task<List<PublicHoliday>> SearchByNameAsync(string name);
     }
 }

@@ -10,10 +10,11 @@ namespace ERP_System_Project.Services.Implementation.HR
         {
         }
 
-        public new async Task<List<PublicHoliday>> GetAllAsync()
+        public async Task<List<PublicHoliday>> SearchByNameAsync(string name)
         {
-            var PublicHolidays = await base.GetAllAsync();
-            return PublicHolidays.ToList();
+            var filteredPublicHolidays = await _repository.GetAllAsync(selector: ph => ph,
+                                                    filter: ph => ph.Name.ToUpper().Contains(name.ToUpper()));
+            return filteredPublicHolidays.ToList();
         }
     }
 }

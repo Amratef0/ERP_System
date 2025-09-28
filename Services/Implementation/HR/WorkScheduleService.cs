@@ -12,15 +12,12 @@ namespace ERP_System_Project.Services.Implementation.HR
         {
         }
 
-        public async Task<List<WorkScheduleDay>?> GetScheduleDaysByIdAsync(int workScheduleId)
-        {
-            ICollection<WorkScheduleDay> days = await _repository.GetAsync(ws => ws.ScheduleDays, ws => ws.Id == workScheduleId);
-            return days?.ToList();
-        }
+        public async Task<ICollection<WorkScheduleDay>?> GetScheduleDaysByIdAsync(int workScheduleId)
+            => await _repository.GetAsync(ws => ws.ScheduleDays, ws => ws.Id == workScheduleId);
 
         public async Task<WorkScheduleDay?> GetScheduleDayByIdAsync(int workScheduleId, int dayId)
         {
-            List<WorkScheduleDay>? days = await GetScheduleDaysByIdAsync(workScheduleId);
+            ICollection<WorkScheduleDay>? days = await GetScheduleDaysByIdAsync(workScheduleId);
             WorkScheduleDay? day = days?.FirstOrDefault(d => d.Id == dayId);
             return day;
         }
