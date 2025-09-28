@@ -12,7 +12,8 @@
 
 <div class="mb-3">
     <form>
-        @Html.AntiForgeryToken() <div class="input-group">
+        @Html.AntiForgeryToken() 
+        <div class="input-group">
             <input type="text" id="SearchTerm" class="form-control" placeholder="Search by name..." />
 
             <button type="button" id="searchBtn" class="btn btn-primary">
@@ -64,26 +65,26 @@
                     success: function (response) {
                         tableBody.empty();
 
-                            if (response && response.length > 0) {
-                                var newRows = "";
-                                response.forEach(function (holiday) {
-                                    var editUrl = '@Url.Action("Edit", "PublicHoliday")/' + holiday.id;
-                                    var deleteUrl = '@Url.Action("Delete", "PublicHoliday")/' + holiday.id;
-
-                                    newRows += `<tr>
-                                                    <td>${holiday.name}</td>
-                                                    <td>${new Date(holiday.date).toLocaleDateString()}</td>
-                                                    <td>
-                                                        <a href="${editUrl}">Edit</a> |
-                                                        <a href="${deleteUrl}">Delete</a>
-                                                    </td>
-                                                </tr>`;
-                                });
-                                tableBody.html(newRows);
-                            } else {
-                                var noResultsRow = "<tr><td colspan='3' class='text-center'>No results found.</td></tr>";
-                                tableBody.html(noResultsRow);
-                            }
+                        if (response && response.length > 0) {
+                            var newRows = "";
+                            response.forEach(function (holiday) {
+                                var editUrl = '@Url.Action("Edit", "PublicHoliday")/' + holiday.id;
+                                var deleteUrl = '@Url.Action("Delete", "PublicHoliday")/' + holiday.id;
+                        
+                                newRows += `<tr>
+                                                <td>${holiday.name}</td>
+                                                <td>${new Date(holiday.date).toLocaleDateString()}</td>
+                                                <td>
+                                                    <a href="${editUrl}">Edit</a> |
+                                                    <a href="${deleteUrl}">Delete</a>
+                                                </td>
+                                            </tr>`;
+                            });
+                            tableBody.html(newRows);
+                        } else {
+                            var noResultsRow = "<tr><td colspan='3' class='text-center'>No results found.</td></tr>";
+                            tableBody.html(noResultsRow);
+                        }
                     },
                     error: function (xhr, status, error) {
                         console.error("Search failed:", error);
