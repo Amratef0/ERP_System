@@ -27,6 +27,8 @@
             return "/" + folder + "/" + uniqueFileName;
         }
 
+       
+
         public static bool IsValidFile(this IFormFile file, List<string> validExtensions, int maximumSizeInMB = 1)
         {
 
