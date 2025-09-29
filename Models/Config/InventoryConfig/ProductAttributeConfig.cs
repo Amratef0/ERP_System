@@ -10,6 +10,10 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
         {
             builder.Property(pa => pa.IsActive).HasDefaultValue(true);
             builder.Property(pa => pa.CreatedDate).HasDefaultValue(DateTime.Now);
+            builder.HasData(
+               new ProductAttribute {Id = 1,Name = "Color", Type = "Text" },
+               new ProductAttribute {Id = 2,Name = "Size", Type = "Text" }
+            );
         }
     }
 }

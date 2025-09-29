@@ -24,9 +24,7 @@ namespace ERP_System_Project.UOW
         public IRepository<Category> Categories { get; }
         public IRepository<Product> Products { get; }
         public IRepository<ProductAttribute> ProductAttributes { get; }
-        public IRepository<ProductType> ProductTypes { get; }
         public IRepository<ProductVariant> ProductVariants { get; }
-        public IRepository<UnitOfMeasure> UnitsOfMeasure { get; }
         public IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         public IRepository<Warehouse> Warehouses { get; }
         public IRepository<ProductInventory> ProductsInventory { get; }
@@ -93,9 +91,7 @@ namespace ERP_System_Project.UOW
             Brands = new Repository<Brand>(_db);
             Categories = new Repository<Category>(_db);
             ProductAttributes = new Repository<ProductAttribute>(_db);
-            ProductTypes = new Repository<ProductType>(_db);
             ProductVariants = new Repository<ProductVariant>(_db);
-            UnitsOfMeasure = new Repository<UnitOfMeasure>(_db);
             VariantAttributeValues = new Repository<VariantAttributeValue>(_db);
             Warehouses = new Repository<Warehouse>(_db);
             ProductsInventory = new Repository<ProductInventory>(_db);

@@ -11,25 +11,14 @@ namespace ERP_System_Project.Models.Inventory
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "SKU Is Requierd")]
-        [StringLength(100, ErrorMessage = "SKU Must Be Less Than 100 Characters")]
-        public string SKU { get; set; } = null!;
-
         [DecimalPrecisionScale(15, 4)]
         public decimal AdditionalPrice { get; set; } = 0;
 
-        [DecimalPrecisionScale(15, 4)]
-        public decimal Quantity { get; set; } = 0;
+        [DecimalPrecisionScale(15, 4)] 
+        public int Quantity { get; set; } = 0;
 
-        [DecimalPrecisionScale(10, 4)]
-        public decimal ReorderPoint { get; set; } = 0;
-        public bool LowStockAlert { get; set; } = false;
-
-        [DecimalPrecisionScale(10, 4)]
-        public decimal MinStockLevel { get; set; }
-
-        [DecimalPrecisionScale(10, 4)]
-        public decimal MaxStockLevel { get; set; }
+        [ImageFile]
+        public string ImageURL { get; set; } = null!;
         public bool IsDefault { get; set; } = false;
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
