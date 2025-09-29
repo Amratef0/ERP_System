@@ -123,6 +123,8 @@ namespace ERP_System_Project.Repository.Implementation
             if (entity != null)
                 _dbSet.Remove(entity);
         }
+        public async Task BulkDeleteAsync(Expression<Func<TEntity, bool>> filter)
+            =>  await _dbSet.Where(filter).ExecuteDeleteAsync();
 
         public void SoftDelete(int id)
         {

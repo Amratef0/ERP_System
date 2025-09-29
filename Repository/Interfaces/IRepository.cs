@@ -37,6 +37,7 @@ namespace ERP_System_Project.Repository.Interfaces
         Task AddAsync(TEntity entity);
         void Update(TEntity entity);
         void Delete(int id);
+        Task BulkDeleteAsync(Expression<Func<TEntity, bool>> filter);
         void SoftDelete(int id);
         #endregion
 
