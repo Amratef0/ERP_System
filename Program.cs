@@ -76,6 +76,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 // Inventory Services
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

@@ -2,6 +2,31 @@
 {
     public static class FileExtension
     {
+
+        public static async Task<string> SaveImageAsync(this IFormFile file, IWebHostEnvironment env, string folder = "uploads")
+        {
+            if (file == null || file.Length == 0)
+                return null;
+
+            // Build folder path inside wwwroot
+            string folderPath = Path.Combine(env.WebRootPath, folder);
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+
+            string uniqueFileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+
+            string filePath = Path.Combine(folderPath, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Return relative path (for database or HTML)
+            return "/" + folder + "/" + uniqueFileName;
+        }
+
         public static bool IsValidFile(this IFormFile file, List<string> validExtensions, int maximumSizeInMB = 1)
         {
 
