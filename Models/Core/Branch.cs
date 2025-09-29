@@ -39,12 +39,12 @@ namespace ERP_System_Project.Models.Core
         [ForeignKey("Address")]
         [Display(Name = "Address")]
         public int AddressId { get; set; }
-        public Address Address { get; set; }
+        public virtual Address Address { get; set; }
 
         [Display(Name = "Warehouses")]
-        public ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
+        public virtual ICollection<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
 
         [Display(Name = "Employees")]
-        public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }
 }

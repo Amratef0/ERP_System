@@ -20,29 +20,87 @@
 3"></div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="UserName" class="form
-label">Username</label>
-                            <input asp-for="UserName" class="form-control"
-                                   placeholder="Enter your username" />
-                            <span asp-validation-for="UserName" class="text
+                            <label asp-for="FirstName" class="form
+label"></label>
+                            <input asp-for="FirstName" class="form-control"
+                                   placeholder="Enter your first name" />
+                            <span asp-validation-for="FirstName" class="text
+danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="LastName" class="form
+label"></label>
+                            <input asp-for="LastName" class="form-control"
+                                   placeholder="Enter your last name" />
+                            <span asp-validation-for="LastName" class="text
+danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="PhoneNumber" class="form
+label"></label>
+                            <input asp-for="PhoneNumber" class="form-control"
+                                   placeholder="Enter your Phone number" />
+                            <span asp-validation-for="PhoneNumber" class="text
 danger"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="Email" class="form-label">Email</label>
+                            <label asp-for="Email" class="form-label"></label>
                             <input asp-for="Email" class="form-control"
                                    placeholder="Enter your email" />
-                            <span asp-validation-for="Email" class="text
-danger"></span>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="DateOfBirth" class="form-label">Date Of Birth</label>
+                            <input asp-for="DateOfBirth" class="form-control"
+                                   placeholder="Enter your Date of Birth" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Country" class="form-label"></label>
+                            <input asp-for="Country" class="form-control"
+                                   placeholder="Enter your Country" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-control"
+                                   placeholder="Enter your City" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Street" class="form-label"></label>
+                            <input asp-for="Street" class="form-control"
+                                   placeholder="Enter your Street" />
+                            <span asp-validation-for="Street" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="BuildingNumber" class="form-label"></label>
+                            <input asp-for="BuildingNumber" class="form-control"
+                                   placeholder="Enter your BuildingNumber" />
+                            <span asp-validation-for="BuildingNumber" class="text-danger"></span>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label asp-for="Password" class="form
-label">Password</label>
+                            <label asp-for="ApartmentNumber" class="form-label"></label>
+                            <input asp-for="ApartmentNumber" class="form-control"
+                                   placeholder="Enter your ApartmentNumber" />
+                            <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
+                        </div>
+                        
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Password" class="form-label"></label>
                             <input asp-for="Password" class="form-control"
                                    type="password" placeholder="Enter your password" />
-                            <span asp-validation-for="Password" class="text
-danger"></span>
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control"
+                                   type="password" placeholder="Re-Enter your password" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
 
                        
@@ -53,6 +111,16 @@ danger"></span>
                                 Up
                             </button>
                         </div>
+<div class="form-group mb-3">
+    <a class="btn btn-danger w-100" asp-controller="Account" asp-action="GoogleLogin">
+        <i class="bi bi-google"></i> Sign up with Google
+    </a>
+</div>
+<div class="text-center mt-3">
+    <a class="btn btn-primary w-100" asp-controller="Account" asp-action="FacebookLogin">
+        <i class="bi bi-facebook"></i> Sign up with Facebook
+    </a>
+</div>
                     </form>
                 </div>
                 <div class="card-footer text-center">

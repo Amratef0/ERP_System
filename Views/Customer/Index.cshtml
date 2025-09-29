@@ -9,7 +9,7 @@
 </center>
 <br />
 <br />
-<a asp-controller="Customer" asp-action="Create" class="btn btn-primary">Create New Customer</a>  
+@* <a asp-controller="Customer" asp-action="Create" class="btn btn-primary">Create New Customer</a>   *@
 <br />
 
 <div class="row justify-content-center align-items-center mt-3">
@@ -35,7 +35,6 @@
         <td>@Html.DisplayNameFor(C => C.FullName)</td>
         <td>@Html.DisplayNameFor(C => C.Email)</td>
         <td>@Html.DisplayNameFor(C => C.PhoneNumber)</td>
-        <td>@Html.DisplayNameFor(C => C.CustomerCode)</td>
         @* <td>@Html.DisplayNameFor(C => C.CustomerType.Name)</td> *@
         <td>@Html.DisplayNameFor(C => C.IsActive)</td>
         <td>Details</td>
@@ -57,7 +56,6 @@
                     <td>@E.FullName</td>
                     <td>@Html.DisplayFor(emp => E.Email)</td>
                     <td>@E.PhoneNumber</td>
-                    <td>@Html.DisplayFor(emp => E.CustomerCode)</td>
                     <td>@Html.DisplayFor(emp => E.IsActive)</td>
                     <partial name="_ButtonsPartialView" model="@E.Id" />
 

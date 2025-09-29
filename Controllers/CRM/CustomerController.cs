@@ -59,14 +59,14 @@ namespace ERP_System_Project.Controllers.CRM
             return View(viewName, customer);
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Update(int id)
         {
-            return await Details(id, "Edit");
+            return await Details(id, "Update");
 
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit([FromRoute] int id, Customer customer)
+        public async Task<IActionResult> Update([FromRoute] int id, Customer customer)
         {
             if (id != customer.Id)
             {

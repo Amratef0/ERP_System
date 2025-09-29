@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ERP_System_Project.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class LeaveType
+    public class LeaveType : ISoftDeletable
     {
         [Key]
         public int Id { get; set; }
@@ -36,9 +37,9 @@ namespace ERP_System_Project.Models.HR
 
         // Navigation properties
         [Display(Name = "Leave Requests")]
-        public ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
+        public virtual ICollection<LeaveRequest> LeaveRequests { get; set; } = new List<LeaveRequest>();
 
         [Display(Name = "Employee Leave Balances")]
-        public ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; } = new List<EmployeeLeaveBalance>();
+        public virtual ICollection<EmployeeLeaveBalance> EmployeeLeaveBalances { get; set; } = new List<EmployeeLeaveBalance>();
     }
 }

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Services.Interfaces;
+using ERP_System_Project.Services.Interfaces.CRM;
 
 
 namespace ERP_System_Project.Controllers.Authentication
@@ -16,18 +17,21 @@ namespace ERP_System_Project.Controllers.Authentication
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailService _emailSender;
+        private readonly ICustomerService _customerService;
         private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
-        IEmailService emailSender)
+        IEmailService emailSender,
+        ICustomerService  customerService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _emailSender = emailSender;
+            _customerService = customerService;
         }
 
         [HttpGet]
@@ -55,9 +59,14 @@ namespace ERP_System_Project.Controllers.Authentication
 
             var appuser = new ApplicationUser
             {
-                UserName = model.UserName,
+                FirstName = model.FirstName,
+                LastName= model.LastName,
                 Email = model.Email,
+                PhoneNumber= model.PhoneNumber,
+                DateOfBirth = model.DateOfBirth,
+                CreatedAt= DateTime.Now,
             };
+
 
             var result = await _userManager.CreateAsync(appuser, model.Password);
 
@@ -78,7 +87,7 @@ namespace ERP_System_Project.Controllers.Authentication
                     return View("Register", model);
                 }
             }
-
+           await _customerService.CreateCustomerByApplicationUserAsync(appuser, model);
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(appuser);
 
             var confirmationLink = Url.Action("ConfirmEmailToken", "Account",
@@ -293,5 +302,119 @@ model.NewPassword);
 
             return View("ResetPassword", model);
         }
+        [HttpGet]
+public IActionResult GoogleLogin(string returnUrl = "/")
+{
+    var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
+    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+    return Challenge(properties, "Google");
+}
+
+
+
+
+
+[HttpGet]
+public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
+{
+    var info = await _signInManager.GetExternalLoginInfoAsync();
+    if (info == null)
+        return RedirectToAction("Login");
+
+    // محاولة تسجيل دخول باستخدام بيانات خارجية
+    var signInResult = await _signInManager.ExternalLoginSignInAsync(
+        info.LoginProvider,
+        info.ProviderKey,
+        isPersistent: false);
+
+    if (!signInResult.Succeeded)
+    {
+        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+        if (email != null)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email
+                };
+                await _userManager.CreateAsync(user);
+
+                if (!await _roleManager.RoleExistsAsync("User"))
+                    await _roleManager.CreateAsync(new IdentityRole("User"));
+
+                await _userManager.AddToRoleAsync(user, "User");
+            }
+
+            var existingLogins = await _userManager.GetLoginsAsync(user);
+            if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+            {
+                await _userManager.AddLoginAsync(user, info);
+            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+        }
+    }
+
+    return LocalRedirect(returnUrl);
+}
+[HttpGet]
+public IActionResult FacebookLogin(string returnUrl = "/")
+{
+    var redirectUrl = Url.Action("FacebookResponse", "Account", new { ReturnUrl = returnUrl });
+    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+    return Challenge(properties, "Facebook");
+}
+
+ [HttpGet]
+ public async Task<IActionResult> FacebookResponse(string returnUrl = "/")
+ {
+     var info = await _signInManager.GetExternalLoginInfoAsync();
+     if (info == null)
+         return RedirectToAction("Login");
+
+     var signInResult = await _signInManager.ExternalLoginSignInAsync(
+         info.LoginProvider,
+         info.ProviderKey,
+         isPersistent: false);
+
+     if (!signInResult.Succeeded)
+     {
+         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+         if (email != null)
+         {
+             var user = await _userManager.FindByEmailAsync(email);
+             if (user == null)
+             {
+                 user = new ApplicationUser
+                 {
+                     UserName = email,
+                     Email = email
+                 };
+                 await _userManager.CreateAsync(user);
+
+                 if (!await _roleManager.RoleExistsAsync("User"))
+                     await _roleManager.CreateAsync(new IdentityRole("User"));
+
+                 await _userManager.AddToRoleAsync(user, "User");
+             }
+
+             var existingLogins = await _userManager.GetLoginsAsync(user);
+             if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+             {
+                 await _userManager.AddLoginAsync(user, info);
+             }
+
+             await _signInManager.SignInAsync(user, isPersistent: false);
+         }
+     }
+
+     return LocalRedirect(returnUrl);
+ }
     }
 }
+
+
+

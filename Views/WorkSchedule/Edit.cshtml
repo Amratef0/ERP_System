@@ -1,0 +1,70 @@
+@model WorkScheduleDayVM
+
+@{
+    ViewData["Title"] = "Edit Work Schedule Day";
+}
+
+<div class="container mt-4">
+    <h2>Edit Work Schedule Day</h2>
+    <hr />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="WorkScheduleId" type="hidden" />
+
+                <div class="mb-3">
+                    <label asp-for="Day" class="form-label"></label>
+                    <input asp-for="Day" class="form-control" readonly />
+                    <span asp-validation-for="Day" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" asp-for="IsWorkDay" id="IsWorkDay"/>
+                    <label class="form-check-label" for="IsWorkDay">
+                        @Html.DisplayNameFor(model => model.IsWorkDay)
+                    </label>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkStartTime" class="form-label"></label>
+                    <div class="input-group">
+                        <input type="time" asp-for="WorkStartTime" class="form-control" id="WorkStartTime"/>
+                        <button id="clearStartTimeBtn" class="btn btn-outline-secondary" type="button">Clear</button>
+                    </div>
+                    <span asp-validation-for="WorkStartTime" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="WorkEndTime" class="form-label"></label>
+                    <div class="input-group">
+                        <input type="time" asp-for="WorkEndTime" class="form-control" id="WorkEndTime"/>
+                        <button id="clearEndTimeBtn" class="btn btn-outline-secondary" type="button">Clear</button>
+                    </div>
+                    <span asp-validation-for="WorkEndTime" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <input type="submit" value="Save" class="btn btn-warning" />
+                    <a class="btn btn-secondary ms-2" asp-action="Index">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('clearStartTimeBtn').addEventListener('click', function() {
+            document.getElementById('WorkStartTime').value = '';
+        });
+
+        document.getElementById('clearEndTimeBtn').addEventListener('click', function() {
+            document.getElementById('WorkEndTime').value = '';
+        });
+    </script>
+}

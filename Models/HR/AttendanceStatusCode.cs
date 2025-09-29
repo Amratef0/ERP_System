@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ERP_System_Project.Models.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.HR
 {
-    public class AttendanceStatusCode
+    public class AttendanceStatusCode : ISoftDeletable
     {
         [Key]
         [Display(Name = "Status ID")]
@@ -35,6 +36,6 @@ namespace ERP_System_Project.Models.HR
 
         // Navigation properties
         [Display(Name = "Attendance Records")]
-        public ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
+        public virtual ICollection<AttendanceRecord> AttendanceRecords { get; set; } = new List<AttendanceRecord>();
     }
 }

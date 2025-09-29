@@ -4,12 +4,19 @@ using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
+using ERP_System_Project.Services.Implementation.Core;
 using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces;
+using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
+using ERP_System_Project.Validators.HR;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +37,23 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<Erpdbcontext>()
     .AddDefaultTokenProviders();
 
+// Authentication (Google)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+    options.DefaultChallengeScheme = "Google";
+})
+.AddGoogle("Google", options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+})
+.AddFacebook("Facebook", options =>
+{
+    options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
+    options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
+});
 // Token lifespan
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
@@ -60,9 +84,16 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
 });
 
+// Memory Cache
+builder.Services.AddMemoryCache();
+
 // SMTP Email
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<IEmailService, EmailSender>();
+
+// Validators Service
+builder.Services.AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
 
 // Repositories and UnitOfWork
 //builder.Services.AddDataSevices();
@@ -77,6 +108,12 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+
+// HR Services
+builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
+builder.Services.AddScoped<IWorkScheduleDayService, WorkScheduleDayService>();
+builder.Services.AddScoped<IPublicHolidayService, PublicHolidayService>();
+builder.Services.AddScoped<ICountryService, CountryService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

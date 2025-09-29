@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.CRM;
+﻿using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Interfaces.CRM;
 using ERP_System_Project.UOW;
@@ -14,6 +15,67 @@ namespace ERP_System_Project.Services.Implementation.CRM
 
             _uow = uow;
         }
+
+
+
+
+        public async Task CreateCustomerByApplicationUserAsync(ApplicationUser user, RegisterViewModel model)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            try
+            {
+                // Get customer types and use the first active one
+                var customerType= await _uow.CustomerTypes.GetByIdAsync(1);
+                
+
+                if (customerType == null)
+                    throw new InvalidOperationException("No customer types available in the system");
+
+                var customer = new Customer
+                {
+                    ApplicationUserId = user.Id,
+                    ApplicationUser = user,
+
+                    CustomerTypeId = customerType.Id,
+                    CustomerType = customerType,
+
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = string.IsNullOrWhiteSpace(model.Email) ? user.Email: model.Email,
+                    PhoneNumber = string.IsNullOrWhiteSpace(model.PhoneNumber) ? user.PhoneNumber : model.PhoneNumber,
+                    DateOfBirth = user.DateOfBirth,
+
+                    RegistrationDate = user.CreatedAt,
+                    IsActive = true,
+                    LastLoginDate = DateTime.Now,
+                    ModifiedDate = null,
+                    DeactivatedAt = null
+                };
+
+                var customerAddress = new CustomerAddress
+                {
+                    Customer = customer, 
+                    Country = model.Country,
+                    City = model.City,
+                    Street = model.Street,
+                    BuildingNumber = model.BuildingNumber,
+                    ApartmentNumber = model.ApartmentNumber
+                };
+                customer.CustomerAddresses.Add(customerAddress);
+
+                await _uow.Customers.AddAsync(customer);
+                await _uow.CompleteAsync();
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to create customer for user {user.Email}: {ex.Message}", ex);
+            }
+        }
+
+
 
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync(bool includeInactive = false)
         {
