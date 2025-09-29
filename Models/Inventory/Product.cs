@@ -24,17 +24,31 @@ namespace ERP_System_Project.Models.Inventory
 
         [DecimalPrecisionScale(10,2)]
         public decimal StandardPrice { get; set; }
+        public decimal? Weight { get; set; }
+        public decimal? Length { get; set; }
+        public decimal? Width { get; set; }
+        public decimal? Heigth { get; set; }
         public bool IsActive { get; set; } = true;
+        public decimal ReorderPoint { get; set; } = 0;
+        public bool LowStockAlert { get; set; } = false;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; } = DateTime.Now;
 
         [ForeignKey("Brand")]
         public int BrandId { get; set; }
-        public Brand Brand { get; set; } 
+        public Brand Brand { get; set; }
         
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        [ForeignKey("ProductType")]
+        public int? ProductTypeId { get; set; }
+        public ProductType? ProductType { get; set; }
+
+        [ForeignKey("UnitOfMeasure")]
+        public int? UOMId { get; set; }
+        public UnitOfMeasure? UnitOfMeasure { get; set; }
 
 
         public ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
