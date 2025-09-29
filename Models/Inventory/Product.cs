@@ -24,6 +24,8 @@ namespace ERP_System_Project.Models.Inventory
 
         [DecimalPrecisionScale(10,2)]
         public decimal StandardPrice { get; set; }
+        public int Quantity { get; set; } = 0;
+        public string ImageURL { get; set; } = null!;
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime? ModifiedDate { get; set; }
@@ -37,7 +39,7 @@ namespace ERP_System_Project.Models.Inventory
         public Category Category { get; set; }
 
 
-        public ICollection<ProductVariant> ProductVariants { get; set; } = new List<ProductVariant>();
+        public ICollection<ProductAttributeValue> Attributes { get; set; } = new List<ProductAttributeValue>();
         public ICollection<ProductInventory> Warehouses { get; set; } = new List<ProductInventory>();
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
         public ICollection<InventoryRequisitionItem> InventoryRequestedProducts { get; set; } = new List<InventoryRequisitionItem>();

@@ -42,7 +42,6 @@ namespace ERP_System_Project.Models
         public DbSet<PaymentMethodType> PaymentMethodTypes { get; set; }
         public DbSet<PaymentStatusCode> PaymentStatusCodes { get; set; }
         public DbSet<ShippingMethod> ShippingMethods { get; set; }
-        public DbSet<OfferType> OfferTypes { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<OfferProduct> OfferProducts { get; set; }
         public DbSet<OfferCategory> OfferCategorys { get; set; }
@@ -54,8 +53,6 @@ namespace ERP_System_Project.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductAttribute> ProductAttributes { get; set; }
-        public DbSet<ProductVariant> ProductVariants { get; set; }
-        public DbSet<VariantAttributeValue> VariantAttributeValues { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<ProductInventory> ProductsInventory { get; set; }
         public DbSet<InventoryTransactionType> InventoryTransactionTypes { get; set; }

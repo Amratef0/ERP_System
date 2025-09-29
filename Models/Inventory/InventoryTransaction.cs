@@ -37,9 +37,6 @@ namespace ERP_System_Project.Models.Inventory
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        [ForeignKey("Variant")]
-        public int VariantId { get; set; }
-        public ProductVariant Variant { get; set; }
 
         [ForeignKey("Warehouse")]
         public int WarehouseId { get; set; }

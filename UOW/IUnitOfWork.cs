@@ -20,8 +20,6 @@ namespace ERP_System_Project.UOW
         IRepository<Category> Categories { get; }
         IRepository<Product> Products { get; }
         IRepository<ProductAttribute> ProductAttributes { get; }
-        IRepository<ProductVariant> ProductVariants { get; }
-        IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         IRepository<Warehouse> Warehouses { get; }
         IRepository<ProductInventory> ProductsInventory { get; }
         IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
@@ -33,7 +31,6 @@ namespace ERP_System_Project.UOW
         IRepository<Offer> Offers { get; }
         IRepository<OfferCategory> OfferCategories { get; }
         IRepository<OfferProduct> OfferProducts { get; }
-        IRepository<OfferType> OfferTypes { get; }
         IRepository<Order> Orders { get; }
         IRepository<OrderItem> OrderItems { get; }
         IRepository<OrderStatusCode> OrderStatusCodes { get; }

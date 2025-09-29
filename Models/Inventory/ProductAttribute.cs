@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.Inventory
 {
@@ -17,8 +18,10 @@ namespace ERP_System_Project.Models.Inventory
         public bool IsActive { get; set; } = true;
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
+        public ICollection<ProductAttributeValue> Products { get; set; } = new List<ProductAttributeValue>();
 
-        public ICollection<VariantAttributeValue> ProductVariants { get; set; } = new List<VariantAttributeValue>();
+
+
 
     }
 }

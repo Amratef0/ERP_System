@@ -17,10 +17,6 @@ namespace ERP_System_Project.Models.Inventory
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        [ForeignKey("ProductVariant")]
-        public int VariantId { get; set; }
-        public ProductVariant ProductVariant { get; set; } 
-
         [DecimalPrecisionScale(15,4)]
         public decimal QuantityRequested { get; set; }
 

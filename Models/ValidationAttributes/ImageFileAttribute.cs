@@ -31,8 +31,12 @@ namespace ERP_System_Project.Models.ValidationAttributes
 
                 return ValidationResult.Success;
             }
+            else
+            {
+                return new ValidationResult("The Field Must be a Valid Form File.");
 
-            return new ValidationResult("The Field Must be a Valid Form File.");
+            }
+
         }
     }
 }

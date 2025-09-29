@@ -12,9 +12,5 @@ namespace ERP_System_Project.Models.ECommerce
         [ForeignKey("Product")]
         public int ProductId { get; set; }
         public Product Product { get; set; }
-
-        [ForeignKey("ProductVariant")]
-        public int? VariantId { get; set; }
-        public ProductVariant? ProductVariant { get; set; }
     }
 }

@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.Models.Inventory
 {
-    public class VariantAttributeValue
+    public class ProductAttributeValue
     {
         [ForeignKey("ProductVariant")]
-        public int VariantId { get; set; }
-        public ProductVariant ProductVariant { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
 
         [ForeignKey("ProductAttribute")]
         public int AtrributeId { get; set; }

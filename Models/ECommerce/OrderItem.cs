@@ -19,10 +19,6 @@ namespace ERP_System_Project.Models.ECommerce
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        [ForeignKey("ProductVariant")]
-        public int? VariantId { get; set; }
-        public ProductVariant? ProductVariant { get; set; }
-
         [DecimalPrecisionScale(15,4)]
         public decimal Quantity { get; set; }
 

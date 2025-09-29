@@ -28,10 +28,10 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
                    .OnDelete(DeleteBehavior.Restrict);               // avoid cascade path issues
 
             // Relationship -> ProductVariant (do NOT cascade)
-            builder.HasOne(i => i.ProductVariant)
-                   .WithMany(v => v.InventoryRequestedVariantProducts)         // ensure ProductVariant contains this nav or use .WithMany()
-                   .HasForeignKey(i => i.VariantId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(i => i.ProductVariant)
+            //       .WithMany(v => v.InventoryRequestedVariantProducts)         // ensure ProductVariant contains this nav or use .WithMany()
+            //       .HasForeignKey(i => i.VariantId)
+            //       .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

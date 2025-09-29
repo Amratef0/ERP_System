@@ -24,8 +24,6 @@ namespace ERP_System_Project.UOW
         public IRepository<Category> Categories { get; }
         public IRepository<Product> Products { get; }
         public IRepository<ProductAttribute> ProductAttributes { get; }
-        public IRepository<ProductVariant> ProductVariants { get; }
-        public IRepository<VariantAttributeValue> VariantAttributeValues { get; }
         public IRepository<Warehouse> Warehouses { get; }
         public IRepository<ProductInventory> ProductsInventory { get; }
         public IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
@@ -39,7 +37,6 @@ namespace ERP_System_Project.UOW
         public IRepository<Offer> Offers { get; }
         public IRepository<OfferCategory> OfferCategories { get; }
         public IRepository<OfferProduct> OfferProducts { get; }
-        public IRepository<OfferType> OfferTypes { get; }
         public IRepository<Order> Orders { get; }
         public IRepository<OrderItem> OrderItems { get; }
         public IRepository<OrderStatusCode> OrderStatusCodes { get; }
@@ -92,8 +89,6 @@ namespace ERP_System_Project.UOW
             Brands = new Repository<Brand>(_db);
             Categories = new Repository<Category>(_db);
             ProductAttributes = new Repository<ProductAttribute>(_db);
-            ProductVariants = new Repository<ProductVariant>(_db);
-            VariantAttributeValues = new Repository<VariantAttributeValue>(_db);
             Warehouses = new Repository<Warehouse>(_db);
             ProductsInventory = new Repository<ProductInventory>(_db);
             InventoryTransactionTypes = new Repository<InventoryTransactionType>(_db);
@@ -105,7 +100,6 @@ namespace ERP_System_Project.UOW
             Offers = new Repository<Offer>(_db);
             OfferCategories = new Repository<OfferCategory>(_db);
             OfferProducts = new Repository<OfferProduct>(_db);
-            OfferTypes = new Repository<OfferType>(_db);
             Orders = new Repository<Order>(_db);
             OrderItems = new Repository<OrderItem>(_db);
             OrderStatusCodes = new Repository<OrderStatusCode>(_db);

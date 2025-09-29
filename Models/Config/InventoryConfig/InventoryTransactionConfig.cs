@@ -25,10 +25,10 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
                 .HasForeignKey(t => t.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(t => t.Variant)
-                   .WithMany(v => v.InventoryTransactions)
-                   .HasForeignKey(t => t.VariantId)
-                   .OnDelete(DeleteBehavior.Restrict);
+            //builder.HasOne(t => t.Variant)
+            //       .WithMany(v => v.InventoryTransactions)
+            //       .HasForeignKey(t => t.VariantId)
+            //       .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(t => t.Warehouse)
                    .WithMany(w => w.InventoryTransactions)
