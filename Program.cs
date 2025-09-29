@@ -15,6 +15,7 @@ using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.Validators.HR;
+using ERP_System_Project.Validators.Inventory;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Identity;
@@ -91,9 +92,12 @@ builder.Services.AddMemoryCache();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
-// Validators Service
-builder.Services.AddFluentValidationClientsideAdapters()
-                .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
+//// Validators Service
+//builder.Services.AddFluentValidationClientsideAdapters()
+//                .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters()
+                .AddValidatorsFromAssemblyContaining<ProductVMValidator>();
 
 // Repositories and UnitOfWork
 //builder.Services.AddDataSevices();

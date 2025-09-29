@@ -54,7 +54,9 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-4 py-3 fw-semibold text-dark">Product Name</th>
+                            <th class="ps-4 py-3 fw-semibold text-dark">Product</th>
+                            <th class="text-center py-3 fw-semibold text-dark">Stock</th>
+                            <th class="text-center py-3 fw-semibold text-dark">Price</th>
                             <th class="text-center py-3 fw-semibold text-dark">Status</th>
                             <th class="text-end pe-4 py-3 fw-semibold text-dark">Actions</th>
                         </tr>
@@ -67,19 +69,60 @@
                                 <tr class="align-middle">
                                     <td class="ps-4 align-middle">
                                         <div class="d-flex align-items-center">
-                                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                <i class="bi bi-box-seam text-primary"></i>
-                                            </div>
+                                            @if (!string.IsNullOrEmpty(product.ImageURL))
+                                            {
+                                                <img src="@product.ImageURL" alt="@product.Name"
+                                                     class="rounded me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3"
+                                                     style="width: 40px; height: 40px;">
+                                                    <i class="bi bi-box-seam text-primary"></i>
+                                                </div>
+                                            }
                                             <div>
-                                                <span class="fw-medium">@product.Name</span>
-                                                <div class="text-muted small">ID: @product.Id</div>
+                                                <span class="fw-medium text-dark">@product.Name</span>
+                                                <div class="text-muted small text-truncate" style="max-width: 200px;"
+                                                     title="@product.Description">
+                                                    @product.Description
+                                                </div>
+                                                <div class="small text-muted">ID: @product.Id</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-center align-middle">
-                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
-                                            <i class="bi bi-check-circle me-1"></i>Active
-                                        </span>
+                                        <div class="d-flex flex-column align-items-center">
+                                            <span class="fw-bold @(product.Quantity <= 10 ? "text-warning" : product.Quantity == 0 ? "text-danger" : "text-success")">
+                                                @product.Quantity
+                                            </span>
+                                            @if (product.Quantity <= 10 && product.Quantity > 0)
+                                            {
+                                                <small class="text-warning">Low Stock</small>
+                                            }
+                                            else if (product.Quantity == 0)
+                                            {
+                                                <small class="text-danger">Out of Stock</small>
+                                            }
+                                        </div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <span class="fw-bold text-success">$@product.StandardPrice.ToString("N2")</span>
+                                        <div class="small text-muted">Cost: $@product.UnitCost.ToString("N2")</div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        @if (product.Quantity > 0)
+                                        {
+                                            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                                <i class="bi bi-check-circle me-1"></i>Active
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25">
+                                                <i class="bi bi-x-circle me-1"></i>Out of Stock
+                                            </span>
+                                        }
                                     </td>
                                     <td class="text-end pe-4 align-middle">
                                         <div class="btn-group" role="group">
@@ -99,7 +142,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="3" class="text-center py-5 text-muted">
+                                <td colspan="5" class="text-center py-5 text-muted">
                                     <i class="bi bi-inbox display-4 d-block mb-2"></i>
                                     No products found
                                 </td>

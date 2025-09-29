@@ -3,13 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.ViewModels.Inventory
-{ 
-    public class CategoryVM
+{
+    public class ProductAttributeValueVM
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; } = null!;
-
-        public string Description { get; set; } = null!;
+        public int AtrributeId { get; set; }
+        public string Value { get; set; } = null!;
     }
 }

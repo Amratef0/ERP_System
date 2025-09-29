@@ -5,10 +5,11 @@ using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.Inventory;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.Inventory
 {
-    public class ProductService : GenericService<Product>,IProductService
+    public class ProductService : GenericService<Product>, IProductService
     {
         private readonly IUnitOfWork _uow;
         private readonly IWebHostEnvironment _env;
@@ -20,7 +21,8 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public async Task AddNewProduct(ProductVM model)
         {
-            // 1️⃣ Create and save product FIRST
+            var imageUrl = await model.Image.SaveImageAsync(_env);
+
             var product = new Product
             {
                 Name = model.Name,
@@ -29,39 +31,82 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                 Description = model.Description,
                 UnitCost = model.UnitCost,
                 StandardPrice = model.StandardPrice,
+                ImageURL = imageUrl,
+                Quantity = model.Quantity,
+                Attributes = model.AttributesVM.Select(m => new ProductAttributeValue
+                {
+                    AtrributeId = m.AtrributeId,
+                    Value = m.Value
+                }).ToList()
             };
 
             await _uow.Products.AddAsync(product);
-            await _uow.CompleteAsync(); // ✅ Ensures Product.Id is generated
+            await _uow.CompleteAsync(); // Save so we can get product.Id
 
-            // 2️⃣ Now add product variants
-            foreach (var variant in model.ProductVariants)
+        }
+
+
+
+        public async Task UpdateCustomProduct(EditProductVM model)
+        {
+            var product = await _uow.Products.GetByIdAsync(model.Id);
+            product.Name = model.Name;
+            product.Description = model.Description;
+            product.UnitCost = model.UnitCost;
+            product.StandardPrice = model.StandardPrice;
+            product.Quantity = model.Quantity;
+            product.BrandId = model.BrandId;
+            product.CategoryId = model.CategoryId;
+            product.ModifiedDate = DateTime.UtcNow;
+
+            // Handle image removal
+            if (model.RemoveImage && !string.IsNullOrEmpty(product.ImageURL))
             {
-                var imageUrl = await variant.Image.SaveImageAsync(_env);
+                await DeleteImageFileAsync(product.ImageURL);
+                product.ImageURL = null;
+            }
 
-                var newVariant = new ProductVariant
+            // Handle new image upload
+            if (model.NewImage != null)
+            {
+                if (!string.IsNullOrEmpty(product.ImageURL))
                 {
-                    ProductId = product.Id,      // ✅ Link to product
-                    AdditionalPrice = variant.AdditionalPrice,
-                    ImageURL = imageUrl,
-                    Quantity = variant.Quantity,
-                    IsDefault = variant.IsDefault,
-                };
+                    await DeleteImageFileAsync(product.ImageURL);
+                }
+                product.ImageURL = await model.NewImage.SaveImageAsync(_env);
+            }
 
-                await _uow.ProductVariants.AddAsync(newVariant);
-                await _uow.CompleteAsync(); // ✅ Ensures Variant.Id is generated
+            // Update attributes
+            await _uow.ProductAttributeValues.BulkDeleteAsync(pav => pav.ProductId == model.Id);
 
-                var newAttributeValue = new VariantAttributeValue
+            foreach (var attrVM in model.AttributesVM)
+            {
+                if (!string.IsNullOrEmpty(attrVM.Value) && attrVM.AtrributeId > 0)
                 {
-                    VariantId = newVariant.Id,       // ✅ Now valid
-                    AtrributeId = variant.AtrributeId,
-                    Value = variant.AtrributeValue
-                };
-
-                await _uow.VariantAttributeValues.AddAsync(newAttributeValue);
+                    var productAttributeValue = new ProductAttributeValue
+                    {
+                        ProductId = model.Id,
+                        AtrributeId = attrVM.AtrributeId,
+                        Value = attrVM.Value
+                    };
+                    await _uow.ProductAttributeValues.AddAsync(productAttributeValue);
+                }
             }
 
             await _uow.CompleteAsync();
+        }
+
+
+        private async Task DeleteImageFileAsync(string imageUrl)
+        {
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                var filePath = Path.Combine("wwwroot", imageUrl.TrimStart('/'));
+                if (File.Exists(filePath))
+                {
+                    await Task.Run(() => File.Delete(filePath));
+                }
+            }
         }
 
 
@@ -71,32 +116,85 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                      selector: pa => new ProductAttributeVM { Id =  pa.Id, Name = pa.Name }
                      );
         }
+
+        public Task<EditProductVM> GetCustomProduct(int productId)
+        {
+            var product = _uow.Products.GetAsync(
+                filter: p => p.Id == productId,
+                selector: p => new EditProductVM
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BrandId = p.BrandId,
+                    CategoryId = p.CategoryId,
+                    StandardPrice = p.StandardPrice,
+                    UnitCost = p.UnitCost,
+                    ImageURL = p.ImageURL,
+                    Quantity = p.Quantity,
+                    AttributesVM = p.Attributes.Select(pa => new ProductAttributeValueVM
+                    {
+                        AtrributeId = pa.AtrributeId,
+                        Value = pa.Value,
+                    }).ToList()
+                }
+            );
+
+            return product;
+
+        }
+
+
         public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize, string? searchByName = null)
         {
             if (!string.IsNullOrEmpty(searchByName))
             {
                 return _uow.Products.GetAllPaginatedAsync(
-                    selector: b => new ProductVM
+                    selector: p => new ProductVM
                     {
-                        Description = b.Description,
-                        Name = b.Name,
-                        Id = b.Id,
+                        Description = p.Description,
+                        Name = p.Name,
+                        Id = p.Id,
+                        ImageURL = p.ImageURL,
+                        CategoryId = p.CategoryId,
+                        BrandId = p.BrandId,
+                        Quantity = p.Quantity,
+                        UnitCost = p.UnitCost,
+                        StandardPrice = p.StandardPrice,
+                        AttributesVM = p.Attributes.Select(a => new ProductAttributeValueVM
+                        {
+                            AtrributeId = a.AtrributeId,
+                            Value = a.Value
+                        }).ToList()
                     },
-                    filter: b => b.Name.Contains(searchByName),
+                    filter: p => p.Name.Contains(searchByName),
                     pageNumber: pageNumber,
-                    pageSize: pageSize
+                    pageSize: pageSize,
+                    Includes: p => p.Attributes
                 );
             }
 
             return _uow.Products.GetAllPaginatedAsync(
-                selector: b => new ProductVM
+                selector: p => new ProductVM
                 {
-                    Description = b.Description,
-                    Name = b.Name,
-                    Id = b.Id,
+                    Description = p.Description,
+                    Name = p.Name,
+                    Id = p.Id,
+                    ImageURL = p.ImageURL,
+                    CategoryId = p.CategoryId,
+                    BrandId = p.BrandId,
+                    Quantity = p.Quantity,
+                    UnitCost = p.UnitCost,
+                    StandardPrice = p.StandardPrice,
+                    AttributesVM = p.Attributes.Select(a => new ProductAttributeValueVM
+                    {
+                        AtrributeId = a.AtrributeId,
+                        Value = a.Value
+                    }).ToList()
                 },
-                pageNumber: pageNumber,
-                pageSize: pageSize
+                    pageNumber: pageNumber,
+                    pageSize: pageSize,
+                    Includes: p => p.Attributes
             );
         }
     }

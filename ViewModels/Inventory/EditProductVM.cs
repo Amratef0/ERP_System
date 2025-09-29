@@ -6,12 +6,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ERP_System_Project.ViewModels.Inventory
 {
-    public class ProductVM
+    public class EditProductVM
     {
         public int Id { get; set; }
-
         public string Name { get; set; } = null!;
-
         public string Description { get; set; } = null!;
 
         [DecimalPrecisionScale(10, 2)]
@@ -27,14 +25,15 @@ namespace ERP_System_Project.ViewModels.Inventory
         [DisplayName("Category")]
         public int CategoryId { get; set; }
 
-
         public int Quantity { get; set; }
 
-        [ImageFile]
-        public IFormFile Image { get; set; } = null!;
+        public IFormFile? NewImage { get; set; }
+
         public string? ImageURL { get; set; }
 
         public List<ProductAttributeValueVM> AttributesVM { get; set; } = new List<ProductAttributeValueVM>();
 
+        // Add this for image removal
+        public bool RemoveImage { get; set; }
     }
 }

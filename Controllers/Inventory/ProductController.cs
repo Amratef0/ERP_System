@@ -54,8 +54,8 @@ namespace ERP_System_Project.Controllers.Inventory
             await CreateBrandOptions();
             await CreateCategoryOptions();
             await CreateAttributeOptions();
-
-            return View();
+            var productVM = new ProductVM();
+            return View(productVM);
         }
 
         [HttpPost]
@@ -65,19 +65,7 @@ namespace ERP_System_Project.Controllers.Inventory
             await CreateBrandOptions();
             await CreateCategoryOptions();
             await CreateAttributeOptions();
-            if (productVM.BrandId == 0)
-                ModelState.AddModelError("BrandId", "Please select a brand");
-
-            if (productVM.CategoryId == 0)
-                ModelState.AddModelError("CategoryId", "Please select a category");
-
-            for (int i = 0; i < productVM.ProductVariants.Count; i++)
-            {
-                if (productVM.ProductVariants[i].AtrributeId == 0)
-                {
-                    ModelState.AddModelError($"ProductVariants[{i}].AtrributeId", "Attribute is required");
-                }
-            }
+       
             if (ModelState.IsValid)
             {
                 await _productService.AddNewProduct(productVM);
@@ -88,21 +76,26 @@ namespace ERP_System_Project.Controllers.Inventory
 
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _productService.GetByIdAsync(id);
-            if (product is null) return NotFound();
-            var productVM = _mapper.Map<ProductVM>(product);
+            await CreateBrandOptions(id);
+            await CreateCategoryOptions(id);
+            await CreateAttributeOptions(id);
+            var productVM = await _productService.GetCustomProduct(id);
+            if (productVM is null) return NotFound();
 
             return View(productVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(ProductVM productVM)
+        public async Task<IActionResult> Edit(EditProductVM productVM)
         {
+            await CreateBrandOptions(productVM.Id);
+            await CreateCategoryOptions(productVM.Id);
+            await CreateAttributeOptions(productVM.Id);
+            
+
             if (ModelState.IsValid)
             {
-                var product = await _productService.GetByIdAsync(productVM.Id);
-                _mapper.Map(productVM, product);
-                await _productService.UpdateAsync(product);
+                await _productService.UpdateCustomProduct(productVM);
                 return RedirectToAction("Index");
             }
             return View(productVM);
@@ -110,6 +103,9 @@ namespace ERP_System_Project.Controllers.Inventory
 
         public async Task<IActionResult> Delete(int id)
         {
+            await CreateBrandOptions(id);
+            await CreateCategoryOptions(id);
+            await CreateAttributeOptions(id);
             var product = await _productService.GetByIdAsync(id);
             if (product is null) return NotFound();
             var productVM = _mapper.Map<ProductVM>(product);
@@ -119,6 +115,9 @@ namespace ERP_System_Project.Controllers.Inventory
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(ProductVM productVM)
         {
+            await CreateBrandOptions(productVM.Id);
+            await CreateCategoryOptions(productVM.Id);
+            await CreateAttributeOptions(productVM.Id);
             await _productService.DeleteAsync(productVM.Id);
             return RedirectToAction("Index");
         }

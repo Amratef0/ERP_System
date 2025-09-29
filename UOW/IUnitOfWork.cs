@@ -20,6 +20,7 @@ namespace ERP_System_Project.UOW
         IRepository<Category> Categories { get; }
         IRepository<Product> Products { get; }
         IRepository<ProductAttribute> ProductAttributes { get; }
+        IRepository<ProductAttributeValue> ProductAttributeValues { get; }
         IRepository<Warehouse> Warehouses { get; }
         IRepository<ProductInventory> ProductsInventory { get; }
         IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }

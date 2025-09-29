@@ -1,174 +1,182 @@
-﻿@using ERP_System_Project.ViewModels.Inventory
-@model ProductVM
-
+﻿@model ERP_System_Project.ViewModels.Inventory.ProductVM
 @{
-    ViewData["Title"] = "New";
+    ViewData["Title"] = "Add New Product";
 }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+<form method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger"></div>
 
-<form asp-action="New" method="post" enctype="multipart/form-data">
-    @* <div asp-validation-summary="All" class="text-danger"></div> *@
 
-    <!-- STEP 1: PRODUCT DETAILS -->
-    <div id="step1" class="card shadow-sm mb-4">
-        <div class="card-header bg-primary text-white">
-            <i class="bi bi-box-seam"></i> Product Information
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Add New Product</h2>
+            <hr />
         </div>
-        <div class="card-body">
 
-            <div class="mb-3">
+        <!-- Basic Information -->
+        <div class="row">
+            <div class="mb-3 col-md-6">
                 <label asp-for="Name" class="form-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-3 col-md-6">
                 <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea>
+                <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+        </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="UnitCost" class="form-label"></label>
-                    <input asp-for="UnitCost" class="form-control" value=0 />
-                    <span asp-validation-for="UnitCost" class="text-danger"></span>
-
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="StandardPrice" class="form-label"></label>
-                    <input asp-for="StandardPrice" class="form-control" value=0 />
-                    <span asp-validation-for="StandardPrice" class="text-danger"></span>
-
-                </div>
+        <!-- Pricing -->
+        <div class="row">
+            <div class="mb-3 col-md-6">
+                <label asp-for="UnitCost" class="form-label"></label>
+                <input asp-for="UnitCost" type="number" step="0.01" class="form-control" />
+                <span asp-validation-for="UnitCost" class="text-danger"></span>
             </div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="BrandId" class="form-label"></label>
-                    <select asp-for="BrandId" class="form-select" asp-items="ViewBag.Brands" required>
-                        <option value="0">Select Brand</option>
-                    </select>
-                    <span asp-validation-for="BrandId" class="text-danger"></span>
+            <div class="mb-3 col-md-6">
+                <label asp-for="StandardPrice" class="form-label"></label>
+                <input asp-for="StandardPrice" type="number" step="0.01" class="form-control" />
+                <span asp-validation-for="StandardPrice" class="text-danger"></span>
+            </div>
+        </div>
 
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="CategoryId" class="form-label"></label>
-                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories" required>
-                        <option value="0">Select Category</option>
-                    </select>
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
-
-                </div>
+        <!-- Inventory & Selection -->
+        <div class="row">
+            <div class="mb-3 col-md-4">
+                <label asp-for="Quantity" class="form-label"></label>
+                <input asp-for="Quantity" type="number" class="form-control" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="NumberOfVariants" class="form-label"></label>
-                <input asp-for="NumberOfVariants" class="form-control" id="variantCount" min="1" max="3" />
-                <span id="variantError" class="text-danger d-none">Please enter a number between 1 and 3.</span>
+            <div class="mb-3 col-md-4">
+                <label asp-for="BrandId" class="form-label"></label>
+                <select asp-for="BrandId" asp-items="@ViewBag.Brands" class="form-select">
+                    <option value="">-- Select Brand --</option>
+                </select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
             </div>
 
-            <button type="button" class="btn btn-primary w-100" id="btnNext">
-                <i class="bi bi-arrow-right-circle"></i> Next
+            <div class="mb-3 col-md-4">
+                <label asp-for="CategoryId" class="form-label"></label>
+                <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-select">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Product Attributes -->
+        <div class="mb-3">
+            <label class="form-label">Product Attributes</label>
+            <div id="attributes-container">
+                @if (Model?.AttributesVM != null)
+                {
+                    @for (int i = 0; i < Model.AttributesVM.Count; i++)
+                    {
+                        <div class="attribute-group row mb-2">
+                            <div class="col-md-5">
+                                <select asp-for="AttributesVM[i].AtrributeId" asp-items="@ViewBag.Attributes" class="form-select">
+                                    <option value="">-- Select Attribute --</option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <input asp-for="AttributesVM[i].Value" class="form-control" placeholder="Value" />
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <button type="button" id="add-attribute" class="btn btn-secondary mt-2">Add Attribute</button>
+        </div>
+
+        <!-- Image Upload -->
+        <div class="mb-3">
+            <label asp-for="Image" class="form-label"></label>
+            <input asp-for="Image" type="file" class="form-control" accept="image/*" />
+            <span asp-validation-for="Image" class="text-danger"></span>
+        </div>
+
+        <br />
+        <hr />
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success" style="width:150px">
+                <i class="fas fa-plus"></i> Add Product
             </button>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-secondary" style="width:160px">
+                <i class="fas fa-arrow-left"></i> Back to Products
+            </a>
         </div>
     </div>
-
-    <!-- STEP 2: VARIANTS -->
-    <div id="step2" style="display:none;">
-        <div id="variantContainer"></div>
-
-        <button type="button" class="btn btn-secondary w-100 mb-2" id="btnBack">
-            <i class="bi bi-arrow-left-circle"></i> Back
-        </button>
-        <button type="submit" class="btn btn-success w-100">
-            <i class="bi bi-check-circle"></i> Submit
-        </button>
-    </div>
-
 </form>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        $("#btnNext").click(function () {
-            let count = parseInt($("#variantCount").val());
+        // Dynamic attribute management
+        document.addEventListener('DOMContentLoaded', function() {
+            const attributesContainer = document.getElementById('attributes-container');
+            const addAttributeBtn = document.getElementById('add-attribute');
+            let attributeIndex = @(Model?.AttributesVM?.Count ?? 0);
 
-            if (isNaN(count) || count < 1 || count > 3) {
-                $("#variantError").removeClass("d-none");
-                return;
-            } else {
-                $("#variantError").addClass("d-none");
-            }
-
-            $("#variantContainer").empty();
-
-            for (let i = 0; i < count; i++) {
-                $("#variantContainer").append(`
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-info text-white">
-                            <i class="bi bi-sliders"></i> Variant ${i + 1}
-                        </div>
-                        <div class="card-body">
-
-                            <div class="mb-2">
-                                <label>Additional Price</label>
-                                <input name="ProductVariants[${i}].AdditionalPrice" class="form-control" />
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Quantity</label>
-                                <input name="ProductVariants[${i}].Quantity" class="form-control" />
-                            </div>
-
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input"
-                                       name="ProductVariants[${i}].IsDefault"
-                                       value="true" />
-                                <input type="hidden" name="ProductVariants[${i}].IsDefault" value="false" />
-                                <label class="form-check-label">Is Default</label>
-                            </div>
-
-
-                            <div class="mb-2">
-                                <label>Image</label>
-                                <input type="file" name="ProductVariants[${i}].Image" class="form-control" />
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Attribute Name</label>
-                                <select name="ProductVariants[${i}].AtrributeId" class="form-select">
-                                    <option value="">Select Attribute</option>
-                                    @foreach (var item in ViewBag.Attributes)
-                                    {
+            addAttributeBtn.addEventListener('click', function() {
+                const newAttributeHtml = `
+                    <div class="attribute-group row mb-2">
+                        <div class="col-md-5">
+                            <select name="AttributesVM[${attributeIndex}].AtrributeId" class="form-select">
+                                <option value="">-- Select Attribute --</option>
+                                @if (ViewBag.Attributes != null)
+                                {
+                                        foreach (var item in ViewBag.Attributes)
+                                        {
                                                 <option value="@item.Value">@item.Text</option>
-                                    }
-                                </select>
-                                <span asp-validation-for="ProductVariants[${i}].AtrributeId" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-2">
-                                <label>Attribute Value</label>
-                                <input name="ProductVariants[${i}].AtrributeValue" class="form-control" />
-                            </div>
-
+                                        }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <input name="AttributesVM[${attributeIndex}].Value" class="form-control" placeholder="Value" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger remove-attribute">Remove</button>
                         </div>
                     </div>
-                `);
+                `;
+
+                attributesContainer.insertAdjacentHTML('beforeend', newAttributeHtml);
+                attributeIndex++;
+            });
+
+            // Remove attribute
+            attributesContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-attribute')) {
+                    e.target.closest('.attribute-group').remove();
+                    // Reindex remaining attributes if needed
+                    reindexAttributes();
+                }
+            });
+
+            function reindexAttributes() {
+                const attributeGroups = attributesContainer.querySelectorAll('.attribute-group');
+                attributeIndex = 0;
+                attributeGroups.forEach((group, index) => {
+                    const select = group.querySelector('select');
+                    const input = group.querySelector('input[type="text"]');
+
+                    select.name = `AttributesVM[${index}].AtrributeId`;
+                    input.name = `AttributesVM[${index}].Value`;
+                    attributeIndex = index + 1;
+                });
             }
-
-            $("#step1").hide();
-            $("#step2").show();
-        });
-
-        $("#btnBack").click(function () {
-            $("#step2").hide();
-            $("#step1").show();
         });
     </script>
 }
