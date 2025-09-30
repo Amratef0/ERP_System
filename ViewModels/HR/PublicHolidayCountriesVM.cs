@@ -17,6 +17,6 @@ namespace ERP_System_Project.ViewModels.HR
         [Display(Name = "Country")]
         public int CountryId { get; set; }
 
-        public List<Country>? Countries { get; set; }
+        public IEnumerable<Country>? Countries { get; set; }
     }
 }

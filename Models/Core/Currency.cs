@@ -20,6 +20,8 @@ namespace ERP_System_Project.Models.Core
         [Required(ErrorMessage = "Symbol Is Required")]
         [StringLength(5, ErrorMessage = "Symbol must be less than 5 characters")]
         public string Symbol { get; set; } = null!;
+
+        [Display(Name = "Is Active?")]
         public bool IsActive { get; set; } = true;
 
         [Display(Name = "Is Deleted")]

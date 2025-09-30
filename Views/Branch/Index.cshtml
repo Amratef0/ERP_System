@@ -1,4 +1,4 @@
-﻿@model PublicHolidayIndexVM
+﻿@model BranchIndexVM
 
 @{
     ViewData["Title"] = "Index";
@@ -7,7 +7,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Add" class="btn btn-success">Add Public Holiday</a>
+    <a asp-action="Add">Add New branch</a>
 </p>
 
 <div class="mb-3">
@@ -19,9 +19,9 @@
 
 <div class="mb-3">
     <form id="searchForm">
-        @Html.AntiForgeryToken() 
+        @Html.AntiForgeryToken()
         <div class="input-group">
-            <input type="text" id="searchTerm" class="form-control" placeholder="Search by public holiday name..." />
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by branch name..." />
 
             <button type="button" id="searchBtn" class="btn btn-primary">
                 <i class="bi bi-search"></i> Search
@@ -30,24 +30,49 @@
     </form>
 </div>
 
-<table class="table table-striped">
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Country</th>
-            <th>Date</th>
+            <th>
+                Name
+            </th>
+            <th>
+                Code
+            </th>
+            <th>
+                Phone Number
+            </th>
+            <th>
+                Email
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody id="publicHolidays">
-        @foreach (var item in Model.PublicHolidays)
-        {
+    <tbody id="branches">
+        @foreach (var item in Model.Branches) {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Country.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.Date)</td>
                 <td>
-                    <a href="@Url.Action("Edit", "PublicHoliday", new { id = item.Id })">Edit</a> |
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
                     <form asp-action="Delete" asp-route-id="@item.Id" method="post">
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
@@ -56,6 +81,7 @@
         }
     </tbody>
 </table>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -70,7 +96,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("Filter", "PublicHoliday")',
+                    url: '@Url.Action("Filter", "Branch")',
                     data: {
                         name: searchTerm,
                         countryId: country,
@@ -89,7 +115,7 @@
             $("#searchForm").submit(function (e) {
                 e.preventDefault();
                 filter();
-            });
+			});
 
             $("#searchBtn").click(function () {
                 filter();
@@ -100,22 +126,25 @@
             });
 
             function fillTable(response) {
-                var tableBody = $("#publicHolidays");
+                var tableBody = $("#branches");
                 tableBody.empty();
 
                 if (response && response.length > 0) {
                     var newRows = "";
                     var token = $('input[name="__RequestVerificationToken"]').val();
-                    response.forEach(function (holiday) {
-                        var editUrl = '@Url.Action("Edit", "PublicHoliday")/' + holiday.id;
-                
+                    response.forEach(function (branch) {
+                        var editUrl = '@Url.Action("Edit", "Branch")/' + branch.id;
+						var detailsUrl = '@Url.Action("Details", "Branch")/' + branch.id;
+
                         newRows += `<tr>
-                                        <td>${holiday.name}</td>
-                                        <td>${holiday.country.name}</td>
-                                        <td>${new Date(holiday.date).toLocaleDateString()}</td>
+                                        <td>${branch.name}</td>
+                                        <td>${branch.code}</td>
+                                        <td>${branch.phoneNumber}</td>
+                                        <td>${branch.email}</td>
                                         <td>
                                             <a href="${editUrl}">Edit</a> |
-                                            <form action="/PublicHoliday/Delete${holiday.id}" method="post">
+											<a href="${detailsUrl}">Details</a> |
+                                            <form action="/Branch/Delete${branch.id}" method="post">
                                                 <Input type="hidden" name="__RequestVerificationToken" value="${token}" />
                                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                             </form>
@@ -124,7 +153,7 @@
                     });
                     tableBody.html(newRows);
                 } else {
-                    var noResultsRow = "<tr><td colspan='4' class='text-center'>No results found.</td></tr>";
+                    var noResultsRow = "<tr><td colspan='5' class='text-center'>No results found.</td></tr>";
                     tableBody.html(noResultsRow);
                 }
             }

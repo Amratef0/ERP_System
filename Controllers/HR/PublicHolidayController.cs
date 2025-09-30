@@ -29,8 +29,12 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            IEnumerable<PublicHoliday> publicHolidays = await publicHolidayService.GetAllAsync();
-            return View("Index", publicHolidays);
+            PublicHolidayIndexVM model = new PublicHolidayIndexVM
+            {
+                PublicHolidays = await publicHolidayService.GetAllWithCountryAsync(),
+                Countries = await countryService.GetAllAsync()
+            };
+            return View("Index", model);
         }
 
         [HttpGet]
@@ -95,7 +99,8 @@ namespace ERP_System_Project.Controllers.HR
             return View("Edit", model);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             await publicHolidayService.DeleteAsync(id);
@@ -104,15 +109,9 @@ namespace ERP_System_Project.Controllers.HR
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SearchAsync(string name)
+        public async Task<IActionResult> FilterAsync(string name, int countryId)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                IEnumerable<PublicHoliday> publicHolidays = await publicHolidayService.GetAllAsync();
-                return Json(publicHolidays);
-            }
-
-            List<PublicHoliday>? filteredPublicHoliday = await publicHolidayService.SearchByNameAsync(name);
+            IEnumerable<PublicHoliday>? filteredPublicHoliday = await publicHolidayService.FilterAsync(name, countryId);
             return Json(filteredPublicHoliday ?? new List<PublicHoliday>());
         }
     }
