@@ -2,6 +2,7 @@
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.ViewModels.Inventory;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -14,14 +15,18 @@ namespace ERP_System_Project.Controllers.Inventory
         private readonly ICategoryService _categoryService;
         private readonly IBrandService _brandService;
         private readonly IMapper _mapper;
+        private readonly IValidator<ProductVM> _productvalidator;
+        private readonly IValidator<EditProductVM> _editProductvalidator;
         public ProductController(
             IProductService productService, ICategoryService categoryService, IBrandService brandService
-            ,IMapper mapper)
+            ,IMapper mapper, IValidator<ProductVM> productvalidator, IValidator<EditProductVM> editProductvalidator)
         {
             _productService = productService;
             _categoryService = categoryService;
             _brandService = brandService;
             _mapper = mapper;
+            _productvalidator = productvalidator;
+            _editProductvalidator = editProductvalidator;
         }
 
         private async Task CreateBrandOptions(int id = 1)
@@ -66,11 +71,14 @@ namespace ERP_System_Project.Controllers.Inventory
             await CreateCategoryOptions();
             await CreateAttributeOptions();
        
-            if (ModelState.IsValid)
+            var result = _productvalidator.Validate(productVM);
+            if (result.IsValid)
             {
                 await _productService.AddNewProduct(productVM);
                 return RedirectToAction("Index");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             return View(productVM);
         }
 
@@ -91,13 +99,16 @@ namespace ERP_System_Project.Controllers.Inventory
             await CreateBrandOptions(productVM.Id);
             await CreateCategoryOptions(productVM.Id);
             await CreateAttributeOptions(productVM.Id);
-            
 
-            if (ModelState.IsValid)
+            var result = _editProductvalidator.Validate(productVM);
+
+            if (result.IsValid)
             {
                 await _productService.UpdateCustomProduct(productVM);
                 return RedirectToAction("Index");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             return View(productVM);
         }
 
@@ -121,5 +132,10 @@ namespace ERP_System_Project.Controllers.Inventory
             await _productService.DeleteAsync(productVM.Id);
             return RedirectToAction("Index");
         }
+
+
+
+
+        
     }
 }

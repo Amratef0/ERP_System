@@ -13,5 +13,7 @@ namespace ERP_System_Project.Services.Interfaces.Inventory
         Task AddNewProduct(ProductVM product);
         Task<EditProductVM> GetCustomProduct(int productId);
         Task UpdateCustomProduct(EditProductVM product);
+
+        //Task<PageSourcePagination<AttributeVM>> GetAllAttributesPaginated(int pageNumber, int pageSize, string? searchByName = null);
     }
 }

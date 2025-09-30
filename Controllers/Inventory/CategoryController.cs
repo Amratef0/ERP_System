@@ -2,6 +2,7 @@
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.ViewModels.Inventory;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -10,11 +11,13 @@ namespace ERP_System_Project.Controllers.Inventory
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly IValidator<CategoryVM> _validator;
         private readonly IMapper _mapper;
-        public CategoryController(ICategoryService categoryService, IMapper mapper)
+        public CategoryController(ICategoryService categoryService, IMapper mapper, IValidator<CategoryVM> validator)
         {
             _categoryService = categoryService;
             _mapper = mapper;
+            _validator = validator;
         }
         public async Task<IActionResult> Index(int pageNumber, int pageSize, string? searchByName = null)
         {
@@ -31,12 +34,15 @@ namespace ERP_System_Project.Controllers.Inventory
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New(CategoryVM categoryVM)
         {
-            if (ModelState.IsValid)
+            var result = _validator.Validate(categoryVM);
+            if (result.IsValid)
             {
                 var category = _mapper.Map<Category>(categoryVM);
                 await _categoryService.CreateAsync(category);
                 return RedirectToAction("Index");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             return View(categoryVM);
         }
 
@@ -52,13 +58,17 @@ namespace ERP_System_Project.Controllers.Inventory
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(CategoryVM categoryVM)
         {
-            if (ModelState.IsValid)
+            var result = _validator.Validate(categoryVM);
+
+            if (result.IsValid)
             {
                 var category = await _categoryService.GetByIdAsync(categoryVM.Id);
                 _mapper.Map(categoryVM, category);
                 await _categoryService.UpdateAsync(category);
                 return RedirectToAction("Index");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             return View(categoryVM);
         }
 

@@ -3,6 +3,7 @@ using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.Inventory;
+using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.Inventory
 {
@@ -16,9 +17,11 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public Task<PageSourcePagination<BrandVM>> GetBrandsPaginated(int pageNumber, int pageSize, string? searchByName = null)
         {
+            Expression<Func<Brand, bool>>? searchFilter = null;
             if (!string.IsNullOrEmpty(searchByName))
-            {
-                return _uow.Brands.GetAllPaginatedAsync(
+                searchFilter = p => p.Name.Contains(searchByName);
+
+            return _uow.Brands.GetAllPaginatedAsync(
                     selector: b => new BrandVM
                     {
                         Description = b.Description,
@@ -27,25 +30,10 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                         LogoURL = b.LogoURL,
                         WebsiteURL = b.WebsiteURL
                     },
-                    filter: b => b.Name.Contains(searchByName),
+                    filter: searchFilter,
                     pageNumber: pageNumber,
                     pageSize: pageSize
                 );
-            }
-
-            return _uow.Brands.GetAllPaginatedAsync(
-                selector: b => new BrandVM
-                {
-                    Description = b.Description,
-                    Name = b.Name,
-                    Id = b.Id,
-                    LogoURL = b.LogoURL,
-                    WebsiteURL = b.WebsiteURL
-                },
-                pageNumber: pageNumber,
-                pageSize: pageSize
-            );
         }
-
     }
 }

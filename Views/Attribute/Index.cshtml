@@ -1,6 +1,6 @@
-@model PageSourcePagination<BrandVM>
+ï»¿@model PageSourcePagination<AttributeVM>
 @{
-    ViewData["Title"] = "Brand Management";
+    ViewData["Title"] = "Attribute";
     string currentSearch = Context.Request.Query["searchByName"];
 }
 
@@ -8,18 +8,21 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 fw-bold text-gradient-primary mb-2">Brand Management</h1>
-            <p class="text-muted mb-3">Manage your product brands and build your brand portfolio</p>
-            <a asp-action="Index" asp-controller="Product" class="btn btn-outline-primary d-inline-flex align-items-center">
+            <h1 class="h3 fw-bold text-gradient-primary mb-2">Attribute Management</h1>
+            <p class="text-muted mb-0">Manage your product attributes and their properties</p>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-outline-primary d-inline-flex align-items-center mt-3">
                 <i class="bi bi-arrow-left me-2"></i>Back to Products
             </a>
         </div>
-        <a asp-controller="Brand" asp-action="New" class="btn btn-primary d-flex align-items-center shadow-sm">
-            <i class="bi bi-plus-circle me-2"></i>Add New Brand
+        
+        <a asp-controller="Attribute" asp-action="New" class="btn btn-primary d-flex align-items-center shadow-sm">
+            <i class="bi bi-plus-circle me-2"></i>Add New Attribute
         </a>
+
     </div>
 
-    <!-- Stats & Search Section -->
+
+    <!-- Stats Cards -->
     <div class="row mb-4">
         <div class="col-md-3">
             <div class="card stat-card bg-primary text-white">
@@ -27,10 +30,10 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h3 class="card-title">@Model.TotalRecords</h3>
-                            <p class="card-text">Total Brands</p>
+                            <p class="card-text">Total Attributes</p>
                         </div>
                         <div class="align-self-center">
-                            <i class="bi bi-star fs-1 opacity-75"></i>
+                            <i class="bi bi-tags fs-1 opacity-75"></i>
                         </div>
                     </div>
                 </div>
@@ -40,17 +43,17 @@
             <!-- Search Form -->
             <div class="card">
                 <div class="card-body">
-                    <form method="get" asp-controller="Brand" asp-action="Index" class="row g-2">
+                    <form method="get" asp-controller="Attribute" asp-action="Index" class="row g-2">
                         <div class="col-md-8">
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">
                                     <i class="bi bi-search text-muted"></i>
                                 </span>
-                                <input type="text" name="searchByName" value="@currentSearch" class="form-control border-start-0" placeholder="Search by brand name..." />
+                                <input type="text" name="searchByName" value="@currentSearch" class="form-control border-start-0" placeholder="Search by attribute name..." />
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <button type="submit" class="btn btn-primary w-100">Search Brands</button>
+                            <button type="submit" class="btn btn-outline-primary w-100">Search</button>
                         </div>
                     </form>
                 </div>
@@ -58,77 +61,51 @@
         </div>
     </div>
 
-    <!-- Brands Table Card -->
+    <!-- Attribute Table Card -->
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white py-3 border-bottom">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0 fw-semibold">Brand Portfolio</h5>
-                <span class="badge bg-light text-dark">@Model.Data.Count() brands</span>
-            </div>
+            <h5 class="card-title mb-0 fw-semibold">Attribute List</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-4 py-3 fw-semibold">Brand Details</th>
-                            <th class="py-3 fw-semibold">Logo</th>
-                            <th class="py-3 fw-semibold">Website</th>
-                            <th class="py-3 fw-semibold">Status</th>
+                            <th class="ps-4 py-3 fw-semibold">Attribute Name</th>
+                            <th class="ps-4 py-3 fw-semibold">Attribute Type</th>
+                            <th class="ps-4 py-3 fw-semibold">Status</th>
                             <th class="text-end pe-4 py-3 fw-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var brand in Model.Data)
+                        @foreach (var attr in Model.Data)
                         {
                             <tr class="border-bottom">
                                 <td class="ps-4 align-middle">
                                     <div class="d-flex align-items-center">
                                         <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                            <i class="bi bi-trophy text-primary"></i>
+                                            <i class="bi bi-tag text-primary"></i>
                                         </div>
                                         <div>
-                                            <h6 class="mb-0 fw-semibold">@brand.Name</h6>
-                                            <small class="text-muted">ID: @brand.Id</small>
+                                            <h6 class="mb-0 fw-semibold">@attr.Name</h6>
+                                            <small class="text-muted">ID: @attr.Id</small>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle">
-                                    @if (!string.IsNullOrEmpty(brand.LogoURL))
-                                    {
-                                        <img src="@brand.LogoURL" class="brand-logo rounded shadow-sm" alt="@brand.Name logo" />
-                                    }
-                                    else
-                                    {
-                                        <div class="brand-logo-placeholder bg-light rounded d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-image text-muted"></i>
-                                        </div>
-                                    }
+                                <td class="ps-4 align-middle">
+                                    <span class="badge bg-light text-dark">@attr.Type</span>
                                 </td>
-                                <td class="align-middle">
-                                    @if (!string.IsNullOrEmpty(brand.WebsiteURL))
-                                    {
-                                        <a href="@brand.WebsiteURL" target="_blank" class="website-link text-decoration-none d-flex align-items-center">
-                                            <i class="bi bi-link-45deg me-2 text-primary"></i>
-                                            <span>Visit Website</span>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">No website</span>
-                                    }
-                                </td>
-                                <td class="align-middle">
+                                <td class="ps-4 align-middle">
                                     <span class="badge bg-success bg-opacity-10 text-success">
                                         <i class="bi bi-check-circle me-1"></i>Active
                                     </span>
                                 </td>
                                 <td class="text-end pe-4 align-middle">
                                     <div class="btn-group">
-                                        <a asp-controller="Brand" asp-action="Edit" asp-route-id="@brand.Id" class="btn btn-sm btn-outline-primary rounded-start">
+                                        <a asp-controller="Attribute" asp-action="Edit" asp-route-id="@attr.Id" class="btn btn-sm btn-outline-primary rounded-start">
                                             <i class="bi bi-pencil me-1"></i> Edit
                                         </a>
-                                        <a asp-controller="Brand" asp-action="Delete" asp-route-id="@brand.Id" class="btn btn-sm btn-outline-danger rounded-end">
+                                        <a asp-controller="Attribute" asp-action="Delete" asp-route-id="@attr.Id" class="btn btn-sm btn-outline-danger rounded-end">
                                             <i class="bi bi-trash me-1"></i> Delete
                                         </a>
                                     </div>
@@ -144,14 +121,14 @@
     <!-- Pagination & Info -->
     <div class="d-flex justify-content-between align-items-center mt-4">
         <div class="text-muted">
-            Showing page @Model.PageNumber of @Model.TotalPages • @Model.TotalRecords total brands
+            Showing page @Model.PageNumber of @Model.TotalPages
         </div>
         <div class="d-flex justify-content-end gap-2">
             @if (Model.TotalPages > 1)
             {
                 @if (Model.PageNumber > 1)
                 {
-                    <a asp-controller="Brand"
+                    <a asp-controller="Attribute"
                        asp-action="Index"
                        asp-route-pageNumber="@(Model.PageNumber - 1)"
                        asp-route-pageSize="5"
@@ -170,7 +147,7 @@
                     }
                     else
                     {
-                        <a asp-controller="Brand"
+                        <a asp-controller="Attribute"
                            asp-action="Index"
                            asp-route-pageNumber="@i"
                            asp-route-pageSize="5"
@@ -181,7 +158,7 @@
 
                 @if (Model.PageNumber < Model.TotalPages)
                 {
-                    <a asp-controller="Brand"
+                    <a asp-controller="Attribute"
                        asp-action="Index"
                        asp-route-pageNumber="@(Model.PageNumber + 1)"
                        asp-route-pageSize="5"
@@ -212,38 +189,6 @@
             transform: translateY(-5px);
         }
 
-    .brand-logo {
-        width: 48px;
-        height: 48px;
-        object-fit: contain;
-        border: 1px solid #e9ecef;
-        padding: 2px;
-        transition: transform 0.2s ease;
-    }
-
-        .brand-logo:hover {
-            transform: scale(1.1);
-        }
-
-    .brand-logo-placeholder {
-        width: 48px;
-        height: 48px;
-        border: 1px dashed #dee2e6;
-    }
-
-    .website-link {
-        max-width: 200px;
-        display: inline-block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        transition: color 0.2s ease;
-    }
-
-        .website-link:hover {
-            color: #4361ee !important;
-        }
-
     .table > :not(caption) > * > * {
         padding: 1rem 1.5rem;
     }
@@ -260,10 +205,5 @@
     .card {
         border-radius: 12px;
         border: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .badge {
-        border-radius: 6px;
-        padding: 0.5rem 0.75rem;
     }
 </style>

@@ -3,6 +3,7 @@ using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.Inventory;
+using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.Inventory
 {
@@ -16,9 +17,11 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public Task<PageSourcePagination<CategoryVM>> GetCategoriesPaginated(int pageNumber, int pageSize, string? searchByName = null)
         {
+            Expression<Func<Category, bool>>? searchFilter = null;
             if (!string.IsNullOrEmpty(searchByName))
-            {
-                return _uow.Categories.GetAllPaginatedAsync(
+                searchFilter = p => p.Name.Contains(searchByName);
+
+            return _uow.Categories.GetAllPaginatedAsync(
                     selector: c => new CategoryVM
                     {
                         Description = c.Description,
@@ -26,23 +29,10 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                         Id = c.Id,
                        
                     },
-                    filter: c => c.Name.Contains(searchByName),
+                    filter: searchFilter,
                     pageNumber: pageNumber,
                     pageSize: pageSize
                 );
-            }
-
-            return _uow.Categories.GetAllPaginatedAsync(
-                selector: b => new CategoryVM
-                {
-                    Description = b.Description,
-                    Name = b.Name,
-                    Id = b.Id,
-                },
-                pageNumber: pageNumber,
-                pageSize: pageSize
-            );
         }
-
     }
 }
