@@ -10,22 +10,22 @@ namespace ERP_System_Project.Models.Core
         [Key]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Branch Name Is Required")]
-        [StringLength(100, ErrorMessage = "Branch Name Must be less than 100 characters")]
+        [Display(Name = "Branch Name")]
         public string Name { get; set; } = null!;
 
-        [Required(ErrorMessage = "Branch Code Is Required")]
-        [StringLength(10, ErrorMessage = "Branch Code Must be less than 10 characters")]
+        [Display(Name = "Branch Code")]
         public string Code { get; set; } = null!;
 
-        [StringLength(50, ErrorMessage = "Phone Number Must be less than 50 Number")]
-        [Phone(ErrorMessage = "Invalid Phone Format")]
-        public string? Number { get; set; }
+        [Display(Name = "Phone Number")]
+        public string? PhoneNumber { get; set; }
 
-        [StringLength(50, ErrorMessage = "Email Must be less than 30 characters")]
-        [EmailAddress(ErrorMessage = "Invalid Email Format")]
+        [Display(Name = "Email")]
         public string? Email { get; set; }
+
+        [Display(Name = "Is Main Branch?")]
         public bool IsMainBranch { get; set; } = false;
+
+        [Display(Name = "Is Active?")]
         public bool IsActive { get; set; } = true;
 
         [Display(Name = "Is Deleted")]

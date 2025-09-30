@@ -101,6 +101,11 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Core Services
+builder.Services.AddScoped<ICountryService, CountryService>();
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+
 // CRM Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 
@@ -112,7 +117,6 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
 builder.Services.AddScoped<IWorkScheduleDayService, WorkScheduleDayService>();
 builder.Services.AddScoped<IPublicHolidayService, PublicHolidayService>();
-builder.Services.AddScoped<ICountryService, CountryService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
