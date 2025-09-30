@@ -20,10 +20,9 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             _env = env;
         }
 
-        #region handle products
         public async Task AddNewProduct(ProductVM model)
         {
-            var imageUrl = await model.Image.SaveImageAsync(_env);
+            var imageUrl = await model.Image.SaveImageAsync(_env,"Uploads/Images/Products");
 
             var product = new Product
             {
@@ -46,7 +45,6 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             await _uow.CompleteAsync(); // Save so we can get product.Id
 
         }
-
 
 
         public async Task UpdateCustomProduct(EditProductVM model)
@@ -75,7 +73,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                 {
                     await FileHelper.DeleteImageFileAsync(product.ImageURL);
                 }
-                product.ImageURL = await model.NewImage.SaveImageAsync(_env);
+                product.ImageURL = await model.NewImage.SaveImageAsync(_env, "Uploads/Images/Products");
             }
 
             // Update attributes
@@ -186,43 +184,5 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                 Includes: p => p.Attributes
             );
         }
-
-        #endregion
-
-
-        //#region handle product attributes 
-        //public async Task<PageSourcePagination<AttributeVM>> GetAllAttributesPaginated(int pageNumber, int pageSize, string? searchByName = null)
-        //{
-        //    if (!string.IsNullOrEmpty(searchByName))
-        //    {
-        //        return await _uow.ProductAttributes.GetAllPaginatedAsync(
-        //            selector: pa => new AttributeVM
-        //            {
-        //                Id = pa.Id,
-        //                Name = pa.Name,
-        //                Type = pa.Type,
-        //            },
-        //            filter: pa => pa.Name.Contains(searchByName),
-        //            pageNumber: pageNumber,
-        //            pageSize: pageSize
-        //        );
-        //    }
-
-        //    return await _uow.ProductAttributes.GetAllPaginatedAsync(
-        //        selector: pa => new AttributeVM
-        //        {
-        //            Id = pa.Id,
-        //            Name = pa.Name,
-        //            Type = pa.Type,
-        //        },
-        //        filter: pa => pa.Name.Contains(searchByName),
-        //        pageNumber: pageNumber,
-        //        pageSize: pageSize
-        //    );
-        //}
-
-
-
-        //#endregion
     }
 }

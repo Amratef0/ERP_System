@@ -6,7 +6,7 @@
         {
             if (!string.IsNullOrEmpty(imageUrl))
             {
-                var filePath = Path.Combine("wwwroot", imageUrl.TrimStart('/'));
+                var filePath = Path.Combine("wwwroot/", imageUrl.TrimStart('/'));
                 if (File.Exists(filePath))
                 {
                     await Task.Run(() => File.Delete(filePath));
