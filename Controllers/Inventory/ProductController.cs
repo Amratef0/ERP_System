@@ -43,9 +43,9 @@ namespace ERP_System_Project.Controllers.Inventory
             ViewBag.Attributes = selectAttributeList;
         }
 
-        public async Task<IActionResult> Index(int pageNumber, int pageSize, string? searchByName = null)
+        public async Task<IActionResult> Index(int pageNumber, int pageSize, string? searchByName = null, string? lowStock = null)
         {
-            var products = await _productService.GetProductsPaginated(pageNumber,pageSize,searchByName);
+            var products = await _productService.GetProductsPaginated(pageNumber,pageSize,searchByName, lowStock);
             return View(products);
         }
 

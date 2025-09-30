@@ -145,9 +145,35 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         }
 
 
-        public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize, string? searchByName = null)
+        public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
+                                                                        string? searchByName = null, string? lowStock = null)
         {
-            if (!string.IsNullOrEmpty(searchByName))
+            Expression<Func<Product, bool>>? serachFilter = null;
+            if (!string.IsNullOrEmpty(lowStock))
+            {
+                if (lowStock == "lowStock")
+                {
+                    serachFilter = p => p.Quantity <= 10;
+                    if (!string.IsNullOrEmpty(searchByName))
+                        serachFilter = p => p.Quantity <= 10 && p.Name.Contains(searchByName);
+                }
+                else if (lowStock == "outOfStock")
+                {
+                    serachFilter = p => p.Quantity == 0;
+                    if (!string.IsNullOrEmpty(searchByName))
+                        serachFilter = p => p.Quantity == 0 && p.Name.Contains(searchByName);
+                }
+                else
+                {
+                    serachFilter = p => p.Quantity > 10;
+                    if (!string.IsNullOrEmpty(searchByName))
+                        serachFilter = p => p.Quantity > 10 && p.Name.Contains(searchByName);
+                }
+            }
+                
+
+
+            if (!string.IsNullOrEmpty(searchByName) || !string.IsNullOrEmpty(lowStock))
             {
                 return _uow.Products.GetAllPaginatedAsync(
                     selector: p => new ProductVM
@@ -167,12 +193,64 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                             Value = a.Value
                         }).ToList()
                     },
-                    filter: p => p.Name.Contains(searchByName),
+                    filter: serachFilter,
                     pageNumber: pageNumber,
                     pageSize: pageSize,
                     Includes: p => p.Attributes
                 );
             }
+            //if (!string.IsNullOrEmpty(stockLevel))
+            //{
+            //    return _uow.Products.GetAllPaginatedAsync(
+            //        selector: p => new ProductVM
+            //        {
+            //            Description = p.Description,
+            //            Name = p.Name,
+            //            Id = p.Id,
+            //            ImageURL = p.ImageURL,
+            //            CategoryId = p.CategoryId,
+            //            BrandId = p.BrandId,
+            //            Quantity = p.Quantity,
+            //            UnitCost = p.UnitCost,
+            //            StandardPrice = p.StandardPrice,
+            //            AttributesVM = p.Attributes.Select(a => new ProductAttributeValueVM
+            //            {
+            //                AtrributeId = a.AtrributeId,
+            //                Value = a.Value
+            //            }).ToList()
+            //        },
+            //        filter: serachFilter,
+            //        pageNumber: pageNumber,
+            //        pageSize: pageSize,
+            //        Includes: p => p.Attributes
+            //    );
+            //}
+            //if (!string.IsNullOrEmpty(searchByName) && !string.IsNullOrEmpty(stockLevel))
+            //{
+            //    return _uow.Products.GetAllPaginatedAsync(
+            //        selector: p => new ProductVM
+            //        {
+            //            Description = p.Description,
+            //            Name = p.Name,
+            //            Id = p.Id,
+            //            ImageURL = p.ImageURL,
+            //            CategoryId = p.CategoryId,
+            //            BrandId = p.BrandId,
+            //            Quantity = p.Quantity,
+            //            UnitCost = p.UnitCost,
+            //            StandardPrice = p.StandardPrice,
+            //            AttributesVM = p.Attributes.Select(a => new ProductAttributeValueVM
+            //            {
+            //                AtrributeId = a.AtrributeId,
+            //                Value = a.Value
+            //            }).ToList()
+            //        },
+            //        filter: p => (p.Name.Contains(searchByName)),
+            //        pageNumber: pageNumber,
+            //        pageSize: pageSize,
+            //        Includes: p => p.Attributes
+            //    );
+            //}
 
             return _uow.Products.GetAllPaginatedAsync(
                 selector: p => new ProductVM

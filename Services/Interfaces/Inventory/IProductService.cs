@@ -8,7 +8,8 @@ namespace ERP_System_Project.Services.Interfaces.Inventory
     public interface IProductService : IGenericService<Product>
     {
         Task<List<ProductAttributeVM>> GetAllProductAttributes();
-        Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize, string? searchByName = null);
+        Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
+                                                                    string? searchByName = null, string? lowStock = null);
         Task AddNewProduct(ProductVM product);
         Task<EditProductVM> GetCustomProduct(int productId);
         Task UpdateCustomProduct(EditProductVM product);
