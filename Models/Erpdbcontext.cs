@@ -71,7 +71,6 @@ namespace ERP_System_Project.Models
         public DbSet<EmployeeType> EmployeeTypes { get; set; }
         public DbSet<JobTitle> JobTitles { get; set; }
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
-        public DbSet<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; set; }
         public DbSet<LeaveType> LeaveTypes { get; set; }
         public DbSet<PayrollEntry> PayrollEntries { get; set; }
         public DbSet<PayrollRun> PayrollRuns { get; set; }

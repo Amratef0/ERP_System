@@ -27,6 +27,10 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Reason for Leave")]
         public string? Reason { get; set; }
 
+        [Required(ErrorMessage = "Status is required.")]
+        [Display(Name = "Status")]
+        public LeaveRequestStatus Status { get; set; }
+
         [Display(Name = "Approved Date")]
         public DateTime? ApprovedDate { get; set; }
 
@@ -52,12 +56,6 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Leave Type")]
         public int LeaveTypeId { get; set; }
         public virtual LeaveType LeaveType { get; set; }
-
-        [Required(ErrorMessage = "Status is required.")]
-        [ForeignKey("StatusCode")]
-        [Display(Name = "Status")]
-        public int StatusCodeId { get; set; }
-        public virtual LeaveRequestStatusCode StatusCode { get; set; }
 
         [ForeignKey("ApprovedBy")]
         [Display(Name = "Approved By")]

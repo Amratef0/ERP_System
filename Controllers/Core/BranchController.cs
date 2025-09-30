@@ -60,6 +60,9 @@ namespace ERP_System_Project.Controllers.Core
                 return RedirectToAction("Index");
             }
 
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
             model.Countries = await countryService.GetAllAsync();
             return View("Add", model);
         }
@@ -101,6 +104,9 @@ namespace ERP_System_Project.Controllers.Core
                 await branchService.UpdateAsync(branch);
                 return RedirectToAction("Index");
             }
+
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
 
             model.Countries = await countryService.GetAllAsync();
             return View("Edit", model);

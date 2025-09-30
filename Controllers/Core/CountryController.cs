@@ -1,5 +1,7 @@
 ﻿using ERP_System_Project.Models.Core;
 using ERP_System_Project.Services.Interfaces.Core;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -35,6 +37,7 @@ namespace ERP_System_Project.Controllers.Core
                 await countryService.CreateAsync(country);
                 return RedirectToAction("Index");
             }
+
             return View("Add", country);
         }
 
@@ -53,6 +56,7 @@ namespace ERP_System_Project.Controllers.Core
                 await countryService.UpdateAsync(country);
                 return RedirectToAction("Index");
             }
+
             return View("Edit", country);
         }
 

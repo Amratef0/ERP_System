@@ -67,7 +67,6 @@ namespace ERP_System_Project.UOW
         public IRepository<EmployeeType> EmployeeTypes { get; }
         public IRepository<JobTitle> JobTitles { get; }
         public IRepository<LeaveRequest> LeaveRequests { get; }
-        public IRepository<LeaveRequestStatusCode> LeaveRequestStatusCodes { get; }
         public IRepository<LeaveType> LeaveTypes { get; }
         public IRepository<PayrollEntry> PayrollEntries { get; }
         public IRepository<PayrollRun> PayrollRuns { get; }
@@ -126,7 +125,6 @@ namespace ERP_System_Project.UOW
             EmployeeTypes = new Repository<EmployeeType>(_db);
             JobTitles = new Repository<JobTitle>(_db);
             LeaveRequests = new Repository<LeaveRequest>(_db);
-            LeaveRequestStatusCodes = new Repository<LeaveRequestStatusCode>(_db);
             LeaveTypes = new Repository<LeaveType>(_db);
             PayrollEntries = new Repository<PayrollEntry>(_db);
             PayrollRuns = new Repository<PayrollRun>(_db);

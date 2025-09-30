@@ -18,6 +18,57 @@ namespace ERP_System_Project.Models.Config.HRConfig
                    .HasDefaultValue(false);
 
             builder.HasQueryFilter(et => !et.IsDeleted);
+
+            builder.HasData(
+                new EmployeeType
+                {
+                    Id = 1,
+                    Name = "Full-Time",
+                    Description = "Permanent employee working standard hours (e.g., 40 hours/week).",
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new EmployeeType
+                {
+                    Id = 2,
+                    Name = "Part-Time",
+                    Description = "Employee working fewer hours than a full-time employee.",
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new EmployeeType
+                {
+                    Id = 3,
+                    Name = "Contractor",
+                    Description = "Hired for a specific project or a defined period.",
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new EmployeeType
+                {
+                    Id = 4,
+                    Name = "Intern",
+                    Description = "A student or trainee gaining practical experience.",
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new EmployeeType
+                {
+                    Id = 5,
+                    Name = "Freelancer",
+                    Description = "Self-employed individual providing services to multiple clients.",
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new EmployeeType
+                {
+                    Id = 6,
+                    Name = "Temporary",
+                    Description = "Hired for a short-term need, often through an agency.",
+                    IsActive = true,
+                    IsDeleted = false
+                }
+            );
         }
     }
 }

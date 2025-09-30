@@ -15,7 +15,6 @@ namespace ERP_System_Project.Services.Implementation
         }
         public async Task<bool> CreateAsync(T entity)
         {
-
             try
             {
                 await _repository.AddAsync(entity);
