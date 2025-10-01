@@ -123,6 +123,7 @@ builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 builder.Services.AddScoped<IEmployeeTypeCodeService, AttendanceStatusCodeService>();
 builder.Services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
 builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
+builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
