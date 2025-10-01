@@ -8,54 +8,128 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2 mb-1 text-primary">Brand Management</h1>
-            <p class="text-muted mb-0">Manage your product brands and their details</p>
+            <h1 class="h3 fw-bold text-gradient-primary mb-2">Brand Management</h1>
+            <p class="text-muted mb-3">Manage your product brands and build your brand portfolio</p>
+            <a asp-action="Index" asp-controller="Product" class="btn btn-outline-primary d-inline-flex align-items-center">
+                <i class="bi bi-arrow-left me-2"></i>Back to Products
+            </a>
         </div>
-        <a asp-controller="Brand" asp-action="New" class="btn btn-success d-flex align-items-center">
+        <a asp-controller="Brand" asp-action="New" class="btn btn-success d-flex align-items-center shadow-sm">
             <i class="bi bi-plus-circle me-2"></i>Add New Brand
         </a>
     </div>
 
-    <!-- Search Form -->
-    <form method="get" asp-controller="Brand" asp-action="Index" class="d-flex mb-3">
-        <input type="text" name="searchByName" value="@currentSearch" class="form-control me-2" placeholder="Search by brand name..." />
-        <button type="submit" class="btn btn-outline-primary">Search</button>
-    </form>
+    <!-- Stats & Search Section -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="card-title">@Model.TotalRecords</h3>
+                            <p class="card-text">Total Brands</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-star fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <!-- Search Form -->
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" asp-controller="Brand" asp-action="Index" class="row g-2">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-search text-muted"></i>
+                                </span>
+                                <input type="text" name="searchByName" value="@currentSearch" class="form-control border-start-0" placeholder="Search by brand name..." />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-primary w-100">Search Brands</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Brands Table Card -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-light py-3">
-            <h5 class="card-title mb-0">Brand List</h5>
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-semibold">Brand Portfolio</h5>
+                <span class="badge bg-light text-dark">@Model.Data.Count() brands</span>
+            </div>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0">
-                    <thead class="table-dark">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
                         <tr>
-                            <th class="ps-4">Brand Name</th>
-                            <th>Logo</th>
-                            <th>Website</th>
-                            <th class="text-end pe-4">Actions</th>
+                            <th class="ps-4 py-3 fw-semibold">Brand Details</th>
+                            <th class="py-3 fw-semibold">Logo</th>
+                            <th class="py-3 fw-semibold">Website</th>
+                            <th class="py-3 fw-semibold">Status</th>
+                            <th class="text-end pe-4 py-3 fw-semibold">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var brand in Model.Data)
                         {
-                            <tr>
-                                <td class="ps-4 align-middle">@brand.Name</td>
-                                <td class="align-middle">
-                                    <img src="@brand.LogoURL" class="img-thumbnail brand-logo" alt="@brand.Name logo" />
+                            <tr class="border-bottom">
+                                <td class="ps-4 align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                            <i class="bi bi-trophy text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold">@brand.Name</h6>
+                                            <small class="text-muted">ID: @brand.Id</small>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="align-middle">
-                                    <a href="@brand.WebsiteURL" target="_blank" class="text-decoration-none website-link">@brand.Name Website</a>
+                                    @if (!string.IsNullOrEmpty(brand.LogoURL))
+                                    {
+                                        <img src="@brand.LogoURL" class="brand-logo rounded shadow-sm" alt="@brand.Name logo" />
+                                    }
+                                    else
+                                    {
+                                        <div class="brand-logo-placeholder bg-light rounded d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td class="align-middle">
+                                    @if (!string.IsNullOrEmpty(brand.WebsiteURL))
+                                    {
+                                        <a href="@brand.WebsiteURL" target="_blank" class="website-link text-decoration-none d-flex align-items-center">
+                                            <i class="bi bi-link-45deg me-2 text-primary"></i>
+                                            <span>Visit Website</span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No website</span>
+                                    }
+                                </td>
+                                <td class="align-middle">
+                                    <span class="badge bg-success bg-opacity-10 text-success">
+                                        <i class="bi bi-check-circle me-1"></i>Active
+                                    </span>
                                 </td>
                                 <td class="text-end pe-4 align-middle">
                                     <div class="btn-group">
-                                        <a asp-controller="Brand" asp-action="Edit" asp-route-id="@brand.Id" class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-pencil"></i> Edit
+                                        <a asp-controller="Brand" asp-action="Edit" asp-route-id="@brand.Id" class="btn btn-sm btn-outline-primary rounded-start">
+                                            <i class="bi bi-pencil me-1"></i> Edit
                                         </a>
-                                        <a asp-controller="Brand" asp-action="Delete" asp-route-id="@brand.Id" class="btn btn-sm btn-outline-danger">
-                                            <i class="bi bi-trash"></i> Delete
+                                        <a asp-controller="Brand" asp-action="Delete" asp-route-id="@brand.Id" class="btn btn-sm btn-outline-danger rounded-end">
+                                            <i class="bi bi-trash me-1"></i> Delete
                                         </a>
                                     </div>
                                 </td>
@@ -67,37 +141,94 @@
         </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="d-flex justify-content-end gap-2 mt-3">
-        @if (Model.TotalPages > 1)
-        {
-            @if (Model.PageNumber > 1)
+    <!-- Pagination & Info -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <div class="text-muted">
+            Showing page @Model.PageNumber of @Model.TotalPages • @Model.TotalRecords total brands
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            @if (Model.TotalPages > 1)
             {
-                <a asp-controller="Brand"
-                   asp-action="Index"
-                   asp-route-pageNumber="@(Model.PageNumber - 1)"
-                   asp-route-pageSize="5"
-                   asp-route-searchByName="@currentSearch"
-                   class="btn btn-sm btn-primary fw-bold px-3"><i class="bi bi-arrow-left"></i></a>
+                @if (Model.PageNumber > 1)
+                {
+                    <a asp-controller="Brand"
+                       asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageNumber - 1)"
+                       asp-route-pageSize="5"
+                       asp-route-searchByName="@currentSearch"
+                       class="btn btn-sm btn-outline-primary d-flex align-items-center">
+                        <i class="bi bi-chevron-left me-1"></i> Previous
+                    </a>
+                }
+
+                <!-- Page Numbers -->
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    if (i == Model.PageNumber)
+                    {
+                        <span class="btn btn-sm btn-primary">@i</span>
+                    }
+                    else
+                    {
+                        <a asp-controller="Brand"
+                           asp-action="Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-pageSize="5"
+                           asp-route-searchByName="@currentSearch"
+                           class="btn btn-sm btn-outline-primary">@i</a>
+                    }
+                }
+
+                @if (Model.PageNumber < Model.TotalPages)
+                {
+                    <a asp-controller="Brand"
+                       asp-action="Index"
+                       asp-route-pageNumber="@(Model.PageNumber + 1)"
+                       asp-route-pageSize="5"
+                       asp-route-searchByName="@currentSearch"
+                       class="btn btn-sm btn-outline-primary d-flex align-items-center">
+                        Next <i class="bi bi-chevron-right ms-1"></i>
+                    </a>
+                }
             }
-            @if (Model.PageNumber < Model.TotalPages)
-            {
-                <a asp-controller="Brand"
-                   asp-action="Index"
-                   asp-route-pageNumber="@(Model.PageNumber + 1)"
-                   asp-route-pageSize="5"
-                   asp-route-searchByName="@currentSearch"
-                   class="btn btn-sm btn-primary fw-bold px-3"><i class="bi bi-arrow-right"></i></a>
-            }
-        }
+        </div>
     </div>
 </div>
 
 <style>
+    .text-gradient-primary {
+        background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-card {
+        border-radius: 12px;
+        transition: transform 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
     .brand-logo {
         width: 48px;
         height: 48px;
         object-fit: contain;
+        border: 1px solid #e9ecef;
+        padding: 2px;
+        transition: transform 0.2s ease;
+    }
+
+        .brand-logo:hover {
+            transform: scale(1.1);
+        }
+
+    .brand-logo-placeholder {
+        width: 48px;
+        height: 48px;
+        border: 1px dashed #dee2e6;
     }
 
     .website-link {
@@ -106,5 +237,33 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        transition: color 0.2s ease;
+    }
+
+        .website-link:hover {
+            color: #4361ee !important;
+        }
+
+    .table > :not(caption) > * > * {
+        padding: 1rem 1.5rem;
+    }
+
+    .btn {
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .card {
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .badge {
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
     }
 </style>

@@ -24,7 +24,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\ECommerce\" />
-    <Folder Include="Helpers\" />
     <Folder Include="Services\Implementation\ECommerce\" />
     <Folder Include="Services\Interfaces\ECommerce\" />
     <Folder Include="ViewModels\CRM\Customer\" />

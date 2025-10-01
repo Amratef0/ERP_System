@@ -1,4 +1,5 @@
 ﻿using ERP_System_Project.Extensions;
+using ERP_System_Project.Helpers;
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
@@ -21,7 +22,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public async Task AddNewProduct(ProductVM model)
         {
-            var imageUrl = await model.Image.SaveImageAsync(_env);
+            var imageUrl = await model.Image.SaveImageAsync(_env,"Uploads/Images/Products");
 
             var product = new Product
             {
@@ -46,7 +47,6 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         }
 
 
-
         public async Task UpdateCustomProduct(EditProductVM model)
         {
             var product = await _uow.Products.GetByIdAsync(model.Id);
@@ -62,7 +62,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             // Handle image removal
             if (model.RemoveImage && !string.IsNullOrEmpty(product.ImageURL))
             {
-                await DeleteImageFileAsync(product.ImageURL);
+                await FileHelper.DeleteImageFileAsync(product.ImageURL);
                 product.ImageURL = null;
             }
 
@@ -71,9 +71,9 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             {
                 if (!string.IsNullOrEmpty(product.ImageURL))
                 {
-                    await DeleteImageFileAsync(product.ImageURL);
+                    await FileHelper.DeleteImageFileAsync(product.ImageURL);
                 }
-                product.ImageURL = await model.NewImage.SaveImageAsync(_env);
+                product.ImageURL = await model.NewImage.SaveImageAsync(_env, "Uploads/Images/Products");
             }
 
             // Update attributes
@@ -96,18 +96,6 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             await _uow.CompleteAsync();
         }
 
-
-        private async Task DeleteImageFileAsync(string imageUrl)
-        {
-            if (!string.IsNullOrEmpty(imageUrl))
-            {
-                var filePath = Path.Combine("wwwroot", imageUrl.TrimStart('/'));
-                if (File.Exists(filePath))
-                {
-                    await Task.Run(() => File.Delete(filePath));
-                }
-            }
-        }
 
 
         public async Task<List<ProductAttributeVM>> GetAllProductAttributes()
@@ -145,33 +133,31 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         }
 
 
-        public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize, string? searchByName = null)
+        public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
+                                                                        string? searchByName = null, string? lowStock = null)
         {
+            Expression<Func<Product, bool>>? searchFilter = null;
+
             if (!string.IsNullOrEmpty(searchByName))
+                searchFilter = p => p.Name.Contains(searchByName);
+
+            if (lowStock == "lowStock")
             {
-                return _uow.Products.GetAllPaginatedAsync(
-                    selector: p => new ProductVM
-                    {
-                        Description = p.Description,
-                        Name = p.Name,
-                        Id = p.Id,
-                        ImageURL = p.ImageURL,
-                        CategoryId = p.CategoryId,
-                        BrandId = p.BrandId,
-                        Quantity = p.Quantity,
-                        UnitCost = p.UnitCost,
-                        StandardPrice = p.StandardPrice,
-                        AttributesVM = p.Attributes.Select(a => new ProductAttributeValueVM
-                        {
-                            AtrributeId = a.AtrributeId,
-                            Value = a.Value
-                        }).ToList()
-                    },
-                    filter: p => p.Name.Contains(searchByName),
-                    pageNumber: pageNumber,
-                    pageSize: pageSize,
-                    Includes: p => p.Attributes
-                );
+                searchFilter = searchFilter == null
+                    ? p => p.Quantity <= 10
+                    : p => p.Quantity <= 10 && p.Name.Contains(searchByName);
+            }
+            else if (lowStock == "outOfStock")
+            {
+                searchFilter = searchFilter == null
+                    ? p => p.Quantity == 0
+                    : p => p.Quantity == 0 && p.Name.Contains(searchByName);
+            }
+            else if (lowStock == "inStock")
+            {
+                searchFilter = searchFilter == null
+                    ? p => p.Quantity > 10
+                    : p => p.Quantity > 10 && p.Name.Contains(searchByName);
             }
 
             return _uow.Products.GetAllPaginatedAsync(
@@ -192,9 +178,10 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                         Value = a.Value
                     }).ToList()
                 },
-                    pageNumber: pageNumber,
-                    pageSize: pageSize,
-                    Includes: p => p.Attributes
+                filter: searchFilter,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                Includes: p => p.Attributes
             );
         }
     }

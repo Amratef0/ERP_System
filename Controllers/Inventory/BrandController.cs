@@ -2,6 +2,7 @@
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.ViewModels.Inventory;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_System_Project.Controllers.Inventory
@@ -9,11 +10,13 @@ namespace ERP_System_Project.Controllers.Inventory
     public class BrandController : Controller
     {
         private readonly IBrandService _brandService;
+        private readonly IValidator<BrandVM> _validator;
         private readonly IMapper _mapper;
-        public BrandController(IBrandService brandService, IMapper mapper)
+        public BrandController(IBrandService brandService, IMapper mapper, IValidator<BrandVM> validator)
         {
             _brandService = brandService;
             _mapper = mapper;
+            _validator = validator;
         }
         public async Task<IActionResult> Index(int pageNumber, int pageSize, string? searchByName = null)
         {
@@ -30,12 +33,16 @@ namespace ERP_System_Project.Controllers.Inventory
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New(BrandVM brandVM)
         {
-            if (ModelState.IsValid)
+            var result = _validator.Validate(brandVM);
+            if (result.IsValid)
             {
                 var brand = _mapper.Map<Brand>(brandVM);
                 await _brandService.CreateAsync(brand);
                 return RedirectToAction("Index");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
             return View(brandVM);
         }
 
@@ -51,7 +58,9 @@ namespace ERP_System_Project.Controllers.Inventory
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BrandVM brandVM)
         {
-            if (ModelState.IsValid)
+            var result = _validator.Validate(brandVM);
+
+            if (result.IsValid)
             {
                 var brand = await _brandService.GetByIdAsync(brandVM.Id);
                 // update using mapper
@@ -59,6 +68,8 @@ namespace ERP_System_Project.Controllers.Inventory
                 await _brandService.UpdateAsync(brand);
                 return RedirectToAction("Index");
             }
+            foreach (var error in result.Errors)
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             return View(brandVM);
         }
 

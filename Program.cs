@@ -92,6 +92,7 @@ builder.Services.AddMemoryCache();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
+
 // Validators Service
 builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
@@ -114,6 +115,7 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IAttributeService, AttributeService>();
 
 // HR Services
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
