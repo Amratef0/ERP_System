@@ -1,6 +1,8 @@
 ﻿using ERP_System_Project.Models.Core;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.ViewModels.Core;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_System_Project.Controllers.Core
@@ -8,12 +10,10 @@ namespace ERP_System_Project.Controllers.Core
     public class CurrencyController : Controller
     {
         private readonly ICurrencyService currencyService;
-        private readonly ICountryService countryService;
 
-        public CurrencyController(ICurrencyService currencyService, ICountryService countryService)
+        public CurrencyController(ICurrencyService currencyService)
         {
             this.currencyService = currencyService;
-            this.countryService = countryService;
         }
 
         [HttpGet]
@@ -45,9 +45,6 @@ namespace ERP_System_Project.Controllers.Core
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            Currency currency = await currencyService.GetByIdAsync(id);
-            if (currency == null) return NotFound();
-
             try
             {
                 await currencyService.DeleteAsync(id);

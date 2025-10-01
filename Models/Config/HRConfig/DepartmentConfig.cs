@@ -18,12 +18,6 @@ namespace ERP_System_Project.Models.Config.HRConfig
                    .HasDefaultValue(false);
 
             builder.HasQueryFilter(d => !d.IsDeleted);
-
-            // Configure self-referencing relationship with restrict delete behavior
-            builder.HasOne(d => d.ParentDepartment)
-                   .WithMany()
-                   .HasForeignKey(d => d.ParentDepartmentId)
-                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

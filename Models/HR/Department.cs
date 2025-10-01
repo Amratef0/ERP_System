@@ -38,11 +38,6 @@ namespace ERP_System_Project.Models.HR
         public DateOnly? DeletedAt { get; set; }
 
         // Navigation Properties
-        [ForeignKey("ParentDepartment")]
-        [Display(Name = "Parent Department")]
-        public int? ParentDepartmentId { get; set; }
-        public virtual Department? ParentDepartment { get; set; }
-
         [Display(Name = "Employees")]
         public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
     }

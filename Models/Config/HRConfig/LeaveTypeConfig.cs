@@ -21,6 +21,59 @@ namespace ERP_System_Project.Models.Config.HRConfig
                    .HasDefaultValue(false);
 
             builder.HasQueryFilter(lt => !lt.IsDeleted);
+
+            builder.HasData(
+                new LeaveType
+                {
+                    Id = 1,
+                    Name = "Annual Leave",
+                    Code = "ANNUAL_LEAVE",
+                    MaxDaysPerYear = 21,
+                    IsPaid = true,
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new LeaveType
+                {
+                    Id = 2,
+                    Name = "Sick Leave",
+                    Code = "SICK_LEAVE",
+                    MaxDaysPerYear = 14,
+                    IsPaid = true,
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new LeaveType
+                {
+                    Id = 3,
+                    Name = "Casual Leave",
+                    Code = "CASUAL_LEAVE",
+                    MaxDaysPerYear = 7,
+                    IsPaid = true,
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new LeaveType
+                {
+                    Id = 4,
+                    Name = "Maternity Leave",
+                    Code = "MATERNITY_LEAVE",
+                    MaxDaysPerYear = 90,
+                    IsPaid = true,
+                    IsActive = true,
+                    IsDeleted = false
+                },
+                new LeaveType
+                {
+                    Id = 5,
+                    Name = "Unpaid Leave",
+                    Code = "UNPAID_LEAVE",
+                    MaxDaysPerYear = null,
+                    IsPaid = false,
+                    IsActive = true,
+                    IsDeleted = false
+                }
+            );
         }
     }
 }

@@ -92,12 +92,10 @@ builder.Services.AddMemoryCache();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddScoped<IEmailService, EmailSender>();
 
-//// Validators Service
+
+// Validators Service
 builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
-//builder.Services.AddFluentValidationAutoValidation()
-//                .AddFluentValidationClientsideAdapters()
-//                .AddValidatorsFromAssemblyContaining<ProductVMValidator>();
 
 // Repositories and UnitOfWork
 //builder.Services.AddDataSevices();
@@ -123,6 +121,11 @@ builder.Services.AddScoped<IAttributeService, AttributeService>();
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
 builder.Services.AddScoped<IWorkScheduleDayService, WorkScheduleDayService>();
 builder.Services.AddScoped<IPublicHolidayService, PublicHolidayService>();
+builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+builder.Services.AddScoped<IEmployeeTypeCodeService, AttendanceStatusCodeService>();
+builder.Services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
+builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
+builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

@@ -23,9 +23,6 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Job Title Code")]
         public string Code { get; set; }
 
-        [Display(Name = "Job Grade")]
-        public int? JobGrade { get; set; }
-
         [DecimalPrecisionScale(15, 4)]
         [Display(Name = "Minimum Salary")]
         public decimal? MinSalary { get; set; }

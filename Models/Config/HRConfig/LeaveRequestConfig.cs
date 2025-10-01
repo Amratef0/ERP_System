@@ -33,11 +33,6 @@ namespace ERP_System_Project.Models.Config.HRConfig
                    .HasForeignKey(lr => lr.LeaveTypeId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(lr => lr.StatusCode)
-                   .WithMany(sc => sc.LeaveRequests)
-                   .HasForeignKey(lr => lr.StatusCodeId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
             builder.HasOne(lr => lr.ApprovedBy)
                    .WithMany(e => e.ApprovedTeamLeaveRequests)
                    .HasForeignKey(lr => lr.ApprovedById)

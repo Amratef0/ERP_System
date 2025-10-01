@@ -1,4 +1,4 @@
-﻿@model BranchIndexVM
+﻿@model IEnumerable<LeaveType>
 
 @{
     ViewData["Title"] = "Index";
@@ -7,21 +7,14 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Add">Add New branch</a>
+    <a asp-action="Add">Add New Leave Type</a>
 </p>
-
-<div class="mb-3">
-    <label for="countryFilter" class="form-label">Filter by country:</label>
-    <select id="countryFilter" class="form-control" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
-        <option value="">-- Select Country --</option>
-    </select>
-</div>
 
 <div class="mb-3">
     <form id="searchForm">
         @Html.AntiForgeryToken()
         <div class="input-group">
-            <input type="text" id="searchTerm" class="form-control" placeholder="Search by branch name..." />
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by leave type name..." />
 
             <button type="button" id="searchBtn" class="btn btn-primary">
                 <i class="bi bi-search"></i> Search
@@ -30,55 +23,48 @@
     </form>
 </div>
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
 <table class="table">
     <thead>
         <tr>
             <th>
-                Name
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                Code
+                @Html.DisplayNameFor(model => model.Code)
             </th>
             <th>
-                Phone Number
+                @Html.DisplayNameFor(model => model.IsPaid)
             </th>
             <th>
-                Email
+                @Html.DisplayNameFor(model => model.IsActive)
             </th>
             <th>Actions</th>
         </tr>
     </thead>
-    <tbody id="branches">
-        @foreach (var item in Model.Branches) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
-                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
+    <tbody id="types">
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsPaid)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+}
     </tbody>
 </table>
 
@@ -90,16 +76,14 @@
         $(document).ready(function () {
             function filter() {
                 var searchTerm = $("#searchTerm").val();
-                var country = parseInt($("#countryFilter").val()) || 0;
 
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("Filter", "Branch")',
+                    url: '@Url.Action("Search", "LeaveType")',
                     data: {
                         name: searchTerm,
-                        countryId: country,
                         __RequestVerificationToken: token
                     },
                     success: function (response) {
@@ -115,36 +99,36 @@
             $("#searchForm").submit(function (e) {
                 e.preventDefault();
                 filter();
-			});
+            });
 
             $("#searchBtn").click(function () {
                 filter();
             });
 
-            $("#countryFilter").change(function () {
-                filter();
-            });
-
             function fillTable(response) {
-                var tableBody = $("#branches");
+                var tableBody = $("#types");
                 tableBody.empty();
 
                 if (response && response.length > 0) {
                     var newRows = "";
                     var token = $('input[name="__RequestVerificationToken"]').val();
-                    response.forEach(function (branch) {
-                        var editUrl = '@Url.Action("Edit", "Branch")/' + branch.id;
-						var detailsUrl = '@Url.Action("Details", "Branch")/' + branch.id;
+                    response.forEach(function (leaveType) {
+                        var editUrl = '@Url.Action("Edit", "LeaveType")/' + leaveType.id;
+                        var detailsUrl = '@Url.Action("Details", "LeaveType")/' + leaveType.id;
 
                         newRows += `<tr>
-                                        <td>${branch.name}</td>
-                                        <td>${branch.code}</td>
-                                        <td>${branch.phoneNumber}</td>
-                                        <td>${branch.email}</td>
+                                        <td>${leaveType.name}</td>
+										<td>${leaveType.code}</td>
+                                        <td>
+                                            <input type="checkbox" ${leaveType.isPaid ? 'checked' : ''} disabled />
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" ${leaveType.isActive ? 'checked' : ''} disabled />
+                                        </td>
                                         <td>
                                             <a href="${editUrl}">Edit</a> |
-											<a href="${detailsUrl}">Details</a> |
-                                            <form action="/Branch/Delete/${branch.id}" method="post">
+                                            <a href="${detailsUrl}">Details</a> |
+                                            <form action="/LeaveType/Delete/${leaveType.id}" method="post">
                                                 <Input type="hidden" name="__RequestVerificationToken" value="${token}" />
                                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                             </form>
