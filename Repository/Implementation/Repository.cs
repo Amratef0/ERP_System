@@ -1,6 +1,7 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Models.Interfaces;
 using ERP_System_Project.Repository.Interfaces;
+using ERP_System_Project.Specification.Interfaces;
 using ERP_System_Project.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -109,6 +110,30 @@ namespace ERP_System_Project.Repository.Implementation
                 Data = await result.ToListAsync()
             };
         }
+
+
+        public async Task<List<object>> GetBySpecificationAsync(ISpecification<TEntity> specification)
+        {
+            IQueryable<TEntity> query = _dbSet;
+
+            if(specification.Criteria != null)
+                query = query.Where(specification.Criteria);
+
+            if(specification.OrderBy != null)
+                query = query.OrderBy(specification.OrderBy);
+
+            if(specification.OrderByDescending  != null)
+                query = query.OrderByDescending(specification.OrderByDescending);
+
+            if (specification.Includes.Any())
+            {
+                foreach(var include in specification.Includes)
+                    query = query.Include(include);
+            }
+
+            return await query.Select(specification.Selector).ToListAsync();
+        }
+
         #endregion
 
         #region Add_Update_Delete
