@@ -13,7 +13,7 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
             builder.Property(pi => pi.QuantityAvailable).HasPrecision(15,4).HasDefaultValue(0);
             builder.Property(pi => pi.QuantityOnOrder).HasPrecision(15,4).HasDefaultValue(0);
             builder.Property(pi => pi.QuantityOnHand).HasPrecision(15,4).HasDefaultValue(0);
-            builder.Property(pi => pi.CreatedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(pi => pi.CreatedDate).HasDefaultValueSql("GETDATE()");
         }
     }
 }

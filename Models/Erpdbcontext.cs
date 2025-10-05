@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Models.Logs;
 
 namespace ERP_System_Project.Models
 {
@@ -88,6 +89,12 @@ namespace ERP_System_Project.Models
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<SupplierCategory> SupplierCategories { get; set; }
         public DbSet<SupplierProduct> SupplierProducts { get; set; }
+        #endregion
+
+
+        #region Logs
+        public DbSet<PerformanceLog> PerformanceLogs { get; set; }
+
         #endregion
 
 

@@ -9,7 +9,7 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
     {
         public void Configure(EntityTypeBuilder<Brand> builder)
         {
-            builder.Property(b => b.CreatedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(b => b.CreatedDate).HasDefaultValueSql("GETDATE()"); ;
             builder.Property(b => b.IsActive).HasDefaultValue(true);
         }
     }

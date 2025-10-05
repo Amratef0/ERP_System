@@ -8,7 +8,7 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
     {
         public void Configure(EntityTypeBuilder<PaymentMethod> builder)
         {
-            builder.Property(pm => pm.CreatedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(pm => pm.CreatedDate).HasDefaultValueSql("GETDATE()");
         }
     }
 }

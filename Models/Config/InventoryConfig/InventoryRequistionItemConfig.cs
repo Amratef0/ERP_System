@@ -10,7 +10,7 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
         {
             builder.Property(iri => iri.QuantityRequested).HasPrecision(15, 4);
             builder.Property(iri => iri.QuantityApproved).HasPrecision(15, 4);
-            builder.Property(iri => iri.CreatedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(iri => iri.CreatedDate).HasDefaultValueSql("GETDATE()");
 
 
 

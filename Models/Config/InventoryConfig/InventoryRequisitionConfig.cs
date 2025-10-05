@@ -9,8 +9,8 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
         public void Configure(EntityTypeBuilder<InventoryRequisition> builder)
         {
             builder.HasIndex(ir => ir.Number).IsUnique();
-            builder.Property(ir => ir.CreatedDate).HasDefaultValue(DateTime.Now);
-            builder.Property(ir => ir.ModifiedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(ir => ir.CreatedDate).HasDefaultValueSql("GETDATE()");
+            builder.Property(ir => ir.ModifiedDate).HasDefaultValueSql("GETDATE()");
 
 
 

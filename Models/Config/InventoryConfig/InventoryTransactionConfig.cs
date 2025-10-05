@@ -11,7 +11,7 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
             builder.Property(it => it.Quantity).HasPrecision(19, 4);
             builder.Property(it => it.UnitCost).HasPrecision(19, 4);
             builder.Property(it => it.TotalCost).HasPrecision(19, 4);
-            builder.Property(it => it.CreatedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(it => it.CreatedDate).HasDefaultValueSql("GETDATE()");
 
 
 

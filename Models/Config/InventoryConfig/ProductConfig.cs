@@ -11,8 +11,8 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
             builder.Property(p => p.UnitCost).HasPrecision(10,2);
             builder.Property(p => p.StandardPrice).HasPrecision(10,2);
             builder.Property(p => p.IsActive).HasDefaultValue(true);
-            builder.Property(p => p.CreatedDate).HasDefaultValue(DateTime.Now);
-            builder.Property(p => p.ModifiedDate).HasDefaultValue(DateTime.Now);
+            builder.Property(p => p.CreatedDate).HasDefaultValueSql("GETDATE()");
+            
 
 
            builder.HasMany(p=> p.CustomerFavorites)
