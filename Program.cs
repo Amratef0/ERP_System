@@ -1,4 +1,5 @@
 using ERP_System_Project.Extensions;
+using ERP_System_Project.Middlewares;
 using ERP_System_Project.Models;
 using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Repository.Implementation;
@@ -8,11 +9,13 @@ using ERP_System_Project.Services.Implementation.Core;
 using ERP_System_Project.Services.Implementation.CRM;
 using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
+using ERP_System_Project.Services.Implementation.Log;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.CRM;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
+using ERP_System_Project.Services.Interfaces.Log;
 using ERP_System_Project.UOW;
 using ERP_System_Project.Validators.HR;
 using ERP_System_Project.Validators.Inventory;
@@ -128,6 +131,10 @@ builder.Services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
 builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 
+// Log Services
+builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();
+
+
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -154,5 +161,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseMiddleware<EndpointPerformanceMiddleware>();
 
 app.Run();
