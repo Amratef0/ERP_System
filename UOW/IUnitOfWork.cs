@@ -5,6 +5,7 @@ using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Models.Logs;
 using ERP_System_Project.Repository.Interfaces;
 
 namespace ERP_System_Project.UOW
@@ -61,6 +62,10 @@ namespace ERP_System_Project.UOW
         IRepository<PublicHoliday> PublicHolidays { get; }
         IRepository<WorkSchedule> WorkSchedules { get; }
         IRepository<WorkScheduleDay> WorkScheduleDays { get; }
+
+
+        IRepository<PerformanceLog> PerformanceLogs { get; }
+
 
         Task<int> CompleteAsync();
 

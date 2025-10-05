@@ -5,6 +5,7 @@ using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Models.Logs;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -75,6 +76,12 @@ namespace ERP_System_Project.UOW
         public IRepository<WorkScheduleDay> WorkScheduleDays { get; }
         #endregion
 
+        #region Logs
+
+        public IRepository<PerformanceLog> PerformanceLogs { get; }
+
+        #endregion
+
 
         public UnitOfWork(Erpdbcontext db)
         {
@@ -131,6 +138,8 @@ namespace ERP_System_Project.UOW
             PublicHolidays = new Repository<PublicHoliday>(_db);
             WorkSchedules = new Repository<WorkSchedule>(_db);
             WorkScheduleDays = new Repository<WorkScheduleDay>(_db);
+
+            PerformanceLogs = new Repository<PerformanceLog>(_db);
         }
 
         public async Task<int> CompleteAsync() => await _db.SaveChangesAsync();
