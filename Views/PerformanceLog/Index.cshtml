@@ -1,0 +1,336 @@
+﻿@using ERP_System_Project.Models.Enums
+@using ERP_System_Project.Models.Logs
+@model List<PerformanceLog>
+@{
+    ViewData["Title"] = "Performance Dashboard";
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 fw-bold text-gradient-primary mb-2">Performance Dashboard</h1>
+            <p class="text-muted mb-0">Monitor and track API endpoint performance metrics</p>
+        </div>
+    </div>
+
+    <!-- Performance Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="card-title">@Model.Count</h3>
+                            <p class="card-text">Total Logs</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-speedometer2 fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="card-title">@Model.Count(l => l.Status == TimeActionStatus.Instant || l.Status == TimeActionStatus.Fast)</h3>
+                            <p class="card-text">Fast Responses</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-lightning fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="card-title">@Model.Count(l => l.Status == TimeActionStatus.Moderate)</h3>
+                            <p class="card-text">Moderate Responses</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-clock fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h3 class="card-title">@Model.Count(l => l.Status == TimeActionStatus.Slow || l.Status == TimeActionStatus.VerySlow)</h3>
+                            <p class="card-text">Slow Responses</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="bi bi-exclamation-triangle fs-1 opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Logs Table -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-white py-3 border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-semibold">Performance Logs</h5>
+                <span class="badge bg-light text-dark">@Model.Count logs</span>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 py-3 fw-semibold">Endpoint</th>
+                            <th class="py-3 fw-semibold text-center">Request Date</th>
+                            <th class="py-3 fw-semibold text-center">Response Time</th>
+                            <th class="py-3 fw-semibold text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model)
+                        {
+                            <tr class="border-bottom performance-row">
+                                <td class="ps-4 align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3"
+                                             style="width: 40px; height: 40px;">
+                                            <i class="bi bi-cpu text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-semibold text-truncate" style="max-width: 300px;"
+                                                title="@log.EndPointName">
+                                                @log.EndPointName
+                                            </h6>
+                                            <small class="text-muted">ID: @log.Id</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <div class="text-dark fw-medium">@log.RequestDate.ToString("MMM dd, yyyy")</div>
+                                    <div class="text-muted small">@log.RequestDate.ToString("HH:mm:ss")</div>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="response-time-badge @GetStatusClass(log.Status)">
+                                        <i class="bi @GetStatusIcon(log.Status) me-1"></i>@log.ElabsedTime
+                                    </span>
+                                </td>
+                                <td class="text-center align-middle">
+                                    <span class="status-badge @GetStatusClass(log.Status)">
+                                        @log.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h6 class="card-title mb-0 fw-semibold">Performance Distribution</h6>
+                </div>
+                <div class="card-body">
+                    <div class="performance-distribution">
+                        @foreach (var status in Enum.GetValues(typeof(TimeActionStatus)).Cast<TimeActionStatus>())
+                        {
+                            var count = Model.Count(l => l.Status == status);
+                            var percentage = Model.Count > 0 ? (count * 100) / Model.Count : 0;
+
+                            <div class="distribution-item mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-medium @GetStatusTextClass(status)">
+                                        <i class="bi @GetStatusIcon(status) me-2"></i>@status
+                                    </span>
+                                    <span class="text-muted">@count (@percentage%)</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar @GetStatusClass(status)"
+                                         role="progressbar"
+                                         style="width: @percentage%"
+                                         aria-valuenow="@percentage"
+                                         aria-valuemin="0"
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3">
+                    <h6 class="card-title mb-0 fw-semibold">Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="recent-activity">
+                        @foreach (var log in Model.OrderByDescending(l => l.RequestDate).Take(5))
+                        {
+                            <div class="activity-item d-flex align-items-center mb-3">
+                                <div class="activity-icon me-3 @GetStatusClass(log.Status)">
+                                    <i class="bi @GetStatusIcon(log.Status)"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-medium">@log.EndPointName</div>
+                                    <div class="text-muted small">@log.RequestDate.ToString("MMM dd, HH:mm") • @log.ElabsedTime</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusClass(TimeActionStatus status)
+    {
+        return status switch
+        {
+            TimeActionStatus.Instant => "status-instant",
+            TimeActionStatus.Fast => "status-fast",
+            TimeActionStatus.Moderate => "status-moderate",
+            TimeActionStatus.Slow => "status-slow",
+            TimeActionStatus.VerySlow => "status-very-slow",
+            _ => "status-unknown"
+        };
+    }
+
+    public string GetStatusIcon(TimeActionStatus status)
+    {
+        return status switch
+        {
+            TimeActionStatus.Instant => "bi-lightning",
+            TimeActionStatus.Fast => "bi-rocket",
+            TimeActionStatus.Moderate => "bi-speedometer",
+            TimeActionStatus.Slow => "bi-clock",
+            TimeActionStatus.VerySlow => "bi-exclamation-triangle",
+            _ => "bi-question-circle"
+        };
+    }
+
+    public string GetStatusTextClass(TimeActionStatus status)
+    {
+        return status switch
+        {
+            TimeActionStatus.Instant => "text-success",
+            TimeActionStatus.Fast => "text-info",
+            TimeActionStatus.Moderate => "text-warning",
+            TimeActionStatus.Slow => "text-orange",
+            TimeActionStatus.VerySlow => "text-danger",
+            _ => "text-muted"
+        };
+    }
+}
+
+<style>
+    .text-gradient-primary {
+        background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-card {
+        border-radius: 12px;
+        transition: transform 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+    /* Status Color Coding */
+    .status-instant {
+        background-color: #198754 !important;
+        color: white !important;
+    }
+
+    .status-fast {
+        background-color: #0dcaf0 !important;
+        color: white !important;
+    }
+
+    .status-moderate {
+        background-color: #ffc107 !important;
+        color: black !important;
+    }
+
+    .status-slow {
+        background-color: #fd7e14 !important;
+        color: white !important;
+    }
+
+    .status-very-slow {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+
+    .text-orange {
+        color: #fd7e14 !important;
+    }
+
+    .response-time-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .status-badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .performance-row:hover {
+        background-color: #f8f9fa;
+        transition: all 0.2s ease;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+    }
+
+    .progress-bar {
+        border-radius: 4px;
+    }
+
+    .table > :not(caption) > * > * {
+        padding: 1rem 1.5rem;
+    }
+
+    .card {
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+</style>
