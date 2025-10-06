@@ -46,6 +46,8 @@ namespace ERP_System_Project.Models
         public DbSet<Offer> Offers { get; set; }
         public DbSet<OfferProduct> OfferProducts { get; set; }
         public DbSet<OfferCategory> OfferCategorys { get; set; }
+        public DbSet<ProductComment> ProductComments { get; set; }
+        public DbSet<ProductRating> ProductRatings { get; set; }
 
         #endregion
 
