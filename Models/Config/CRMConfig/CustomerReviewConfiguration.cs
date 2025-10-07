@@ -12,8 +12,7 @@ namespace ERP_System_Project.Models.Config.CRMConfig
 
             builder.HasKey(r => r.Id);
 
-            builder.Property(r => r.Title).HasMaxLength(200).IsRequired();
-            builder.Property(r => r.Description).HasMaxLength(2000).IsRequired();
+            builder.Property(r => r.Comment).HasMaxLength(500).IsRequired();
             builder.Property(r => r.Rating).IsRequired();
 
 

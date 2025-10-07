@@ -7,7 +7,7 @@ namespace ERP_System_Project.Models.CRM
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(250)]
+        [StringLength(500)]
         public string Comment { get; set; }
 
         [Range(1, 5)]

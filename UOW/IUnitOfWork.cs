@@ -40,8 +40,6 @@ namespace ERP_System_Project.UOW
         IRepository<PaymentMethodType> PaymentMethodTypes { get; }
         IRepository<PaymentStatusCode> PaymentStatusCodes { get; }
         IRepository<ShippingMethod> ShippingMethods { get; }
-        IRepository<ProductComment> ProductComments { get; }
-        IRepository<ProductRating> ProductRatings { get; }
 
         IRepository<Customer> Customers { get; }
         IRepository<CustomerAddress> CustomerAddresses { get; }

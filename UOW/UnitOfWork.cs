@@ -46,8 +46,6 @@ namespace ERP_System_Project.UOW
         public IRepository<PaymentMethodType> PaymentMethodTypes { get; }
         public IRepository<PaymentStatusCode> PaymentStatusCodes { get; }
         public IRepository<ShippingMethod> ShippingMethods { get; }
-        public IRepository<ProductComment> ProductComments { get; }
-        public IRepository<ProductRating> ProductRatings { get; }
         #endregion
 
         #region CRM
@@ -117,8 +115,6 @@ namespace ERP_System_Project.UOW
             PaymentMethodTypes = new Repository<PaymentMethodType>(_db);
             PaymentStatusCodes = new Repository<PaymentStatusCode>(_db);
             ShippingMethods = new Repository<ShippingMethod>(_db);
-            ProductComments = new Repository<ProductComment>(_db);
-            ProductRatings = new Repository<ProductRating>(_db);
 
             Customers = new Repository<Customer>(_db);
             CustomerAddresses = new Repository<CustomerAddress>(_db);
