@@ -37,8 +37,6 @@ namespace ERP_System_Project.UOW
 
         #region ECommerce
         public IRepository<Offer> Offers { get; }
-        public IRepository<OfferCategory> OfferCategories { get; }
-        public IRepository<OfferProduct> OfferProducts { get; }
         public IRepository<Order> Orders { get; }
         public IRepository<OrderItem> OrderItems { get; }
         public IRepository<OrderStatusCode> OrderStatusCodes { get; }
@@ -106,8 +104,6 @@ namespace ERP_System_Project.UOW
             InventoryRequisitionItems = new Repository<InventoryRequisitionItem>(_db);
 
             Offers = new Repository<Offer>(_db);
-            OfferCategories = new Repository<OfferCategory>(_db);
-            OfferProducts = new Repository<OfferProduct>(_db);
             Orders = new Repository<Order>(_db);
             OrderItems = new Repository<OrderItem>(_db);
             OrderStatusCodes = new Repository<OrderStatusCode>(_db);

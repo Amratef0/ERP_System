@@ -20,8 +20,5 @@ namespace ERP_System_Project.Models.Inventory
 
 
         public ICollection<Product> Products { get; set; } = new List<Product>();
-        public ICollection<OfferCategory> Offers { get; set; } = new List<OfferCategory>();
-
-
     }
 }

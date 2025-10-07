@@ -31,8 +31,6 @@ namespace ERP_System_Project.UOW
         IRepository<InventoryRequisitionItem> InventoryRequisitionItems { get; }
 
         IRepository<Offer> Offers { get; }
-        IRepository<OfferCategory> OfferCategories { get; }
-        IRepository<OfferProduct> OfferProducts { get; }
         IRepository<Order> Orders { get; }
         IRepository<OrderItem> OrderItems { get; }
         IRepository<OrderStatusCode> OrderStatusCodes { get; }

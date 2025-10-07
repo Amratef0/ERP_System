@@ -9,8 +9,7 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
         public void Configure(EntityTypeBuilder<Offer> builder)
         {
             builder.Property(o => o.IsActive).HasDefaultValue(true);
-            builder.Property(o => o.DiscountValue).HasPrecision(10, 2);
-            builder.Property(o => o.MinOrderAmount).HasPrecision(15, 2);
+            builder.Property(o => o.StartDate).HasDefaultValueSql("GETDATE()");
         }
     }
 }

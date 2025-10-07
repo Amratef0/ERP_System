@@ -44,8 +44,6 @@ namespace ERP_System_Project.Models
         public DbSet<PaymentStatusCode> PaymentStatusCodes { get; set; }
         public DbSet<ShippingMethod> ShippingMethods { get; set; }
         public DbSet<Offer> Offers { get; set; }
-        public DbSet<OfferProduct> OfferProducts { get; set; }
-        public DbSet<OfferCategory> OfferCategorys { get; set; }
 
         #endregion
 
