@@ -16,6 +16,11 @@ namespace ERP_System_Project.Models.Config.CRMConfig
             builder.Property(r => r.Description).HasMaxLength(2000).IsRequired();
             builder.Property(r => r.Rating).IsRequired();
 
+
+            builder.Property(c => c.CreatedAt)
+                 .HasDefaultValueSql("GETDATE()")
+                 .ValueGeneratedOnAdd()
+                 .IsRequired();
         }
     }
 }

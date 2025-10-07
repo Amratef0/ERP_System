@@ -114,6 +114,7 @@ builder.Services.AddScoped<ICurrencyService, CurrencyService>();
 // CRM Services
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ICustomerFavoriteService, CustomerFavoriteService>();
+builder.Services.AddScoped<ICustomerReviewService, CustomerReviewService>();
 
 // Inventory Services
 builder.Services.AddScoped<IBrandService, BrandService>();
