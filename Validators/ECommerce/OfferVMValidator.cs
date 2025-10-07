@@ -17,6 +17,7 @@ namespace ERP_System_Project.Validators.ECommerce
 
             RuleFor(o => o.OfferDays)
                 .NotEmpty().WithMessage("Number Of Days Is Required")
+                .GreaterThanOrEqualTo(1).WithMessage("Discount Days Must Be Greater Than Or Equal 1 Day")
                 .LessThan(365).WithMessage("Discount Days Must Be Less Than 1 Year");
         }
     }
