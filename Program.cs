@@ -1,3 +1,4 @@
+using ERP_System_Project.BackgroundServices;
 using ERP_System_Project.Extensions;
 using ERP_System_Project.Middlewares;
 using ERP_System_Project.Models;
@@ -103,10 +104,12 @@ builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
 
 // Repositories and UnitOfWork
-//builder.Services.AddDataSevices();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Background Services
+builder.Services.AddHostedService<ExpiredOfferBackgroundService>();
 
 // Core Services
 builder.Services.AddScoped<ICountryService, CountryService>();
