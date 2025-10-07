@@ -13,6 +13,7 @@ namespace ERP_System_Project.BackgroundServices
         public ExpiredOfferBackgroundService(IServiceProvider serviceProvider, ILogger<ExpiredOfferBackgroundService> logger)
         {
             _serviceProvider = serviceProvider;
+            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
