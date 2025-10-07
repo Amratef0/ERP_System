@@ -19,7 +19,7 @@ namespace ERP_System_Project.Models.ECommerce
 
         [Range(1,100)]
         public int DiscountPercentage { get; set; }
-        public DateTime StartDate { get; set; }
+        public DateTime StartDate { get; set; } = DateTime.Now;
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; } = true;
     }

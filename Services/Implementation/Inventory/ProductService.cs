@@ -6,6 +6,8 @@ using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.Inventory;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.Inventory
@@ -133,7 +135,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         }
 
 
-        public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
+        public async Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
                                                                         string? searchByName = null, string? lowStock = null)
         {
             Expression<Func<Product, bool>>? searchFilter = null;
@@ -160,7 +162,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     : p => p.Quantity > 10 && p.Name.Contains(searchByName);
             }
 
-            return _uow.Products.GetAllPaginatedAsync(
+            return await _uow.Products.GetAllPaginatedAsync(
                 selector: p => new ProductVM
                 {
                     Description = p.Description,
@@ -176,12 +178,17 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     {
                         AtrributeId = a.AtrributeId,
                         Value = a.Value
-                    }).ToList()
+                    }).ToList(),
+                    OfferPercentege = p.Offer != null ? p.Offer.DiscountPercentage : 0
                 },
                 filter: searchFilter,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
-                Includes: p => p.Attributes
+                Includes: new Expression<Func<Product, object>>[]
+                {
+                    p => p.Attributes,
+                    p => p.Offer
+                }
             );
         }
     }

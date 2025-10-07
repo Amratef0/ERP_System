@@ -7,12 +7,14 @@ using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
 using ERP_System_Project.Services.Implementation.Core;
 using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Implementation.ECommerce;
 using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Implementation.Log;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.Services.Interfaces.Log;
@@ -121,6 +123,9 @@ builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IAttributeService, AttributeService>();
+
+// ECommerce Services
+builder.Services.AddScoped<IOfferService, OfferService>();
 
 // HR Services
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();

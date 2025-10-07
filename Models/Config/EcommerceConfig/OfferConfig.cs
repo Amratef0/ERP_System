@@ -10,6 +10,7 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
         {
             builder.Property(o => o.IsActive).HasDefaultValue(true);
             builder.Property(o => o.StartDate).HasDefaultValueSql("GETDATE()");
+            builder.HasIndex(o => o.ProductId).IsUnique();
         }
     }
 }
