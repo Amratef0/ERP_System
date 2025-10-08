@@ -8,7 +8,7 @@
 
         public decimal Price { get; set; }
         public bool HaveOffer { get; set; } = false;
-        public int TotalOffer { get; set; } = 0;
+        public int DiscountPercentage { get; set; } = 0;
         public decimal NetPrice { get; set; }
 
         public int TotalRate { get; set; } // 0 - 5 (stars)
@@ -16,5 +16,8 @@
 
         public string BrandName { get; set; } = null!;
         public string BrandImageURL { get; set; } = null!;
+
+
+        public string CategoryName { get; set; } = null!;
     }
 }
