@@ -4,10 +4,9 @@ using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
+using ERP_System_Project.ViewModels.ECommerce;
 using ERP_System_Project.ViewModels.Inventory;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
+using LinqKit;
 using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.Inventory
@@ -188,6 +187,76 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                 {
                     p => p.Attributes,
                     p => p.Offer
+                }
+            );
+        }
+
+        public async Task<PageSourcePagination<ProductCardVM>> GetProductsPaginated(int pageNumber, int pageSize,
+                                                                        string? searchByName = null,
+                                                                        string? brandName = null,
+                                                                        string? categoryName = null,
+                                                                        int? minPrice = null, int? maxPrice = null)
+        {
+            Expression<Func<Product, bool>> searchFilter = p => true;
+
+            if (!string.IsNullOrEmpty(searchByName))
+                searchFilter = searchFilter.And(p => p.Name.Contains(searchByName));
+
+            if (!string.IsNullOrEmpty(brandName))
+                searchFilter = searchFilter.And(p => p.Brand.Name.Contains(brandName));
+
+            if (!string.IsNullOrEmpty(categoryName))
+                searchFilter = searchFilter.And(p => p.Category.Name.Contains(categoryName));
+
+            if(minPrice.HasValue && maxPrice.HasValue)
+            {
+                minPrice = Math.Min(minPrice.Value, maxPrice.Value);
+                maxPrice = Math.Max(minPrice.Value, maxPrice.Value);
+            }
+
+            if (minPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice >= minPrice);
+
+            if (maxPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice <= maxPrice);
+
+
+            return await _uow.Products.GetAllPaginatedAsync(
+                selector: p => new ProductCardVM
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    ImageURL = p.ImageURL,
+
+                    CategoryName = p.Category.Name,
+                    BrandName = p.Brand.Name,
+                    BrandImageURL = p.Brand.LogoURL,
+
+                    Price = p.StandardPrice,
+                    HaveOffer = p.Offer != null,
+                    DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
+                    NetPrice =
+                        p.Offer != null ?
+                        p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice) 
+                        : p.StandardPrice,
+
+                    NumberOfRaters = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                    TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
+                        ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
+                        : 0,
+
+                },
+                expandable: true,
+                filter: searchFilter,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                Includes: new Expression<Func<Product, object>>[]
+                {
+                    p => p.Attributes,
+                    p => p.Offer,
+                    p => p.Brand,
+                    p => p.Category,
+                    p => p.CustomerReviews
                 }
             );
         }
