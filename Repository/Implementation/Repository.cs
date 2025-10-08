@@ -3,6 +3,7 @@ using ERP_System_Project.Models.Interfaces;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Specification.Interfaces;
 using ERP_System_Project.ViewModels;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -72,6 +73,7 @@ namespace ERP_System_Project.Repository.Implementation
             Expression<Func<TEntity, TResult>> selector,
             int pageNumber = 1, int pageSize = 10,
             Expression<Func<TEntity, bool>>? filter = null,
+            bool exbandable = false,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] Includes) where TResult : class
         {
@@ -81,7 +83,12 @@ namespace ERP_System_Project.Repository.Implementation
             IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
+            {
+                if (exbandable)
+                    query = query.AsExpandableEFCore().Where(filter);
                 query = query.Where(filter);
+            }
+                
 
             if (Includes != null)
                 foreach (var include in Includes)
