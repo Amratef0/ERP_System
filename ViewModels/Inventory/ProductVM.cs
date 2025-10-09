@@ -27,7 +27,6 @@ namespace ERP_System_Project.ViewModels.Inventory
         [DisplayName("Category")]
         public int CategoryId { get; set; }
 
-
         public int Quantity { get; set; }
 
         [ImageFile]

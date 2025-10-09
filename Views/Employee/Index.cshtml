@@ -1,0 +1,208 @@
+﻿@model EmployeesIndexVM
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Add">Add New Employee</a>
+</p>
+
+<div class="mb-3">
+    <form id="searchForm">
+        @Html.AntiForgeryToken()
+        <div class="input-group">
+            <input type="text" id="searchTerm" class="form-control" placeholder="Search by employee name..." />
+
+            <button type="button" id="searchBtn" class="btn btn-primary">
+                <i class="bi bi-search"></i> Search
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="mb-3">
+    <label for="branchFilter" class="form-label">Filter by Branch:</label>
+    <select id="branchFilter" class="form-control" asp-items="@(new SelectList(Model.Branches, "Id", "Name"))">
+        <option value="">-- Select Branch --</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="departmentFilter" class="form-label">Filter by Department:</label>
+    <select id="departmentFilter" class="form-control" asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
+        <option value="">-- Select Department --</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="employeeTypeFilter" class="form-label">Filter by Employee Type:</label>
+    <select id="employeeTypeFilter" class="form-control" asp-items="@(new SelectList(Model.EmployeeTypes, "Id", "Name"))">
+        <option value="">-- Select Employee Type --</option>
+    </select>
+</div>
+
+<div class="mb-3">
+    <label for="jobTitleFilter" class="form-label">Filter by Job Title:</label>
+    <select id="jobTitleFilter" class="form-control" asp-items="@(new SelectList(Model.JobTitles, "Id", "Name"))">
+        <option value="">-- Select Job Title --</option>
+    </select>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                FullName
+            </th>
+            <th>
+                Branch
+            </th>
+            <th>
+                Department
+            </th>
+            <th>
+                Employee Type
+            </th>
+            <th>
+               JobTitle
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="employees">
+@foreach (var item in Model.Employees) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Branch.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobTitle.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            function filter() {
+                var searchTerm = $("#searchTerm").val();
+                var branch = parseInt($("#branchFilter").val()) || 0;
+                var department = parseInt($("#departmentFilter").val()) || 0;
+                var employeeType = parseInt($("#employeeTypeFilter").val()) || 0;
+                var jobTitle = parseInt($("#jobTitleFilter").val()) || 0;
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Search", "Employee")',
+                    data: {
+                        name: searchTerm,
+                        branchId: branch,
+                        departmentId: department,
+                        employeeTypeId: employeeType,
+                        jobTitleId: jobTitle,
+                        __RequestVerificationToken: token
+                    },
+                    success: function (response) {
+                        fillTable(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Search failed:", error);
+                        alert("An error occurred while searching.");
+                    }
+                });
+            }
+
+            $("#searchForm").submit(function (e) {
+                e.preventDefault();
+                filter();
+            });
+
+            $("#searchBtn").click(function () {
+                filter();
+            });
+
+            $("#branchFilter").change(function () {
+                filter();
+            });
+
+            $("#departmentFilter").change(function () {
+                filter();
+            });
+
+            $("#employeeTypeFilter").change(function () {
+                filter();
+            });
+
+            $("#jobTitleFilter").change(function () {
+                filter();
+            });
+
+            function fillTable(response) {
+                var tableBody = $("#employees");
+                tableBody.empty();
+
+                if (response && response.length > 0) {
+                    var newRows = "";
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+                    response.forEach(function (employee) {
+                        var editUrl = '@Url.Action("Edit", "Employee")/' + employee.id;
+                        var detailsUrl = '@Url.Action("Details", "Employee")/' + employee.id;
+
+                        newRows += `<tr>
+                                        <td>${employee.name}</td>
+                                        <td>${employee.branch.name}</td>
+                                        <td>${employee.department.name}</td>
+                                        <td>${employee.employeeType.name}</td>
+                                        <td>${employee.jobTitle.name}</td>
+                                        <td>
+                                            <a href="${editUrl}">Edit</a> |
+                                            <a href="${detailsUrl}">Details</a> |
+                                            <form action="/Employee/Delete/${employee.id}" method="post">
+                                                <Input type="hidden" name="__RequestVerificationToken" value="${token}" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            </form>
+                                        </td>
+                                    </tr>`;
+                    });
+                    tableBody.html(newRows);
+                } else {
+                    var noResultsRow = "<tr><td colspan='6' class='text-center'>No results found.</td></tr>";
+                    tableBody.html(noResultsRow);
+                }
+            }
+        });
+    </script>
+}

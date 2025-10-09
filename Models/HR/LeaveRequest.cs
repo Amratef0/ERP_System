@@ -2,6 +2,7 @@
 using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ERP_System_Project.Models.Enums;
 
 namespace ERP_System_Project.Models.HR
 {

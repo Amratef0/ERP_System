@@ -131,6 +131,7 @@ builder.Services.AddScoped<IEmployeeTypeCodeService, AttendanceStatusCodeService
 builder.Services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
 builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 // Log Services
 builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();

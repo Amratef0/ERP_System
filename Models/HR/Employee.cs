@@ -4,6 +4,7 @@ using ERP_System_Project.Models.ValidationAttributes;
 using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ERP_System_Project.Models.Enums;
 
 namespace ERP_System_Project.Models.HR
 {
@@ -12,12 +13,6 @@ namespace ERP_System_Project.Models.HR
         [Key]
         [Display(Name = "Employee ID")]
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "Employee code is required.")]
-        [MaxLength(50, ErrorMessage = "Employee code cannot exceed 50 characters.")]
-        [MinLength(1, ErrorMessage = "Employee code must be at least 1 character long.")]
-        [Display(Name = "Employee Code")]
-        public string Code { get; set; }
 
         [Required(ErrorMessage = "First name is required.")]
         [MaxLength(100, ErrorMessage = "First name cannot exceed 100 characters.")]
@@ -35,7 +30,7 @@ namespace ERP_System_Project.Models.HR
         public DateOnly? DateOfBirth { get; set; }
 
         [Display(Name = "Gender")]
-        public char? Gender { get; set; }
+        public Gender Gender { get; set; }
 
         [Display(Name = "National ID")]
         public string? NationalId { get; set; }
@@ -80,11 +75,6 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Emergency Contact Phone")]
         public string? EmergencyContactPhone { get; set; }
 
-        [MaxLength(100, ErrorMessage = "Emergency contact relation cannot exceed 100 characters.")]
-        [MinLength(2, ErrorMessage = "Emergency contact relation must be at least 2 characters long.")]
-        [Display(Name = "Emergency Contact Relation")]
-        public string? EmergencyContactRelation { get; set; }
-
         [Required(ErrorMessage = "Base salary is required.")]
         [DecimalPrecisionScale(15, 4)]
         [Display(Name = "Base Salary")]
@@ -100,8 +90,10 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Bank Name")]
         public string? BankName { get; set; }
 
-        [Display(Name = "Is Active")]
+        [Display(Name = "Is Active?")]
         public bool IsActive { get; set; }
+
+        public string? ImageURL { get; set; }
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
@@ -121,6 +113,11 @@ namespace ERP_System_Project.Models.HR
         public int BranchId { get; set; }
         public virtual Branch Branch { get; set; }
 
+        [ForeignKey("Department")]
+        [Display(Name = "Department")]
+        public int DepartmentId { get; set; }
+        public virtual Department Department { get; set; }
+
         [ForeignKey("Type")]
         [Display(Name = "Employee Type")]
         public int TypeId { get; set; }
@@ -131,16 +128,6 @@ namespace ERP_System_Project.Models.HR
         public int JobTitleId { get; set; }
         public virtual JobTitle JobTitle { get; set; }
 
-        [ForeignKey("Department")]
-        [Display(Name = "Department")]
-        public int DepartmentId { get; set; }
-        public virtual Department Department { get; set; }
-
-        [ForeignKey("Manager")]
-        [Display(Name = "Manager")]
-        public int? ManagerId { get; set; }
-        public virtual Employee? Manager { get; set; }
-
         [ForeignKey("SalaryCurrence")]
         [Display(Name = "Salary Currency")]
         public int? SalaryCurrencyId { get; set; }
@@ -148,8 +135,8 @@ namespace ERP_System_Project.Models.HR
 
         [ForeignKey("Address")]
         [Display(Name = "Address")]
-        public int? AddressId { get; set; }
-        public virtual Address? Address { get; set; }
+        public int AddressId { get; set; }
+        public virtual Address Address { get; set; }
 
         [Display(Name = "Inventory Transactions")]
         public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();

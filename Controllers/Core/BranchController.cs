@@ -29,7 +29,7 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            BranchIndexVM model = new BranchIndexVM()
+            BranchesIndexVM model = new BranchesIndexVM()
             {
                 Branches = await branchService.GetAllAsync(),
                 Countries = await countryService.GetAllAsync()

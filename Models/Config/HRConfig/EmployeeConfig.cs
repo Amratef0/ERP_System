@@ -8,9 +8,6 @@ namespace ERP_System_Project.Models.Config.HRConfig
     {
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
-            builder.HasIndex(e => e.Code)
-                   .IsUnique();
-
             builder.HasIndex(e => e.NationalId).IsUnique()
                    .HasFilter("[NationalId] IS NOT NULL");
 
@@ -71,11 +68,6 @@ namespace ERP_System_Project.Models.Config.HRConfig
             builder.HasOne(e => e.Department)
                    .WithMany(d => d.Employees)
                    .HasForeignKey(e => e.DepartmentId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(e => e.Manager)
-                   .WithMany()
-                   .HasForeignKey(e => e.ManagerId)
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(e => e.SalaryCurrency)

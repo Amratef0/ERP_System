@@ -1,3 +1,4 @@
+using ERP_System_Project.Models.Enums;
 using ERP_System_Project.Models.HR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
