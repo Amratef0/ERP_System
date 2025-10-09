@@ -46,5 +46,12 @@ namespace ERP_System_Project.Controllers.ECommerce
             
             return View(products);
         }
+
+        public async Task<IActionResult> ProductDetails(int productId)
+        {
+            var product = await _productService.GetProductDetails(productId);
+            if (product != null) return View(product);
+            return NotFound();
+        }
     }
 }
