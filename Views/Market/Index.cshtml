@@ -157,7 +157,7 @@
 
                                     <!-- Rating Number -->
                                     <span class="text-muted small ms-1">
-                                        @product.TotalRate.ToString("0.0") (@product.NumberOfRaters)
+                                        @product.TotalRate.ToString("0.0") (@product.NumberOfReviews)
                                     </span>
                                 </div>
                             </div>
@@ -186,9 +186,12 @@
 
                             <!-- Action Buttons -->
                             <div class="d-flex gap-2 mt-3">
-                                <button class="btn btn-primary btn-sm flex-fill">
-                                    <i class="bi bi-cart-plus me-1"></i>Buy Now
-                                </button>
+                                <a asp-controller="Market"
+                                   asp-action="ProductDetails"
+                                   asp-route-productId="@product.Id"
+                                   class="btn btn-primary btn-sm flex-fill">
+                                    <i class="bi bi-cart-plus me-1"></i> Buy Now
+                                </a>
                                 <button class="btn btn-outline-danger btn-sm">
                                     <i class="bi bi-heart"></i>
                                 </button>

@@ -4,7 +4,7 @@
     {
         public int CustomerId { get; set; }
         public string CustomerName { get; set; } = null!;
-        public string CustomerImageURL { get; set; } = null!;
+        public string CustomerImageURL { get; set; }
         public int Rate { get; set; } // 0 - 5 (stars)
         public string Comment { get; set; } = null!;
         public DateTime DateCreated { get; set; }

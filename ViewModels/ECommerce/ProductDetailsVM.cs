@@ -1,4 +1,6 @@
-﻿namespace ERP_System_Project.ViewModels.ECommerce
+﻿using ERP_System_Project.ViewModels.Inventory;
+
+namespace ERP_System_Project.ViewModels.ECommerce
 {
     public class ProductDetailsVM
     {
@@ -9,18 +11,18 @@
 
         public decimal Price { get; set; }
         public bool HasOffer { get; set; } = false;
-        public int TotalOffer { get; set; } = 0;
+        public int DiscountPercentage { get; set; } = 0;
         public decimal NetPrice { get; set; }
-
-        public int TotalRate { get; set; } // 0 - 5 (stars)
-        public int NumberOfReviewers { get; set; }
-        public List<CustomerReviewVM> Reviews { get; set; } = new List<CustomerReviewVM>();
 
         public string BrandName { get; set; } = null!;
         public string BrandImageURL { get; set; } = null!;
-
         public string CategoryName { get; set; } = null!;
 
-        public int Quantity { get; set; } = 1;
+        public int QuantityInStock { get; set; }
+
+        public int TotalRate { get; set; } // 0 - 5 (stars)
+        public int NumberOfReviews { get; set; }
+        public List<CustomerReviewVM> Reviews { get; set; } = new List<CustomerReviewVM>();
+        public List<AttributeVM> Attributes { get; set; } = new List<AttributeVM>();
     }
 }

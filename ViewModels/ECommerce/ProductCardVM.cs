@@ -12,7 +12,7 @@
         public decimal NetPrice { get; set; }
 
         public int TotalRate { get; set; } // 0 - 5 (stars)
-        public int NumberOfRaters { get; set; }
+        public int NumberOfReviews { get; set; }
 
         public string BrandName { get; set; } = null!;
         public string BrandImageURL { get; set; } = null!;
