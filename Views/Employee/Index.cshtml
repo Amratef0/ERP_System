@@ -74,7 +74,7 @@
                 Employee Type
             </th>
             <th>
-               JobTitle
+               Job Title
             </th>
             <th>Actions</th>
         </tr>
@@ -182,10 +182,10 @@
                         var detailsUrl = '@Url.Action("Details", "Employee")/' + employee.id;
 
                         newRows += `<tr>
-                                        <td>${employee.name}</td>
+                                        <td>${employee.fullName}</td>
                                         <td>${employee.branch.name}</td>
                                         <td>${employee.department.name}</td>
-                                        <td>${employee.employeeType.name}</td>
+                                        <td>${employee.type.name}</td>
                                         <td>${employee.jobTitle.name}</td>
                                         <td>
                                             <a href="${editUrl}">Edit</a> |

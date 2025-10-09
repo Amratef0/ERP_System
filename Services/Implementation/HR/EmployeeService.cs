@@ -109,6 +109,7 @@ namespace ERP_System_Project.Services.Implementation.HR
                     Type = e.Type,
                     JobTitle = e.JobTitle,
                 });
+
             return employees;
         }
 
@@ -141,15 +142,16 @@ namespace ERP_System_Project.Services.Implementation.HR
                 query = query.Where(e => e.JobTitleId == jobTitleId.Value);
             }
 
-            IEnumerable<EmployeeIndexVM> employees = query.Select(
+            IEnumerable<EmployeeIndexVM> employees = await query.Select(
                 e => new EmployeeIndexVM
                 {
+                    Id = e.Id,
                     FullName = $"{e.FirstName} {e.LastName}",
                     Branch = e.Branch,
                     Department = e.Department,
                     Type = e.Type,
                     JobTitle = e.JobTitle,
-                });
+                }).ToListAsync();
 
             return employees;
         }

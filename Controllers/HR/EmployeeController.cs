@@ -60,15 +60,8 @@ namespace ERP_System_Project.Controllers.HR
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> SearchAsync(string? name, int? branchId, int? departmentId, int? employeeTypeId, int? jobTitleId)
         {
-            EmployeesIndexVM model = new EmployeesIndexVM
-            {
-                Employees = await employeeService.SearchAsync(name, branchId, departmentId, employeeTypeId, jobTitleId),
-                Branches = await branchService.GetAllAsync(),
-                Departments = await departmentService.GetAllAsync(),
-                EmployeeTypes = await employeeTypeService.GetAllAsync(),
-                JobTitles = await jobTitleService.GetAllAsync()
-            };
-            return View("Index", model);
+            IEnumerable<EmployeeIndexVM> employees = await employeeService.SearchAsync(name, branchId, departmentId, employeeTypeId, jobTitleId);
+            return Json(employees);
         }
 
         [HttpGet]

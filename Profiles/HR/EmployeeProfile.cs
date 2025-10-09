@@ -21,6 +21,7 @@ namespace ERP_System_Project.Profiles.HR
                 .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Address.Country.Name))
                 .ForMember(dest => dest.Branch, opt => opt.MapFrom(src => src.Branch.Name))
                 .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department.Name))
+                .ForMember(dest => dest.SalaryCurrency, opt => opt.MapFrom(src => src.SalaryCurrency != null ? src.SalaryCurrency.Name : string.Empty))
                 .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.Name))
                 .ForMember(dest => dest.JobTitle, opt => opt.MapFrom(src => src.JobTitle.Name))
                 .ForMember(dest => dest.Branches, opt => opt.Ignore())
