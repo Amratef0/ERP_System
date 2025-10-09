@@ -1,0 +1,91 @@
+﻿@model ERP_System_Project.Models.PurchaseOrder
+
+<h2>Edit Purchase Order</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="PurchaseOrderId" />
+
+    <div class="form-group">
+        <label asp-for="PoNumber"></label>
+        <input asp-for="PoNumber" class="form-control" />
+        <span asp-validation-for="PoNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OrderDate"></label>
+        <input asp-for="OrderDate" type="date" class="form-control" />
+        <span asp-validation-for="OrderDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Supplier</label>
+        <select id="supplierDropdown" name="SupplierId" class="form-control" asp-items="ViewBag.Suppliers">
+            <option value="">-- Select Supplier --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Product</label>
+        <select id="productDropdown" name="WarehouseProductId" class="form-control">
+            <option value="">-- Select Product --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="WarehouseId"></label>
+        <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.Warehouses">
+            <option value="">-- Select Warehouse --</option>
+        </select>
+        <span asp-validation-for="WarehouseId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="StatusId"></label>
+        <input asp-for="StatusId" type="number" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PaymentTermsId"></label>
+        <input asp-for="PaymentTermsId" type="number" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var supplierId = $('#supplierDropdown').val();
+            if(supplierId){
+                loadProducts(supplierId, @Model.WarehouseProductId);
+            }
+
+            $('#supplierDropdown').change(function(){
+                var supplierId = $(this).val();
+                loadProducts(supplierId, 0);
+            });
+
+            function loadProducts(supplierId, selectedId){
+                if(supplierId){
+                    $.getJSON('@Url.Action("GetSupplierProducts")', { supplierId: supplierId }, function(data){
+                        var options = '<option value="">-- Select Product --</option>';
+                        $.each(data, function(i, item){
+                            var sel = (item.productId == selectedId) ? 'selected' : '';
+                            options += `<option value="${item.productId}" ${sel}>${item.name}</option>`;
+                        });
+                        $('#productDropdown').html(options);
+                    });
+                } else {
+                    $('#productDropdown').html('<option value="">-- Select Product --</option>');
+                }
+            }
+        });
+    </script>
+}
