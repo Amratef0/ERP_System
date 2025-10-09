@@ -106,9 +106,9 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                      );
         }
 
-        public Task<EditProductVM> GetCustomProduct(int productId)
+        public async Task<EditProductVM> GetCustomProduct(int productId)
         {
-            var product = _uow.Products.GetAsync(
+            var product = await _uow.Products.GetAsync(
                 filter: p => p.Id == productId,
                 selector: p => new EditProductVM
                 {
@@ -240,7 +240,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                         p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice) 
                         : p.StandardPrice,
 
-                    NumberOfRaters = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                    NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
                     TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
                         ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
                         : 0,
@@ -259,6 +259,65 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     p => p.CustomerReviews
                 }
             );
+        }
+
+        public async Task<ProductDetailsVM> GetProductDetails(int productId)
+        {
+            var product =  await _uow.Products.GetAsync(
+                filter: p => p.Id == productId,
+                selector: p => new ProductDetailsVM
+                {
+                    Id = productId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    ImageURL = p.ImageURL,
+
+                    BrandName = p.Brand.Name,
+                    BrandImageURL = p.Brand.LogoURL,
+                    CategoryName = p.Category.Name,
+
+                    Price = p.StandardPrice,
+                    HasOffer = p.Offer != null,
+                    DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
+                    NetPrice = p.Offer != null ?
+                        p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice)
+                        : p.StandardPrice,
+
+                    NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                    TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
+                        ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
+                        : 0,
+
+                    QuantityInStock = p.Quantity,
+                    Reviews = p.CustomerReviews.Select(cr => new CustomerReviewVM
+                    {
+                        CustomerId = cr.CustomerId,
+                        Comment = cr.Comment,
+                        CustomerName = cr.Customer.FullName,
+                        DateCreated = cr.CreatedAt,
+                        Rate = (int)cr.Rating
+                    }).ToList(),
+
+                    Attributes = p.Attributes.Select(a => new AttributeVM
+                    {
+                        Id = a.AtrributeId,
+                        Name = a.ProductAttribute.Name,
+                        Type = a.Value
+                    }).ToList()
+                },
+
+                Includes: new Expression<Func<Product, object>>[]
+                {
+                    p => p.Attributes,
+                    p => p.Offer,
+                    p => p.Brand,
+                    p => p.Category,
+                    p => p.CustomerReviews,
+                }
+
+                );
+
+            return product!;
         }
     }
 }

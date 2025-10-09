@@ -15,20 +15,20 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             _uow = uow;
         }
 
-        public Task<PageSourcePagination<BrandVM>> GetBrandsPaginated(int pageNumber, int pageSize, string? searchByName = null)
+        public async Task<PageSourcePagination<BrandVM>> GetBrandsPaginated(int pageNumber, int pageSize, string? searchByName = null)
         {
             Expression<Func<Brand, bool>>? searchFilter = null;
             if (!string.IsNullOrEmpty(searchByName))
                 searchFilter = p => p.Name.Contains(searchByName);
 
-            return _uow.Brands.GetAllPaginatedAsync(
+            return await _uow.Brands.GetAllPaginatedAsync(
                     selector: b => new BrandVM
                     {
                         Description = b.Description,
                         Name = b.Name,
                         Id = b.Id,
                         LogoURL = b.LogoURL,
-                        WebsiteURL = b.WebsiteURL
+                        WebsiteURL = b.WebsiteURL ?? "NO Website"
                     },
                     filter: searchFilter,
                     pageNumber: pageNumber,

@@ -19,6 +19,8 @@ namespace ERP_System_Project.Services.Interfaces.Inventory
             string? brandName = null,
             string? categoryName = null,
             int? minPrice = null, int? maxPrice = null);
+
+        Task<ProductDetailsVM> GetProductDetails(int productId);
         Task AddNewProduct(ProductVM product);
         Task<EditProductVM> GetCustomProduct(int productId);
         Task UpdateCustomProduct(EditProductVM product);
