@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.Models.HR;
+using ERP_System_Project.Models.HR;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
@@ -21,12 +21,11 @@ namespace ERP_System_Project.Models.Inventory
 
         [ForeignKey("RequestingEmployee")]
         public int RequestedByEmployeeId { get; set; } 
-        public Employee RequestingEmployee { get; set; }
+        public Employee? RequestingEmployee { get; set; }
         public DateTime RequestionDate { get; set; }
 
         [ForeignKey("RequstionStatusCode")]
         public int StatusId { get; set; }
-        public InventoryRequisitionStatusCode RequstionStatusCode { get; set; }
 
         [ForeignKey("ApprovingEmployee")]
         public int? ApprovedByEmployeeId { get; set; }
@@ -38,12 +37,6 @@ namespace ERP_System_Project.Models.Inventory
         public string? Comments { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
-
-
-
-
-        public ICollection<InventoryRequisitionItem> RequestedItems { get; set; } = new List<InventoryRequisitionItem>();
-
 
     }
 }
