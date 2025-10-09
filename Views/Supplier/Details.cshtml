@@ -1,0 +1,59 @@
+﻿@model ERP_System_Project.Models.Supplier
+
+@{
+    ViewData["Title"] = "Supplier Details";
+}
+
+<h2>Supplier Details</h2>
+
+<div>
+    <h4>@Model.SupplierName (@Model.SupplierCode)</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Category</dt>
+        <dd class="col-sm-9">@Model.SupplierCategory?.CategoryName</dd>
+
+      
+
+        <dt class="col-sm-3">Created</dt>
+        <dd class="col-sm-9">@Model.CreatedDate</dd>
+
+        <dt class="col-sm-3">Modified</dt>
+        <dd class="col-sm-9">@Model.ModifiedDate</dd>
+    </dl>
+</div>
+
+<h4>Products</h4>
+@if (Model.SupplierProducts != null && Model.SupplierProducts.Any())
+{
+    <ul>
+        @foreach (var sp in Model.SupplierProducts)
+        {
+            <li>@sp.Product?.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No products linked to this supplier.</p>
+}
+
+<h4>Purchase Orders</h4>
+@if (Model.PurchaseOrders != null && Model.PurchaseOrders.Any())
+{
+    <ul>
+        @foreach (var po in Model.PurchaseOrders)
+        {
+            <li>PO#: @po.PurchaseOrderId - Date: @po.OrderDate</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No purchase orders found.</p>
+}
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.SupplierId" class="btn btn-warning">Edit</a> |
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>
