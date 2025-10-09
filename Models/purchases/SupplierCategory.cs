@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,7 +20,7 @@ namespace ERP_System_Project.Models
 
         public bool IsActive { get; set; } = true;
 
-        public ICollection<Supplier> Suppliers { get; set; }
+        public ICollection<Supplier>? Suppliers { get; set; }
     } 
    
 }
