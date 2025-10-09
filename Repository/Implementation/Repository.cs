@@ -1,5 +1,6 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Models.Interfaces;
+using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Specification.Interfaces;
 using ERP_System_Project.ViewModels;
@@ -43,6 +44,19 @@ namespace ERP_System_Project.Repository.Implementation
 
             foreach (var include in Includes)
                 query = query.Include(include);
+
+            if (typeof(TEntity) == typeof(Product))
+            {
+                var productQuery = query as IQueryable<Product>;
+
+                productQuery = productQuery!
+                    .Include(p => p.Attributes)
+                        .ThenInclude(a => a.ProductAttribute)
+                    .Include(p => p.CustomerReviews)
+                        .ThenInclude(cr => cr.Customer);
+
+                query = productQuery as IQueryable<TEntity>;
+            }
 
             return query.Select(selector).FirstOrDefaultAsync();
         }
