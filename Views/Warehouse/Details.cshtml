@@ -1,0 +1,40 @@
+﻿@model ERP_System_Project.Models.Inventory.Warehouse
+@{
+    ViewData["Title"] = "Warehouse Details";
+}
+
+<h2>Warehouse Details</h2>
+
+<div>
+    <h4>@Model.Name (@Model.Code)</h4>
+    <p>Branch: @Model.Branch?.Name</p>
+    <p>Created: @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+</div>
+
+<h4>Products</h4>
+@if (Model.WarehouseProducts.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity On Hand</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.WarehouseProducts)
+            {
+                <tr>
+                    <td>@p.Product?.Name</td>
+                    <td>@p.QuantityOnHand</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No products in this warehouse.</p>
+}
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>

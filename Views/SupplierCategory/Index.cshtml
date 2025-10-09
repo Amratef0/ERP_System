@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ERP_System_Project.Models.SupplierCategory>
+
+<h2>Supplier Categories</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Category</a>
+</p>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Category Name</th>
+            <th>Description</th>
+            <th>Is Active</th>
+            <th>Suppliers Count</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.CategoryName</td>
+                <td>@item.Description</td>
+                <td>@item.IsActive</td>
+                <td>@(item.Suppliers?.Count() ?? 0)</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

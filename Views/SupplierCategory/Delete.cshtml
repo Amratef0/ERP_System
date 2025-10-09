@@ -1,0 +1,15 @@
+﻿@model ERP_System_Project.Models.SupplierCategory
+
+<h2>Delete Supplier Category</h2>
+<div>
+    <h4>Are you sure you want to delete this?</h4>
+    <p><b>Name:</b> @Model.CategoryName</p>
+    <p><b>Description:</b> @Model.Description</p>
+    <p><b>Is Active:</b> @Model.IsActive</p>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="CategoryId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

@@ -1,0 +1,15 @@
+﻿@model ERP_System_Project.Models.SupplierProduct
+
+<h2>Delete Supplier Product</h2>
+<div>
+    <h4>Are you sure you want to delete this?</h4>
+    <p><b>Supplier:</b> @Model.Supplier?.SupplierName</p>
+    <p><b>Product:</b> @Model.Product?.Name</p>
+    <p><b>Unit Price:</b> @Model.UnitPrice</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="SupplierProductId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

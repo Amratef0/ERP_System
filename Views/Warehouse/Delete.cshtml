@@ -1,0 +1,20 @@
+﻿@model ERP_System_Project.Models.Inventory.Warehouse
+@{
+    ViewData["Title"] = "Delete Warehouse";
+}
+
+<h2>Delete Warehouse</h2>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+}
+
+<h4>@Model.Name (@Model.Code)</h4>
+<p>Branch: @Model.Branch?.Name</p>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="WarehouseId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

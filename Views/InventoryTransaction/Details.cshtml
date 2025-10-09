@@ -1,0 +1,14 @@
+﻿@model ERP_System_Project.Models.Inventory.InventoryTransaction
+
+<h2>Transaction Details</h2>
+
+<div class="card p-3">
+    <p><strong>Product:</strong> @Model.Product.Name</p>
+    <p><strong>Warehouse:</strong> @Model.WarehouseProduct.Warehouse.Name</p>
+    <p><strong>Quantity:</strong> @Model.Quantity</p>
+    <p><strong>Type:</strong> @Model.TransactionType</p>
+    <p><strong>Date:</strong> @Model.TransactionDate.ToString("yyyy-MM-dd HH:mm")</p>
+    <p><strong>Notes:</strong> @Model.Notes</p>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-2">Back</a>
