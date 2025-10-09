@@ -1,0 +1,16 @@
+﻿@model ERP_System_Project.Models.SupplierProduct
+
+<h2>Supplier Product Details</h2>
+
+<div>
+    <p><b>Supplier:</b> @Model.Supplier?.SupplierName</p>
+    <p><b>Product:</b> @Model.Product?.Name</p>
+    <p><b>Unit Price:</b> @Model.UnitPrice</p>
+    <p><b>Created Date:</b> @Model.CreatedDate</p>
+    <p><b>Modified Date:</b> @Model.ModifiedDate</p>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.SupplierProductId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>
