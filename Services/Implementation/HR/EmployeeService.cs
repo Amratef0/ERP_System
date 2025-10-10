@@ -6,6 +6,7 @@ using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels.HR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

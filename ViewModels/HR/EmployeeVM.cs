@@ -19,7 +19,7 @@ namespace ERP_System_Project.ViewModels.HR
         public string LastName { get; set; }
 
         [Display(Name = "Date of Birth")]
-        public DateOnly? DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         [Display(Name = "Gender")]
         public Gender Gender { get; set; }
@@ -37,10 +37,10 @@ namespace ERP_System_Project.ViewModels.HR
         public DateOnly? TerminationDate { get; set; }
 
         [Display(Name = "Work Email")]
-        public string? WorkEmail { get; set; }
+        public string WorkEmail { get; set; }
 
         [Display(Name = "Work Phone")]
-        public string? WorkPhone { get; set; }
+        public string WorkPhone { get; set; }
 
         [Display(Name = "Personal Email")]
         public string? PersonalEmail { get; set; }
@@ -97,6 +97,9 @@ namespace ERP_System_Project.ViewModels.HR
 
         [Display(Name = "Country")]
         public string? Country { get; set; }
+
+        [Display(Name = "Application User")]
+        public string ApplicationUserId { get; set; }
 
         [Display(Name = "Branch")]
         public int BranchId { get; set; }

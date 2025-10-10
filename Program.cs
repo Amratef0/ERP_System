@@ -37,6 +37,8 @@ builder.Services.AddDbContext<Erpdbcontext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = true;
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
 })
     .AddEntityFrameworkStores<Erpdbcontext>()
     .AddDefaultTokenProviders();

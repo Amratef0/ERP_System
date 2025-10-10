@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.ViewModels.HR;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_System_Project.Controllers.HR
@@ -19,6 +23,9 @@ namespace ERP_System_Project.Controllers.HR
         private readonly ICurrencyService currencyService;
         private readonly IValidator<EmployeeVM> validator;
         private readonly IMapper mapper;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IEmailService emailSender;
 
         public EmployeeController(
             IEmployeeService employeeService,
@@ -29,7 +36,10 @@ namespace ERP_System_Project.Controllers.HR
             ICountryService countryService,
             ICurrencyService currencyService,
             IValidator<EmployeeVM> validator,
-            IMapper mapper)
+            IMapper mapper,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IEmailService emailSender)
         {
             this.employeeService = employeeService;
             this.branchService = branchService;
@@ -40,6 +50,9 @@ namespace ERP_System_Project.Controllers.HR
             this.currencyService = currencyService;
             this.validator = validator;
             this.mapper = mapper;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.emailSender = emailSender;
         }
 
         [HttpGet]
@@ -87,10 +100,54 @@ namespace ERP_System_Project.Controllers.HR
 
             if (result.IsValid)
             {
-                var isCreated = await employeeService.CreateAsync(model);
-                if (isCreated)
-                    return RedirectToAction("Index");
+                var appuser = new ApplicationUser
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    UserName = $"{model.FirstName} {model.LastName}",
+                    Email = model.WorkEmail,
+                    PhoneNumber = model.WorkPhone,
+                    DateOfBirth = model.DateOfBirth,
+                    CreatedAt = DateTime.Now,
+                };
+
+                IdentityResult creationUserResult = await userManager.CreateAsync(appuser);
+
+                if (creationUserResult.Succeeded)
+                {
+                    model.ApplicationUserId = appuser.Id;
+                    var isCreated = await employeeService.CreateAsync(model);
+
+                    if (isCreated)
+                    {
+                        var token = await userManager.GeneratePasswordResetTokenAsync(appuser);
+
+                        var ResetLink = Url.Action("ResetPassword", "Account",
+                            new { userEmail = appuser.Email, token = token }, Request.Scheme);
+
+                        await emailSender.SendEmailAsync(
+                            model.WorkEmail,
+                            "Reset your password",
+                            $"Welcome To Optima ERP System! Please Reset your password by <a href='{ResetLink}'>clicking here</a> to join us."
+                        );
+
+                        if (!await roleManager.RoleExistsAsync("Employee"))
+                            await roleManager.CreateAsync(new IdentityRole("Employee"));
+
+                        await userManager.AddToRoleAsync(appuser, "Employee");
+
+                        return RedirectToAction("Index");
+                    }
+
+                    ModelState.AddModelError(string.Empty, "Cannot add employee!");
+                }
+
+                foreach (var error in creationUserResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
+
             model.Branches = await branchService.GetAllAsync();
             model.Departments = await departmentService.GetAllAsync();
             model.EmployeeTypes = await employeeTypeService.GetAllAsync();
@@ -125,6 +182,8 @@ namespace ERP_System_Project.Controllers.HR
             ValidationResult result = await validator.ValidateAsync(model);
             if (result.IsValid)
             {
+                var appuser = await userManager.FindByIdAsync(model.ApplicationUserId);
+                appuser.Email = model.WorkEmail;
                 var isUpdated = await employeeService.UpdateAsync(model);
                 if (isUpdated)
                     return RedirectToAction("Index");
@@ -153,8 +212,24 @@ namespace ERP_System_Project.Controllers.HR
         {
             var employee = await employeeService.GetByIdAsync(id);
             if (employee == null) return NotFound();
+
+            var appuser = await userManager.FindByIdAsync(employee.ApplicationUserId);
+
+            if (appuser != null)
+            {
+                var result = await userManager.DeleteAsync(appuser);
+
+                if (!result.Succeeded)
+                {
+                    TempData["ErrorMessage"] = string.Join(", ", result.Errors.Select(e => e.Description));
+
+                    return RedirectToAction("Index");
+                }
+            }
+
             try
             {
+
                 await employeeService.DeleteAsync(id);
                 return RedirectToAction("Index");
             }

@@ -5,6 +5,7 @@ using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ERP_System_Project.Models.Enums;
+using ERP_System_Project.Models.Authentication;
 
 namespace ERP_System_Project.Models.HR
 {
@@ -27,7 +28,7 @@ namespace ERP_System_Project.Models.HR
         public string LastName { get; set; }
 
         [Display(Name = "Date of Birth")]
-        public DateOnly? DateOfBirth { get; set; }
+        public DateOnly DateOfBirth { get; set; }
 
         [Display(Name = "Gender")]
         public Gender Gender { get; set; }
@@ -48,12 +49,12 @@ namespace ERP_System_Project.Models.HR
         [MaxLength(255, ErrorMessage = "Work email cannot exceed 255 characters.")]
         [MinLength(5, ErrorMessage = "Work email must be at least 5 characters long.")]
         [Display(Name = "Work Email")]
-        public string? WorkEmail { get; set; }
+        public string WorkEmail { get; set; }
 
         [MaxLength(50, ErrorMessage = "Work phone cannot exceed 50 characters.")]
         [MinLength(5, ErrorMessage = "Work phone must be at least 5 characters long.")]
         [Display(Name = "Work Phone")]
-        public string? WorkPhone { get; set; }
+        public string WorkPhone { get; set; }
 
         [MaxLength(255, ErrorMessage = "Personal email cannot exceed 255 characters.")]
         [MinLength(5, ErrorMessage = "Personal email must be at least 5 characters long.")]
@@ -108,6 +109,12 @@ namespace ERP_System_Project.Models.HR
         public DateOnly? DeletedAt { get; set; }
 
         // Navigation Properties
+        [ForeignKey("ApplicationUser")]
+        [Display(Name = "Application User")]
+        public string ApplicationUserId { get; set; }
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
+
         [ForeignKey("Branch")]
         [Display(Name = "Branch")]
         public int BranchId { get; set; }
