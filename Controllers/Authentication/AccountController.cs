@@ -69,7 +69,7 @@ namespace ERP_System_Project.Controllers.Authentication
 
 
             var result = await _userManager.CreateAsync(appuser, model.Password);
-
+           
             if (!result.Succeeded)
             {
                 var existingUser = await _userManager.FindByNameAsync(appuser.UserName);
@@ -88,6 +88,8 @@ namespace ERP_System_Project.Controllers.Authentication
                 }
             }
            await _customerService.CreateCustomerByApplicationUserAsync(appuser, model);
+           await _userManager.UpdateAsync(appuser);
+
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(appuser);
 
             var confirmationLink = Url.Action("ConfirmEmailToken", "Account",

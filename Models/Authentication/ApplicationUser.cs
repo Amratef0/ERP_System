@@ -9,6 +9,7 @@ namespace ERP_System_Project.Models.Authentication
 {
     public class ApplicationUser : IdentityUser
     {
+        public int CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
         [Required]
         [MaxLength(50)]
