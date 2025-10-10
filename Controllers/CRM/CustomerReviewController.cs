@@ -28,7 +28,8 @@ namespace ERP_System_Project.Controllers.CRM
             _uow = uow;
         }
         [Authorize]
-        public async Task<int> GetLoggedInUserCustomerId() {
+        public async Task<int> GetLoggedInUserCustomerId()
+        {
             var user = await _userManager.GetUserAsync(User);
             var customerId = user.CustomerId;
             Console.WriteLine(customerId);
@@ -55,7 +56,7 @@ namespace ERP_System_Project.Controllers.CRM
             var averageRating = await _customerReviewService.GetAverageRatingAsync(productId);
             var reviewCount = await _customerReviewService.GetReviewCountAsync(productId);
 
-            ViewBag.ProductName = product.Name;
+            //ViewBag.ProductName = product.Name;
             ViewBag.ProductId = productId;
             ViewBag.AverageRating = averageRating;
             ViewBag.ReviewCount = reviewCount;
@@ -128,7 +129,7 @@ namespace ERP_System_Project.Controllers.CRM
 
         public async Task<IActionResult> DeleteReview(int reviewId)
         {
-            var review =await _customerReviewService.GetByIdAsync(reviewId);
+            var review = await _customerReviewService.GetByIdAsync(reviewId);
             if (review == null) return BadRequest();
 
             var deleted = await _customerReviewService.DeleteAsync(reviewId);
