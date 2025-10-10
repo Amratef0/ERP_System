@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\CRM\Customer\" />
+    <Folder Include="wwwroot\Uploads\Images\Products\" />
   </ItemGroup>
 
 </Project>

@@ -104,6 +104,7 @@ builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
 
 // Repositories and UnitOfWork
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
