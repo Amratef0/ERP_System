@@ -32,6 +32,7 @@
                 <a asp-controller="Brand" asp-action="Index" class="btn btn-outline-primary d-flex align-items-center">
                     <i class="bi bi-star me-2"></i>Manage Brands
                 </a>
+                
             </div>
         </div>
     </div>
@@ -85,6 +86,7 @@
                             <th class="text-center py-3 fw-semibold text-dark">Stock</th>
                             <th class="text-center py-3 fw-semibold text-dark">Price</th>
                             <th class="text-center py-3 fw-semibold text-dark">Status</th>
+                            <th class="text-center py-3 fw-semibold text-dark ps-5">Offer</th>
                             <th class="text-end pe-4 py-3 fw-semibold text-dark">Actions</th>
                         </tr>
                     </thead>
@@ -151,8 +153,28 @@
                                             </span>
                                         }
                                     </td>
+
+                                    <td class="text-end align-middle">
+                                        @if (product.OfferPercentege > 0)
+                                        {
+                                            <span class="badge bg-danger rounded-pill px-3 py-2">
+                                                -@product.OfferPercentege% SALE
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted me-3">No Offer</span>
+                                        }
+                                    </td>
+
+
+
                                     <td class="text-end pe-4 align-middle">
                                         <div class="btn-group" role="group">
+                                            <a asp-controller="Offer" asp-action="Set" asp-route-productId="@product.Id"
+                                               class="btn btn-sm btn-outline-success rounded-start">
+                                                <i class="bi bi-pencil me-1"></i> Set Offer
+                                            </a>
                                             <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id"
                                                class="btn btn-sm btn-outline-primary rounded-start">
                                                 <i class="bi bi-pencil me-1"></i> Edit

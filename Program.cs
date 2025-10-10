@@ -1,3 +1,4 @@
+using ERP_System_Project.BackgroundServices;
 using ERP_System_Project.Extensions;
 using ERP_System_Project.Middlewares;
 using ERP_System_Project.Models;
@@ -7,12 +8,14 @@ using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Implementation;
 using ERP_System_Project.Services.Implementation.Core;
 using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Implementation.ECommerce;
 using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Implementation.Log;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.Services.Interfaces.Log;
@@ -103,10 +106,13 @@ builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
 
 // Repositories and UnitOfWork
-//builder.Services.AddDataSevices();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Background Services
+builder.Services.AddHostedService<ExpiredOfferBackgroundService>();
 
 // Core Services
 builder.Services.AddScoped<ICountryService, CountryService>();
@@ -123,6 +129,9 @@ builder.Services.AddScoped<IBrandService, BrandService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IAttributeService, AttributeService>();
+
+// ECommerce Services
+builder.Services.AddScoped<IOfferService, OfferService>();
 
 // HR Services
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();

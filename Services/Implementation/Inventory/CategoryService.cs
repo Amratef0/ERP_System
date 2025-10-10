@@ -15,13 +15,13 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             _uow = uow;
         }
 
-        public Task<PageSourcePagination<CategoryVM>> GetCategoriesPaginated(int pageNumber, int pageSize, string? searchByName = null)
+        public async Task<PageSourcePagination<CategoryVM>> GetCategoriesPaginated(int pageNumber, int pageSize, string? searchByName = null)
         {
             Expression<Func<Category, bool>>? searchFilter = null;
             if (!string.IsNullOrEmpty(searchByName))
                 searchFilter = p => p.Name.Contains(searchByName);
 
-            return _uow.Categories.GetAllPaginatedAsync(
+            return await _uow.Categories.GetAllPaginatedAsync(
                     selector: c => new CategoryVM
                     {
                         Description = c.Description,

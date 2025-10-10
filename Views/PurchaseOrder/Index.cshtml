@@ -1,0 +1,41 @@
+﻿@model IEnumerable<ERP_System_Project.Models.PurchaseOrder>
+
+<h2>Purchase Orders</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">Create New</a>
+</p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Po Number</th>
+            <th>Order Date</th>
+            <th>Supplier</th>
+            <th>Product</th>
+            <th>Warehouse</th>
+            <th>Status</th>
+            <th>Payment Terms</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.PoNumber</td>
+                <td>@item.OrderDate.ToShortDateString()</td>
+                <td>@item.Supplier?.SupplierName</td>
+                <td>@item.WarehouseProduct?.Product?.Name</td>
+                <td>@item.WarehouseProduct?.Warehouse?.Name</td>
+                <td>@item.StatusId</td>
+                <td>@item.PaymentTermsId</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.PurchaseOrderId" class="btn btn-info btn-sm">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.PurchaseOrderId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.PurchaseOrderId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

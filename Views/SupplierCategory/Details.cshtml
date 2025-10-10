@@ -1,0 +1,19 @@
+﻿@model ERP_System_Project.Models.SupplierCategory
+
+<h2>Category Details</h2>
+<div>
+    <h4>@Model.CategoryName</h4>
+    <p><b>Description:</b> @Model.Description</p>
+    <p><b>Is Active:</b> @Model.IsActive</p>
+    <h5>Suppliers:</h5>
+    <ul>
+        @foreach (var supplier in Model.Suppliers ?? new List<ERP_System_Project.Models.Supplier>())
+        {
+            <li>@supplier.SupplierName</li>
+        }
+    </ul>
+</div>
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.CategoryId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</p>

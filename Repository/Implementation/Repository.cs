@@ -1,8 +1,10 @@
 ﻿using ERP_System_Project.Models;
 using ERP_System_Project.Models.Interfaces;
+using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Specification.Interfaces;
 using ERP_System_Project.ViewModels;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -12,7 +14,7 @@ namespace ERP_System_Project.Repository.Implementation
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly Erpdbcontext _db;
-        private readonly DbSet<TEntity> _dbSet;
+        protected readonly DbSet<TEntity> _dbSet;
         public Repository(Erpdbcontext db)
         {
             _db = db;
@@ -31,7 +33,7 @@ namespace ERP_System_Project.Repository.Implementation
         public IQueryable<TEntity> GetAllAsIQueryable() => _dbSet;
 
 
-        public Task<TResult?> GetAsync<TResult>(
+        public virtual Task<TResult?> GetAsync<TResult>(
             Expression<Func<TEntity, TResult>> selector,
             Expression<Func<TEntity, bool>> filter,
             params Expression<Func<TEntity, object>>[] Includes) where TResult : class
@@ -72,6 +74,7 @@ namespace ERP_System_Project.Repository.Implementation
             Expression<Func<TEntity, TResult>> selector,
             int pageNumber = 1, int pageSize = 10,
             Expression<Func<TEntity, bool>>? filter = null,
+            bool exbandable = false,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             params Expression<Func<TEntity, object>>[] Includes) where TResult : class
         {
@@ -81,7 +84,12 @@ namespace ERP_System_Project.Repository.Implementation
             IQueryable<TEntity> query = _dbSet;
 
             if (filter != null)
+            {
+                if (exbandable)
+                    query = query.AsExpandableEFCore().Where(filter);
                 query = query.Where(filter);
+            }
+                
 
             if (Includes != null)
                 foreach (var include in Includes)

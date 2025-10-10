@@ -44,24 +44,19 @@ namespace ERP_System_Project.Models
         public DbSet<PaymentStatusCode> PaymentStatusCodes { get; set; }
         public DbSet<ShippingMethod> ShippingMethods { get; set; }
         public DbSet<Offer> Offers { get; set; }
-        public DbSet<OfferProduct> OfferProducts { get; set; }
-        public DbSet<OfferCategory> OfferCategorys { get; set; }
 
         #endregion
 
-        #region Inventory
-        public DbSet<Brand> Brands { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductAttribute> ProductAttributes { get; set; }
-        public DbSet<Warehouse> Warehouses { get; set; }
-        public DbSet<ProductInventory> ProductsInventory { get; set; }
-        public DbSet<InventoryTransactionType> InventoryTransactionTypes { get; set; }
-        public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
-        public DbSet<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; set; }
-        public DbSet<InventoryRequisition> InventoryRequisitions { get; set; }
-        public DbSet<InventoryRequisitionItem> InventoryRequisitionItems { get; set; }
-        #endregion
+         #region Inventory
+ public DbSet<Brand> Brands { get; set; }
+ public DbSet<Category> Categories { get; set; }
+ public DbSet<Product> Products { get; set; }
+ public DbSet<ProductAttribute> ProductAttributes { get; set; }
+ public DbSet<Warehouse> Warehouses { get; set; }
+ public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
+ public DbSet<InventoryRequisition> InventoryRequisitions { get; set; }
+ public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+ #endregion
 
         #region HR
         public DbSet<AttendanceRecord> AttendanceRecords { get; set; }
@@ -80,16 +75,12 @@ namespace ERP_System_Project.Models
         public DbSet<WorkScheduleDay> WorkScheduleDays { get; set; }
         #endregion
 
-        #region Purchases
-        public DbSet<PaymentTerm> PaymentTerms { get; set; }
-        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
-        public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
-        public DbSet<PurchaseOrderItemStatusCode> PurchaseOrderItemStatusCodes { get; set; }
-        public DbSet<PurchaseOrderStatusCode> PurchaseOrderStatusCodes { get; set; }
-        public DbSet<Supplier> Suppliers { get; set; }
-        public DbSet<SupplierCategory> SupplierCategories { get; set; }
-        public DbSet<SupplierProduct> SupplierProducts { get; set; }
-        #endregion
+         #region Purchases
+ public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+ public DbSet<Supplier> Suppliers { get; set; }
+ public DbSet<SupplierCategory> SupplierCategories { get; set; }
+ public DbSet<SupplierProduct> SupplierProducts { get; set; }
+ #endregion
 
 
         #region Logs
@@ -99,11 +90,59 @@ namespace ERP_System_Project.Models
 
 
         protected override void OnModelCreating(ModelBuilder builder)
-        {
-            base.OnModelCreating(builder);
+{
+    base.OnModelCreating(builder);
 
-            // This will apply all configurations in the whole project
-            builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
-        }
+    // PurchaseOrder -> Warehouse
+    builder.Entity<PurchaseOrder>()
+        .HasOne(p => p.Warehouse)
+        .WithMany(w => w.PurchaseOrders)
+        .HasForeignKey(p => p.WarehouseId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+    // PurchaseOrder -> WarehouseProduct
+    builder.Entity<PurchaseOrder>()
+        .HasOne(p => p.WarehouseProduct)
+        .WithMany()
+        .HasForeignKey(p => p.WarehouseProductId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+    // WarehouseProduct -> Warehouse
+    builder.Entity<WarehouseProduct>()
+        .HasOne(wp => wp.Warehouse)
+        .WithMany(w => w.WarehouseProducts)
+        .HasForeignKey(wp => wp.WarehouseId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+    // SupplierProduct -> Supplier
+    builder.Entity<SupplierProduct>()
+        .HasOne(sp => sp.Supplier)
+        .WithMany()
+        .HasForeignKey(sp => sp.SupplierId)
+        .OnDelete(DeleteBehavior.NoAction);
+
+    // SupplierProduct -> Product
+    builder.Entity<SupplierProduct>()
+        .HasOne(sp => sp.Product)
+        .WithMany()
+        .HasForeignKey(sp => sp.ProductId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+    // Product -> Brand
+    builder.Entity<Product>()
+        .HasOne(p => p.Brand)
+        .WithMany(b => b.Products)
+        .HasForeignKey(p => p.BrandId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+    // Product -> Category
+    builder.Entity<Product>()
+        .HasOne(p => p.Category)
+        .WithMany(c => c.Products)
+        .HasForeignKey(p => p.CategoryId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+    builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
+}
     }
 }

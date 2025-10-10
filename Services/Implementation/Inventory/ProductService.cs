@@ -1,11 +1,13 @@
 ﻿using ERP_System_Project.Extensions;
 using ERP_System_Project.Helpers;
 using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
+using ERP_System_Project.ViewModels.ECommerce;
 using ERP_System_Project.ViewModels.Inventory;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using LinqKit;
 using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.Inventory
@@ -14,10 +16,12 @@ namespace ERP_System_Project.Services.Implementation.Inventory
     {
         private readonly IUnitOfWork _uow;
         private readonly IWebHostEnvironment _env;
-        public ProductService(IUnitOfWork uow, IWebHostEnvironment env) : base(uow)
+        private readonly IProductRepository _productRepository;
+        public ProductService(IUnitOfWork uow,  IWebHostEnvironment env, IProductRepository productRepositroy) : base(uow)
         {
             _uow = uow;
             _env = env;
+            _productRepository = productRepositroy;
         }
 
         public async Task AddNewProduct(ProductVM model)
@@ -105,9 +109,9 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                      );
         }
 
-        public Task<EditProductVM> GetCustomProduct(int productId)
+        public async Task<EditProductVM> GetCustomProduct(int productId)
         {
-            var product = _uow.Products.GetAsync(
+            var product = await _uow.Products.GetAsync(
                 filter: p => p.Id == productId,
                 selector: p => new EditProductVM
                 {
@@ -133,7 +137,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         }
 
 
-        public Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
+        public async Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
                                                                         string? searchByName = null, string? lowStock = null)
         {
             Expression<Func<Product, bool>>? searchFilter = null;
@@ -160,7 +164,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     : p => p.Quantity > 10 && p.Name.Contains(searchByName);
             }
 
-            return _uow.Products.GetAllPaginatedAsync(
+            return await _uow.Products.GetAllPaginatedAsync(
                 selector: p => new ProductVM
                 {
                     Description = p.Description,
@@ -176,13 +180,147 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     {
                         AtrributeId = a.AtrributeId,
                         Value = a.Value
-                    }).ToList()
+                    }).ToList(),
+                    OfferPercentege = p.Offer != null ? p.Offer.DiscountPercentage : 0
                 },
                 filter: searchFilter,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
-                Includes: p => p.Attributes
+                Includes: new Expression<Func<Product, object>>[]
+                {
+                    p => p.Attributes,
+                    p => p.Offer
+                }
             );
+        }
+
+        public async Task<PageSourcePagination<ProductCardVM>> GetProductsPaginated(int pageNumber, int pageSize,
+                                                                        string? searchByName = null,
+                                                                        string? brandName = null,
+                                                                        string? categoryName = null,
+                                                                        int? minPrice = null, int? maxPrice = null)
+        {
+            Expression<Func<Product, bool>> searchFilter = p => true;
+
+            if (!string.IsNullOrEmpty(searchByName))
+                searchFilter = searchFilter.And(p => p.Name.Contains(searchByName));
+
+            if (!string.IsNullOrEmpty(brandName))
+                searchFilter = searchFilter.And(p => p.Brand.Name.Contains(brandName));
+
+            if (!string.IsNullOrEmpty(categoryName))
+                searchFilter = searchFilter.And(p => p.Category.Name.Contains(categoryName));
+
+            if(minPrice.HasValue && maxPrice.HasValue)
+            {
+                minPrice = Math.Min(minPrice.Value, maxPrice.Value);
+                maxPrice = Math.Max(minPrice.Value, maxPrice.Value);
+            }
+
+            if (minPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice >= minPrice);
+
+            if (maxPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice <= maxPrice);
+
+
+            return await _uow.Products.GetAllPaginatedAsync(
+                selector: p => new ProductCardVM
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    ImageURL = p.ImageURL,
+
+                    CategoryName = p.Category.Name,
+                    BrandName = p.Brand.Name,
+                    BrandImageURL = p.Brand.LogoURL,
+
+                    Price = p.StandardPrice,
+                    HaveOffer = p.Offer != null,
+                    DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
+                    NetPrice =
+                        p.Offer != null ?
+                        p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice) 
+                        : p.StandardPrice,
+
+                    NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                    TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
+                        ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
+                        : 0,
+
+                },
+                expandable: true,
+                filter: searchFilter,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                Includes: new Expression<Func<Product, object>>[]
+                {
+                    p => p.Attributes,
+                    p => p.Offer,
+                    p => p.Brand,
+                    p => p.Category,
+                    p => p.CustomerReviews
+                }
+            );
+        }
+
+        public async Task<ProductDetailsVM> GetProductDetails(int productId)
+        {
+            var product =  await _productRepository.GetAsync(
+                filter: p => p.Id == productId,
+                selector: p => new ProductDetailsVM
+                {
+                    Id = productId,
+                    Name = p.Name,
+                    Description = p.Description,
+                    ImageURL = p.ImageURL,
+
+                    BrandName = p.Brand.Name,
+                    BrandImageURL = p.Brand.LogoURL,
+                    CategoryName = p.Category.Name,
+
+                    Price = p.StandardPrice,
+                    HasOffer = p.Offer != null,
+                    DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
+                    NetPrice = p.Offer != null ?
+                        p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice)
+                        : p.StandardPrice,
+
+                    NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                    TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
+                        ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
+                        : 0,
+
+                    QuantityInStock = p.Quantity,
+                    Reviews = p.CustomerReviews.Select(cr => new CustomerReviewVM
+                    {
+                        CustomerId = cr.CustomerId,
+                        Comment = cr.Comment,
+                        CustomerName = cr.Customer.FullName,
+                        DateCreated = cr.CreatedAt,
+                        Rate = (int)cr.Rating
+                    }).ToList(),
+
+                    Attributes = p.Attributes.Select(a => new AttributeVM
+                    {
+                        Id = a.AtrributeId,
+                        Name = a.ProductAttribute.Name,
+                        Type = a.Value
+                    }).ToList()
+                },
+
+                Includes: new Expression<Func<Product, object>>[]
+                {
+                    p => p.Attributes,
+                    p => p.Offer,
+                    p => p.Brand,
+                    p => p.Category,
+                    p => p.CustomerReviews,
+                }
+
+                );
+
+            return product!;
         }
     }
 }

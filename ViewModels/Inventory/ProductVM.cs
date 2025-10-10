@@ -27,6 +27,7 @@ namespace ERP_System_Project.ViewModels.Inventory
         [DisplayName("Category")]
         public int CategoryId { get; set; }
 
+        public int OfferPercentege { get; set; } = 0;
         public int Quantity { get; set; }
 
         [ImageFile]

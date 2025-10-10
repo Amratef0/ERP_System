@@ -1,0 +1,33 @@
+﻿@model IEnumerable<ERP_System_Project.Models.Inventory.InventoryTransaction>
+
+<h2>Inventory Transactions</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Warehouse</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Notes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.Product.Name</td>
+                <td>@t.WarehouseProduct.Warehouse.Name</td>
+                <td>@t.Quantity</td>
+                <td>@t.TransactionType</td>
+                <td>@t.TransactionDate.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@t.Notes</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@t.Id" class="btn btn-info btn-sm">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

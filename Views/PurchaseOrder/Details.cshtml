@@ -1,0 +1,33 @@
+﻿@model ERP_System_Project.Models.PurchaseOrder
+
+<h2>Purchase Order Details</h2>
+
+<div class="card p-3">
+    <dl class="row">
+        <dt class="col-sm-2">Po Number</dt>
+        <dd class="col-sm-10">@Model.PoNumber</dd>
+
+        <dt class="col-sm-2">Order Date</dt>
+        <dd class="col-sm-10">@Model.OrderDate.ToShortDateString()</dd>
+
+        <dt class="col-sm-2">Supplier</dt>
+        <dd class="col-sm-10">@Model.Supplier?.SupplierName</dd>
+
+        <dt class="col-sm-2">Product</dt>
+        <dd class="col-sm-10">@Model.WarehouseProduct?.Product?.Name</dd>
+
+        <dt class="col-sm-2">Warehouse</dt>
+        <dd class="col-sm-10">@Model.WarehouseProduct?.Warehouse?.Name</dd>
+
+        <dt class="col-sm-2">Status</dt>
+        <dd class="col-sm-10">@Model.StatusId</dd>
+
+        <dt class="col-sm-2">Payment Terms</dt>
+        <dd class="col-sm-10">@Model.PaymentTermsId</dd>
+
+        <dt class="col-sm-2">Notes</dt>
+        <dd class="col-sm-10">@Model.Notes</dd>
+    </dl>
+
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>

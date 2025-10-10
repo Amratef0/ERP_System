@@ -23,16 +23,10 @@ namespace ERP_System_Project.UOW
         IRepository<ProductAttribute> ProductAttributes { get; }
         IRepository<ProductAttributeValue> ProductAttributeValues { get; }
         IRepository<Warehouse> Warehouses { get; }
-        IRepository<ProductInventory> ProductsInventory { get; }
-        IRepository<InventoryTransactionType> InventoryTransactionTypes { get; }
         IRepository<InventoryTransaction> InventoryTransactions { get; }
-        IRepository<InventoryRequisitionStatusCode> InventoryRequisitionStatusCodes { get; }
         IRepository<InventoryRequisition> InventoryRequisitions { get; }
-        IRepository<InventoryRequisitionItem> InventoryRequisitionItems { get; }
 
         IRepository<Offer> Offers { get; }
-        IRepository<OfferCategory> OfferCategories { get; }
-        IRepository<OfferProduct> OfferProducts { get; }
         IRepository<Order> Orders { get; }
         IRepository<OrderItem> OrderItems { get; }
         IRepository<OrderStatusCode> OrderStatusCodes { get; }

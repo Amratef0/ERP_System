@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,6 +24,9 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Market" asp-action="Index" asp-route-pageNumber="1" asp-route-pageSize="25">Market</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="PerformanceLog" asp-action="Index">Develper View</a>
                         </li>
                         <li class="nav-item">
@@ -33,7 +36,13 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="CustomerType" asp-action="Index">CustomerTypes</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index" asp-route-pageNumber="1" asp-route-pageSize="10">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Attribute" asp-action="Index">Attribute</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -71,6 +80,32 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
                         </li>
+                       
+
+                        <!-- Purchasing Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="purchasingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Purchasing
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="purchasingDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="PurchaseOrder" asp-action="Index">Purchase Orders</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Supplier" asp-action="Index">Suppliers</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="SupplierCategory" asp-action="Index">Supplier Categories</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="SupplierProduct" asp-action="Index">Supplier Products</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Inventory Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventory
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Warehouse" asp-action="Index">Warehouse</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="InventoryTransaction" asp-action="Index">Inventory Transaction</a></li>
+                            </ul>
+                        </li>
+
                     </ul>
                 </div>
             </div>

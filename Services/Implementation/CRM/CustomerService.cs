@@ -3,12 +3,14 @@ using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Interfaces.CRM;
 using ERP_System_Project.UOW;
+using Microsoft.EntityFrameworkCore;
 
 namespace ERP_System_Project.Services.Implementation.CRM
 {
     public class CustomerService :GenericService<Customer>, ICustomerService
     {
         private readonly IUnitOfWork _uow;
+
 
         public CustomerService(IUnitOfWork uow) : base(uow)
         {
@@ -27,8 +29,8 @@ namespace ERP_System_Project.Services.Implementation.CRM
             try
             {
                 // Get customer types and use the first active one
-                var customerType= await _uow.CustomerTypes.GetByIdAsync(1);
-                
+                var customerType= await _uow.CustomerTypes.GetAllAsIQueryable().FirstOrDefaultAsync();
+
 
                 if (customerType == null)
                     throw new InvalidOperationException("No customer types available in the system");
@@ -67,6 +69,7 @@ namespace ERP_System_Project.Services.Implementation.CRM
 
                 await _uow.Customers.AddAsync(customer);
                 await _uow.CompleteAsync();
+                user.CustomerId = customer.Id; 
 
             }
             catch (Exception ex)
