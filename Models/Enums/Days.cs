@@ -1,4 +1,4 @@
-﻿namespace ERP_System_Project.Models.HR
+﻿namespace ERP_System_Project.Models.Enums
 {
     public enum Days
     {

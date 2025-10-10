@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.Interfaces;
+﻿using ERP_System_Project.Models.Enums;
+using ERP_System_Project.Models.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

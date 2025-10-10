@@ -13,9 +13,11 @@ namespace ERP_System_Project.Models.Core
 
         [Required(ErrorMessage = "Address Is Required")]
         [StringLength(255, ErrorMessage = "Address must be less than 255 characters")]
+        [Display(Name = "Line 1")]
         public string Line1 { get; set; } = null!;
 
         [StringLength(255, ErrorMessage = "Second Address must be less than 255 characters")]
+        [Display(Name = "Line 2")]
         public string? Line2 { get; set; }
 
         [Required(ErrorMessage = "City Name Is Required")]
@@ -23,9 +25,11 @@ namespace ERP_System_Project.Models.Core
         public string City { get; set; } = null!;
 
         [StringLength(30, ErrorMessage = "State Province must be less than 30 characters")]
+        [Display(Name = "State Province")]
         public string? StateProvince { get; set; }
 
         [StringLength(20, ErrorMessage = "Postal Code must be less than 20 characters")]
+        [Display(Name = "Postal Code")]
         public string? PostalCode { get; set; }
 
         [StringLength(20, ErrorMessage = "Address Type Name must be less than 20 characters")]

@@ -25,7 +25,7 @@ namespace ERP_System_Project.Controllers.Authentication
         SignInManager<ApplicationUser> signInManager,
         RoleManager<IdentityRole> roleManager,
         IEmailService emailSender,
-        ICustomerService  customerService)
+        ICustomerService customerService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -60,11 +60,12 @@ namespace ERP_System_Project.Controllers.Authentication
             var appuser = new ApplicationUser
             {
                 FirstName = model.FirstName,
-                LastName= model.LastName,
+                LastName = model.LastName,
+                UserName = $"{model.FirstName} {model.LastName}",
                 Email = model.Email,
-                PhoneNumber= model.PhoneNumber,
+                PhoneNumber = model.PhoneNumber,
                 DateOfBirth = model.DateOfBirth,
-                CreatedAt= DateTime.Now,
+                CreatedAt = DateTime.Now,
             };
 
 
@@ -87,6 +88,7 @@ namespace ERP_System_Project.Controllers.Authentication
                     return View("Register", model);
                 }
             }
+
            await _customerService.CreateCustomerByApplicationUserAsync(appuser, model);
            await _userManager.UpdateAsync(appuser);
 
@@ -190,8 +192,7 @@ namespace ERP_System_Project.Controllers.Authentication
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveForgotPassword(ForgotPasswordViewModel
-model)
+        public async Task<IActionResult> SaveForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -199,22 +200,23 @@ model)
                 if (user == null)
                 {
                     ModelState.AddModelError("", "User not found");
-                    return View(model);
                 }
 
-                var token = await
-_userManager.GeneratePasswordResetTokenAsync(user);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-                await _emailSender.SendEmailAsync(model.Email, "Password Reset Token",
-                    $"Your reset token is: {token}");
+                var ResetLink = Url.Action("ResetPassword", "Account",
+                    new { userEmail = user.Email, token = token }, Request.Scheme);
 
-                TempData["Email"] = model.Email;
-                TempData["GeneratedToken"] = token;
+                await _emailSender.SendEmailAsync(
+                    model.Email,
+                    "Reset your password",
+                    $"Please Reset your password by <a href='{ResetLink}'>clicking here</a>."
+                );
 
-                return RedirectToAction("EnterToken");
+                return View("ConfirmResetPassword");
             }
 
-            return View(model);
+            return View("ForgotPassword", model);
         }
 
         [HttpGet]
@@ -225,57 +227,32 @@ _userManager.GeneratePasswordResetTokenAsync(user);
 
 
         [HttpPost]
-        public IActionResult SaveEnterToken(EnterTokenViewModel model)
+        public IActionResult ConfirmResetPassword()
         {
-            if (ModelState.IsValid)
-            {
-                var email = TempData["Email"] as string;
-                var token = TempData["GeneratedToken"] as string;
-
-                if (email == null || token == null)
-                {
-                    ModelState.AddModelError("", "Token expired. Please try again.");
-                    return View(model);
-                }
-
-                if (model.Token == token)
-                {
-                    TempData["UserEmail"] = email;
-                    TempData["ResetToken"] = token;
-                    return RedirectToAction("ResetPassword");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Invalid token");
-                }
-            }
-
-            return View(model);
+            return View("ConfirmResetPassword");
         }
 
         [HttpGet]
-        public IActionResult ResetPassword()
+        public IActionResult ResetPassword(string userEmail, string token)
         {
-            var email = TempData["UserEmail"] as string;
-            var token = TempData["ResetToken"] as string;
 
-            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(userEmail))
             {
+                TempData["ErrorMessage"] = "Email or token are invalid!";
                 return RedirectToAction("ForgotPassword");
             }
 
             var model = new ResetPasswordViewModel
             {
                 Token = token,
-                Email = email
+                Email = userEmail
             };
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveResetPassword(ResetPasswordViewModel
-model)
+        public async Task<IActionResult> SaveResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -289,8 +266,7 @@ model)
                 return RedirectToAction("ForgotPassword");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, model.Token,
-model.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
                 TempData["SuccessMessage"] = "✅ Your password has been successfully reset!";
@@ -304,117 +280,118 @@ model.NewPassword);
 
             return View("ResetPassword", model);
         }
+
+
         [HttpGet]
-public IActionResult GoogleLogin(string returnUrl = "/")
-{
-    var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
-    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
-    return Challenge(properties, "Google");
-}
-
-
-
-
-
-[HttpGet]
-public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
-{
-    var info = await _signInManager.GetExternalLoginInfoAsync();
-    if (info == null)
-        return RedirectToAction("Login");
-
-    // محاولة تسجيل دخول باستخدام بيانات خارجية
-    var signInResult = await _signInManager.ExternalLoginSignInAsync(
-        info.LoginProvider,
-        info.ProviderKey,
-        isPersistent: false);
-
-    if (!signInResult.Succeeded)
-    {
-        var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-        if (email != null)
+        public IActionResult GoogleLogin(string returnUrl = "/")
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-            {
-                user = new ApplicationUser
-                {
-                    UserName = email,
-                    Email = email
-                };
-                await _userManager.CreateAsync(user);
-
-                if (!await _roleManager.RoleExistsAsync("User"))
-                    await _roleManager.CreateAsync(new IdentityRole("User"));
-
-                await _userManager.AddToRoleAsync(user, "User");
-            }
-
-            var existingLogins = await _userManager.GetLoginsAsync(user);
-            if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
-            {
-                await _userManager.AddLoginAsync(user, info);
-            }
-
-            await _signInManager.SignInAsync(user, isPersistent: false);
+            var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+            return Challenge(properties, "Google");
         }
-    }
 
-    return LocalRedirect(returnUrl);
-}
-[HttpGet]
-public IActionResult FacebookLogin(string returnUrl = "/")
-{
-    var redirectUrl = Url.Action("FacebookResponse", "Account", new { ReturnUrl = returnUrl });
-    var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
-    return Challenge(properties, "Facebook");
-}
 
- [HttpGet]
- public async Task<IActionResult> FacebookResponse(string returnUrl = "/")
- {
-     var info = await _signInManager.GetExternalLoginInfoAsync();
-     if (info == null)
-         return RedirectToAction("Login");
 
-     var signInResult = await _signInManager.ExternalLoginSignInAsync(
-         info.LoginProvider,
-         info.ProviderKey,
-         isPersistent: false);
 
-     if (!signInResult.Succeeded)
-     {
-         var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-         if (email != null)
-         {
-             var user = await _userManager.FindByEmailAsync(email);
-             if (user == null)
-             {
-                 user = new ApplicationUser
-                 {
-                     UserName = email,
-                     Email = email
-                 };
-                 await _userManager.CreateAsync(user);
 
-                 if (!await _roleManager.RoleExistsAsync("User"))
-                     await _roleManager.CreateAsync(new IdentityRole("User"));
+        [HttpGet]
+        public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
 
-                 await _userManager.AddToRoleAsync(user, "User");
-             }
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider,
+                info.ProviderKey,
+                isPersistent: false);
 
-             var existingLogins = await _userManager.GetLoginsAsync(user);
-             if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
-             {
-                 await _userManager.AddLoginAsync(user, info);
-             }
+            if (!signInResult.Succeeded)
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(email);
+                    if (user == null)
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = email,
+                            Email = email
+                        };
+                        await _userManager.CreateAsync(user);
 
-             await _signInManager.SignInAsync(user, isPersistent: false);
-         }
-     }
+                        if (!await _roleManager.RoleExistsAsync("User"))
+                            await _roleManager.CreateAsync(new IdentityRole("User"));
 
-     return LocalRedirect(returnUrl);
- }
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
+
+                    var existingLogins = await _userManager.GetLoginsAsync(user);
+                    if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+                    {
+                        await _userManager.AddLoginAsync(user, info);
+                    }
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                }
+            }
+
+            return LocalRedirect(returnUrl);
+        }
+        [HttpGet]
+        public IActionResult FacebookLogin(string returnUrl = "/")
+        {
+            var redirectUrl = Url.Action("FacebookResponse", "Account", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Facebook", redirectUrl);
+            return Challenge(properties, "Facebook");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FacebookResponse(string returnUrl = "/")
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+
+            var signInResult = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider,
+                info.ProviderKey,
+                isPersistent: false);
+
+            if (!signInResult.Succeeded)
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                if (email != null)
+                {
+                    var user = await _userManager.FindByEmailAsync(email);
+                    if (user == null)
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = email,
+                            Email = email
+                        };
+                        await _userManager.CreateAsync(user);
+
+                        if (!await _roleManager.RoleExistsAsync("User"))
+                            await _roleManager.CreateAsync(new IdentityRole("User"));
+
+                        await _userManager.AddToRoleAsync(user, "User");
+                    }
+
+                    var existingLogins = await _userManager.GetLoginsAsync(user);
+                    if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+                    {
+                        await _userManager.AddLoginAsync(user, info);
+                    }
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                }
+            }
+
+            return LocalRedirect(returnUrl);
+        }
     }
 }
 
