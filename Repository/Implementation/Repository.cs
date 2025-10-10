@@ -14,7 +14,7 @@ namespace ERP_System_Project.Repository.Implementation
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private readonly Erpdbcontext _db;
-        private readonly DbSet<TEntity> _dbSet;
+        protected readonly DbSet<TEntity> _dbSet;
         public Repository(Erpdbcontext db)
         {
             _db = db;
@@ -33,7 +33,7 @@ namespace ERP_System_Project.Repository.Implementation
         public IQueryable<TEntity> GetAllAsIQueryable() => _dbSet;
 
 
-        public Task<TResult?> GetAsync<TResult>(
+        public virtual Task<TResult?> GetAsync<TResult>(
             Expression<Func<TEntity, TResult>> selector,
             Expression<Func<TEntity, bool>> filter,
             params Expression<Func<TEntity, object>>[] Includes) where TResult : class
@@ -44,19 +44,6 @@ namespace ERP_System_Project.Repository.Implementation
 
             foreach (var include in Includes)
                 query = query.Include(include);
-
-            if (typeof(TEntity) == typeof(Product))
-            {
-                var productQuery = query as IQueryable<Product>;
-
-                productQuery = productQuery!
-                    .Include(p => p.Attributes)
-                        .ThenInclude(a => a.ProductAttribute)
-                    .Include(p => p.CustomerReviews)
-                        .ThenInclude(cr => cr.Customer);
-
-                query = productQuery as IQueryable<TEntity>;
-            }
 
             return query.Select(selector).FirstOrDefaultAsync();
         }
