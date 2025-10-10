@@ -15,10 +15,12 @@ namespace ERP_System_Project.Validators.Inventory
                 .NotEmpty().WithMessage("Description Is Required");
 
             RuleFor(x => x.LogoURL)
-                .NotEmpty().WithMessage("Logo URL Is Required");
+                .NotEmpty().WithMessage("Logo URL Is Required")
+                .MaximumLength(255).WithMessage("Not Correct URL");
 
             RuleFor(x => x.WebsiteURL)
-                .NotEmpty().WithMessage("Website URL Is Required");
+                .NotEmpty().WithMessage("Website URL Is Required")
+                .MaximumLength(255).WithMessage("Not Correct URL");
         }
     }
 }
