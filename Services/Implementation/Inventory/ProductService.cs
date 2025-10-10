@@ -1,6 +1,7 @@
 ﻿using ERP_System_Project.Extensions;
 using ERP_System_Project.Helpers;
 using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
@@ -15,10 +16,12 @@ namespace ERP_System_Project.Services.Implementation.Inventory
     {
         private readonly IUnitOfWork _uow;
         private readonly IWebHostEnvironment _env;
-        public ProductService(IUnitOfWork uow, IWebHostEnvironment env) : base(uow)
+        private readonly IProductRepository _productRepository;
+        public ProductService(IUnitOfWork uow,  IWebHostEnvironment env, IProductRepository productRepositroy) : base(uow)
         {
             _uow = uow;
             _env = env;
+            _productRepository = productRepositroy;
         }
 
         public async Task AddNewProduct(ProductVM model)
@@ -263,7 +266,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public async Task<ProductDetailsVM> GetProductDetails(int productId)
         {
-            var product =  await _uow.Products.GetAsync(
+            var product =  await _productRepository.GetAsync(
                 filter: p => p.Id == productId,
                 selector: p => new ProductDetailsVM
                 {
