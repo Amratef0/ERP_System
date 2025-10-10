@@ -1,5 +1,4 @@
-﻿using ERP_System_Project.Migrations;
-using ERP_System_Project.Models.Logs;
+﻿using ERP_System_Project.Models.Logs;
 using ERP_System_Project.Services.Interfaces.Log;
 using ERP_System_Project.UOW;
 using Microsoft.EntityFrameworkCore;
