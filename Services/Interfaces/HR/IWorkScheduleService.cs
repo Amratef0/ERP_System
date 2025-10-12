@@ -8,6 +8,7 @@ namespace ERP_System_Project.Services.Interfaces.HR
     {
         Task<ICollection<WorkScheduleDay>?> GetScheduleDaysByIdAsync(int workScheduleId);
         Task<WorkScheduleDay?> GetScheduleDayByIdAsync(int workScheduleId, int dayId);
+        Task<bool> CheckIfDayOffAsync(DateOnly date, int workScheduleId);
         Task<bool> SoftDelete(int id);
     }
 }

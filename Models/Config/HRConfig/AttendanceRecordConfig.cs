@@ -11,9 +11,6 @@ namespace ERP_System_Project.Models.Config.HRConfig
             builder.HasIndex(ar => ar.IsDeleted)
                    .HasFilter("[IsDeleted] = 0");
 
-            builder.Property(ar => ar.ScheduledHours)
-                   .HasPrecision(5, 2);
-
             builder.Property(ar => ar.TotalHours)
                    .HasPrecision(5, 2);
 

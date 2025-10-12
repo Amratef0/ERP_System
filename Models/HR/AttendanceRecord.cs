@@ -15,29 +15,19 @@ namespace ERP_System_Project.Models.HR
         [Display(Name = "Attendance Date")]
         public DateOnly Date { get; set; }
 
-        [Display(Name = "Scheduled Start Time")]
-        public DateTime? ScheduledStartTime { get; set; }
-
-        [Display(Name = "Scheduled End Time")]
-        public DateTime? ScheduledEndTime { get; set; }
-
-        [DecimalPrecisionScale(5, 2)]
-        [Display(Name = "Scheduled Hours")]
-        public decimal? ScheduledHours { get; set; }
-
         [Display(Name = "Actual Start Time")]
-        public DateTime? ActualStartTime { get; set; }
+        public DateTime CheckInTime { get; set; }
 
         [Display(Name = "Actual End Time")]
-        public DateTime? ActualEndTime { get; set; }
+        public DateTime? CheckOutTime { get; set; }
 
         [DecimalPrecisionScale(5, 2)]
         [Display(Name = "Total Hours")]
-        public decimal? TotalHours { get; set; }
+        public decimal TotalHours { get; set; }
 
         [DecimalPrecisionScale(5, 2)]
         [Display(Name = "Overtime Hours")]
-        public decimal? OverTimeHours { get; set; }
+        public decimal OverTimeHours { get; set; }
 
         [MaxLength(100, ErrorMessage = "Notes cannot exceed 100 characters.")]
         [Display(Name = "Notes")]
