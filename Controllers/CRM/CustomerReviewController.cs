@@ -2,6 +2,7 @@
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Implementation.CRM;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels.CRM;
 using Microsoft.AspNetCore.Authorization;
@@ -18,20 +19,23 @@ namespace ERP_System_Project.Controllers.CRM
         private readonly ICustomerReviewService _customerReviewService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _uow;
+        private readonly IProductService _productService;
 
         public CustomerReviewController(ICustomerReviewService customerReviewService, UserManager<ApplicationUser> userManager
-            , IUnitOfWork uow)
+            , IUnitOfWork uow,
+            IProductService productService)
         {
 
             _customerReviewService = customerReviewService;
             _userManager = userManager;
             _uow = uow;
+            _productService = productService;
         }
         [Authorize]
-        public async Task<int> GetLoggedInUserCustomerId()
+        private async Task<int> GetLoggedInUserCustomerId()
         {
             var user = await _userManager.GetUserAsync(User);
-            var customerId = user.CustomerId;
+            var customerId = user?.CustomerId ?? 0;
             Console.WriteLine(customerId);
             return customerId;
 
@@ -43,6 +47,7 @@ namespace ERP_System_Project.Controllers.CRM
         public async Task<IActionResult> GetAllReviewsForCustomer()
         {
             int customerId = await GetLoggedInUserCustomerId();
+            if (customerId == 0) return Unauthorized();
             var reviews = await _customerReviewService.GetAllReviewsVMsForCustomerAsync(customerId);
 
             return View(reviews);
@@ -55,27 +60,30 @@ namespace ERP_System_Project.Controllers.CRM
 
             var averageRating = await _customerReviewService.GetAverageRatingAsync(productId);
             var reviewCount = await _customerReviewService.GetReviewCountAsync(productId);
-
-            //ViewBag.ProductName = product.Name;
-            ViewBag.ProductId = productId;
+            var product = await _productService.GetProductDetails(productId);
+            ViewBag.ProductDetails = product;
             ViewBag.AverageRating = averageRating;
             ViewBag.ReviewCount = reviewCount;
             return View(reviews);
+
         }
 
-        public IActionResult AddReview()
-        {
+        //public IActionResult AddReview()
+        //{
 
-            return View();
-        }
+        //    return View();
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> AddReview(CustomerReviewVM model)
         {
 
             if (ModelState.IsValid)
             {
-
+                var customerId = await GetLoggedInUserCustomerId();
+                if (customerId == 0) return Unauthorized();
+                model.CustomerId = customerId;
                 var added = await _customerReviewService.AddReviewAsync(model);
                 if (!added)
                 {
