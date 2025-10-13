@@ -8,6 +8,7 @@ namespace ERP_System_Project.Services.Interfaces.HR
         Task<IEnumerable<EmployeeAttendanceRecordVM>> GetAllByDateAsync(
             DateOnly date,
             int countryId,
+            string? name,
             int? branchId,
             int? departmentId,
             int? typeId,

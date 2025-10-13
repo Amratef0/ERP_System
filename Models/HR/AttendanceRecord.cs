@@ -16,10 +16,10 @@ namespace ERP_System_Project.Models.HR
         public DateOnly Date { get; set; }
 
         [Display(Name = "Actual Start Time")]
-        public DateTime CheckInTime { get; set; }
+        public TimeOnly CheckInTime { get; set; }
 
         [Display(Name = "Actual End Time")]
-        public DateTime? CheckOutTime { get; set; }
+        public TimeOnly? CheckOutTime { get; set; }
 
         [DecimalPrecisionScale(5, 2)]
         [Display(Name = "Total Hours")]

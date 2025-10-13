@@ -71,6 +71,7 @@ namespace ERP_System_Project.Services.Implementation.HR
         public async Task<IEnumerable<EmployeeAttendanceRecordVM>> GetAllByDateAsync(
             DateOnly date,
             int countryId,
+            string? name,
             int? branchId,
             int? departmentId,
             int? typeId,
@@ -91,6 +92,11 @@ namespace ERP_System_Project.Services.Implementation.HR
                          .Include(ar => ar.Employee)
                             .ThenInclude(e => e.JobTitle)
                          .Where(ar => ar.Date == date && ar.Employee.Branch.Address.CountryId == countryId);
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(ar => (ar.Employee.FirstName + " " + ar.Employee.LastName).ToUpper().StartsWith(name.ToUpper()));
+            }
 
             if (branchId.HasValue && branchId > 0)
             {

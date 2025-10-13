@@ -47,24 +47,29 @@ namespace ERP_System_Project.Controllers.HR
                 Countries = await countryService.GetAllAsync(),
                 Branches = await branchService.GetAllAsync(),
                 Departments = await departmentService.GetAllAsync(),
-                Types = await employeeTypeService.GetAllAsync(),
+                EmployeeTypes = await employeeTypeService.GetAllAsync(),
                 JobTitles = await jobTitleService.GetAllAsync()
             };
             return View("Index", model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAttendance(DateOnly date, int countryId, int? branchId, int? departmentId, int? typeId, int? jobTitleId)
+        [HttpPost]
+        public async Task<IActionResult> GetAttendance(DateOnly date, int countryId, string? name, int? branchId, int? departmentId, int? typeId, int? jobTitleId)
         {
-            IEnumerable<EmployeeAttendanceRecordVM> attendanceRecords = await attendanceService.GetAllByDateAsync(date, countryId, branchId, departmentId, typeId, jobTitleId);
-            bool isPublicHoliday = await publicHolidayService.CheckIfPublicHolidayAsync(date, countryId);
+            IEnumerable<EmployeeAttendanceRecordVM> attendanceRecords = await attendanceService.GetAllByDateAsync(date, countryId, name, branchId, departmentId, typeId, jobTitleId);
+
             bool isDayOff = await workScheduleService.CheckIfDayOffAsync(date, WorkScheduleId);
-            return Json(new
-            {
-                attendanceRecords,
-                isPublicHoliday,
-                isDayOff
-            });
+            bool isPublicHoliday = await publicHolidayService.CheckIfPublicHolidayAsync(date, countryId);
+
+            string infoMessage = null;
+
+            if (isDayOff)
+                infoMessage = "The selected date is a day off according to the work schedule.";
+            else if (isPublicHoliday)
+                infoMessage = "The selected date is a public holiday.";
+
+
+            return Json(new { attendanceRecords, infoMessage });
         }
     }
 }

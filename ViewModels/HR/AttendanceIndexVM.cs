@@ -11,7 +11,7 @@ namespace ERP_System_Project.ViewModels.HR
 
         public IEnumerable<Department> Departments { get; set; }
 
-        public IEnumerable<EmployeeType> Types { get; set; }
+        public IEnumerable<EmployeeType> EmployeeTypes { get; set; }
 
         public IEnumerable<JobTitle> JobTitles { get; set; }
     }
