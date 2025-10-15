@@ -9,14 +9,14 @@ namespace ERP_System_Project.Controllers.HR
 {
     public class AttendanceController : Controller
     {
-        private readonly IAttendanceService attendanceService;
-        private readonly IWorkScheduleService workScheduleService;
-        private readonly IPublicHolidayService publicHolidayService;
-        private readonly ICountryService countryService;
-        private readonly IBranchService branchService;
-        private readonly IDepartmentService departmentService;
-        private readonly IEmployeeTypeService employeeTypeService;
-        private readonly IJobTitleService jobTitleService;
+        private readonly IAttendanceService _attendanceService;
+        private readonly IWorkScheduleService _workScheduleService;
+        private readonly IPublicHolidayService _publicHolidayService;
+        private readonly ICountryService _countryService;
+        private readonly IBranchService _branchService;
+        private readonly IDepartmentService _departmentService;
+        private readonly IEmployeeTypeService _employeeTypeService;
+        private readonly IJobTitleService _jobTitleService;
         private const int WorkScheduleId = 1;
 
         public AttendanceController(
@@ -29,14 +29,14 @@ namespace ERP_System_Project.Controllers.HR
             IEmployeeTypeService employeeTypeService,
             IJobTitleService jobTitleService)
         {
-            this.attendanceService = attendanceService;
-            this.workScheduleService = workScheduleService;
-            this.publicHolidayService = publicHolidayService;
-            this.countryService = countryService;
-            this.branchService = branchService;
-            this.departmentService = departmentService;
-            this.employeeTypeService = employeeTypeService;
-            this.jobTitleService = jobTitleService;
+            _attendanceService = attendanceService;
+            _workScheduleService = workScheduleService;
+            _publicHolidayService = publicHolidayService;
+            _countryService = countryService;
+            _branchService = branchService;
+            _departmentService = departmentService;
+            _employeeTypeService = employeeTypeService;
+            _jobTitleService = jobTitleService;
         }
 
         [HttpGet]
@@ -44,11 +44,11 @@ namespace ERP_System_Project.Controllers.HR
         {
             AttendanceIndexVM model = new AttendanceIndexVM()
             {
-                Countries = await countryService.GetAllAsync(),
-                Branches = await branchService.GetAllAsync(),
-                Departments = await departmentService.GetAllAsync(),
-                EmployeeTypes = await employeeTypeService.GetAllAsync(),
-                JobTitles = await jobTitleService.GetAllAsync()
+                Countries = await _countryService.GetAllAsync(),
+                Branches = await _branchService.GetAllAsync(),
+                Departments = await _departmentService.GetAllAsync(),
+                EmployeeTypes = await _employeeTypeService.GetAllAsync(),
+                JobTitles = await _jobTitleService.GetAllAsync()
             };
             return View("Index", model);
         }
@@ -56,10 +56,10 @@ namespace ERP_System_Project.Controllers.HR
         [HttpPost]
         public async Task<IActionResult> GetAttendance(DateOnly date, int countryId, string? name, int? branchId, int? departmentId, int? typeId, int? jobTitleId)
         {
-            IEnumerable<EmployeeAttendanceRecordVM> attendanceRecords = await attendanceService.GetAllByDateAsync(date, countryId, name, branchId, departmentId, typeId, jobTitleId);
+            IEnumerable<EmployeeAttendanceRecordVM> attendanceRecords = await _attendanceService.GetAllByDateAsync(date, countryId, name, branchId, departmentId, typeId, jobTitleId);
 
-            bool isDayOff = await workScheduleService.CheckIfDayOffAsync(date, WorkScheduleId);
-            bool isPublicHoliday = await publicHolidayService.CheckIfPublicHolidayAsync(date, countryId);
+            bool isDayOff = await _workScheduleService.CheckIfDayOffAsync(date, WorkScheduleId);
+            bool isPublicHoliday = await _publicHolidayService.CheckIfPublicHolidayAsync(date, countryId);
 
             string infoMessage = null;
 

@@ -12,106 +12,120 @@ namespace ERP_System_Project.Controllers.HR
 {
     public class PublicHolidayController : Controller
     {
-        private readonly IPublicHolidayService publicHolidayService;
-        private readonly ICountryService countryService;
-        private readonly IMapper mapper;
-        private readonly IValidator<PublicHolidayCountriesVM> validator;
+        private readonly IPublicHolidayService _publicHolidayService;
+        private readonly ICountryService _countryService;
+        private readonly IMapper _mapper;
+        private readonly IValidator<PublicHolidayCountriesVM> _validator;
 
         public PublicHolidayController(IPublicHolidayService publicHolidayService, ICountryService countryService, IMapper mapper, IValidator<PublicHolidayCountriesVM> validator)
         {
-            this.publicHolidayService = publicHolidayService;
-            this.countryService = countryService;
-            this.mapper = mapper;
-            this.validator = validator;
+            _publicHolidayService = publicHolidayService;
+            _countryService = countryService;
+            _mapper = mapper;
+            _validator = validator;
         }
 
 
         [HttpGet]
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             PublicHolidayIndexVM model = new PublicHolidayIndexVM
             {
-                PublicHolidays = await publicHolidayService.GetAllWithCountryAsync(),
-                Countries = await countryService.GetAllAsync()
+                PublicHolidays = await _publicHolidayService.GetAllWithCountryAsync(),
+                Countries = await _countryService.GetAllAsync()
             };
             return View("Index", model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddAsync()
+        public async Task<IActionResult> Create()
         {
             PublicHolidayCountriesVM vm = new PublicHolidayCountriesVM
             {
                 Date = DateOnly.FromDateTime(DateTime.Now),
-                Countries = await countryService.GetAllAsync()
+                Countries = await _countryService.GetAllAsync()
             };
-            return View("Add", vm);
+            return View("Create", vm);
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> AddAsync(PublicHolidayCountriesVM model)
+        public async Task<IActionResult> Create(PublicHolidayCountriesVM model)
         {
-            ValidationResult result = await validator.ValidateAsync(model);
+            ValidationResult result = await _validator.ValidateAsync(model);
 
             if (result.IsValid)
             {
-                PublicHoliday publicHoliday = mapper.Map<PublicHoliday>(model);
-                await publicHolidayService.CreateAsync(publicHoliday);
+                PublicHoliday publicHoliday = _mapper.Map<PublicHoliday>(model);
+                await _publicHolidayService.CreateAsync(publicHoliday);
+                TempData["SuccessMessage"] = $"Public Holiday '{model.Name}' has been created successfully!";
                 return RedirectToAction("Index");
             }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
 
-            model.Countries = await countryService.GetAllAsync();
-            return View("Add", model);
+            model.Countries = await _countryService.GetAllAsync();
+            return View("Create", model);
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditAsync(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            PublicHoliday publicHoliday = await publicHolidayService.GetByIdAsync(id);
-            if (publicHoliday == null) return NotFound();
+            PublicHoliday publicHoliday = await _publicHolidayService.GetByIdAsync(id);
+            if (publicHoliday == null)
+            {
+                TempData["ErrorMessage"] = "Public Holiday not found!";
+                return NotFound();
+            }
 
-            PublicHolidayCountriesVM vm = mapper.Map<PublicHolidayCountriesVM>(publicHoliday);
-            vm.Countries = await countryService.GetAllAsync();
+            PublicHolidayCountriesVM vm = _mapper.Map<PublicHolidayCountriesVM>(publicHoliday);
+            vm.Countries = await _countryService.GetAllAsync();
 
             return View("Edit", vm);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAsync(PublicHolidayCountriesVM model)
+        public async Task<IActionResult> Edit(PublicHolidayCountriesVM model)
         {
-            ValidationResult result = await validator.ValidateAsync(model);
+            ValidationResult result = await _validator.ValidateAsync(model);
 
             if (result.IsValid)
             {
-                PublicHoliday publicHoliday = mapper.Map<PublicHoliday>(model);
-                await publicHolidayService.UpdateAsync(publicHoliday);
+                PublicHoliday publicHoliday = _mapper.Map<PublicHoliday>(model);
+                await _publicHolidayService.UpdateAsync(publicHoliday);
+                TempData["SuccessMessage"] = $"Public Holiday '{model.Name}' has been updated successfully!";
                 return RedirectToAction("Index");
             }
 
             foreach (var error in result.Errors)
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
 
-            model.Countries = await countryService.GetAllAsync();
+            model.Countries = await _countryService.GetAllAsync();
             return View("Edit", model);
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            await publicHolidayService.DeleteAsync(id);
+            var publicHoliday = await _publicHolidayService.GetByIdAsync(id);
+            if (publicHoliday == null)
+            {
+                TempData["ErrorMessage"] = "Public Holiday not found!";
+                return NotFound();
+            }
+
+            await _publicHolidayService.DeleteAsync(id);
+            TempData["SuccessMessage"] = $"Public Holiday '{publicHoliday.Name}' has been deleted successfully!";
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FilterAsync(string name, int countryId)
+        public async Task<IActionResult> Filter(string name, int countryId)
         {
-            IEnumerable<PublicHoliday>? filteredPublicHoliday = await publicHolidayService.FilterAsync(name, countryId);
+            IEnumerable<PublicHoliday>? filteredPublicHoliday = await _publicHolidayService.FilterAsync(name, countryId);
             return Json(filteredPublicHoliday ?? new List<PublicHoliday>());
         }
     }

@@ -1,81 +1,187 @@
 ﻿@model IEnumerable<Country>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Countries";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Add">Add New Country</a>
-</p>
-
-<div class="mb-3">
-    <form id="searchForm">
-        @Html.AntiForgeryToken()
-        <div class="input-group">
-            <input type="text" id="searchTerm" class="form-control" placeholder="Search by country name..." />
-
-            <button type="button" id="searchBtn" class="btn btn-primary">
-                <i class="bi bi-search"></i> Search
-            </button>
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-globe"></i> Countries</h2>
+                    <p class="text-muted">Manage countries and regional settings</p>
+                </div>
+                <div>
+                    <a asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle"></i> Add New Country
+                    </a>
+                </div>
+            </div>
+            <hr />
         </div>
-    </form>
-</div>
-
-@if(TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
     </div>
-}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneCode)
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="countries">
-        @foreach (var item in Model) {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Code)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PhoneCode)
-                    </td>
-                    <td>
-                        @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                        <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-        }
-    </tbody>
-</table>
+    <!-- Error Message -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-globe"></i> Total Countries</h6>
+                    <h2 class="mb-0">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-telephone"></i> Phone Codes</h6>
+                    <h2 class="mb-0">@Model.Count(c => !string.IsNullOrEmpty(c.PhoneCode))</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-hash"></i> Country Codes</h6>
+                    <h2 class="mb-0">@Model.Count(c => !string.IsNullOrEmpty(c.Code))</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="searchForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="searchTerm" class="form-control" 
+                                   placeholder="Search countries by name, code, or phone code..." />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="searchBtn" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Countries Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-table"></i> Countries List</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-globe"></i> Country Name</th>
+                            <th><i class="bi bi-hash"></i> Country Code</th>
+                            <th><i class="bi bi-telephone"></i> Phone Code</th>
+                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="countries">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.Name</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.Code</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.PhoneCode))
+                                    {
+                                        <span class="badge bg-info">@item.PhoneCode</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Delete country <strong>@item.Name</strong>?</p>
+                                                    <p class="text-danger mb-0">
+                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="bi bi-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle"></i> No countries found. Click "Add New Country" to get started.
+        </div>
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-
     <script>
         $(document).ready(function () {
-
             function filter() {
                 var searchTerm = $("#searchTerm").val();
                 var token = $('input[name="__RequestVerificationToken"]').val();
@@ -88,14 +194,14 @@
                         __RequestVerificationToken: token
                     },
                     success: function (response) {
-						fillTable(response);
+                        fillTable(response);
                     },
                     error: function (xhr, status, error) {
                         console.error("Search failed:", error);
                         alert("An error occurred while searching.");
                     }
                 });
-			}
+            }
 
             $("#searchForm").submit(function (e) {
                 e.preventDefault();
@@ -106,33 +212,50 @@
                 filter();
             });
 
+            $("#searchTerm").keyup(function() {
+                if ($(this).val() === '') {
+                    location.reload();
+                }
+            });
+
             function fillTable(response) {
                 var tableBody = $("#countries");
-                var token = $('input[name="__RequestVerificationToken"]').val();
                 tableBody.empty();
-                        if (response && response.length > 0) {
-                            var newRows = "";
-                            response.forEach(function (country) {
-                                var editUrl = '@Url.Action("Edit", "Country")?id=' + country.id;
-                                newRows += `<tr>
-                                                <td>${country.name}</td>
-                                                <td>${country.code}</td>
-                                                <td>${country.phoneCode}</td>
-                                                <td class="d-flex align-items-center">
-                                                    <a href="${editUrl}" class="btn btn-primary btn-sm me-2">Edit</a>
-                                                    <form action="/Country/Delete/${country.id}" method="post" >
-                                                        <input type="hidden" name="__RequestVerificationToken" value="${token}" />
-                                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                                    </form>
-                                                </td>
-                                            </tr>`;
-                            });
-                            tableBody.html(newRows);
-                        } else {
-                            var noResultsRow = "<tr><td colspan='4' class='text-center'>No results found.</td></tr>";
-                            tableBody.html(noResultsRow);
-                        }
-			}
+
+                if (response && response.length > 0) {
+                    var newRows = "";
+                    var token = $('input[name="__RequestVerificationToken"]').val();
+                    
+                    response.forEach(function (country) {
+                        var phoneCode = country.phoneCode 
+                            ? `<span class="badge bg-info">${country.phoneCode}</span>`
+                            : '<span class="text-muted">-</span>';
+
+                        newRows += `<tr>
+                                        <td><strong>${country.name}</strong></td>
+                                        <td><span class="badge bg-secondary">${country.code}</span></td>
+                                        <td>${phoneCode}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="/Country/Edit?id=${country.id}" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${country.name}?')) { document.getElementById('deleteForm${country.id}').submit(); }" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <form id="deleteForm${country.id}" action="/Country/Delete/${country.id}" method="post" style="display:none;">
+                                                <input type="hidden" name="__RequestVerificationToken" value="${token}" />
+                                            </form>
+                                        </td>
+                                    </tr>`;
+                    });
+                    tableBody.html(newRows);
+                } else {
+                    var noResultsRow = "<tr><td colspan='4' class='text-center'>No results found.</td></tr>";
+                    tableBody.html(noResultsRow);
+                }
+            }
         });
     </script>
 }

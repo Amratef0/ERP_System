@@ -1,0 +1,407 @@
+@model EmployeeVM
+
+@{
+    ViewData["Title"] = "Add";
+}
+
+<div class="container mt-4">
+    <h2><i class="bi bi-person-plus"></i> Add New Employee</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                <!-- Image Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-image"></i> Employee Photo</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center">
+                                <label class="control-label d-block mb-2"><strong>Photo Preview</strong></label>
+                                <div id="avatarPlaceholder" class="bg-secondary text-white d-inline-flex align-items-center justify-content-center mb-3" 
+                                     style="width: 200px; height: 200px; font-size: 5rem; border-radius: 0.25rem;">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <img id="imagePreview" src="" alt="Preview" class="img-thumbnail d-none" 
+                                     style="width: 200px; height: 200px; object-fit: cover; border: 3px solid #0dcaf0;" />
+                                <p class="text-muted mt-2"><small id="previewText">No photo selected</small></p>
+                            </div>
+                            <div class="col-md-8">
+                                <!-- Drag and Drop Zone -->
+                                <div id="dropZone" class="border border-2 border-dashed rounded p-4 text-center mb-3" 
+                                     style="background-color: #f8f9fa; cursor: pointer; transition: all 0.3s;">
+                                    <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #6c757d;"></i>
+                                    <h5 class="mt-3">Drag & Drop Photo Here</h5>
+                                    <p class="text-muted mb-2">or</p>
+                                    <button type="button" class="btn btn-primary" id="selectFileBtn">
+                                        <i class="bi bi-folder2-open"></i> Browse Files
+                                    </button>
+                                    <input type="file" asp-for="Image" id="fileInput" class="d-none" accept="image/*" />
+                                    <span asp-validation-for="Image" class="text-danger d-block mt-2"></span>
+                                    <small class="form-text text-muted d-block mt-3">
+                                        <i class="bi bi-info-circle"></i> 
+                                        Accepted formats: JPG, JPEG, PNG, GIF (Max 1MB)
+                                    </small>
+                                </div>
+
+                                <div id="fileInfo" class="alert alert-success d-none" role="alert">
+                                    <i class="bi bi-check-circle"></i> 
+                                    <strong>File selected:</strong> <span id="fileName"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-person"></i> Personal Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="FirstName" class="control-label"></label>
+                                    <input asp-for="FirstName" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="LastName" class="control-label"></label>
+                                    <input asp-for="LastName" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="DateOfBirth" class="control-label"></label>
+                            <input type="date" asp-for="DateOfBirth" class="form-control" value="" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Gender" class="control-label"></label>
+                            <select asp-for="Gender" asp-items="Html.GetEnumSelectList<Gender>()"
+                                    class="form-control">
+                                <option value="">-- Select Gender --</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="NationalId" class="control-label"></label>
+                            <input asp-for="NationalId" class="form-control" />
+                            <span asp-validation-for="NationalId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="PassportNumber" class="control-label"></label>
+                            <input asp-for="PassportNumber" class="form-control" />
+                            <span asp-validation-for="PassportNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="HireDate" class="control-label"></label>
+                            <input type="date" asp-for="HireDate" class="form-control" value="" />
+                            <span asp-validation-for="HireDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-telephone"></i> Contact Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="WorkEmail" class="control-label"></label>
+                                    <input type="email" asp-for="WorkEmail" class="form-control" />
+                                    <span asp-validation-for="WorkEmail" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="WorkPhone" class="control-label"></label>
+                                    <input asp-for="WorkPhone" class="form-control" />
+                                    <span asp-validation-for="WorkPhone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="PersonalEmail" class="control-label"></label>
+                                    <input type="email" asp-for="PersonalEmail" class="form-control" />
+                                    <span asp-validation-for="PersonalEmail" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="PersonalPhone" class="control-label"></label>
+                                    <input asp-for="PersonalPhone" class="form-control" />
+                                    <span asp-validation-for="PersonalPhone" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="EmergencyContactName" class="control-label"></label>
+                            <input asp-for="EmergencyContactName" class="form-control" />
+                            <span asp-validation-for="EmergencyContactName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="EmergencyContactPhone" class="control-label"></label>
+                            <input asp-for="EmergencyContactPhone" class="form-control" />
+                            <span asp-validation-for="EmergencyContactPhone" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0"><i class="bi bi-house"></i> Address Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Line1" class="control-label"></label>
+                                    <input asp-for="Line1" class="form-control" />
+                                    <span asp-validation-for="Line1" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Line2" class="control-label"></label>
+                                    <input asp-for="Line2" class="form-control" />
+                                    <span asp-validation-for="Line2" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="City" class="control-label"></label>
+                                    <input asp-for="City" class="form-control" />
+                                    <span asp-validation-for="City" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="StateProvince" class="control-label"></label>
+                                    <input asp-for="StateProvince" class="form-control" />
+                                    <span asp-validation-for="StateProvince" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="PostalCode" class="control-label"></label>
+                                    <input asp-for="PostalCode" class="form-control" />
+                                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="AddressType" class="control-label"></label>
+                                    <input asp-for="AddressType" class="form-control" />
+                                    <span asp-validation-for="AddressType" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CountryId" class="control-label"></label>
+                            <select asp-for="CountryId" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))"
+                                    class="form-control">
+                                <option value="">-- Select Country --</option>
+                            </select>
+                            <span asp-validation-for="CountryId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="BranchId" class="control-label"></label>
+                            <select asp-for="BranchId" asp-items="@(new SelectList(Model.Branches, "Id", "Name"))"
+                                    class="form-control">
+                                <option value="">-- Select Branch --</option>
+                            </select>
+                            <span asp-validation-for="BranchId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="DepartmentId" class="control-label"></label>
+                            <select asp-for="DepartmentId" asp-items="@(new SelectList(Model.Departments, "Id", "Name"))"
+                                    class="form-control">
+                                <option value="">-- Select Department --</option>
+                            </select>
+                            <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="TypeId" class="control-label"></label>
+                            <select asp-for="TypeId" asp-items="@(new SelectList(Model.EmployeeTypes, "Id", "Name"))"
+                                    class="form-control">
+                                <option value="">-- Select Employee Type --</option>
+                            </select>
+                            <span asp-validation-for="TypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="JobTitleId" class="control-label"></label>
+                            <select asp-for="JobTitleId" asp-items="@(new SelectList(Model.JobTitles, "Id", "Name"))"
+                                    class="form-control">
+                                <option value="">-- Select Job Title --</option>
+                            </select>
+                            <span asp-validation-for="JobTitleId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="SalaryCurrencyId" class="control-label"></label>
+                            <select asp-for="SalaryCurrencyId" asp-items="@(new SelectList(Model.Currencies, "Id", "Name"))"
+                                    class="form-control">
+                                <option value="">-- Select Salary Currency --</option>
+                            </select>
+                            <span asp-validation-for="SalaryCurrencyId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" asp-for="IsActive" id="isActiveCheck" />
+                        <label class="form-check-label" for="isActiveCheck">
+                            @Html.DisplayNameFor(model => model.IsActive)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group mb-0">
+                    <input type="submit" value="Add Employee" class="btn btn-primary btn-lg" />
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const selectFileBtn = document.getElementById('selectFileBtn');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        const previewText = document.getElementById('previewText');
+
+        // Click to browse files
+        selectFileBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Click on drop zone to browse files
+        dropZone.addEventListener('click', (e) => {
+            if (e.target !== selectFileBtn) {
+                fileInput.click();
+            }
+        });
+
+        // File input change event
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // Drag and drop events
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#e7f3ff';
+            dropZone.style.borderColor = '#0d6efd';
+        });
+
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#f8f9fa';
+            dropZone.style.borderColor = '#dee2e6';
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.backgroundColor = '#f8f9fa';
+            dropZone.style.borderColor = '#dee2e6';
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                
+                // Validate file type
+                if (file.type.startsWith('image/')) {
+                    // Assign to file input
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    fileInput.files = dataTransfer.files;
+                    
+                    handleFile(file);
+                } else {
+                    alert('Please drop an image file (JPG, PNG, GIF)');
+                }
+            }
+        });
+
+        // Handle file preview
+        function handleFile(file) {
+            // Validate file size (1MB = 1048576 bytes)
+            if (file.size > 1048576) {
+                alert('File size must be less than 1MB');
+                fileInput.value = '';
+                return;
+            }
+
+            // Show file info
+            fileName.textContent = file.name;
+            fileInfo.classList.remove('d-none');
+
+            // Preview image
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                imagePreview.src = event.target.result;
+                imagePreview.classList.remove('d-none');
+                avatarPlaceholder.classList.add('d-none');
+                previewText.textContent = 'Photo preview';
+            }
+            reader.readAsDataURL(file);
+        }
+    </script>
+
+    <style>
+        #dropZone {
+            transition: all 0.3s ease;
+        }
+
+        #dropZone:hover {
+            background-color: #e7f3ff;
+            border-color: #0d6efd;
+        }
+    </style>
+}

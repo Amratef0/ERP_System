@@ -10,6 +10,7 @@ namespace ERP_System_Project.Profiles.HR
         {
             CreateMap<AttendanceRecord, EmployeeAttendanceRecordVM>()
                 .ForMember(dest => dest.AttendanceRecordId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.StatusCode.Name))
                 .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
                 .ForMember(dest => dest.CheckInTime, opt => opt.MapFrom(src => src.CheckInTime))
                 .ForMember(dest => dest.CheckOutTime, opt => opt.MapFrom(src => src.CheckOutTime))

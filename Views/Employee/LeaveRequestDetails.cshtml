@@ -1,0 +1,173 @@
+@model LeaveRequest
+
+@{
+    ViewData["Title"] = "Leave Request Details";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2><i class="bi bi-file-earmark-text"></i> Leave Request Details</h2>
+            <hr />
+
+            <!-- Alert Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Request Details Card -->
+            <div class="card mb-4">
+                <div class="card-header @(Model.Status == ERP_System_Project.Models.Enums.LeaveRequestStatus.Pending ? "bg-warning" : Model.Status == ERP_System_Project.Models.Enums.LeaveRequestStatus.Approved ? "bg-success text-white" : "bg-danger text-white")">
+                    <h5 class="mb-0">
+                        Request Status: 
+                        @switch (Model.Status)
+                        {
+                            case ERP_System_Project.Models.Enums.LeaveRequestStatus.Pending:
+                                <span class="badge bg-dark">?? Pending</span>
+                                break;
+                            case ERP_System_Project.Models.Enums.LeaveRequestStatus.Approved:
+                                <span class="badge bg-dark">? Approved</span>
+                                break;
+                            case ERP_System_Project.Models.Enums.LeaveRequestStatus.Rejected:
+                                <span class="badge bg-light text-dark">? Rejected</span>
+                                break;
+                            case ERP_System_Project.Models.Enums.LeaveRequestStatus.Cancelled:
+                                <span class="badge bg-light text-dark">? Cancelled</span>
+                                break;
+                        }
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Employee Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h6 class="text-muted">EMPLOYEE INFORMATION</h6>
+                            <div class="d-flex align-items-center mb-3">
+                                @if (!string.IsNullOrEmpty(Model.Employee.ImageURL))
+                                {
+                                    <img src="@Model.Employee.ImageURL" alt="@Model.Employee.FirstName" 
+                                         class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center me-3" 
+                                         style="width: 80px; height: 80px; font-size: 2rem;">
+                                        @Model.Employee.FirstName?.Substring(0, 1).ToUpper()
+                                    </div>
+                                }
+                                <div>
+                                    <h4 class="mb-1">@Model.Employee.FirstName @Model.Employee.LastName</h4>
+                                    <p class="mb-0 text-muted">@Model.Employee.JobTitle?.Name</p>
+                                    <p class="mb-0 text-muted">
+                                        <i class="bi bi-diagram-3"></i> @Model.Employee.Department?.Name | 
+                                        <i class="bi bi-building"></i> @Model.Employee.Branch?.Name
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <!-- Leave Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">LEAVE DETAILS</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Leave Type:</strong></td>
+                                    <td>
+                                        <i class="bi bi-calendar-event text-primary"></i>
+                                        @Model.LeaveType.Name
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Start Date:</strong></td>
+                                    <td>@Model.StartDate.ToString("dddd, dd MMMM yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>End Date:</strong></td>
+                                    <td>@Model.EndDate.ToString("dddd, dd MMMM yyyy")</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Days:</strong></td>
+                                    <td><span class="badge bg-info">@Model.TotalDays.ToString("F1") days</span></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">REQUEST INFO</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Submitted On:</strong></td>
+                                    <td>@Model.CreatedDate.ToString("dd MMM yyyy HH:mm")</td>
+                                </tr>
+                                @if (Model.ApprovedDate.HasValue)
+                                {
+                                    <tr>
+                                        <td><strong>Processed On:</strong></td>
+                                        <td>@Model.ApprovedDate.Value.ToString("dd MMM yyyy HH:mm")</td>
+                                    </tr>
+                                }
+                                @if (Model.ApprovedBy != null)
+                                {
+                                    <tr>
+                                        <td><strong>Processed By:</strong></td>
+                                        <td>@Model.ApprovedBy.FirstName @Model.ApprovedBy.LastName</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Reason -->
+                    @if (!string.IsNullOrEmpty(Model.Reason))
+                    {
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <h6 class="text-muted">REASON FOR LEAVE</h6>
+                                <div class="alert alert-light">
+                                    @Model.Reason
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Action Buttons -->
+                    @if (Model.Status == ERP_System_Project.Models.Enums.LeaveRequestStatus.Pending)
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr />
+                                <h6 class="text-muted mb-3">ACTIONS</h6>
+                                <form asp-action="ApproveLeaveRequest" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to approve this leave request?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="bi bi-check-circle"></i> Approve Request
+                                    </button>
+                                </form>
+                                <form asp-action="RejectLeaveRequest" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to reject this leave request?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-lg">
+                                        <i class="bi bi-x-circle"></i> Reject Request
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <a asp-action="PendingApprovals" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Pending Approvals
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,140 @@
+@model LeaveType
+
+@{
+    ViewData["Title"] = "Add Leave Type";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-plus-circle"></i> Add New Leave Type</h2>
+                    <p class="text-muted">Create a new leave classification</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Add Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar2-x"></i> Leave Type Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">
+                                <i class="bi bi-tag"></i> Leave Type Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg" placeholder="e.g., Sick Leave, Annual Leave" autofocus />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="form-text">Full name of the leave type</div>
+                        </div>
+
+                        <!-- Code Field -->
+                        <div class="mb-3">
+                            <label asp-for="Code" class="form-label">
+                                <i class="bi bi-hash"></i> Leave Code <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Code" class="form-control form-control-lg" placeholder="e.g., SICK, ANN, CAS" maxlength="10" style="text-transform: uppercase;" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                            <div class="form-text">Short code for identification (e.g., SICK, ANN, CAS)</div>
+                        </div>
+
+                        <!-- Max Days Per Year Field -->
+                        <div class="mb-3">
+                            <label asp-for="MaxDaysPerYear" class="form-label">
+                                <i class="bi bi-calendar-range"></i> Max Days Per Year
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <input asp-for="MaxDaysPerYear" type="number" min="0" class="form-control" placeholder="0" />
+                                <span class="input-group-text">days</span>
+                            </div>
+                            <span asp-validation-for="MaxDaysPerYear" class="text-danger"></span>
+                            <div class="form-text">Maximum days allowed per year (0 for unlimited)</div>
+                        </div>
+
+                        <!-- Is Paid Field -->
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsPaid" class="form-check-input" type="checkbox" role="switch" id="isPaidSwitch" checked />
+                                <label class="form-check-label" for="isPaidSwitch">
+                                    <i class="bi bi-cash"></i> This is Paid Leave
+                                </label>
+                            </div>
+                            <div class="form-text">Indicates whether employees receive pay during this leave</div>
+                        </div>
+
+                        <!-- Is Active Field -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" checked />
+                                <label class="form-check-label" for="isActiveSwitch">
+                                    <i class="bi bi-toggle-on"></i> Leave Type is Active
+                                </label>
+                            </div>
+                            <div class="form-text">Active leave types appear in selection lists</div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Create Leave Type
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card mt-3 border-info">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Common Leave Types</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="mb-0 small">
+                                <li><strong>SICK</strong> - Sick Leave</li>
+                                <li><strong>ANN</strong> - Annual Leave</li>
+                                <li><strong>CAS</strong> - Casual Leave</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="mb-0 small">
+                                <li><strong>MAT</strong> - Maternity Leave</li>
+                                <li><strong>PAT</strong> - Paternity Leave</li>
+                                <li><strong>UNP</strong> - Unpaid Leave</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Auto-uppercase leave code
+        document.querySelector('input[name="Code"]')?.addEventListener('input', function(e) {
+            this.value = this.value.toUpperCase();
+        });
+    </script>
+}

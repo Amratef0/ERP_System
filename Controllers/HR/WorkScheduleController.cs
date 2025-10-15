@@ -10,45 +10,51 @@ namespace ERP_System_Project.Controllers.HR
 {
     public class WorkScheduleController : Controller
     {
-        private readonly IWorkScheduleService workScheduleService;
-        private readonly IWorkScheduleDayService workScheduleDayService;
-        private readonly IMapper mapper;
-        private readonly IValidator<WorkScheduleDayVM> validator;
+        private readonly IWorkScheduleService _workScheduleService;
+        private readonly IWorkScheduleDayService _workScheduleDayService;
+        private readonly IMapper _mapper;
+        private readonly IValidator<WorkScheduleDayVM> _validator;
         private const int WorkScheduleId = 1;
 
         public WorkScheduleController(IWorkScheduleService workScheduleService, IWorkScheduleDayService workScheduleDayService, IMapper mapper, IValidator<WorkScheduleDayVM> validator)
         {
-            this.workScheduleService = workScheduleService;
-            this.workScheduleDayService = workScheduleDayService;
-            this.mapper = mapper;
-            this.validator = validator;
+            _workScheduleService = workScheduleService;
+            _workScheduleDayService = workScheduleDayService;
+            _mapper = mapper;
+            _validator = validator;
         }
 
         [HttpGet]
         public async Task<IActionResult> IndexAsync()
         {
-            ICollection<WorkScheduleDay> WorkScheduleDays = await workScheduleService.GetScheduleDaysByIdAsync(WorkScheduleId);
+            ICollection<WorkScheduleDay> WorkScheduleDays = await _workScheduleService.GetScheduleDaysByIdAsync(WorkScheduleId);
             return View("Index", WorkScheduleDays);
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> EditAsync(int id)
         {
-            var day = await workScheduleService.GetScheduleDayByIdAsync(WorkScheduleId, id);
-            var dayVM = mapper.Map<WorkScheduleDayVM>(day);
+            var day = await _workScheduleService.GetScheduleDayByIdAsync(WorkScheduleId, id);
+            if (day == null)
+            {
+                TempData["ErrorMessage"] = "Work Schedule Day not found!";
+                return NotFound();
+            }
+            var dayVM = _mapper.Map<WorkScheduleDayVM>(day);
             return View("Edit", dayVM);
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Edit(WorkScheduleDayVM model)
+        public async Task<IActionResult> EditAsync(WorkScheduleDayVM model)
         {
-            ValidationResult result = await validator.ValidateAsync(model);
+            ValidationResult result = await _validator.ValidateAsync(model);
 
             if (result.IsValid)
             {
-                var day = mapper.Map<WorkScheduleDay>(model);
-                await workScheduleDayService.UpdateAsync(day);
+                var day = _mapper.Map<WorkScheduleDay>(model);
+                await _workScheduleDayService.UpdateAsync(day);
+                TempData["SuccessMessage"] = $"Work Schedule for {model.Day} has been updated successfully!";
                 return RedirectToAction("Index");
             }
 

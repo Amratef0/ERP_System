@@ -159,6 +159,9 @@ builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<ILeavePolicyService, LeavePolicyService>();
+builder.Services.AddScoped<IEmployeeLeaveBalanceService, EmployeeLeaveBalanceService>();
+builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
 // Log Services
 builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();
@@ -185,7 +188,29 @@ using (var scope = app.Services.CreateScope())
 // Hangfire Dashboard
 app.UseHangfireDashboard("/hangfire");
 
-// Schedule Recurring Jobs (Attendance Generation)
+// ========== SCHEDULED BACKGROUND JOBS ==========
+
+// 1. LEAVE BALANCE: Generate balances for new year (January 1st at 1:00 AM)
+RecurringJob.AddOrUpdate<IEmployeeLeaveBalanceService>(
+    "GenerateNewYearLeaveBalances",
+    service => service.GenerateBalancesForAllEmployeesAsync(DateTime.Now.Year, null),
+    "0 1 1 1 *", // Cron: At 1:00 AM on January 1st
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+// 2. LEAVE BALANCE: Carry forward unused balances (December 31st at 11:59 PM)
+RecurringJob.AddOrUpdate<IEmployeeLeaveBalanceService>(
+    "CarryForwardLeaveBalances",
+    service => service.CarryForwardUnusedDaysAsync(DateTime.Now.Year, DateTime.Now.Year + 1),
+    "59 23 31 12 *", // Cron: At 11:59 PM on December 31st
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+// Schedule Recurring Jobs (Attendance Generation) - COMMENTED OUT
 //var times = new[] { 9, 13, 18 };
 
 //foreach (var hour in times)

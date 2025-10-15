@@ -1,0 +1,101 @@
+@model PublicHolidayCountriesVM
+
+@{
+    ViewData["Title"] = "Add Public Holiday";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-plus-circle"></i> Add New Public Holiday</h2>
+                    <p class="text-muted">Create a new public holiday</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Add Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Public Holiday Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Holiday Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">
+                                <i class="bi bi-tag"></i> Holiday Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg" placeholder="e.g., New Year's Day" autofocus />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="form-text">Full name of the public holiday</div>
+                        </div>
+
+                        <!-- Date Field -->
+                        <div class="mb-3">
+                            <label asp-for="Date" class="form-label">
+                                <i class="bi bi-calendar3"></i> Holiday Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" asp-for="Date" class="form-control form-control-lg" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                            <div class="form-text">Select the date when this holiday occurs</div>
+                        </div>
+
+                        <!-- Country Field -->
+                        <div class="mb-4">
+                            <label asp-for="CountryId" class="form-label">
+                                <i class="bi bi-globe"></i> Country <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="CountryId" class="form-select form-select-lg" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
+                                <option value="">-- Select Country --</option>
+                            </select>
+                            <span asp-validation-for="CountryId" class="text-danger"></span>
+                            <div class="form-text">Country where this holiday is observed</div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Create Holiday
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card mt-3 border-info">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Guidelines</h6>
+                    <ul class="mb-0 small">
+                        <li>Public holidays affect leave calculations and work schedules</li>
+                        <li>Employees in the specified country will see this as a non-working day</li>
+                        <li>Make sure to add holidays well in advance for planning purposes</li>
+                        <li>You can add the same holiday for multiple countries separately</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

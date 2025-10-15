@@ -14,13 +14,15 @@ namespace ERP_System_Project.ViewModels.HR
         [Display(Name = "Full Name")]
         public string FullName { get; set; }
 
-        public virtual string Branch { get; set; }
+        public string Branch { get; set; }
 
-        public virtual string Department { get; set; }
+        public string Department { get; set; }
 
-        public virtual string Type { get; set; }
+        public string Type { get; set; }
 
-        public virtual string JobTitle { get; set; }
+        public string JobTitle { get; set; }
+
+        public string Status { get; set; }
 
         [Display(Name = "Attendance Date")]
         public DateOnly Date { get; set; }

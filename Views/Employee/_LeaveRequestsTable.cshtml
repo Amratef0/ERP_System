@@ -1,0 +1,143 @@
+@model IEnumerable<LeaveRequest>
+
+@if (Model.Any())
+{
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Leave Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Total Days</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Approved By</th>
+                            <th>Approved Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var request in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <i class="bi bi-calendar-event text-primary"></i>
+                                    @request.LeaveType.Name
+                                </td>
+                                <td>@request.StartDate.ToString("dd MMM yyyy")</td>
+                                <td>@request.EndDate.ToString("dd MMM yyyy")</td>
+                                <td>
+                                    <span class="badge bg-info">@request.TotalDays.ToString("F1") days</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(request.Reason))
+                                    {
+                                        <span data-bs-toggle="tooltip" title="@request.Reason">
+                                            @(request.Reason.Length > 30 ? request.Reason.Substring(0, 30) + "..." : request.Reason)
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @switch (request.Status)
+                                    {
+                                        case ERP_System_Project.Models.Enums.LeaveRequestStatus.Pending:
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i> Pending
+                                            </span>
+                                            break;
+                                        case ERP_System_Project.Models.Enums.LeaveRequestStatus.Approved:
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle"></i> Approved
+                                            </span>
+                                            break;
+                                        case ERP_System_Project.Models.Enums.LeaveRequestStatus.Rejected:
+                                            <span class="badge bg-danger">
+                                                <i class="bi bi-x-circle"></i> Rejected
+                                            </span>
+                                            break;
+                                        case ERP_System_Project.Models.Enums.LeaveRequestStatus.Cancelled:
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-slash-circle"></i> Cancelled
+                                            </span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    @if (request.ApprovedBy != null)
+                                    {
+                                        <span>@request.ApprovedBy.FirstName @request.ApprovedBy.LastName</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (request.ApprovedDate.HasValue)
+                                    {
+                                        @request.ApprovedDate.Value.ToString("dd MMM yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (request.Status == ERP_System_Project.Models.Enums.LeaveRequestStatus.Pending)
+                                    {
+                                        <form asp-action="CancelLeaveRequest" asp-route-id="@request.Id" method="post" style="display: inline;"
+                                              onsubmit="return confirm('Are you sure you want to cancel this leave request?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Cancel Request">
+                                                <i class="bi bi-x-circle"></i> Cancel
+                                            </button>
+                                        </form>
+                                    }
+                                    else if (request.Status == ERP_System_Project.Models.Enums.LeaveRequestStatus.Approved)
+                                    {
+                                        <form asp-action="CancelLeaveRequest" asp-route-id="@request.Id" method="post" style="display: inline;"
+                                              onsubmit="return confirm('This will reverse the used days from your balance. Are you sure?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-warning" title="Cancel Approved Request">
+                                                <i class="bi bi-x-circle"></i> Cancel
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No actions</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> No leave requests found in this category.
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+        });
+    </script>
+}

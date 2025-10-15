@@ -13,6 +13,5 @@ namespace ERP_System_Project.Services.Interfaces.HR
             int? departmentId,
             int? typeId,
             int? jobTitleId);
-        Task GenerateDailyAttendance();
     }
 }

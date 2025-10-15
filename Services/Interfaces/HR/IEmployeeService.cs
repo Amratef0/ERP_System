@@ -16,5 +16,10 @@ namespace ERP_System_Project.Services.Interfaces.HR
         Task<IEnumerable<EmployeeIndexVM>> GetAllAsync();
 
         Task<IEnumerable<EmployeeIndexVM>> SearchAsync(string? name, int? branchId, int? departmentId, int? employeeTypeId, int? jobTitleId);
+
+        /// <summary>
+        /// Gets employee by ApplicationUserId
+        /// </summary>
+        Task<Employee?> GetByApplicationUserIdAsync(string applicationUserId);
     }
 }

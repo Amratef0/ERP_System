@@ -1,71 +1,146 @@
 ﻿@model JobTitle
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Job Title";
 }
 
-<h1>Edit</h1>
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-pencil-square"></i> Edit Job Title</h2>
+                    <p class="text-muted">Update job title information</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+            <hr />
+        </div>
+    </div>
 
-<h4>JobTitle</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="All" class="text-danger"></div>
+    <!-- Edit Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-briefcase"></i> Job Title Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Hidden ID field -->
+                        <input asp-for="Id" type="hidden" />
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Name Field -->
+                                <div class="mb-3">
+                                    <label asp-for="Name" class="form-label">
+                                        <i class="bi bi-tag"></i> Job Title Name <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter job title name" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
 
-            <div class="form-group d-none">
-                <label asp-for="@Model.Id" class="control-label"></label>
-                <input asp-for="@Model.Id" class="form-control" />
-                <span asp-validation-for="@Model.Id" class="text-danger"></span>
+                            <div class="col-md-6">
+                                <!-- Code Field -->
+                                <div class="mb-3">
+                                    <label asp-for="Code" class="form-label">
+                                        <i class="bi bi-hash"></i> Job Code <span class="text-danger">*</span>
+                                    </label>
+                                    <input asp-for="Code" class="form-control form-control-lg" placeholder="Enter job code" />
+                                    <span asp-validation-for="Code" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <!-- Min Salary Field -->
+                                <div class="mb-3">
+                                    <label asp-for="MinSalary" class="form-label">
+                                        <i class="bi bi-cash-stack"></i> Minimum Salary
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="MinSalary" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                    </div>
+                                    <span asp-validation-for="MinSalary" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <!-- Max Salary Field -->
+                                <div class="mb-3">
+                                    <label asp-for="MaxSalary" class="form-label">
+                                        <i class="bi bi-cash-coin"></i> Maximum Salary
+                                    </label>
+                                    <div class="input-group input-group-lg">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="MaxSalary" type="number" step="0.01" class="form-control" placeholder="0.00" />
+                                    </div>
+                                    <span asp-validation-for="MaxSalary" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">
+                                <i class="bi bi-card-text"></i> Description
+                            </label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter job description and responsibilities"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Is Active Field -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" />
+                                <label class="form-check-label" for="isActiveSwitch">
+                                    <i class="bi bi-toggle-on"></i> Job Title is Active
+                                </label>
+                            </div>
+                            <div class="form-text">Inactive job titles won't appear in selection lists</div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-check-circle"></i> Update Job Title
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="@Model.Name" class="control-label"></label>
-                <input asp-for="@Model.Name" class="form-control" />
-                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            <!-- Info Card -->
+            <div class="card mt-3 border-info">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Salary Range Guidelines</h6>
+                    <ul class="mb-0 small">
+                        <li>Minimum Salary should be less than Maximum Salary</li>
+                        <li>Salary ranges help maintain pay equity across the organization</li>
+                        <li>These values are guidelines and can be adjusted per employee</li>
+                        <li>Leave salary fields empty if not applicable</li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="@Model.Code" class="control-label"></label>
-                <input asp-for="@Model.Code" class="form-control" />
-                <span asp-validation-for="@Model.Code" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="@Model.MinSalary" class="control-label"></label>
-                <input asp-for="@Model.MinSalary" class="form-control" />
-                <span asp-validation-for="@Model.MinSalary" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="@Model.MaxSalary" class="control-label"></label>
-                <input asp-for="@Model.MaxSalary" class="form-control" />
-                <span asp-validation-for="@Model.MaxSalary" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="@Model.Description" class="control-label"></label>
-                <textarea asp-for="@Model.Description" class="form-control"></textarea>
-                <span asp-validation-for="@Model.Description" class="text-danger"></span>
-            </div>
-
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="@Model.IsActive" /> @Html.DisplayNameFor(model => model.IsActive)
-                </label>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

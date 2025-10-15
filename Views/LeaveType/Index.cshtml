@@ -1,73 +1,214 @@
 ﻿@model IEnumerable<LeaveType>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Leave Types";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Add">Add New Leave Type</a>
-</p>
-
-<div class="mb-3">
-    <form id="searchForm">
-        @Html.AntiForgeryToken()
-        <div class="input-group">
-            <input type="text" id="searchTerm" class="form-control" placeholder="Search by leave type name..." />
-
-            <button type="button" id="searchBtn" class="btn btn-primary">
-                <i class="bi bi-search"></i> Search
-            </button>
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-calendar2-x"></i> Leave Types</h2>
+                    <p class="text-muted">Manage employee leave classifications</p>
+                </div>
+                <div>
+                    <a asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle"></i> Add New Leave Type
+                    </a>
+                </div>
+            </div>
+            <hr />
         </div>
-    </form>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-list"></i> Total Types</h6>
+                    <h2 class="mb-0">@Model.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-cash"></i> Paid Leave</h6>
+                    <h2 class="mb-0">@Model.Count(t => t.IsPaid)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-cash-stack"></i> Unpaid Leave</h6>
+                    <h2 class="mb-0">@Model.Count(t => !t.IsPaid)</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-check-circle"></i> Active</h6>
+                    <h2 class="mb-0">@Model.Count(t => t.IsActive)</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="searchForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="searchTerm" class="form-control" 
+                                   placeholder="Search leave types by name..." />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="searchBtn" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Leave Types Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-table"></i> Leave Types List</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-tag"></i> Leave Type Name</th>
+                            <th><i class="bi bi-hash"></i> Code</th>
+                            <th class="text-center"><i class="bi bi-calendar-range"></i> Max Days/Year</th>
+                            <th class="text-center"><i class="bi bi-cash"></i> Paid</th>
+                            <th class="text-center"><i class="bi bi-toggle-on"></i> Status</th>
+                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="types">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.Name</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary fs-6">@item.Code</span>
+                                </td>
+                                <td class="text-center">
+                                    @if (item.MaxDaysPerYear.HasValue && item.MaxDaysPerYear > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark">@item.MaxDaysPerYear days</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Unlimited</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (item.IsPaid)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-cash"></i> Paid
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-cash-stack"></i> Unpaid
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> Active
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-x-circle"></i> Inactive
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-info" title="Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Delete leave type <strong>@item.Name (@item.Code)</strong>?</p>
+                                                    <p class="text-danger mb-0">
+                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="bi bi-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle"></i> No leave types found. Click "Add New Leave Type" to get started.
+        </div>
+    }
 </div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsPaid)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsActive)
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="types">
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPaid)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsActive)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -76,7 +217,6 @@
         $(document).ready(function () {
             function filter() {
                 var searchTerm = $("#searchTerm").val();
-
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
@@ -105,6 +245,12 @@
                 filter();
             });
 
+            $("#searchTerm").keyup(function() {
+                if ($(this).val() === '') {
+                    location.reload();
+                }
+            });
+
             function fillTable(response) {
                 var tableBody = $("#types");
                 tableBody.empty();
@@ -112,32 +258,47 @@
                 if (response && response.length > 0) {
                     var newRows = "";
                     var token = $('input[name="__RequestVerificationToken"]').val();
+                    
                     response.forEach(function (leaveType) {
-                        var editUrl = '@Url.Action("Edit", "LeaveType")/' + leaveType.id;
-                        var detailsUrl = '@Url.Action("Details", "LeaveType")/' + leaveType.id;
+                        var maxDays = leaveType.maxDaysPerYear && leaveType.maxDaysPerYear > 0
+                            ? `<span class="badge bg-warning text-dark">${leaveType.maxDaysPerYear} days</span>`
+                            : '<span class="badge bg-success">Unlimited</span>';
+                        
+                        var paidStatus = leaveType.isPaid 
+                            ? '<span class="badge bg-success"><i class="bi bi-cash"></i> Paid</span>'
+                            : '<span class="badge bg-warning text-dark"><i class="bi bi-cash-stack"></i> Unpaid</span>';
+                        
+                        var activeStatus = leaveType.isActive 
+                            ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Active</span>'
+                            : '<span class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactive</span>';
 
                         newRows += `<tr>
-                                        <td>${leaveType.name}</td>
-										<td>${leaveType.code}</td>
-                                        <td>
-                                            <input type="checkbox" ${leaveType.isPaid ? 'checked' : ''} disabled />
-                                        </td>
-                                        <td>
-                                            <input type="checkbox" ${leaveType.isActive ? 'checked' : ''} disabled />
-                                        </td>
-                                        <td>
-                                            <a href="${editUrl}">Edit</a> |
-                                            <a href="${detailsUrl}">Details</a> |
-                                            <form action="/LeaveType/Delete/${leaveType.id}" method="post">
-                                                <Input type="hidden" name="__RequestVerificationToken" value="${token}" />
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <td><strong>${leaveType.name}</strong></td>
+                                        <td><span class="badge bg-secondary fs-6">${leaveType.code}</span></td>
+                                        <td class="text-center">${maxDays}</td>
+                                        <td class="text-center">${paidStatus}</td>
+                                        <td class="text-center">${activeStatus}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="/LeaveType/Details/${leaveType.id}" class="btn btn-sm btn-info" title="Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="/LeaveType/Edit/${leaveType.id}" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${leaveType.name}?')) { document.getElementById('deleteForm${leaveType.id}').submit(); }" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <form id="deleteForm${leaveType.id}" action="/LeaveType/Delete/${leaveType.id}" method="post" style="display:none;">
+                                                <input type="hidden" name="__RequestVerificationToken" value="${token}" />
                                             </form>
                                         </td>
                                     </tr>`;
                     });
                     tableBody.html(newRows);
                 } else {
-                    var noResultsRow = "<tr><td colspan='5' class='text-center'>No results found.</td></tr>";
+                    var noResultsRow = "<tr><td colspan='6' class='text-center'>No results found.</td></tr>";
                     tableBody.html(noResultsRow);
                 }
             }

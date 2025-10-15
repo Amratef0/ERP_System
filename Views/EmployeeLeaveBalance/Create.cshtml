@@ -1,0 +1,110 @@
+@model EmployeeLeaveBalanceVM
+
+@{
+    ViewData["Title"] = "Create Leave Balance";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2><i class="bi bi-plus-circle"></i> Create Leave Balance</h2>
+            <hr />
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="EmployeeId" class="form-label"></label>
+                            <select asp-for="EmployeeId" class="form-select" id="employeeSelect">
+                                <option value="">-- Select Employee --</option>
+                                @foreach (var emp in Model.Employees ?? Enumerable.Empty<Employee>())
+                                {
+                                    <option value="@emp.Id">@emp.FirstName @emp.LastName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LeaveTypeId" class="form-label"></label>
+                            <select asp-for="LeaveTypeId" class="form-select" id="leaveTypeSelect">
+                                <option value="">-- Select Leave Type --</option>
+                                @foreach (var lt in Model.LeaveTypes ?? Enumerable.Empty<LeaveType>())
+                                {
+                                    <option value="@lt.Id">@lt.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Year" class="form-label"></label>
+                            <input asp-for="Year" class="form-control" type="number" min="2020" max="2100" />
+                            <span asp-validation-for="Year" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TotalEntitledDays" class="form-label"></label>
+                            <input asp-for="TotalEntitledDays" class="form-control" type="number" step="0.5" min="0" max="365" id="entitledDaysInput" />
+                            <span asp-validation-for="TotalEntitledDays" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <span id="policyInfo" class="text-info"></span>
+                            </small>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Note:</strong> UsedDays will be automatically calculated from approved leave requests. 
+                            The system will use leave policies to calculate entitled days, but you can override this value if needed.
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Create
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function () {
+            // When employee and leave type are selected, get entitled days from policy
+            $("#employeeSelect, #leaveTypeSelect").change(function () {
+                var employeeId = $("#employeeSelect").val();
+                var leaveTypeId = $("#leaveTypeSelect").val();
+
+                if (employeeId && leaveTypeId) {
+                    $.ajax({
+                        url: '@Url.Action("GetEntitledDays", "EmployeeLeaveBalance")',
+                        type: 'GET',
+                        data: { employeeId: employeeId, leaveTypeId: leaveTypeId },
+                        success: function (response) {
+                            if (response.success && response.entitledDays) {
+                                $("#entitledDaysInput").val(response.entitledDays);
+                                $("#policyInfo").text("Policy suggests: " + response.entitledDays + " days (you can override this)");
+                            } else {
+                                $("#policyInfo").text("No policy found. Please enter entitled days manually.");
+                            }
+                        },
+                        error: function () {
+                            $("#policyInfo").text("Could not fetch policy. Please enter entitled days manually.");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

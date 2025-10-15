@@ -1,114 +1,235 @@
 ﻿@model EmployeesIndexVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Employees";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Add">Add New Employee</a>
-</p>
-
-<div class="mb-3">
-    <form id="searchForm">
-        @Html.AntiForgeryToken()
-        <div class="input-group">
-            <input type="text" id="searchTerm" class="form-control" placeholder="Search by employee name..." />
-
-            <button type="button" id="searchBtn" class="btn btn-primary">
-                <i class="bi bi-search"></i> Search
-            </button>
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-people"></i> Employees</h2>
+                    <p class="text-muted">Manage company employees and workforce</p>
+                </div>
+                <div>
+                    <a asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="bi bi-person-plus"></i> Add New Employee
+                    </a>
+                </div>
+            </div>
+            <hr />
         </div>
-    </form>
-</div>
-
-<div class="mb-3">
-    <label for="branchFilter" class="form-label">Filter by Branch:</label>
-    <select id="branchFilter" class="form-control" asp-items="@(new SelectList(Model.Branches, "Id", "Name"))">
-        <option value="">-- Select Branch --</option>
-    </select>
-</div>
-
-<div class="mb-3">
-    <label for="departmentFilter" class="form-label">Filter by Department:</label>
-    <select id="departmentFilter" class="form-control" asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
-        <option value="">-- Select Department --</option>
-    </select>
-</div>
-
-<div class="mb-3">
-    <label for="employeeTypeFilter" class="form-label">Filter by Employee Type:</label>
-    <select id="employeeTypeFilter" class="form-control" asp-items="@(new SelectList(Model.EmployeeTypes, "Id", "Name"))">
-        <option value="">-- Select Employee Type --</option>
-    </select>
-</div>
-
-<div class="mb-3">
-    <label for="jobTitleFilter" class="form-label">Filter by Job Title:</label>
-    <select id="jobTitleFilter" class="form-control" asp-items="@(new SelectList(Model.JobTitles, "Id", "Name"))">
-        <option value="">-- Select Job Title --</option>
-    </select>
-</div>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
     </div>
-}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                FullName
-            </th>
-            <th>
-                Branch
-            </th>
-            <th>
-                Department
-            </th>
-            <th>
-                Employee Type
-            </th>
-            <th>
-               Job Title
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="employees">
-@foreach (var item in Model.Employees) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Branch.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Type.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.JobTitle.Name)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <!-- Error Message -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
 
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-people"></i> Total Employees</h6>
+                    <h2 class="mb-0">@Model.Employees.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-building"></i> Branches</h6>
+                    <h2 class="mb-0">@Model.Branches.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-diagram-3"></i> Departments</h6>
+                    <h2 class="mb-0">@Model.Departments.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-briefcase"></i> Job Titles</h6>
+                    <h2 class="mb-0">@Model.JobTitles.Count()</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters & Search</h5>
+        </div>
+        <div class="card-body">
+            <form id="searchForm">
+                @Html.AntiForgeryToken()
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="form-label"><i class="bi bi-search"></i> Search Employee</label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text" id="searchTerm" class="form-control" 
+                                   placeholder="Search by employee name..." />
+                            <button type="button" id="searchBtn" class="btn btn-primary">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="branchFilter" class="form-label">
+                            <i class="bi bi-building"></i> Branch
+                        </label>
+                        <select id="branchFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.Branches, "Id", "Name"))">
+                            <option value="">All Branches</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="departmentFilter" class="form-label">
+                            <i class="bi bi-diagram-3"></i> Department
+                        </label>
+                        <select id="departmentFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
+                            <option value="">All Departments</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="employeeTypeFilter" class="form-label">
+                            <i class="bi bi-person-lines-fill"></i> Employee Type
+                        </label>
+                        <select id="employeeTypeFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.EmployeeTypes, "Id", "Name"))">
+                            <option value="">All Types</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="jobTitleFilter" class="form-label">
+                            <i class="bi bi-briefcase"></i> Job Title
+                        </label>
+                        <select id="jobTitleFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.JobTitles, "Id", "Name"))">
+                            <option value="">All Job Titles</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Employees Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-table"></i> Employees List</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-person"></i> Full Name</th>
+                            <th><i class="bi bi-building"></i> Branch</th>
+                            <th><i class="bi bi-diagram-3"></i> Department</th>
+                            <th><i class="bi bi-person-badge"></i> Type</th>
+                            <th><i class="bi bi-briefcase"></i> Job Title</th>
+                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employees">
+                        @foreach (var item in Model.Employees)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.FullName</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">@item.Branch.Name</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@item.Department.Name</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.Type.Name</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">@item.JobTitle.Name</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Delete employee <strong>@item.FullName</strong>?</p>
+                                                    <p class="text-danger mb-0">
+                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="bi bi-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Employees.Any())
+    {
+        <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle"></i> No employees found. Click "Add New Employee" to get started.
+        </div>
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -121,7 +242,6 @@
                 var department = parseInt($("#departmentFilter").val()) || 0;
                 var employeeType = parseInt($("#employeeTypeFilter").val()) || 0;
                 var jobTitle = parseInt($("#jobTitleFilter").val()) || 0;
-
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
@@ -154,20 +274,14 @@
                 filter();
             });
 
-            $("#branchFilter").change(function () {
+            $("#branchFilter, #departmentFilter, #employeeTypeFilter, #jobTitleFilter").change(function () {
                 filter();
             });
 
-            $("#departmentFilter").change(function () {
-                filter();
-            });
-
-            $("#employeeTypeFilter").change(function () {
-                filter();
-            });
-
-            $("#jobTitleFilter").change(function () {
-                filter();
+            $("#searchTerm").keyup(function() {
+                if ($(this).val() === '') {
+                    location.reload();
+                }
             });
 
             function fillTable(response) {
@@ -177,22 +291,28 @@
                 if (response && response.length > 0) {
                     var newRows = "";
                     var token = $('input[name="__RequestVerificationToken"]').val();
+                    
                     response.forEach(function (employee) {
-                        var editUrl = '@Url.Action("Edit", "Employee")/' + employee.id;
-                        var detailsUrl = '@Url.Action("Details", "Employee")/' + employee.id;
-
                         newRows += `<tr>
-                                        <td>${employee.fullName}</td>
-                                        <td>${employee.branch.name}</td>
-                                        <td>${employee.department.name}</td>
-                                        <td>${employee.type.name}</td>
-                                        <td>${employee.jobTitle.name}</td>
-                                        <td>
-                                            <a href="${editUrl}">Edit</a> |
-                                            <a href="${detailsUrl}">Details</a> |
-                                            <form action="/Employee/Delete/${employee.id}" method="post">
-                                                <Input type="hidden" name="__RequestVerificationToken" value="${token}" />
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <td><strong>${employee.fullName}</strong></td>
+                                        <td><span class="badge bg-primary">${employee.branch.name}</span></td>
+                                        <td><span class="badge bg-info">${employee.department.name}</span></td>
+                                        <td><span class="badge bg-secondary">${employee.type.name}</span></td>
+                                        <td><span class="badge bg-success">${employee.jobTitle.name}</span></td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="/Employee/Details/${employee.id}" class="btn btn-sm btn-info" title="View Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="/Employee/Edit/${employee.id}" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${employee.fullName}?')) { document.getElementById('deleteForm${employee.id}').submit(); }" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <form id="deleteForm${employee.id}" action="/Employee/Delete/${employee.id}" method="post" style="display:none;">
+                                                <input type="hidden" name="__RequestVerificationToken" value="${token}" />
                                             </form>
                                         </td>
                                     </tr>`;

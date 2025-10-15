@@ -6,83 +6,104 @@ namespace ERP_System_Project.Controllers.HR
 {
     public class LeaveTypeController : Controller
     {
-        private readonly ILeaveTypeService leaveTypeService;
+        private readonly ILeaveTypeService _leaveTypeService;
 
         public LeaveTypeController(ILeaveTypeService leaveTypeService)
         {
-            this.leaveTypeService = leaveTypeService;
+            _leaveTypeService = leaveTypeService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<LeaveType> LeaveTypes = await leaveTypeService.GetAllAsync();
+            IEnumerable<LeaveType> LeaveTypes = await _leaveTypeService.GetAllAsync();
             return View("Index", LeaveTypes);
         }
 
         [HttpGet]
-        public IActionResult Add()
+        public IActionResult Create()
         {
-            return View("Add");
+            return View("Create");
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddAsync(LeaveType LeaveType)
+        public async Task<IActionResult> Create(LeaveType LeaveType)
         {
             if (ModelState.IsValid)
             {
-                bool isCreated = await leaveTypeService.CreateAsync(LeaveType);
+                bool isCreated = await _leaveTypeService.CreateAsync(LeaveType);
                 if (isCreated)
+                {
+                    TempData["SuccessMessage"] = $"Leave Type '{LeaveType.Name}' has been created successfully!";
                     return RedirectToAction("Index");
+                }
                 ModelState.AddModelError("", "Something went wrong");
             }
-            return View("Add", LeaveType);
+            return View("Create", LeaveType);
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditAsync(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var LeaveType = await leaveTypeService.GetByIdAsync(id);
+            var LeaveType = await _leaveTypeService.GetByIdAsync(id);
             if (LeaveType == null)
+            {
+                TempData["ErrorMessage"] = "Leave Type not found!";
                 return NotFound();
+            }
             return View("Edit", LeaveType);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditAsync(LeaveType LeaveType)
+        public async Task<IActionResult> Edit(LeaveType LeaveType)
         {
             if (ModelState.IsValid)
             {
-                bool isUpdated = await leaveTypeService.UpdateAsync(LeaveType);
+                bool isUpdated = await _leaveTypeService.UpdateAsync(LeaveType);
                 if (isUpdated)
+                {
+                    TempData["SuccessMessage"] = $"Leave Type '{LeaveType.Name}' has been updated successfully!";
                     return RedirectToAction("Index");
+                }
                 ModelState.AddModelError("", "Something went wrong");
             }
             return View("Edit", LeaveType);
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            bool isDeleted = await leaveTypeService.DeleteAsync(id);
+            var LeaveType = await _leaveTypeService.GetByIdAsync(id);
+            if (LeaveType == null)
+            {
+                TempData["ErrorMessage"] = "Leave Type not found!";
+                return NotFound();
+            }
+
+            bool isDeleted = await _leaveTypeService.DeleteAsync(id);
             if (isDeleted)
+            {
+                TempData["SuccessMessage"] = $"Leave Type '{LeaveType.Name}' has been deleted successfully!";
                 return RedirectToAction("Index");
-            return NotFound();
+            }
+            
+            TempData["ErrorMessage"] = "Failed to delete Leave Type!";
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> DetailsAsync(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            var LeaveType = await leaveTypeService.GetByIdAsync(id);
+            var LeaveType = await _leaveTypeService.GetByIdAsync(id);
             if (LeaveType == null)
                 return NotFound();
             return View("Details", LeaveType);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SearchAsync(string name)
+        public async Task<IActionResult> Search(string name)
         {
-            IEnumerable<LeaveType> results = await leaveTypeService.SearchAsync(name);
+            IEnumerable<LeaveType> results = await _leaveTypeService.SearchAsync(name);
             return Json(results);
         }
     }

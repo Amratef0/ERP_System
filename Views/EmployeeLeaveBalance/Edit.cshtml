@@ -1,0 +1,87 @@
+@model EmployeeLeaveBalanceVM
+
+@{
+    ViewData["Title"] = "Edit Leave Balance";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2><i class="bi bi-pencil"></i> Edit Leave Balance</h2>
+            <hr />
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="EmployeeId" />
+                <input type="hidden" asp-for="LeaveTypeId" />
+                <input type="hidden" asp-for="Year" />
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Employee Name</label>
+                            <input type="text" class="form-control" value="@Model.EmployeeName" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Leave Type</label>
+                            <input type="text" class="form-control" value="@Model.LeaveTypeName" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Year</label>
+                            <input type="number" class="form-control" value="@Model.Year" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="TotalEntitledDays" class="form-label"></label>
+                            <input asp-for="TotalEntitledDays" class="form-control" type="number" step="0.5" min="0" max="365" />
+                            <span asp-validation-for="TotalEntitledDays" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                This is the only field you can edit. Used Days is auto-calculated from leave requests.
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Used Days (Read-Only)</label>
+                            <input type="number" class="form-control" value="@Model.UsedDays" readonly />
+                            <small class="form-text text-muted">
+                                Automatically calculated from approved leave requests.
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remaining Days (Auto-Calculated)</label>
+                            <input type="number" class="form-control @(Model.RemainingDays < 0 ? "bg-danger text-white" : Model.RemainingDays < 5 ? "bg-warning" : "bg-success text-white")" 
+                                   value="@Model.RemainingDays" readonly />
+                            <small class="form-text text-muted">
+                                Computed as: Total Entitled Days - Used Days
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Important:</strong> Only TotalEntitledDays can be edited. 
+                            UsedDays and RemainingDays are automatically managed by the system.
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

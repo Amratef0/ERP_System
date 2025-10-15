@@ -1,0 +1,101 @@
+@{
+    ViewData["Title"] = "Generate Leave Balances";
+    var currentYear = ViewBag.CurrentYear as int? ?? DateTime.Now.Year;
+    var nextYear = ViewBag.NextYear as int? ?? DateTime.Now.Year + 1;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2><i class="bi bi-gear"></i> Generate Leave Balances</h2>
+            <hr />
+
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Bulk Balance Generation</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>What does this do?</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Creates leave balances for all active employees</li>
+                            <li>Calculates entitled days from leave policies</li>
+                            <li>Can generate for all leave types or a specific type</li>
+                            <li>Skips employees who already have balances for the selected year</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="GenerateForAllEmployees" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select name="year" id="year" class="form-select" required>
+                                <option value="@(currentYear - 1)">@(currentYear - 1)</option>
+                                <option value="@currentYear" selected>@currentYear (Current Year)</option>
+                                <option value="@nextYear">@nextYear (Next Year)</option>
+                                <option value="@(nextYear + 1)">@(nextYear + 1)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="leaveTypeId" class="form-label">Leave Type (Optional)</label>
+                            <select name="leaveTypeId" id="leaveTypeId" class="form-select">
+                                <option value="">All Leave Types</option>
+                                @{
+                                    var leaveTypes = ViewBag.LeaveTypes as IEnumerable<LeaveType> ?? Enumerable.Empty<LeaveType>();
+                                    foreach (var lt in leaveTypes)
+                                    {
+                                        <option value="@lt.Id">@lt.Name</option>
+                                    }
+                                }
+                            </select>
+                            <small class="form-text text-muted">
+                                Leave blank to generate for all leave types
+                            </small>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Important:</strong> This operation will create balances for all active employees. 
+                            Existing balances will not be overwritten.
+                        </div>
+
+                        <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to generate balances for all employees?');">
+                            <i class="bi bi-gear"></i> Generate Balances
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Panel -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">How It Works</h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li><strong>Policy Lookup:</strong> System checks leave policies for each employee</li>
+                        <li><strong>Priority Order:</strong> JobTitle ? EmployeeType ? Default Policy</li>
+                        <li><strong>Balance Creation:</strong> Creates balance with calculated entitled days</li>
+                        <li><strong>Initial State:</strong> UsedDays = 0, RemainingDays = TotalEntitled</li>
+                    </ol>
+
+                    <h6 class="mt-3">Example:</h6>
+                    <div class="bg-light p-3 rounded">
+                        <code>
+                            Manager (JobTitle) ? 25 days Annual Leave<br />
+                            Staff (JobTitle) ? 21 days Annual Leave<br />
+                            Part-time (EmployeeType) ? 14 days Annual Leave<br />
+                            Default ? 21 days Annual Leave
+                        </code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
