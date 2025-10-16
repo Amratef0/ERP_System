@@ -31,12 +31,12 @@ namespace ERP_System_Project.Models.Inventory
         public DateTime? ModifiedDate { get; set; }
 
         [ForeignKey("Brand")]
-        public int BrandId { get; set; }
-        public Brand Brand { get; set; } 
+        public int? BrandId { get; set; }
+        public Brand? Brand { get; set; } 
         
         [ForeignKey("Category")]
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
 
 
         public ICollection<ProductAttributeValue> Attributes { get; set; } = new List<ProductAttributeValue>();
