@@ -76,6 +76,7 @@ namespace ERP_System_Project.Controllers.Inventory
             if (result.IsValid)
             {
                 await _productService.AddNewProduct(productVM);
+                TempData["success"] = $"Product {productVM.Name} Created Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -106,6 +107,7 @@ namespace ERP_System_Project.Controllers.Inventory
             if (result.IsValid)
             {
                 await _productService.UpdateCustomProduct(productVM);
+                TempData["success"] = $"Product {productVM.Name} Updated Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -132,6 +134,7 @@ namespace ERP_System_Project.Controllers.Inventory
             await CreateAttributeOptions(productVM.Id);
             await FileHelper.DeleteImageFileAsync(productVM.ImageURL!);
             await _productService.DeleteAsync(productVM.Id);
+            TempData["success"] = $"Product {productVM.Name} Deleted Successfully";
             return RedirectToAction("Index");
         }
 

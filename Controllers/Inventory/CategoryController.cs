@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
+using ERP_System_Project.ViewModels.Core;
 using ERP_System_Project.ViewModels.Inventory;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,7 @@ namespace ERP_System_Project.Controllers.Inventory
             {
                 var category = _mapper.Map<Category>(categoryVM);
                 await _categoryService.CreateAsync(category);
+                TempData["success"] = $"Category {categoryVM.Name} Created Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -65,6 +67,7 @@ namespace ERP_System_Project.Controllers.Inventory
                 var category = await _categoryService.GetByIdAsync(categoryVM.Id);
                 _mapper.Map(categoryVM, category);
                 await _categoryService.UpdateAsync(category);
+                TempData["success"] = $"Category {category.Name} Updated Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -84,6 +87,7 @@ namespace ERP_System_Project.Controllers.Inventory
         public async Task<IActionResult> Delete(CategoryVM categoryVM)
         {
             await _categoryService.DeleteAsync(categoryVM.Id);
+            TempData["success"] = $"Category {categoryVM.Name} Deleted Successfully";
             return RedirectToAction("Index");
         }
     }
