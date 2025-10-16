@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ERP_System_Project.Models.Authentication;
+﻿using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Services.Interfaces.CRM;

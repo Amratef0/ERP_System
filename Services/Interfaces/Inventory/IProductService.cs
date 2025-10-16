@@ -9,6 +9,26 @@ namespace ERP_System_Project.Services.Interfaces.Inventory
     public interface IProductService : IGenericService<Product>
     {
         Task<List<ProductAttributeVM>> GetAllProductAttributes();
+        Task<PageSourcePagination<ProductCardVM>> GetFavoriteProductsPaginatedAsync(
+        int customerId,
+        int pageNumber,
+        int pageSize,
+        string? searchByName = null,
+        string? brandName = null,
+        string? categoryName = null,
+        int? minPrice = null,
+        int? maxPrice = null);
+
+
+        Task<PageSourcePagination<ProductCardVM>> GetWishlistProductsPaginatedAsync(
+      int customerId,
+      int pageNumber,
+      int pageSize,
+      string? searchByName = null,
+      string? brandName = null,
+      string? categoryName = null,
+      int? minPrice = null,
+      int? maxPrice = null);
         Task<PageSourcePagination<ProductVM>> GetProductsPaginated(
             int pageNumber, int pageSize,
             string? searchByName = null,

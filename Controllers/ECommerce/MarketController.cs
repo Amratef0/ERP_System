@@ -1,5 +1,7 @@
-﻿using ERP_System_Project.Services.Implementation.Inventory;
+﻿using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -10,12 +12,22 @@ namespace ERP_System_Project.Controllers.ECommerce
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
         private readonly ICategoryService _categoryService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public MarketController(IProductService productService, IBrandService brandService, ICategoryService categoryService)
+        public MarketController(IProductService productService, IBrandService brandService, ICategoryService categoryService, UserManager<ApplicationUser> userManager)
         {
             _productService = productService;
             _brandService = brandService;
             _categoryService = categoryService;
+            _userManager = userManager;
+        }
+        private async Task<int> GetLoggedInUserCustomerId()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var customerId = user?.CustomerId ?? 0;
+            Console.WriteLine(customerId);
+            return customerId;
+
         }
 
         private async Task CreateBrandOptions(int id = 1)
@@ -43,11 +55,12 @@ namespace ERP_System_Project.Controllers.ECommerce
                 pageNumber, pageSize,searchByName,brandName,categoryName,
                 minPrice, maxPrice
                 );
-            
+            var customerId = await GetLoggedInUserCustomerId();
+            ViewBag.CustomerId = customerId;
             return View(products);
         }
 
-        public async Task<IActionResult> ProductDetails(int productId)
+        public async Task<IActionResult> ProductDetails(int productId) 
         {
             var product = await _productService.GetProductDetails(productId);
             if (product != null) return View(product);

@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
+using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.HR;
 using ERP_System_Project.Services.Implementation.CRM;
 using ERP_System_Project.Services.Interfaces.CRM;
+using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels.CRM;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NuGet.Protocol.Plugins;
 using System.Threading.Tasks;
 
@@ -14,19 +18,60 @@ namespace ERP_System_Project.Controllers.CRM
     public class CustomerWishlistController : Controller
     {
         private readonly ICustomerWishlistService _customerWishlistService;
+        private readonly IProductService _productService;
+        private readonly IBrandService _brandService;
+        private readonly ICategoryService _categoryService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CustomerWishlistController(ICustomerWishlistService customerWishlistService)
+        public CustomerWishlistController(ICustomerWishlistService customerWishlistService, IProductService productService, IBrandService brandService, ICategoryService categoryService, UserManager<ApplicationUser> userManager)
         {
             _customerWishlistService = customerWishlistService;
+            _productService = productService;
+            _brandService = brandService;
+            _categoryService = categoryService;
+            _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int customerId)
+        private async Task<int> GetLoggedInUserCustomerId()
         {
+            var user = await _userManager.GetUserAsync(User);
+            return user?.CustomerId ?? 0;
+        }
+        private async Task CreateBrandOptions(int id = 1)
+        {
+            var brands = await _brandService.GetAllAsync();
+            SelectList selectBrandList = new SelectList(brands, "Id", "Name", id);
+            ViewBag.Brands = selectBrandList;
+        }
 
-            // we need to make sure customer is correct id it is better to get it from the logged in user
-            // if he passed customer id in the query string we need to validate it
-            var wishlistVMs = await _customerWishlistService.GetAllWishlistsVMsAsync(customerId);
-            return View(wishlistVMs);
+        private async Task CreateCategoryOptions(int id = 1)
+        {
+            var categories = await _categoryService.GetAllAsync();
+            SelectList selectCategoryList = new SelectList(categories, "Id", "Name", id);
+            ViewBag.Categories = selectCategoryList;
+        }
+        public async Task<IActionResult> Index(
+             int pageNumber = 1,
+             int pageSize = 12,
+             string? searchByName = null,
+             string? brandName = null,
+             string? categoryName = null,
+             int? minPrice = null,
+             int? maxPrice = null)
+        {
+            var customerId = await GetLoggedInUserCustomerId();
+
+            if (customerId == 0)
+                return RedirectToAction("Login", "Account");
+
+            await CreateBrandOptions();
+            await CreateCategoryOptions();
+
+            var wishlists = await _productService.GetWishlistProductsPaginatedAsync(
+                customerId, pageNumber, pageSize, searchByName, brandName, categoryName, minPrice, maxPrice);
+
+            ViewBag.CustomerId = customerId;
+            return View(wishlists);
         }
 
         [HttpPost]
