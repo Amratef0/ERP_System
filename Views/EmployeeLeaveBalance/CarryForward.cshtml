@@ -1,0 +1,160 @@
+@{
+    ViewData["Title"] = "Carry Forward Leave Balances";
+    var currentYear = ViewBag.CurrentYear as int? ?? DateTime.Now.Year;
+    var previousYear = ViewBag.PreviousYear as int? ?? DateTime.Now.Year - 1;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2><i class="bi bi-arrow-right-circle"></i> Carry Forward Leave Balances</h2>
+            <hr />
+
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Year-End Carry Forward</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>What does this do?</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>Transfers unused leave days from one year to the next</li>
+                            <li>Adds remaining days to next year's entitled days</li>
+                            <li>NO maximum limit - carries forward full remaining balance</li>
+                            <li>Automatically creates next year balance if it doesn't exist</li>
+                        </ul>
+                    </div>
+
+                    <form asp-action="ExecuteCarryForward" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="fromYear" class="form-label">From Year</label>
+                                    <select name="fromYear" id="fromYear" class="form-select" required>
+                                        <option value="@(previousYear - 1)">@(previousYear - 1)</option>
+                                        <option value="@previousYear" selected>@previousYear</option>
+                                        <option value="@currentYear">@currentYear</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="toYear" class="form-label">To Year</label>
+                                    <select name="toYear" id="toYear" class="form-select" required>
+                                        <option value="@currentYear" selected>@currentYear</option>
+                                        <option value="@(currentYear + 1)">@(currentYear + 1)</option>
+                                        <option value="@(currentYear + 2)">@(currentYear + 2)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Important:</strong> This operation will carry forward unused balances for ALL employees. 
+                            Make sure all leave requests for the "From Year" are processed before running this.
+                        </div>
+
+                        <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to carry forward balances? This will affect all employees.');">
+                            <i class="bi bi-arrow-right-circle"></i> Execute Carry Forward
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Example Panel -->
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Carry Forward Example</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Scenario:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Year @previousYear</th>
+                                    <th>Year @currentYear (After Carry Forward)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Total Entitled</strong></td>
+                                    <td>21 days</td>
+                                    <td>21 (policy) + 6 (carried) = <strong>27 days</strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Used Days</strong></td>
+                                    <td>15 days</td>
+                                    <td>0 days (fresh start)</td>
+                                </tr>
+                                <tr class="table-success">
+                                    <td><strong>Remaining</strong></td>
+                                    <td>6 days</td>
+                                    <td>27 days</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h6 class="mt-3">Process:</h6>
+                    <ol>
+                        <li>Find all @previousYear balances with RemainingDays > 0</li>
+                        <li>Create/find @currentYear balance for same employee + leave type</li>
+                        <li>Calculate new entitled days: Policy Days + Carried Forward Days</li>
+                        <li>Update @currentYear balance with new total</li>
+                    </ol>
+
+                    <div class="alert alert-success mt-3">
+                        <i class="bi bi-check-circle"></i>
+                        <strong>Note:</strong> If an employee has 0 remaining days, nothing is carried forward for that leave type.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Automation Info -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Automated Carry Forward</h5>
+                </div>
+                <div class="card-body">
+                    <p>This process is also automated via Hangfire:</p>
+                    <ul>
+                        <li><strong>Schedule:</strong> December 31st at 11:59 PM</li>
+                        <li><strong>Action:</strong> Automatically carries forward from current year to next year</li>
+                        <li><strong>Monitoring:</strong> Check <a href="/hangfire" target="_blank">Hangfire Dashboard</a></li>
+                    </ul>
+                    <p class="mb-0">
+                        <small class="text-muted">
+                            Use this manual form if you need to carry forward for a different year range or if the automated job failed.
+                        </small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Validate that toYear > fromYear
+            $("#fromYear, #toYear").change(function () {
+                var fromYear = parseInt($("#fromYear").val());
+                var toYear = parseInt($("#toYear").val());
+
+                if (fromYear >= toYear) {
+                    alert("'To Year' must be greater than 'From Year'");
+                    $("#toYear").val(fromYear + 1);
+                }
+            });
+        });
+    </script>
+}

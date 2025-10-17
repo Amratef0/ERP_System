@@ -6,5 +6,6 @@ namespace ERP_System_Project.Services.Interfaces.HR
     {
         Task<IEnumerable<PublicHoliday>> GetAllWithCountryAsync();
         Task<IEnumerable<PublicHoliday>> FilterAsync(string name, int countryId);
+        Task<bool> CheckIfPublicHolidayAsync(DateOnly date, int countryId);
     }
 }

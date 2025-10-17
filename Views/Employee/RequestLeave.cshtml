@@ -1,0 +1,229 @@
+@model LeaveRequestVM
+
+@{
+    ViewData["Title"] = "Request Leave";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2><i class="bi bi-calendar-plus"></i> Request Leave</h2>
+            <hr />
+
+            <!-- Alert Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <form asp-action="RequestLeave" method="post" id="leaveRequestForm">
+                @Html.AntiForgeryToken()
+
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Leave Request Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Leave Type -->
+                        <div class="mb-3">
+                            <label asp-for="LeaveTypeId" class="form-label"></label>
+                            <select asp-for="LeaveTypeId" class="form-select" id="leaveTypeSelect">
+                                <option value="">-- Select Leave Type --</option>
+                                @foreach (var leaveType in Model.LeaveTypes ?? Enumerable.Empty<LeaveType>())
+                                {
+                                    <option value="@leaveType.Id">@leaveType.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
+                            <div id="balanceInfo" class="mt-2"></div>
+                        </div>
+
+                        <!-- Date Range -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="StartDate" class="form-label"></label>
+                                    <input asp-for="StartDate" type="date" class="form-control" id="startDate" />
+                                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="EndDate" class="form-label"></label>
+                                    <input asp-for="EndDate" type="date" class="form-control" id="endDate" />
+                                    <span asp-validation-for="EndDate" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Calculated Days -->
+                        <div class="mb-3">
+                            <label class="form-label">Calculated Leave Days</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar3"></i></span>
+                                <input type="text" id="calculatedDays" class="form-control" readonly placeholder="Select dates to calculate" />
+                                <button type="button" id="calculateBtn" class="btn btn-secondary">
+                                    <i class="bi bi-calculator"></i> Calculate
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="bi bi-info-circle"></i> Excludes weekends and public holidays
+                            </small>
+                        </div>
+
+                        <!-- Reason -->
+                        <div class="mb-3">
+                            <label asp-for="Reason" class="form-label"></label>
+                            <textarea asp-for="Reason" class="form-control" rows="4" 
+                                      placeholder="Please provide a reason for your leave request..."></textarea>
+                            <span asp-validation-for="Reason" class="text-danger"></span>
+                        </div>
+
+                        <!-- Info Alert -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Important Notes:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Leave requests must be submitted at least 1 day in advance</li>
+                                <li>Your request will be sent to your manager for approval</li>
+                                <li>You will be notified once your request is processed</li>
+                                <li>Leave days are calculated excluding weekends and public holidays</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="bi bi-send"></i> Submit Request
+                        </button>
+                        <a asp-action="MyLeaveRequests" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <a asp-action="Profile" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Profile
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function () {
+            // Calculate leave days when dates change
+            $('#calculateBtn, #startDate, #endDate').on('click change', function () {
+                var startDate = $('#startDate').val();
+                var endDate = $('#endDate').val();
+
+                if (startDate && endDate) {
+                    $.ajax({
+                        url: '@Url.Action("CalculateLeaveDays", "Employee")',
+                        type: 'GET',
+                        data: { startDate: startDate, endDate: endDate },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#calculatedDays').val(response.days + ' business days');
+                                
+                                // Validate dates
+                                if (response.days <= 0) {
+                                    $('#calculatedDays').addClass('is-invalid');
+                                    alert('End date must be after start date!');
+                                } else {
+                                    $('#calculatedDays').removeClass('is-invalid');
+                                }
+                            } else {
+                                $('#calculatedDays').val('Error calculating days');
+                            }
+                        },
+                        error: function () {
+                            $('#calculatedDays').val('Error calculating days');
+                        }
+                    });
+                }
+            });
+
+            // Get available balance when leave type is selected
+            $('#leaveTypeSelect').change(function () {
+                var leaveTypeId = $(this).val();
+                
+                if (leaveTypeId) {
+                    $.ajax({
+                        url: '@Url.Action("GetAvailableBalance", "Employee")',
+                        type: 'GET',
+                        data: { leaveTypeId: leaveTypeId },
+                        success: function (response) {
+                            if (response.success) {
+                                var badgeClass = response.balance < 5 ? 'bg-warning' : response.balance < 0 ? 'bg-danger' : 'bg-success';
+                                var html = '<div class="alert alert-info">' +
+                                          '<i class="bi bi-info-circle"></i> ' +
+                                          'Available Balance: <span class="badge ' + badgeClass + '">' + 
+                                          response.balance.toFixed(1) + ' days</span>' +
+                                          '</div>';
+                                $('#balanceInfo').html(html);
+                            } else {
+                                $('#balanceInfo').html('<div class="alert alert-warning">Could not fetch balance information</div>');
+                            }
+                        },
+                        error: function () {
+                            $('#balanceInfo').html('<div class="alert alert-warning">Could not fetch balance information</div>');
+                        }
+                    });
+                } else {
+                    $('#balanceInfo').html('');
+                }
+            });
+
+            // Form validation before submit
+            $('#leaveRequestForm').submit(function (e) {
+                var startDate = new Date($('#startDate').val());
+                var endDate = new Date($('#endDate').val());
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                // Check if start date is in the past
+                if (startDate < today) {
+                    e.preventDefault();
+                    alert('Start date cannot be in the past!');
+                    return false;
+                }
+
+                // Check if end date is before start date
+                if (endDate < startDate) {
+                    e.preventDefault();
+                    alert('End date cannot be before start date!');
+                    return false;
+                }
+
+                // Check if leave type is selected
+                if (!$('#leaveTypeSelect').val()) {
+                    e.preventDefault();
+                    alert('Please select a leave type!');
+                    return false;
+                }
+
+                return true;
+            });
+
+            // Set minimum date to tomorrow
+            var tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            var minDate = tomorrow.toISOString().split('T')[0];
+            $('#startDate, #endDate').attr('min', minDate);
+        });
+    </script>
+}

@@ -16,11 +16,17 @@ namespace ERP_System_Project.Services.Implementation.HR
     {
         private readonly IWebHostEnvironment env;
         private readonly IMapper mapper;
+        private readonly IEmployeeLeaveBalanceService _leaveBalanceService;
 
-        public EmployeeService(IUnitOfWork uow, IWebHostEnvironment env, IMapper mapper) : base(uow)
+        public EmployeeService(
+            IUnitOfWork uow, 
+            IWebHostEnvironment env, 
+            IMapper mapper,
+            IEmployeeLeaveBalanceService leaveBalanceService) : base(uow)
         {
             this.env = env;
             this.mapper = mapper;
+            _leaveBalanceService = leaveBalanceService;
         }
 
         public async Task<bool> CreateAsync(EmployeeVM model)
@@ -34,6 +40,10 @@ namespace ERP_System_Project.Services.Implementation.HR
             {
                 await _uow.Employees.AddAsync(employee);
                 await _uow.CompleteAsync();
+
+                // AUTO-GENERATE LEAVE BALANCES for new employee
+                await _leaveBalanceService.GenerateBalancesForNewEmployeeAsync(employee.Id);
+
                 return true;
             }
             catch (Exception ex)
@@ -155,6 +165,19 @@ namespace ERP_System_Project.Services.Implementation.HR
                 }).ToListAsync();
 
             return employees;
+        }
+
+        public async Task<Employee?> GetByApplicationUserIdAsync(string applicationUserId)
+        {
+            return await _repository.GetAllAsIQueryable()
+                .Include(e => e.Address)
+                    .ThenInclude(a => a.Country)
+                .Include(e => e.Department)
+                .Include(e => e.Branch)
+                .Include(e => e.Type)
+                .Include(e => e.JobTitle)
+                .Include(e => e.SalaryCurrency)
+                .FirstOrDefaultAsync(e => e.ApplicationUserId == applicationUserId);
         }
 
     }

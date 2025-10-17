@@ -1,53 +1,103 @@
 ﻿@model PublicHolidayCountriesVM
 
 @{
-    ViewData["Title"] = "EditAsync";
+    ViewData["Title"] = "Edit Public Holiday";
 }
 
-<h1>Edit</h1>
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-pencil-square"></i> Edit Public Holiday</h2>
+                    <p class="text-muted">Update public holiday information</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+            <hr />
+        </div>
+    </div>
 
-<h4>Public Holiday</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group d-none">
-                <label asp-for="@Model.Id" class="control-label"></label>
-                <input asp-for="@Model.Id" class="form-control" />
-                <span asp-validation-for="@Model.Id" class="text-danger"></span>
+    <!-- Edit Form -->
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-calendar-event"></i> Public Holiday Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <!-- Hidden ID field -->
+                        <input asp-for="Id" type="hidden" />
+                        
+                        <!-- Holiday Name Field -->
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">
+                                <i class="bi bi-tag"></i> Holiday Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter holiday name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="form-text">Full name of the public holiday</div>
+                        </div>
+
+                        <!-- Date Field -->
+                        <div class="mb-3">
+                            <label asp-for="Date" class="form-label">
+                                <i class="bi bi-calendar3"></i> Holiday Date <span class="text-danger">*</span>
+                            </label>
+                            <input type="date" asp-for="Date" class="form-control form-control-lg" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                            <div class="form-text">Select the date when this holiday occurs</div>
+                        </div>
+
+                        <!-- Country Field -->
+                        <div class="mb-4">
+                            <label asp-for="CountryId" class="form-label">
+                                <i class="bi bi-globe"></i> Country <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="CountryId" class="form-select form-select-lg" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
+                                <option value="">-- Select Country --</option>
+                            </select>
+                            <span asp-validation-for="CountryId" class="text-danger"></span>
+                            <div class="form-text">Country where this holiday is observed</div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-check-circle"></i> Update Holiday
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="@Model.Name" class="control-label"></label>
-                <input asp-for="@Model.Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <!-- Info Card -->
+            <div class="card mt-3 border-info">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Tips</h6>
+                    <ul class="mb-0 small">
+                        <li>Changing the date will affect all related leave calculations</li>
+                        <li>Changing the country will reassign this holiday to a different region</li>
+                        <li>Ensure the date is correct to avoid scheduling conflicts</li>
+                    </ul>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label asp-for="@Model.Date" class="control-label"></label>
-                <input type="date" asp-for="@Model.Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="@Model.CountryId" class="control-label"></label>
-                <select asp-for="@Model.CountryId" class="form-control" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
-                </select>
-                <span asp-validation-for="@Model.CountryId" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }

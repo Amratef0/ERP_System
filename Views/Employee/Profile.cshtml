@@ -1,0 +1,258 @@
+@model EmployeeProfileVM
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2><i class="bi bi-person-circle"></i> My Profile</h2>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Left Column: Profile Info & Actions -->
+        <div class="col-md-4">
+            <!-- Profile Card -->
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    @if (!string.IsNullOrEmpty(Model.ImageURL))
+                    {
+                        <img src="@Model.ImageURL" alt="Profile" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 150px; height: 150px; font-size: 4rem;">
+                            @Model.FullName?.Substring(0, 1).ToUpper()
+                        </div>
+                    }
+                    <h4 class="mb-1">@Model.FullName</h4>
+                    <p class="text-muted">@Model.JobTitleName</p>
+                    
+                    <div class="mt-3">
+                        <a asp-action="RequestLeave" class="btn btn-primary w-100 mb-2">
+                            <i class="bi bi-calendar-plus"></i> Request Leave
+                        </a>
+                        <a asp-action="MyLeaveRequests" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-list-ul"></i> My Leave Requests
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="bi bi-person-lines-fill"></i> Contact Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Email</small>
+                        <p class="mb-0"><i class="bi bi-envelope"></i> @Model.Email</p>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Phone</small>
+                        <p class="mb-0"><i class="bi bi-telephone"></i> @Model.Phone</p>
+                    </div>
+                    <div class="mb-0">
+                        <small class="text-muted">Date of Birth</small>
+                        <p class="mb-0"><i class="bi bi-cake"></i> @Model.DateOfBirth.ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Information -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0"><i class="bi bi-briefcase"></i> Job Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">Department</small>
+                        <p class="mb-0">@Model.DepartmentName</p>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Branch</small>
+                        <p class="mb-0">@Model.BranchName</p>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted">Employee Type</small>
+                        <p class="mb-0">@Model.EmployeeTypeName</p>
+                    </div>
+                    <div class="mb-0">
+                        <small class="text-muted">Hire Date</small>
+                        <p class="mb-0">@Model.HireDate.ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Leave Balances & Requests -->
+        <div class="col-md-8">
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Leave Types</h5>
+                            <h2 class="mb-0">@Model.LeaveBalances.Count()</h2>
+                            <small>Available</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning text-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">Pending Requests</h5>
+                            <h2 class="mb-0">@Model.PendingRequestsCount</h2>
+                            <small>Awaiting Approval</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <h5 class="card-title">Approved This Year</h5>
+                            <h2 class="mb-0">@Model.ApprovedRequestsThisYear</h2>
+                            <small>@DateTime.Now.Year</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Balances -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-range"></i> Leave Balances (@DateTime.Now.Year)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.LeaveBalances.Any())
+                    {
+                        <div class="row">
+                            @foreach (var balance in Model.LeaveBalances)
+                            {
+                                var percentage = balance.TotalEntitledDays > 0 
+                                    ? (balance.UsedDays / balance.TotalEntitledDays) * 100 
+                                    : 0;
+                                var progressClass = percentage >= 80 ? "bg-danger" : percentage >= 50 ? "bg-warning" : "bg-success";
+                                var badgeClass = balance.RemainingDays < 0 ? "bg-danger" : balance.RemainingDays < 5 ? "bg-warning" : "bg-success";
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">@balance.LeaveType.Name</h6>
+                                            <div class="mb-2">
+                                                <div class="progress" style="height: 25px;">
+                                                    <div class="progress-bar @progressClass" role="progressbar" 
+                                                         style="width: @percentage.ToString("F0")%"
+                                                         aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                                        @balance.RemainingDays.ToString("F1") days left
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <small class="text-muted">
+                                                    Total: <strong>@balance.TotalEntitledDays.ToString("F1")</strong>
+                                                </small>
+                                                <small class="text-muted">
+                                                    Used: <strong>@balance.UsedDays.ToString("F1")</strong>
+                                                </small>
+                                                <small>
+                                                    Remaining: <span class="badge @badgeClass">@balance.RemainingDays.ToString("F1")</span>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-exclamation-circle"></i> No leave balances found for @DateTime.Now.Year. Please contact HR.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Leave Requests -->
+            <div class="card">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Leave Requests</h5>
+                    <a asp-action="MyLeaveRequests" class="btn btn-sm btn-light">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentLeaveRequests.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Leave Type</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th>Days</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var request in Model.RecentLeaveRequests)
+                                    {
+                                        <tr>
+                                            <td>@request.LeaveType.Name</td>
+                                            <td>@request.StartDate.ToString("dd MMM yyyy")</td>
+                                            <td>@request.EndDate.ToString("dd MMM yyyy")</td>
+                                            <td>@request.TotalDays.ToString("F1")</td>
+                                            <td>
+                                                @switch (request.Status)
+                                                {
+                                                    case ERP_System_Project.Models.Enums.LeaveRequestStatus.Pending:
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                        break;
+                                                    case ERP_System_Project.Models.Enums.LeaveRequestStatus.Approved:
+                                                        <span class="badge bg-success">Approved</span>
+                                                        break;
+                                                    case ERP_System_Project.Models.Enums.LeaveRequestStatus.Rejected:
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                        break;
+                                                    case ERP_System_Project.Models.Enums.LeaveRequestStatus.Cancelled:
+                                                        <span class="badge bg-secondary">Cancelled</span>
+                                                        break;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center mb-0">No recent leave requests found.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

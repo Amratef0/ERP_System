@@ -1,0 +1,193 @@
+@{
+    ViewData["Title"] = "Assign Roles (Testing Only)";
+    var userEmail = ViewBag.UserEmail as string;
+    var userRoles = ViewBag.UserRoles as IList<string>;
+    var allRoles = ViewBag.AllRoles as List<string>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i> 
+                <strong>Warning:</strong> This page is for development/testing purposes only. 
+                Remove this controller in production!
+            </div>
+
+            <h2><i class="bi bi-shield-lock"></i> Role Management</h2>
+            <p class="text-muted">Assign or remove roles for testing purposes</p>
+            <hr />
+
+            <!-- Alert Messages -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle"></i> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Warning"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> @TempData["Warning"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Info"] != null)
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle"></i> @TempData["Info"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <!-- Current User Info -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Current User</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Email:</strong> @userEmail</p>
+                    <p><strong>Current Roles:</strong></p>
+                    @if (userRoles != null && userRoles.Any())
+                    {
+                        <div class="mb-3">
+                            @foreach (var role in userRoles)
+                            {
+                                <span class="badge bg-success me-2 mb-2">
+                                    @role
+                                    <form asp-action="RemoveRole" method="post" style="display: inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="roleName" value="@role" />
+                                        <button type="submit" class="btn btn-sm btn-link text-white p-0 ms-1" 
+                                                onclick="return confirm('Remove @role role?');"
+                                                title="Remove role">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    </form>
+                                </span>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No roles assigned</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Create Standard Roles -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Quick Setup</h5>
+                </div>
+                <div class="card-body">
+                    <p>Create all standard system roles:</p>
+                    <form asp-action="CreateStandardRoles" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-info">
+                            <i class="bi bi-gear"></i> Create Standard Roles
+                        </button>
+                    </form>
+                    <small class="text-muted d-block mt-2">
+                        Creates: Admin, HR Manager, Manager, Employee
+                    </small>
+                </div>
+            </div>
+
+            <!-- Assign Roles -->
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Assign Role to Current User</h5>
+                </div>
+                <div class="card-body">
+                    @if (allRoles != null && allRoles.Any())
+                    {
+                        <div class="row">
+                            @foreach (var role in allRoles)
+                            {
+                                var hasRole = userRoles?.Contains(role) ?? false;
+                                <div class="col-md-6 mb-2">
+                                    <form asp-action="AssignRole" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="roleName" value="@role" />
+                                        <button type="submit" class="btn @(hasRole ? "btn-secondary" : "btn-success") w-100" 
+                                                @(hasRole ? "disabled" : "")>
+                                            <i class="bi @(hasRole ? "bi-check-circle" : "bi-plus-circle")"></i> 
+                                            @role
+                                            @if (hasRole)
+                                            {
+                                                <span class="badge bg-dark ms-2">Already Assigned</span>
+                                            }
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No roles available. Click "Create Standard Roles" first.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Custom Role -->
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Assign Custom Role</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AssignRole" method="post">
+                        @Html.AntiForgeryToken()
+                        <div class="input-group">
+                            <input type="text" name="roleName" class="form-control" 
+                                   placeholder="Enter custom role name..." required />
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-plus"></i> Assign Custom Role
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                            Enter any role name. The role will be created if it doesn't exist.
+                        </small>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Important Notes</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li><strong>Logout & Login:</strong> After assigning/removing roles, you must logout and login again for changes to take effect.</li>
+                        <li><strong>Security:</strong> This page should NOT be accessible in production. Remove or protect this controller.</li>
+                        <li><strong>Standard Roles:</strong>
+                            <ul>
+                                <li><strong>Admin</strong> - Full system access</li>
+                                <li><strong>HR Manager</strong> - HR management & approvals</li>
+                                <li><strong>Manager</strong> - Department approvals</li>
+                                <li><strong>Employee</strong> - Self-service portal</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="mt-3">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

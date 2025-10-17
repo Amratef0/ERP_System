@@ -1,87 +1,208 @@
 ﻿@model BranchesIndexVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Branches";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Add">Add New branch</a>
-</p>
-
-<div class="mb-3">
-    <label for="countryFilter" class="form-label">Filter by country:</label>
-    <select id="countryFilter" class="form-control" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
-        <option value="">-- Select Country --</option>
-    </select>
-</div>
-
-<div class="mb-3">
-    <form id="searchForm">
-        @Html.AntiForgeryToken()
-        <div class="input-group">
-            <input type="text" id="searchTerm" class="form-control" placeholder="Search by branch name..." />
-
-            <button type="button" id="searchBtn" class="btn btn-primary">
-                <i class="bi bi-search"></i> Search
-            </button>
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-building"></i> Branches</h2>
+                    <p class="text-muted">Manage company branches and locations</p>
+                </div>
+                <div>
+                    <a asp-action="Create" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle"></i> Add New Branch
+                    </a>
+                </div>
+            </div>
+            <hr />
         </div>
-    </form>
-</div>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
     </div>
-}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Code
-            </th>
-            <th>
-                Phone Number
-            </th>
-            <th>
-                Email
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody id="branches">
-        @foreach (var item in Model.Branches) {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Code)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
-                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-building"></i> Total Branches</h6>
+                    <h2 class="mb-0">@Model.Branches.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-globe"></i> Countries</h6>
+                    <h2 class="mb-0">@Model.Countries.Count()</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-envelope"></i> With Email</h6>
+                    <h2 class="mb-0">@Model.Branches.Count(b => !string.IsNullOrEmpty(b.Email))</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-telephone"></i> With Phone</h6>
+                    <h2 class="mb-0">@Model.Branches.Count(b => !string.IsNullOrEmpty(b.PhoneNumber))</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters and Search -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form id="searchForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="countryFilter" class="form-label">
+                            <i class="bi bi-globe"></i> Filter by Country
+                        </label>
+                        <select id="countryFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
+                            <option value="">All Countries</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="bi bi-search"></i> Search Branches
+                        </label>
+                        <input type="text" id="searchTerm" class="form-control form-control-lg" 
+                               placeholder="Search by name, code, email, or phone..." />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label d-block">&nbsp;</label>
+                        <button type="button" id="searchBtn" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Branches Table -->
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-table"></i> Branches List</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th><i class="bi bi-building"></i> Branch Name</th>
+                            <th><i class="bi bi-hash"></i> Code</th>
+                            <th><i class="bi bi-telephone"></i> Phone</th>
+                            <th><i class="bi bi-envelope"></i> Email</th>
+                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="branches">
+                        @foreach (var item in Model.Branches)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@item.Name</strong>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.Code</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                                    {
+                                        <a href="tel:@item.PhoneNumber" class="text-decoration-none">
+                                            <i class="bi bi-telephone"></i> @item.PhoneNumber
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Email))
+                                    {
+                                        <a href="mailto:@item.Email" class="text-decoration-none">
+                                            <i class="bi bi-envelope"></i> @item.Email
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-info" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" 
+                                           class="btn btn-sm btn-warning" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-danger" 
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
+                                                title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+
+                                    <!-- Delete Modal -->
+                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header bg-danger text-white">
+                                                    <h5 class="modal-title">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Delete branch <strong>@item.Name</strong>?</p>
+                                                    <p class="text-danger mb-0">
+                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
+                                                    </p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="bi bi-trash"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Branches.Any())
+    {
+        <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle"></i> No branches found. Click "Add New Branch" to get started.
+        </div>
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -91,7 +212,6 @@
             function filter() {
                 var searchTerm = $("#searchTerm").val();
                 var country = parseInt($("#countryFilter").val()) || 0;
-
                 var token = $('input[name="__RequestVerificationToken"]').val();
 
                 $.ajax({
@@ -115,7 +235,7 @@
             $("#searchForm").submit(function (e) {
                 e.preventDefault();
                 filter();
-			});
+            });
 
             $("#searchBtn").click(function () {
                 filter();
@@ -125,6 +245,12 @@
                 filter();
             });
 
+            $("#searchTerm").keyup(function() {
+                if ($(this).val() === '') {
+                    location.reload();
+                }
+            });
+
             function fillTable(response) {
                 var tableBody = $("#branches");
                 tableBody.empty();
@@ -132,21 +258,35 @@
                 if (response && response.length > 0) {
                     var newRows = "";
                     var token = $('input[name="__RequestVerificationToken"]').val();
+                    
                     response.forEach(function (branch) {
-                        var editUrl = '@Url.Action("Edit", "Branch")/' + branch.id;
-						var detailsUrl = '@Url.Action("Details", "Branch")/' + branch.id;
+                        var phone = branch.phoneNumber 
+                            ? `<a href="tel:${branch.phoneNumber}" class="text-decoration-none"><i class="bi bi-telephone"></i> ${branch.phoneNumber}</a>`
+                            : '<span class="text-muted">-</span>';
+                        
+                        var email = branch.email 
+                            ? `<a href="mailto:${branch.email}" class="text-decoration-none"><i class="bi bi-envelope"></i> ${branch.email}</a>`
+                            : '<span class="text-muted">-</span>';
 
                         newRows += `<tr>
-                                        <td>${branch.name}</td>
-                                        <td>${branch.code}</td>
-                                        <td>${branch.phoneNumber}</td>
-                                        <td>${branch.email}</td>
-                                        <td>
-                                            <a href="${editUrl}">Edit</a> |
-											<a href="${detailsUrl}">Details</a> |
-                                            <form action="/Branch/Delete/${branch.id}" method="post">
-                                                <Input type="hidden" name="__RequestVerificationToken" value="${token}" />
-                                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        <td><strong>${branch.name}</strong></td>
+                                        <td><span class="badge bg-secondary">${branch.code}</span></td>
+                                        <td>${phone}</td>
+                                        <td>${email}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="/Branch/Details/${branch.id}" class="btn btn-sm btn-info" title="View Details">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a href="/Branch/Edit/${branch.id}" class="btn btn-sm btn-warning" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${branch.name}?')) { document.getElementById('deleteForm${branch.id}').submit(); }" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                            <form id="deleteForm${branch.id}" action="/Branch/Delete/${branch.id}" method="post" style="display:none;">
+                                                <input type="hidden" name="__RequestVerificationToken" value="${token}" />
                                             </form>
                                         </td>
                                     </tr>`;

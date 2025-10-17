@@ -49,45 +49,78 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="WorkSchedule" asp-action="Index">Work Schedule</a>
+
+                        <!-- HR Management Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="hrDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-people"></i> HR Management
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="hrDropdown">
+                                <li><h6 class="dropdown-header">Employee Management</h6></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="Index"><i class="bi bi-person-badge"></i> Employees</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Department" asp-action="Index"><i class="bi bi-diagram-3"></i> Departments</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="JobTitle" asp-action="Index"><i class="bi bi-briefcase"></i> Job Titles</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="EmployeeType" asp-action="Index"><i class="bi bi-person-lines-fill"></i> Employee Types</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Attendance & Leave</h6></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Attendance" asp-action="Index"><i class="bi bi-calendar-check"></i> Attendance</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="AttendanceStatusCode" asp-action="Index"><i class="bi bi-list-check"></i> Attendance Status Codes</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="LeaveType" asp-action="Index"><i class="bi bi-calendar-event"></i> Leave Types</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="EmployeeLeaveBalance" asp-action="Index"><i class="bi bi-calendar-range"></i> Leave Balances</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Work Schedule</h6></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="WorkSchedule" asp-action="Index"><i class="bi bi-clock"></i> Work Schedule</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="PublicHoliday" asp-action="Index"><i class="bi bi-calendar-day"></i> Public Holidays</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PublicHoliday" asp-action="Index">Public Holidays</a>
+
+                        <!-- Employee Self-Service (Only for Employees) -->
+                        @if (User.IsInRole("Employee"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="employeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle"></i> My Portal
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="employeeDropdown">
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="Profile"><i class="bi bi-person-circle"></i> My Profile</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="MyLeaveRequests"><i class="bi bi-list-ul"></i> My Leave Requests</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="RequestLeave"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        <!-- Manager Portal (Only for Managers & HR) -->
+                        @if (User.IsInRole("HR Manager") || User.IsInRole("Manager") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="managerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-clipboard-check"></i> Manager Portal
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                                    <li><h6 class="dropdown-header">Leave Approvals</h6></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="PendingApprovals"><i class="bi bi-clock-history"></i> Pending Approvals</a></li>
+                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="TeamLeaveCalendar"><i class="bi bi-calendar3"></i> Team Leave Calendar</a></li>
+                                </ul>
+                            </li>
+                        }
+
+                        <!-- Settings Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-gear"></i> Settings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Country" asp-action="Index"><i class="bi bi-globe"></i> Countries</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Branch" asp-action="Index"><i class="bi bi-building"></i> Branches</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Currency" asp-action="Index"><i class="bi bi-currency-exchange"></i> Currencies</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Country" asp-action="Index">Countries</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Branch" asp-action="Index">Branches</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Currency" asp-action="Index">Currencies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Department" asp-action="Index">Departments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AttendanceStatusCode" asp-action="Index">Attendance Status Codes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="EmployeeType" asp-action="Index">Employee Types</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="LeaveType" asp-action="Index">Leave Types</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="JobTitle" asp-action="Index">Job Title</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
-                        </li>
-                       
 
                         <!-- Purchasing Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="purchasingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Purchasing
+                                <i class="bi bi-cart"></i> Purchasing
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="purchasingDropdown">
                                 <li><a class="dropdown-item" asp-area="" asp-controller="PurchaseOrder" asp-action="Index">Purchase Orders</a></li>
@@ -100,7 +133,7 @@
                         <!-- Inventory Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="inventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Inventory
+                                <i class="bi bi-box-seam"></i> Inventory
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
                                 <li><a class="dropdown-item" asp-area="" asp-controller="Warehouse" asp-action="Index">Warehouse</a></li>
@@ -108,11 +141,21 @@
                             </ul>
                         </li>
 
+                        <!-- Role Management (Development Only - Remove in Production) -->
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" asp-area="" asp-controller="RoleManagement" asp-action="AssignRole">
+                                <i class="bi bi-shield-lock"></i> Assign Roles (Testing)
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- Toast Notification Partial -->
+    <partial name="_Toast" />
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

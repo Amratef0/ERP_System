@@ -31,7 +31,7 @@ namespace ERP_System_Project.Middlewares
 
             var endpointName = segments.Length >= 2
                 ? $"/{segments[0]}/{segments[1]}"  // "/product/edit"
-                : path;                            
+                : path;
 
             var executionTime = stopWatch.ElapsedMilliseconds;
             var executionTimeStatus = executionTime switch
@@ -52,7 +52,7 @@ namespace ERP_System_Project.Middlewares
             // Resolve scoped service inside Invoke()
             var _repository = context.RequestServices.GetRequiredService<IRepository<PerformanceLog>>();
 
-            if(await _repository.AnyAsync(l => l.EndPointName.Contains(endpointName)))
+            if (await _repository.AnyAsync(l => l.EndPointName.Contains(endpointName)))
             {
                 var logRow = await _repository
                     .GetAllAsIQueryable()
@@ -66,7 +66,7 @@ namespace ERP_System_Project.Middlewares
             {
                 await _repository.AddAsync(log);
             }
-            await _repository.SaveAsync();
+            //await _repository.SaveAsync(); // errors and bad design
         }
     }
 }

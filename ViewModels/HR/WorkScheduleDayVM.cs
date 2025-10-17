@@ -10,7 +10,7 @@ namespace ERP_System_Project.ViewModels.HR
         public int Id { get; set; }
 
         [Display(Name = "Day of the Week")]
-        public Days Day { get; set; }
+        public DayOfWeek Day { get; set; }
 
         [Display(Name = "Work Day?")]
         public bool IsWorkDay { get; set; }

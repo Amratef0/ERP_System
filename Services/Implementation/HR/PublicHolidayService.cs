@@ -35,5 +35,12 @@ namespace ERP_System_Project.Services.Implementation.HR
 
             return await query.ToListAsync();
         }
+
+        public async Task<bool> CheckIfPublicHolidayAsync(DateOnly date, int countryId)
+        {
+            bool isPublicHoliday = _repository.GetAllAsIQueryable()
+                                              .Any(ph => ph.Date == date && ph.CountryId == countryId);
+            return isPublicHoliday;
+        }
     }
 }

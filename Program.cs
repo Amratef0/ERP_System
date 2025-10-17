@@ -24,8 +24,10 @@ using ERP_System_Project.Validators.HR;
 using ERP_System_Project.Validators.Inventory;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,15 @@ builder.Services.AddControllersWithViews();
 // Add DbContext
 builder.Services.AddDbContext<Erpdbcontext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Hangfire
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+// Add the Hangfire server
+builder.Services.AddHangfireServer();
 
 // Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -105,6 +116,10 @@ builder.Services.AddScoped<IEmailService, EmailSender>();
 builder.Services.AddFluentValidationClientsideAdapters()
                 .AddValidatorsFromAssemblyContaining<WorkScheduleDayVMValidator>();
 
+// Seed Service
+builder.Services.AddScoped<SeedService>();
+
+
 // Repositories and UnitOfWork
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -144,6 +159,10 @@ builder.Services.AddScoped<IEmployeeTypeService, EmployeeTypeService>();
 builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
 builder.Services.AddScoped<IJobTitleService, JobTitleService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<ILeavePolicyService, LeavePolicyService>();
+builder.Services.AddScoped<IEmployeeLeaveBalanceService, EmployeeLeaveBalanceService>();
+builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
 // Log Services
 builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();
@@ -153,6 +172,58 @@ builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
+
+
+// Seed Database (Attendance Records)
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<Erpdbcontext>();
+    db.Database.Migrate();
+
+    var seeder = services.GetRequiredService<SeedService>();
+
+    await seeder.SeedAttendanceRecordsAsync();
+}
+
+// Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire");
+
+// ========== SCHEDULED BACKGROUND JOBS ==========
+
+// 1. LEAVE BALANCE: Generate balances for new year (January 1st at 1:00 AM)
+RecurringJob.AddOrUpdate<IEmployeeLeaveBalanceService>(
+    "GenerateNewYearLeaveBalances",
+    service => service.GenerateBalancesForAllEmployeesAsync(DateTime.Now.Year, null),
+    "0 1 1 1 *", // Cron: At 1:00 AM on January 1st
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+// 2. LEAVE BALANCE: Carry forward unused balances (December 31st at 11:59 PM)
+RecurringJob.AddOrUpdate<IEmployeeLeaveBalanceService>(
+    "CarryForwardLeaveBalances",
+    service => service.CarryForwardUnusedDaysAsync(DateTime.Now.Year, DateTime.Now.Year + 1),
+    "59 23 31 12 *", // Cron: At 11:59 PM on December 31st
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
+
+// Schedule Recurring Jobs (Attendance Generation) - COMMENTED OUT
+//var times = new[] { 9, 13, 18 };
+
+//foreach (var hour in times)
+//{
+//    string jobId = $"GenerateAttendance_{hour}";
+//    string cron = $"0 {hour} * * *";
+
+//    RecurringJob.AddOrUpdate<AttendanceService>(
+//        jobId,
+//        service => service.GenerateDailyAttendance(),
+//        cron);
+//}
 
 // Configure HTTP pipeline
 if (!app.Environment.IsDevelopment())
@@ -178,4 +249,4 @@ app.MapControllerRoute(
 
 app.UseMiddleware<EndpointPerformanceMiddleware>();
 
-app.Run();
+await app.RunAsync();
