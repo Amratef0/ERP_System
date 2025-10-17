@@ -31,6 +31,16 @@ namespace ERP_System_Project.Models.Config.InventoryConfig
                    .HasForeignKey(r => r.ProductId)
                    .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(p => p.Brand)
+                .WithMany(b => b.Products)
+                .HasForeignKey(p => p.BrandId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasOne(p => p.Category)
+                .WithMany(b => b.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
     }
 }

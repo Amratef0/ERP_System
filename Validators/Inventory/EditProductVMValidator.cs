@@ -36,7 +36,9 @@ namespace ERP_System_Project.Validators.Inventory
                 .NotEmpty().WithMessage("Quantity Is Required")
                 .GreaterThanOrEqualTo(0).WithMessage("Quantity must be >= 0");
 
-            
+            RuleFor(x => x.UnitCost)
+                .LessThan(x => x.StandardPrice).WithMessage("Unit Price Should Be Less Than Standard Price")
+                .When(x => x.UnitCost > 0 && x.StandardPrice > 0);
 
             RuleFor(x => x.NewImage)
                 .Must(newImage => _validExtensions.Contains(Path.GetExtension(newImage.FileName))).WithMessage($"Invalid image extension. Allowed formats: {string.Join(", ", _validExtensions)}")

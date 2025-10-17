@@ -17,7 +17,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         private readonly IUnitOfWork _uow;
         private readonly IWebHostEnvironment _env;
         private readonly IProductRepository _productRepository;
-        public ProductService(IUnitOfWork uow,  IWebHostEnvironment env, IProductRepository productRepositroy) : base(uow)
+        public ProductService(IUnitOfWork uow, IWebHostEnvironment env, IProductRepository productRepositroy) : base(uow)
         {
             _uow = uow;
             _env = env;
@@ -26,7 +26,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public async Task AddNewProduct(ProductVM model)
         {
-            var imageUrl = await model.Image.SaveImageAsync(_env,"Uploads/Images/Products");
+            var imageUrl = await model.Image.SaveImageAsync(_env, "Uploads/Images/Products");
 
             var product = new Product
             {
@@ -105,7 +105,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
         public async Task<List<ProductAttributeVM>> GetAllProductAttributes()
         {
             return await _uow.ProductAttributes.GetAllAsync(
-                     selector: pa => new ProductAttributeVM { Id =  pa.Id, Name = pa.Name }
+                     selector: pa => new ProductAttributeVM { Id = pa.Id, Name = pa.Name }
                      );
         }
 
@@ -118,8 +118,8 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    BrandId = p.BrandId,
-                    CategoryId = p.CategoryId,
+                    BrandId = p.BrandId ?? 0,
+                    CategoryId = p.CategoryId ?? 0,
                     StandardPrice = p.StandardPrice,
                     UnitCost = p.UnitCost,
                     ImageURL = p.ImageURL,
@@ -135,6 +135,151 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             return product;
 
         }
+
+
+        public async Task<PageSourcePagination<ProductCardVM>> GetFavoriteProductsPaginatedAsync(
+      int customerId, int pageNumber, int pageSize, string? searchByName = null, string? brandName = null, string? categoryName = null,
+                                                                                            int? minPrice = null, int? maxPrice = null)
+        {
+            Expression<Func<Product, bool>> searchFilter = p =>
+                   p.CustomerFavorites.Any(cf => cf.CustomerId == customerId); // <-- Only favorites for this customer
+            if (!string.IsNullOrEmpty(searchByName))
+                searchFilter = searchFilter.And(p => p.Name.Contains(searchByName));
+
+            if (!string.IsNullOrEmpty(brandName))
+                searchFilter = searchFilter.And(p => p.Brand.Name.Contains(brandName));
+
+            if (!string.IsNullOrEmpty(categoryName))
+                searchFilter = searchFilter.And(p => p.Category.Name.Contains(categoryName));
+
+            if (minPrice.HasValue && maxPrice.HasValue)
+            {
+                minPrice = Math.Min(minPrice.Value, maxPrice.Value);
+                maxPrice = Math.Max(minPrice.Value, maxPrice.Value);
+            }
+
+            if (minPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice >= minPrice);
+
+            if (maxPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice <= maxPrice);
+
+            return await _uow.Products.GetAllPaginatedAsync(
+                           selector: p => new ProductCardVM
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               ImageURL = p.ImageURL,
+
+                               CategoryName = p.Category.Name,
+                               BrandName = p.Brand.Name,
+                               BrandImageURL = p.Brand.LogoURL,
+
+                               Price = p.StandardPrice,
+                               HaveOffer = p.Offer != null,
+                               DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
+                               NetPrice =
+                                   p.Offer != null ?
+                                   p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice)
+                                   : p.StandardPrice,
+
+                               NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                               TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
+                                   ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
+                                   : 0,
+
+                           },
+                           expandable: true,
+                           filter: searchFilter,
+                           pageNumber: pageNumber,
+                           pageSize: pageSize,
+                           Includes: new Expression<Func<Product, object>>[]
+                           {
+                    p => p.Attributes,
+                    p => p.Offer,
+                    p => p.Brand,
+                    p => p.Category,
+                    p => p.CustomerReviews,
+                    p => p.CustomerFavorites,
+
+                           }
+                       );
+
+        }
+
+
+        public async Task<PageSourcePagination<ProductCardVM>> GetWishlistProductsPaginatedAsync(
+     int customerId, int pageNumber, int pageSize, string? searchByName = null, string? brandName = null, string? categoryName = null,
+                                                                                           int? minPrice = null, int? maxPrice = null)
+        {
+            Expression<Func<Product, bool>> searchFilter = p =>
+                   p.CustomerWishlists.Any(cf => cf.CustomerId == customerId); // <-- Only favorites for this customer
+            if (!string.IsNullOrEmpty(searchByName))
+                searchFilter = searchFilter.And(p => p.Name.Contains(searchByName));
+
+            if (!string.IsNullOrEmpty(brandName))
+                searchFilter = searchFilter.And(p => p.Brand.Name.Contains(brandName));
+
+            if (!string.IsNullOrEmpty(categoryName))
+                searchFilter = searchFilter.And(p => p.Category.Name.Contains(categoryName));
+
+            if (minPrice.HasValue && maxPrice.HasValue)
+            {
+                minPrice = Math.Min(minPrice.Value, maxPrice.Value);
+                maxPrice = Math.Max(minPrice.Value, maxPrice.Value);
+            }
+
+            if (minPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice >= minPrice);
+
+            if (maxPrice.HasValue)
+                searchFilter = searchFilter.And(p => p.StandardPrice <= maxPrice);
+
+            return await _uow.Products.GetAllPaginatedAsync(
+                           selector: p => new ProductCardVM
+                           {
+                               Id = p.Id,
+                               Name = p.Name,
+                               ImageURL = p.ImageURL,
+
+                               CategoryName = p.Category.Name,
+                               BrandName = p.Brand.Name,
+                               BrandImageURL = p.Brand.LogoURL,
+
+                               Price = p.StandardPrice,
+                               HaveOffer = p.Offer != null,
+                               DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
+                               NetPrice =
+                                   p.Offer != null ?
+                                   p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice)
+                                   : p.StandardPrice,
+
+                               NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
+                               TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
+                                   ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
+                                   : 0,
+
+                           },
+                           expandable: true,
+                           filter: searchFilter,
+                           pageNumber: pageNumber,
+                           pageSize: pageSize,
+                           Includes: new Expression<Func<Product, object>>[]
+                           {
+                    p => p.Attributes,
+                    p => p.Offer,
+                    p => p.Brand,
+                    p => p.Category,
+                    p => p.CustomerReviews,
+                    p => p.CustomerWishlists,
+
+                           }
+                       );
+
+        }
+
+
+
 
 
         public async Task<PageSourcePagination<ProductVM>> GetProductsPaginated(int pageNumber, int pageSize,
@@ -171,8 +316,8 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     Name = p.Name,
                     Id = p.Id,
                     ImageURL = p.ImageURL,
-                    CategoryId = p.CategoryId,
-                    BrandId = p.BrandId,
+                    CategoryId = p.CategoryId ?? 0,
+                    BrandId = p.BrandId ?? 0,
                     Quantity = p.Quantity,
                     UnitCost = p.UnitCost,
                     StandardPrice = p.StandardPrice,
@@ -211,7 +356,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
             if (!string.IsNullOrEmpty(categoryName))
                 searchFilter = searchFilter.And(p => p.Category.Name.Contains(categoryName));
 
-            if(minPrice.HasValue && maxPrice.HasValue)
+            if (minPrice.HasValue && maxPrice.HasValue)
             {
                 minPrice = Math.Min(minPrice.Value, maxPrice.Value);
                 maxPrice = Math.Max(minPrice.Value, maxPrice.Value);
@@ -240,7 +385,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
                     NetPrice =
                         p.Offer != null ?
-                        p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice) 
+                        p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice)
                         : p.StandardPrice,
 
                     NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
@@ -266,7 +411,7 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         public async Task<ProductDetailsVM> GetProductDetails(int productId)
         {
-            var product =  await _productRepository.GetAsync(
+            var product = await _productRepository.GetAsync(
                 filter: p => p.Id == productId,
                 selector: p => new ProductDetailsVM
                 {

@@ -40,6 +40,7 @@ namespace ERP_System_Project.Controllers.Inventory
             {
                 var attribute = _mapper.Map<ProductAttribute>(attributeVM);
                 await _attributeService.CreateAsync(attribute);
+                TempData["success"] = $"Attribute {attributeVM.Name} Created Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -66,6 +67,7 @@ namespace ERP_System_Project.Controllers.Inventory
                 var attribute = await _attributeService.GetByIdAsync(attributeVM.Id);
                 _mapper.Map(attributeVM, attribute);
                 await _attributeService.UpdateAsync(attribute);
+                TempData["success"] = $"Attribute {attributeVM.Name} Updated Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -85,6 +87,7 @@ namespace ERP_System_Project.Controllers.Inventory
         public async Task<IActionResult> Delete(AttributeVM attributeVM)
         {
             await _attributeService.DeleteAsync(attributeVM.Id);
+            TempData["success"] = $"Attribute {attributeVM.Name} Deleted Successfully";
             return RedirectToAction("Index");
         }
     }

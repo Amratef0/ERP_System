@@ -4,6 +4,7 @@ using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.ViewModels.Inventory;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ERP_System_Project.Controllers.Inventory
 {
@@ -38,6 +39,7 @@ namespace ERP_System_Project.Controllers.Inventory
             {
                 var brand = _mapper.Map<Brand>(brandVM);
                 await _brandService.CreateAsync(brand);
+                TempData["success"] = $"Brand {brand.Name} Created Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -66,6 +68,7 @@ namespace ERP_System_Project.Controllers.Inventory
                 // update using mapper
                 _mapper.Map(brandVM, brand); 
                 await _brandService.UpdateAsync(brand);
+                TempData["success"] = $"Brand {brand.Name} Updated Successfully";
                 return RedirectToAction("Index");
             }
             foreach (var error in result.Errors)
@@ -85,6 +88,7 @@ namespace ERP_System_Project.Controllers.Inventory
         public async Task<IActionResult> Delete(BrandVM brandvm)
         {
             await _brandService.DeleteAsync(brandvm.Id);
+            TempData["success"] = $"Brand {brandvm.Name} Deleted Successfully";
             return RedirectToAction("Index");
         }
     }
