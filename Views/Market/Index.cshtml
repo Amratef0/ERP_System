@@ -289,89 +289,10 @@
         </div>
     }
 </div>
-
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Favorite button toggle
-            $('.btn-favorite').on('click', function () {
-                var button = $(this);
-                var productId = button.data('product-id');
-                var customerId = button.data('customer-id');
+    <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
 
-                $.post('/CustomerFavorite/ToggleFavorite', {
-                    customerId: customerId,
-                    productId: productId
-                }).done(function (response) {
-                    if (response.success) {
-                        // Toggle button appearance
-                        if (response.status === 'added') {
-                            button.removeClass('btn-outline-danger').addClass('btn-danger');
-                            button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
-                        } else {
-                            button.removeClass('btn-danger').addClass('btn-outline-danger');
-                            button.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
-                        }
-
-                        showToast(response.message, 'success');
-                    } else {
-                        showToast(response.message, 'error');
-                    }
-                }).fail(function () {
-                    showToast('An error occurred while updating favorites.', 'error');
-                });
-            });
-
-            // Wishlist button toggle (you'll need to implement the backend for this)
-            $('.btn-wishlist').on('click', function () {
-                var button = $(this);
-                var productId = button.data('product-id');
-                var customerId = button.data('customer-id');
-
-                $.post('/CustomerWishlist/ToggleWishlist', {
-                    customerId: customerId,
-                    productId: productId
-                }).done(function (response) {
-                    if (response.success) {
-                        // Toggle button appearance
-                        if (response.status === 'added') {
-                            button.removeClass('btn-outline-primary').addClass('btn-primary');
-                            button.find('i').removeClass('bi-bookmark').addClass('bi-bookmark-fill');
-                        } else {
-                            button.removeClass('btn-primary').addClass('btn-outline-primary');
-                            button.find('i').removeClass('bi-bookmark-fill').addClass('bi-bookmark');
-                        }
-
-                        showToast(response.message, 'success');
-                    } else {
-                        showToast(response.message, 'error');
-                    }
-                }).fail(function () {
-                    showToast('An error occurred while updating wishlist.', 'error');
-                });
-            });
-
-            function showToast(message, type) {
-                // Simple toast implementation
-                const toast = document.createElement('div');
-                toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
-                toast.style.top = '20px';
-                toast.style.right = '20px';
-                toast.style.zIndex = '9999';
-                toast.innerHTML = `
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                document.body.appendChild(toast);
-
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            }
-        });
-    </script>
 }
-
 <style>
     .card {
         border-radius: 12px;

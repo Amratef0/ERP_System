@@ -1,4 +1,5 @@
 ﻿using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using Microsoft.AspNetCore.Identity;
@@ -62,6 +63,8 @@ namespace ERP_System_Project.Controllers.ECommerce
 
         public async Task<IActionResult> ProductDetails(int productId) 
         {
+            ViewBag.CustomerId = await GetLoggedInUserCustomerId();
+
             var product = await _productService.GetProductDetails(productId);
             if (product != null) return View(product);
             return NotFound();

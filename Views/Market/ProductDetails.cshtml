@@ -148,8 +148,10 @@
                         {
                             <!-- Out of Stock Actions -->
                             <div class="d-flex gap-3">
-                                <button class="btn btn-outline-danger btn-lg flex-fill">
-                                    <i class="bi bi-heart me-2"></i>Add to Wishlist
+                                <button class="btn btn-outline-primary btn-lg btn-wishlist flex-fill"
+                                        data-product-id="@Model.Id"
+                                        data-customer-id="@(ViewBag.CustomerId ?? 0)">
+                                    <i class="bi bi-bookmark me-2"></i>Add to Wishlist
                                 </button>
                                 <button class="btn btn-outline-secondary btn-lg" disabled>
                                     <i class="bi bi-bell me-2"></i>Notify Me
@@ -178,7 +180,9 @@
                                         <button class="btn btn-primary btn-lg flex-fill">
                                             <i class="bi bi-cart-plus me-2"></i>Add to Cart
                                         </button>
-                                        <button class="btn btn-outline-danger btn-lg">
+                                        <button class="btn btn-outline-danger btn-sm btn-favorite"
+                                                data-product-id="@Model.Id"
+                                                data-customer-id="@(ViewBag.CustomerId ?? 0)">
                                             <i class="bi bi-heart"></i>
                                         </button>
                                     </div>
@@ -399,7 +403,9 @@
 </div>
 
 @section Scripts {
+        <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
     <script>
+
         // Quantity controls
         document.getElementById('decreaseQty')?.addEventListener('click', function() {
             const quantityInput = document.getElementById('quantity');

@@ -1,0 +1,134 @@
+﻿<script>
+    $(document).ready(function () {
+        // Check favorite status for ALL products when page loads
+        var customerId = @(ViewBag.CustomerId ?? 0);
+
+        if (customerId > 0) {
+            checkAllFavoriteStatus(customerId);
+            checkAllWishlistStatus(customerId);
+        }
+
+        // Favorite button toggle
+        $('.btn-favorite').on('click', function () {
+            var button = $(this);
+            var productId = button.data('product-id');
+            var customerId = button.data('customer-id');
+
+            $.post('/CustomerFavorite/ToggleFavorite', {
+                customerId: customerId,
+                productId: productId
+            }).done(function (response) {
+                if (response.success) {
+                    // Update button appearance based on response
+                    if (response.status === 'added') {
+                        button.removeClass('btn-outline-danger').addClass('btn-danger');
+                        button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                    } else {
+                        button.removeClass('btn-danger').addClass('btn-outline-danger');
+                        button.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                    }
+                    showToast(response.message, 'success');
+                } else {
+                    showToast(response.message, 'error');
+                }
+            }).fail(function () {
+                showToast('An error occurred while updating favorites.', 'error');
+            });
+        });
+
+        // Wishlist button toggle
+        $('.btn-wishlist').on('click', function () {
+            var button = $(this);
+            var productId = button.data('product-id');
+            var customerId = button.data('customer-id');
+
+            $.post('/CustomerWishlist/ToggleWishlist', {
+                customerId: customerId,
+                productId: productId
+            }).done(function (response) {
+                if (response.success) {
+                    if (response.status === 'added') {
+                        button.removeClass('btn-outline-primary').addClass('btn-primary');
+                        button.find('i').removeClass('bi-bookmark').addClass('bi-bookmark-fill');
+                    } else {
+                        button.removeClass('btn-primary').addClass('btn-outline-primary');
+                        button.find('i').removeClass('bi-bookmark-fill').addClass('bi-bookmark');
+                    }
+                    showToast(response.message, 'success');
+                } else {
+                    showToast(response.message, 'error');
+                }
+            }).fail(function () {
+                showToast('An error occurred while updating wishlist.', 'error');
+            });
+        });
+
+        // Function to check favorite status for all products on page load
+        function checkAllFavoriteStatus(customerId) {
+            $('.btn-favorite').each(function() {
+                var button = $(this);
+                var productId = button.data('product-id');
+
+                $.get('/CustomerFavorite/CheckFavoriteStatus', {
+                    customerId: customerId,
+                    productId: productId
+                }).done(function (response) {
+                    // Update button appearance based on favorite status
+                    if (response.isFavorite) {
+                        button.removeClass('btn-outline-danger').addClass('btn-danger');
+                        button.find('i').removeClass('bi-heart').addClass('bi-heart-fill');
+                    } else {
+                        button.removeClass('btn-danger').addClass('btn-outline-danger');
+                        button.find('i').removeClass('bi-heart-fill').addClass('bi-heart');
+                    }
+                }).fail(function() {
+                    console.log('Failed to check favorite status for product ' + productId);
+                });
+            });
+        }
+
+        // Function to check wishlist status for all products on page load
+        function checkAllWishlistStatus(customerId) {
+            $('.btn-wishlist').each(function() {
+                var button = $(this);
+                var productId = button.data('product-id');
+
+                $.get('/CustomerWishlist/CheckWishlistStatus', {
+                    customerId: customerId,
+                    productId: productId
+                }).done(function (response) {
+                    // Update button appearance based on wishlist status
+                    // Check what property your backend actually returns
+                    var isInWishlist = response.isInWishlist || response.isFavorite || response.status;
+
+                    if (isInWishlist) {
+                        button.removeClass('btn-outline-primary').addClass('btn-primary');
+                        button.find('i').removeClass('bi-bookmark').addClass('bi-bookmark-fill');
+                    } else {
+                        button.removeClass('btn-primary').addClass('btn-outline-primary');
+                        button.find('i').removeClass('bi-bookmark-fill').addClass('bi-bookmark');
+                    }
+                }).fail(function() {
+                    console.log('Failed to check wishlist status for product ' + productId);
+                });
+            });
+        }
+
+        function showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+            toast.style.top = '20px';
+            toast.style.right = '20px';
+            toast.style.zIndex = '9999';
+            toast.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+    });
+</script>

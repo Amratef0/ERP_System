@@ -107,8 +107,8 @@ namespace ERP_System_Project.Controllers.CRM
         [HttpGet]
         public async Task<JsonResult> CheckWishlistStatus(int customerId, int productId)
         {
-            var isWishlist = await _customerWishlistService.IsWishlistAsync(customerId, productId);
-            return Json(new { isWishlist });
+            var isInWishlist = await _customerWishlistService.IsWishlistAsync(customerId, productId);
+            return Json(new { isInWishlist }); // Make sure this property name matches
         }
 
 

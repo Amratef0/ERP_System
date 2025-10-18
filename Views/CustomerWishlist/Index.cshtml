@@ -194,14 +194,14 @@
                                 <!-- Favorite button -->
                                 <button class="btn btn-outline-danger btn-sm btn-favorite"
                                         data-product-id="@product.Id"
-                                        data-customer-id="@(ViewBag.CurrentCustomerId ?? 0)">
+                                        data-customer-id="@(ViewBag.CustomerId ?? 0)">
                                     <i class="bi bi-heart"></i>
                                 </button>
 
                                 <!-- Wishlist button -->
                                 <button class="btn btn-outline-secondary btn-sm btn-wishlist"
                                         data-product-id="@product.Id"
-                                        data-customer-id="@(ViewBag.CurrentCustomerId ?? 0)">
+                                        data-customer-id="@(ViewBag.CustomerId ?? 0)">
                                     <i class="bi bi-bookmark"></i>
                                 </button>
                             </div>
@@ -280,6 +280,10 @@
     }
 </div>
 
+@section Scripts {
+    <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
+
+}
 <style>
     .card {
         border-radius: 12px;
