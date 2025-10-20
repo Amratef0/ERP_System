@@ -157,6 +157,11 @@ namespace ERP_System_Project.Controllers.CRM
 
         public async Task<IActionResult> DeleteReview(int reviewId)
         {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError(string.Empty, "Unable to delete review. Please try again.");
+                return BadRequest();
+            }
             var review = await _customerReviewService.GetByIdAsync(reviewId);
             if (review == null) return BadRequest();
 

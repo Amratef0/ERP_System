@@ -310,9 +310,9 @@
                                         <div class="reviews-container">
                                             @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
                                             {
-                                                <div class="review-item border-bottom pb-4 mb-4">
+                                                <div class="review-item border-bottom pb-4 mb-4" id="review-@review.Id">
                                                     <div class="d-flex align-items-start gap-3">
-                                                        <!-- Customer Avatar -->
+                                                        <!-- Avatar -->
                                                         <div class="flex-shrink-0">
                                                             @if (!string.IsNullOrEmpty(review.CustomerImageURL))
                                                             {
@@ -329,7 +329,7 @@
                                                             }
                                                         </div>
 
-                                                        <!-- Review Content -->
+                                                        <!-- Review content + controls -->
                                                         <div class="flex-grow-1">
                                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                                 <div>
@@ -346,15 +346,79 @@
                                                                                 <i class="bi bi-star text-warning me-1" style="font-size: 0.9rem;"></i>
                                                                             }
                                                                         }
-                                                                        <span class="text-muted small ms-2">@review.CreatedAt.ToString()</span>
+                                                                        <span class="text-muted small ms-2">@review.CreatedAt?.ToString("g")</span>
+                                                                        @if (review.IsEdited)
+                                                                        {
+                                                                            <small class="text-muted ms-2">(edited @review.EditedAt?.ToString("g"))</small>
+                                                                        }
                                                                     </div>
                                                                 </div>
+
+                                                                @* Edit/Delete buttons only for the owner *@
+                                                                @{
+                                                                    var currentCustomerId = (int?)(ViewBag.CurrentCustomerId ?? ViewBag.CustomerId ?? 0);
+                                                                    bool isOwner = currentCustomerId != null && currentCustomerId == review.CustomerId;
+                                                                }
+                                                                @if (isOwner)
+                                                                {
+                                                                    <div class="btn-group">
+                                                                        <button class="btn btn-sm btn-outline-secondary" type="button"
+                                                                                onclick="toggleEditForm(@review.Id)">
+                                                                            <i class="bi bi-pencil"></i> Edit
+                                                                        </button>
+
+                                                                        <form asp-controller="CustomerReview" asp-action="DeleteReview" method="post" class="d-inline ms-1"
+                                                                              onsubmit="return confirm('Are you sure you want to delete your review?');">
+                                                                            @Html.AntiForgeryToken()
+                                                                            <input type="hidden" name="reviewId" value="@review.Id" />
+                                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                                <i class="bi bi-trash"></i> Delete
+                                                                            </button>
+                                                                        </form>
+                                                                    </div>
+                                                                }
                                                             </div>
-                                                            <p class="text-muted mb-0">@review.Comment</p>
+
+                                                            <p class="text-muted mb-0" id="review-comment-@review.Id">@review.Comment</p>
+
+                                                            @* Inline Edit Form (hidden by default) *@
+                                                            <div id="edit-form-@review.Id" class="mt-3" style="display:none;">
+                                                                <form asp-controller="CustomerReview" asp-action="EditReview" method="post" class="row g-2">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <input type="hidden" name="Id" value="@review.Id" />
+                                                                    <input type="hidden" name="ProductId" value="@review.ProductId" />
+                                                                    <input type="hidden" name="CustomerId" value="@review.CustomerId" />
+
+                                                                    <div class="col-12">
+                                                                        <label class="form-label">Rating</label>
+                                                                        <div>
+                                                                            @for (int i = 1; i <= 5; i++)
+                                                                            {
+                                                                                <div class="form-check form-check-inline">
+                                                                                    <input class="form-check-input" type="radio" name="Rating" id="edit-@review.Id-rating-@i" value="@i"
+                                                                                           @(review.Rating == i ? "checked" : "") />
+                                                                                    <label class="form-check-label" for="edit-@review.Id-rating-@i">@i</label>
+                                                                                </div>
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-12">
+                                                                        <label class="form-label">Comment</label>
+                                                                        <textarea name="Comment" class="form-control" rows="3" maxlength="250" required>@review.Comment</textarea>
+                                                                    </div>
+
+                                                                    <div class="col-12 d-flex gap-2">
+                                                                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="toggleEditForm(@review.Id)">Cancel</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             }
+
                                         </div>
                                     }
                                     else
@@ -471,6 +535,21 @@
         <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
     <script>
 
+             function toggleEditForm(reviewId) {
+            const form = document.getElementById('edit-form-' + reviewId);
+            const comment = document.getElementById('review-comment-' + reviewId);
+            if (!form) return;
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+                if (comment) comment.style.display = 'none';
+                // focus textarea
+                const ta = form.querySelector('textarea');
+                if (ta) ta.focus();
+            } else {
+                form.style.display = 'none';
+                if (comment) comment.style.display = 'block';
+            }
+        }
                // highlight selected rating - simple UX improvement
             const ratingRadios = document.querySelectorAll('.rating-radio');
             ratingRadios.forEach(radio => {
