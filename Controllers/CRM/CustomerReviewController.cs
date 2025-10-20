@@ -78,23 +78,43 @@ namespace ERP_System_Project.Controllers.CRM
         [Authorize]
         public async Task<IActionResult> AddReview(CustomerReviewVM model)
         {
+            // Debug: Check what validation errors exist
+            if (!ModelState.IsValid)
+            {
+                TempData["ReviewError"] = "Please fill all required fields correctly.";
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                Console.WriteLine("Validation errors: " + string.Join(", ", errors));
 
-            if (ModelState.IsValid)
+                // Return errors to see what's wrong
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+            else
             {
                 var customerId = await GetLoggedInUserCustomerId();
                 if (customerId == 0) return Unauthorized();
                 model.CustomerId = customerId;
-                var added = await _customerReviewService.AddReviewAsync(model);
-                if (!added)
+
+                var alreadyReviewed = await _customerReviewService.HasCustomerReviewedProductAsync(model.CustomerId, model.ProductId);
+                if (alreadyReviewed)
                 {
-                    ModelState.AddModelError(string.Empty, "Unable to add review. You may have already reviewed this product.");
-                    return View(model);
+                    TempData["ReviewInfo"] = "You already reviewed this product. You can edit your previous review instead.";
+                    return Redirect(Request.Headers["Referer"].ToString());
                 }
-                return RedirectToAction("Index"); // we will edit this to return to the product page to see his review after adding
+
+
+                var added = await _customerReviewService.AddReviewAsync(model);
+                if (added)
+                {
+                    TempData["ReviewSuccess"] = "Your review was added successfully!";
+                return Redirect(Request.Headers["Referer"].ToString());
+
+                }
+                    ModelState.AddModelError(string.Empty, "Unable to add review. You may have already reviewed this product.");
+                TempData["ReviewError"] = "Something went wrong while adding your review.";
+
+                return Content("error occured while adding");
 
             }
-            return View(model);
-
         }
         public async Task<IActionResult> EditReview(int reviewId)
         {

@@ -1,6 +1,19 @@
 ﻿@model ERP_System_Project.ViewModels.ECommerce.ProductDetailsVM
 @{
     ViewData["Title"] = Model.Name;
+    @if (TempData["ReviewSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["ReviewSuccess"]</div>
+    }
+    @if (TempData["ReviewError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ReviewError"]</div>
+    }
+    @if (TempData["ReviewInfo"] != null)
+    {
+        <div class="alert alert-info">@TempData["ReviewInfo"]</div>
+    }
+
 }
 
 <div class="container-fluid py-4">
@@ -295,7 +308,7 @@
                                     @if (Model.Reviews.Any())
                                     {
                                         <div class="reviews-container">
-                                            @foreach (var review in Model.Reviews.OrderByDescending(r => r.DateCreated))
+                                            @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
                                             {
                                                 <div class="review-item border-bottom pb-4 mb-4">
                                                     <div class="d-flex align-items-start gap-3">
@@ -324,7 +337,7 @@
                                                                     <div class="d-flex align-items-center">
                                                                         @for (int i = 0; i < 5; i++)
                                                                         {
-                                                                            if (i < review.Rate)
+                                                                            if (i < review.Rating)
                                                                             {
                                                                                 <i class="bi bi-star-fill text-warning me-1" style="font-size: 0.9rem;"></i>
                                                                             }
@@ -333,7 +346,7 @@
                                                                                 <i class="bi bi-star text-warning me-1" style="font-size: 0.9rem;"></i>
                                                                             }
                                                                         }
-                                                                        <span class="text-muted small ms-2">@review.DateCreated.ToString("MMM dd, yyyy")</span>
+                                                                        <span class="text-muted small ms-2">@review.CreatedAt.ToString()</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -352,6 +365,58 @@
                                             <p>Be the first to review this product!</p>
                                         </div>
                                     }
+                                    <!-- Add Review Form -->
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <h5 class="fw-bold mb-3">Write a review</h5>
+
+                                            @* show validation summary *@
+                                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                                            <form asp-controller="CustomerReview" asp-action="AddReview" method="post" class="row g-3">
+                                                @Html.AntiForgeryToken()
+
+                                                @* Hidden product id *@
+                                                <input type="hidden" name="ProductId" value="@Model.Id" />
+                                                <input type="hidden" name="CustomerId" value="@Model.Id" />
+
+
+                                                @* Rating: radio buttons visually rendered as stars *@
+                                                <div class="col-12">
+                                                    <label class="form-label fw-semibold">Your rating</label>
+                                                    <div id="rating-stars" class="d-flex align-items-center">
+                                                        @for (int i = 5; i >= 1; i--)
+                                                        {
+                                                            <div class="form-check me-2">
+                                                                <input class="form-check-input rating-radio" type="radio" name="Rating" id="rating-@i" value="@i" />
+                                                                <label class="form-check-label" for="rating-@i">
+                                                                    @for (int s = 0; s < i; s++)
+                                                                    {
+                                                                        <i class="bi bi-star-fill" style="font-size:1.0rem;"></i>
+                                                                    }
+                                                                </label>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                    <span class="text-danger small field-validation-error" data-valmsg-for="Rating" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                @* Comment *@
+                                                <div class="col-12">
+                                                    <label class="form-label fw-semibold">Your review</label>
+                                                    <textarea name="Comment" class="form-control" rows="4" maxlength="250" placeholder="Tell others what you think..." required></textarea>
+                                                    <div class="form-text">Max 250 characters.</div>
+                                                    <span class="text-danger small field-validation-error" data-valmsg-for="Comment" data-valmsg-replace="true"></span>
+                                                </div>
+
+                                                <div class="col-12 d-flex gap-2">
+                                                    <button type="submit" class="btn btn-primary">Submit review</button>
+                                                    <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -406,6 +471,20 @@
         <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
     <script>
 
+               // highlight selected rating - simple UX improvement
+            const ratingRadios = document.querySelectorAll('.rating-radio');
+            ratingRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    // remove active class from labels
+                    ratingRadios.forEach(r => {
+                        const lbl = document.querySelector(`label[for="${r.id}"]`);
+                        if (lbl) lbl.classList.remove('text-primary');
+                    });
+                    const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
+                    if (selectedLabel) selectedLabel.classList.add('text-primary');
+                });
+            });
+        })();
         // Quantity controls
         document.getElementById('decreaseQty')?.addEventListener('click', function() {
             const quantityInput = document.getElementById('quantity');
