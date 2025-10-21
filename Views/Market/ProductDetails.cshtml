@@ -288,7 +288,7 @@
                                     <div class="text-center p-4 bg-light rounded-3">
                                         <div class="display-4 fw-bold text-primary mb-2">@Model.TotalRate.ToString("0.0")</div>
                                         <div class="mb-3">
-                                            @for (int i = 0; i < 5; i++)
+                                            @* @for (int i = 0; i < 5; i++)
                                             {
                                                 if (i < Model.TotalRate)
                                                 {
@@ -298,6 +298,22 @@
                                                 {
                                                     <i class="bi bi-star text-warning me-1"></i>
                                                 }
+                                            } *@
+                                           
+
+                                            @for (int i = 0; i < fullStars; i++)
+                                            {
+                                                <i class="bi bi-star-fill text-warning me-1" style="font-size: 1.1rem;"></i>
+                                            }
+
+                                            @if (hasHalfStar)
+                                            {
+                                                <i class="bi bi-star-half text-warning me-1" style="font-size: 1.1rem;"></i>
+                                            }
+
+                                            @for (int i = 0; i < emptyStars; i++)
+                                            {
+                                                <i class="bi bi-star text-warning me-1" style="font-size: 1.1rem;"></i>
                                             }
                                         </div>
                                         <p class="text-muted mb-0">Based on @Model.NumberOfReviews reviews</p>
@@ -480,7 +496,6 @@
                                             </form>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>

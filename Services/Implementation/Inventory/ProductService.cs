@@ -390,8 +390,9 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
                     NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
                     TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
-                        ? (int)Math.Round(p.CustomerReviews.Average(cr => cr.Rating))
-                        : 0,
+                    ? Math.Round(p.CustomerReviews.Average(cr => cr.Rating) * 2, MidpointRounding.AwayFromZero) / 2
+                    : 0,
+
 
                 },
                 expandable: true,
@@ -433,8 +434,8 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
                     NumberOfReviews = p.CustomerReviews != null ? p.CustomerReviews.Count : 0,
                     TotalRate = p.CustomerReviews != null && p.CustomerReviews.Any()
-                        ? p.CustomerReviews.Average(cr => cr.Rating)
-                        : 0,
+                    ? Math.Round(p.CustomerReviews.Average(cr => cr.Rating) * 2, MidpointRounding.AwayFromZero) / 2
+                    : 0,
 
                     QuantityInStock = p.Quantity,
                     Reviews = p.CustomerReviews.Select(cr => new ERP_System_Project.ViewModels.CRM.CustomerReviewVM
