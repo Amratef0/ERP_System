@@ -81,7 +81,7 @@ namespace ERP_System_Project.Controllers.CRM
             // Debug: Check what validation errors exist
             if (!ModelState.IsValid)
             {
-                TempData["ReviewError"] = "Please fill all required fields correctly.";
+                TempData["AddReviewError"] = "Please fill all required fields correctly.";
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 Console.WriteLine("Validation errors: " + string.Join(", ", errors));
 
@@ -97,7 +97,7 @@ namespace ERP_System_Project.Controllers.CRM
                 var alreadyReviewed = await _customerReviewService.HasCustomerReviewedProductAsync(model.CustomerId, model.ProductId);
                 if (alreadyReviewed)
                 {
-                    TempData["ReviewInfo"] = "You already reviewed this product. You can edit your previous review instead.";
+                    TempData["AddReviewInfo"] = "You already reviewed this product. You can edit your previous review instead.";
                     return Redirect(Request.Headers["Referer"].ToString());
                 }
 
@@ -105,54 +105,44 @@ namespace ERP_System_Project.Controllers.CRM
                 var added = await _customerReviewService.AddReviewAsync(model);
                 if (added)
                 {
-                    TempData["ReviewSuccess"] = "Your review was added successfully!";
+                    TempData["AddReviewSuccess"] = "Your review was added successfully!";
                 return Redirect(Request.Headers["Referer"].ToString());
 
                 }
                     ModelState.AddModelError(string.Empty, "Unable to add review. You may have already reviewed this product.");
-                TempData["ReviewError"] = "Something went wrong while adding your review.";
+                TempData["AddReviewError"] = "Something went wrong while adding your review.";
 
                 return Content("error occured while adding");
 
             }
         }
-        public async Task<IActionResult> EditReview(int reviewId)
-        {
-            if (reviewId <= 0) return BadRequest();
-            var review = await _customerReviewService.GetByIdAsync(reviewId);
-            if (review == null) return NotFound();
-            var model = new CustomerReviewVM
-            {
-                Id = review.Id,
-                Comment = review.Comment,
-                Rating = review.Rating,
-                CustomerId = review.CustomerId,
-                ProductId = review.ProductId,
-                CreatedAt = review.CreatedAt,
-                IsEdited = review.IsEdited,
-                EditedAt = review.EditedAt
-            };
-            return View(model);
-        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditReview(CustomerReviewVM model)
         {
-            if (model == null) return BadRequest();
-            if (model.Id <= 0) return BadRequest();
+            if (model == null || model.Id <= 0)
+                return BadRequest();
 
-
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var updated = await _customerReviewService.UpdateReviewAsync(model.Id, model);
-                if (!updated)
-                {
-                    ModelState.AddModelError(string.Empty, "Unable to update review. Please try again.");
-                    return View(model);
-                }
+                TempData["EditReviewError"] = "Please correct the review form and try again.";
+                // Keep user on same page
                 return Redirect(Request.Headers["Referer"].ToString());
             }
-            return View(model);
+
+            // Mark edited
+            model.IsEdited = true;
+            model.EditedAt = DateTime.Now;
+
+            var updated = await _customerReviewService.UpdateReviewAsync(model.Id, model);
+            if (!updated)
+            {
+                TempData["EditReviewError"] = "Unable to update the review. Please try again.";
+                return Redirect(Request.Headers["Referer"].ToString());
+            }
+
+            TempData["EditReviewSuccess"] = "Review updated successfully.";
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpPost]
