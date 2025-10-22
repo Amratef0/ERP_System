@@ -150,24 +150,33 @@ namespace ERP_System_Project.Controllers.CRM
                     ModelState.AddModelError(string.Empty, "Unable to update review. Please try again.");
                     return View(model);
                 }
-                return RedirectToAction("Index"); // we will edit this to return to the product page to see his review after adding
+                return Redirect(Request.Headers["Referer"].ToString());
             }
             return View(model);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> DeleteReview(int reviewId)
         {
+
+            
             if (!ModelState.IsValid)
             {
                 ModelState.AddModelError(string.Empty, "Unable to delete review. Please try again.");
-                return BadRequest();
+                return Content("error1");
             }
             var review = await _customerReviewService.GetByIdAsync(reviewId);
-            if (review == null) return BadRequest();
+            Console.WriteLine(reviewId+ "============================================");
+
+            if (review == null) return Content("error2");
+
 
             var deleted = await _customerReviewService.DeleteAsync(reviewId);
-            if (!deleted) return BadRequest();
-            return RedirectToAction("Index"); // we will edit this to return to the product page to see his review after adding
+            if (!deleted) return Content("error3");
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
     }
 }

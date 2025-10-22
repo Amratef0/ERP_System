@@ -5,6 +5,7 @@ using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
+using ERP_System_Project.ViewModels.CRM;
 using ERP_System_Project.ViewModels.ECommerce;
 using ERP_System_Project.ViewModels.Inventory;
 using LinqKit;
@@ -438,8 +439,9 @@ namespace ERP_System_Project.Services.Implementation.Inventory
                     : 0,
 
                     QuantityInStock = p.Quantity,
-                    Reviews = p.CustomerReviews.Select(cr => new ERP_System_Project.ViewModels.CRM.CustomerReviewVM
+                    Reviews = p.CustomerReviews.Select(cr => new CustomerReviewVM
                     {
+                        Id= cr.Id,
                         CustomerId = cr.CustomerId,
                         Comment = cr.Comment,
                         CustomerName = cr.Customer.FullName,

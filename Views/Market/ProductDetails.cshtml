@@ -372,9 +372,13 @@
 
                                                                 @* Edit/Delete buttons only for the owner *@
                                                                 @{
-                                                                    var currentCustomerId = (int?)(ViewBag.CurrentCustomerId ?? ViewBag.CustomerId ?? 0);
+                                                                    var currentCustomerId = (int?)( ViewBag.CustomerId ?? 0);
                                                                     bool isOwner = currentCustomerId != null && currentCustomerId == review.CustomerId;
                                                                 }
+                                                                <h1>@review.Id</h1>
+                                                                <h3>@review.CustomerId</h3>
+                                                                <h5>@ViewBag.CustomerId</h5>
+                                                                
                                                                 @if (isOwner)
                                                                 {
                                                                     <div class="btn-group">
