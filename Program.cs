@@ -103,6 +103,7 @@ builder.Services.AddSession(options =>
     options.Cookie.SameSite = SameSiteMode.None;
     options.Cookie.HttpOnly = true;
 });
+builder.Services.AddHttpContextAccessor();
 
 // Memory Cache
 builder.Services.AddMemoryCache();
@@ -148,6 +149,7 @@ builder.Services.AddScoped<IAttributeService, AttributeService>();
 
 // ECommerce Services
 builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 // HR Services
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
