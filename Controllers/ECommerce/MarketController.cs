@@ -1,6 +1,7 @@
 ﻿using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Services.Implementation.Inventory;
+using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,18 @@ namespace ERP_System_Project.Controllers.ECommerce
         private readonly IProductService _productService;
         private readonly IBrandService _brandService;
         private readonly ICategoryService _categoryService;
+        private readonly ICartService _cartService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public MarketController(IProductService productService, IBrandService brandService, ICategoryService categoryService, UserManager<ApplicationUser> userManager)
+        public MarketController(IProductService productService, IBrandService brandService,
+            ICategoryService categoryService, UserManager<ApplicationUser> userManager,
+            ICartService cartService)
         {
             _productService = productService;
             _brandService = brandService;
             _categoryService = categoryService;
             _userManager = userManager;
+            _cartService = cartService;
         }
         private async Task<int> GetLoggedInUserCustomerId()
         {
@@ -68,6 +73,14 @@ namespace ERP_System_Project.Controllers.ECommerce
             var product = await _productService.GetProductDetails(productId);
             if (product != null) return View(product);
             return NotFound();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddToCart(int productId, int quantity)
+        {
+            _cartService.AddToCart(productId, quantity);
+            return RedirectToAction("Index");
         }
     }
 }
