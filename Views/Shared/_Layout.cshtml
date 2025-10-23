@@ -32,21 +32,6 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="PerformanceLog" asp-action="Index">Develper View</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Customer" asp-action="Index">Customers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerType" asp-action="Index">CustomerTypes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index" asp-route-pageNumber="1" asp-route-pageSize="10">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Attribute" asp-action="Index">Attribute</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
@@ -117,7 +102,18 @@
                             </ul>
                         </li>
 
-                        <!-- Purchasing Dropdown -->
+                        <!-- CRM Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="customerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-people"></i> Customers
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="customerDropdown">
+                                <li><a class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="Index"><i class="bi bi-person-circle"></i> Customers</a></li>
+                                <li><a class="dropdown-item" asp-area="" asp-controller="CustomerType" asp-action="Index"><i class="bi bi-person-badge"></i> Customer Types</a></li>
+                            </ul>
+                        </li>
+
+                        @* <!-- Purchasing Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="purchasingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-cart"></i> Purchasing
@@ -128,6 +124,34 @@
                                 <li><a class="dropdown-item" asp-area="" asp-controller="SupplierCategory" asp-action="Index">Supplier Categories</a></li>
                                 <li><a class="dropdown-item" asp-area="" asp-controller="SupplierProduct" asp-action="Index">Supplier Products</a></li>
                             </ul>
+                        </li> *@
+                        <!-- Purchasing Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="purchasingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-cart"></i> Purchasing
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="purchasingDropdown">
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="PurchaseOrder" asp-action="Index">
+                                        <i class="bi bi-file-earmark-text"></i> Purchase Orders
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Supplier" asp-action="Index">
+                                        <i class="bi bi-truck"></i> Suppliers
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="SupplierCategory" asp-action="Index">
+                                        <i class="bi bi-diagram-3"></i> Supplier Categories
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="SupplierProduct" asp-action="Index">
+                                        <i class="bi bi-box-seam"></i> Supplier Products
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
 
                         <!-- Inventory Dropdown -->
@@ -136,8 +160,43 @@
                                 <i class="bi bi-box-seam"></i> Inventory
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="inventoryDropdown">
-                                <li><a class="dropdown-item" asp-area="" asp-controller="Warehouse" asp-action="Index">Warehouse</a></li>
-                                <li><a class="dropdown-item" asp-area="" asp-controller="InventoryTransaction" asp-action="Index">Inventory Transaction</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Product" asp-action="Index" asp-route-pageNumber="1" asp-route-pageSize="10">
+                                        <i class="bi bi-box"></i> Products
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Category" asp-action="Index">
+                                        <i class="bi bi-tags"></i> Categories
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Attribute" asp-action="Index">
+                                        <i class="bi bi-list-check"></i> Attributes
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Brand" asp-action="Index">
+                                        <i class="bi bi-award"></i> Brands
+                                    </a>
+                                </li>
+
+                                <li><hr class="dropdown-divider"></li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Warehouse" asp-action="Index">
+                                        <i class="bi bi-building"></i> Warehouse
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" asp-area="" asp-controller="InventoryTransaction" asp-action="Index">
+                                        <i class="bi bi-arrow-left-right"></i> Inventory Transaction
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
