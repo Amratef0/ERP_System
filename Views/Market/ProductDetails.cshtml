@@ -1,17 +1,25 @@
 ﻿@model ERP_System_Project.ViewModels.ECommerce.ProductDetailsVM
 @{
     ViewData["Title"] = Model.Name;
-    @if (TempData["ReviewSuccess"] != null)
+    @if (TempData["AddReviewSuccess"] != null)
     {
         <div class="alert alert-success">@TempData["ReviewSuccess"]</div>
     }
-    @if (TempData["ReviewError"] != null)
+    @if (TempData["AddReviewError"] != null)
     {
         <div class="alert alert-danger">@TempData["ReviewError"]</div>
     }
-    @if (TempData["ReviewInfo"] != null)
+    @if (TempData["AddReviewInfo"] != null)
     {
         <div class="alert alert-info">@TempData["ReviewInfo"]</div>
+    }
+    @if (TempData["EditReviewSuccess"] != null)
+    {
+        <div class="alert alert-success">@TempData["ReviewSuccess"]</div>
+    }
+    @if (TempData["EditReviewError"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ReviewError"]</div>
     }
 
 }
@@ -288,7 +296,7 @@
                                     <div class="text-center p-4 bg-light rounded-3">
                                         <div class="display-4 fw-bold text-primary mb-2">@Model.TotalRate.ToString("0.0")</div>
                                         <div class="mb-3">
-                                            @for (int i = 0; i < 5; i++)
+                                            @* @for (int i = 0; i < 5; i++)
                                             {
                                                 if (i < Model.TotalRate)
                                                 {
@@ -298,6 +306,22 @@
                                                 {
                                                     <i class="bi bi-star text-warning me-1"></i>
                                                 }
+                                            } *@
+                                           
+
+                                            @for (int i = 0; i < fullStars; i++)
+                                            {
+                                                <i class="bi bi-star-fill text-warning me-1" style="font-size: 1.1rem;"></i>
+                                            }
+
+                                            @if (hasHalfStar)
+                                            {
+                                                <i class="bi bi-star-half text-warning me-1" style="font-size: 1.1rem;"></i>
+                                            }
+
+                                            @for (int i = 0; i < emptyStars; i++)
+                                            {
+                                                <i class="bi bi-star text-warning me-1" style="font-size: 1.1rem;"></i>
                                             }
                                         </div>
                                         <p class="text-muted mb-0">Based on @Model.NumberOfReviews reviews</p>
@@ -356,9 +380,11 @@
 
                                                                 @* Edit/Delete buttons only for the owner *@
                                                                 @{
-                                                                    var currentCustomerId = (int?)(ViewBag.CurrentCustomerId ?? ViewBag.CustomerId ?? 0);
+                                                                    var currentCustomerId = (int?)( ViewBag.CustomerId ?? 0);
                                                                     bool isOwner = currentCustomerId != null && currentCustomerId == review.CustomerId;
                                                                 }
+                                                               
+                                                                
                                                                 @if (isOwner)
                                                                 {
                                                                     <div class="btn-group">
@@ -480,7 +506,6 @@
                                             </form>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -530,69 +555,76 @@
         </div>
     </div>
 </div>
-
 @section Scripts {
-        <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
+    <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-             function toggleEditForm(reviewId) {
-            const form = document.getElementById('edit-form-' + reviewId);
-            const comment = document.getElementById('review-comment-' + reviewId);
-            if (!form) return;
-            if (form.style.display === 'none' || form.style.display === '') {
-                form.style.display = 'block';
-                if (comment) comment.style.display = 'none';
-                // focus textarea
-                const ta = form.querySelector('textarea');
-                if (ta) ta.focus();
-            } else {
-                form.style.display = 'none';
-                if (comment) comment.style.display = 'block';
-            }
-        }
-               // highlight selected rating - simple UX improvement
-            const ratingRadios = document.querySelectorAll('.rating-radio');
-            ratingRadios.forEach(radio => {
-                radio.addEventListener('change', function () {
-                    // remove active class from labels
-                    ratingRadios.forEach(r => {
-                        const lbl = document.querySelector(`label[for="${r.id}"]`);
-                        if (lbl) lbl.classList.remove('text-primary');
-                    });
-                    const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
-                    if (selectedLabel) selectedLabel.classList.add('text-primary');
+            // Toggle inline edit form for a review
+            window.toggleEditForm = function (reviewId) {
+                const form = document.getElementById('edit-form-' + reviewId);
+                const comment = document.getElementById('review-comment-' + reviewId);
+                if (!form) return;
+                const currentlyHidden = form.style.display === 'none' || form.style.display === '';
+                if (currentlyHidden) {
+                    form.style.display = 'block';
+                    if (comment) comment.style.display = 'none';
+                    const ta = form.querySelector('textarea');
+                    if (ta) ta.focus();
+                } else {
+                    form.style.display = 'none';
+                    if (comment) comment.style.display = 'block';
+                }
+            };
+
+            // Highlight rating radio labels in any form when changed
+            function highlightRadioGroup(radio) {
+                const name = radio.name;
+                const root = radio.closest('form') || document;
+                const radios = Array.from(root.querySelectorAll(`input[type="radio"][name="${name}"]`));
+                radios.forEach(r => {
+                    const lbl = root.querySelector(`label[for="${r.id}"]`);
+                    if (lbl) lbl.classList.remove('text-primary', 'fw-bold');
                 });
+                const selectedLabel = root.querySelector(`label[for="${radio.id}"]`);
+                if (selectedLabel) selectedLabel.classList.add('text-primary', 'fw-bold');
+            }
+
+            document.addEventListener('change', function (e) {
+                const t = e.target;
+                if (t && t.matches('input[type="radio"]')) {
+                    highlightRadioGroup(t);
+                }
             });
-        })();
-        // Quantity controls
-        document.getElementById('decreaseQty')?.addEventListener('click', function() {
-            const quantityInput = document.getElementById('quantity');
-            let currentValue = parseInt(quantityInput.value);
-            if (currentValue > 1) {
-                quantityInput.value = currentValue - 1;
-            }
-        });
 
-        document.getElementById('increaseQty')?.addEventListener('click', function() {
-            const quantityInput = document.getElementById('quantity');
-            let currentValue = parseInt(quantityInput.value);
-            const maxStock = @Model.QuantityInStock;
-            if (currentValue < maxStock) {
-                quantityInput.value = currentValue + 1;
-            }
-        });
+            // Initialize highlight on load for checked radios
+            document.querySelectorAll('input[type="radio"]:checked').forEach(r => highlightRadioGroup(r));
 
-        // Input validation for quantity
-        document.getElementById('quantity')?.addEventListener('change', function() {
-            let value = parseInt(this.value);
+            // Quantity controls
+            const decreaseBtn = document.getElementById('decreaseQty');
+            const increaseBtn = document.getElementById('increaseQty');
+            const quantityInput = document.getElementById('quantity');
             const maxStock = @Model.QuantityInStock;
-            
-            if (isNaN(value) || value < 1) {
-                this.value = 1;
-            } else if (value > maxStock) {
-                this.value = maxStock;
-            }
-        });
+
+            decreaseBtn?.addEventListener('click', function () {
+                if (!quantityInput) return;
+                let current = parseInt(quantityInput.value) || 1;
+                if (current > 1) quantityInput.value = current - 1;
+            });
+
+            increaseBtn?.addEventListener('click', function () {
+                if (!quantityInput) return;
+                let current = parseInt(quantityInput.value) || 1;
+                if (current < maxStock) quantityInput.value = current + 1;
+            });
+
+            quantityInput?.addEventListener('change', function () {
+                let value = parseInt(this.value);
+                if (isNaN(value) || value < 1) this.value = 1;
+                else if (value > maxStock) this.value = maxStock;
+            });
+
+        }); // DOMContentLoaded
     </script>
 }
 
