@@ -1,0 +1,203 @@
+﻿@model CartVM
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-1 text-primary fw-bold">Shopping Cart</h1>
+            <p class="text-muted mb-0">Review your items and proceed to checkout</p>
+        </div>
+        <div>
+            <a asp-controller="Market" asp-action="Index" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+            </a>
+        </div>
+    </div>
+
+    @if (Model.productsCart.Any())
+    {
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-light py-3 border-0">
+                        <h5 class="card-title mb-0 fw-semibold text-dark">
+                            Cart Items (@Model.productsCart.Count)
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        @foreach (var product in Model.productsCart)
+                        {
+                            <div class="cart-item border-bottom p-4">
+                                <div class="row align-items-center">
+                                    <!-- Product Image -->
+                                    <div class="col-md-2">
+                                        <a asp-controller="Market" asp-action="ProductDetails" asp-route-productId="@product.Id">
+                                            <img src="@product.ImageURL" alt="@product.Name"
+                                                 class="img-fluid rounded-3" style="height: 100px; object-fit: cover;">
+                                        </a>
+                                    </div>
+
+                                    <!-- Product Details -->
+                                    <div class="col-md-4">
+                                        <a asp-controller="Market" asp-action="ProductDetails" asp-route-productId="@product.Id" class="text-decoration-none text-dark">
+                                            <h6 class="fw-bold mb-2">@product.Name</h6>
+                                        </a>
+
+                                        <!-- Pricing -->
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (product.HaveOffer)
+                                            {
+                                                <span class="h6 fw-bold text-success mb-0">$@product.NetPrice.ToString("N2")</span>
+                                                <span class="text-muted text-decoration-line-through small">$@product.Price.ToString("N2")</span>
+                                                <span class="badge bg-danger rounded-pill">Save @product.DiscountPercentage%</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="h6 fw-bold text-dark mb-0">$@product.Price.ToString("N2")</span>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    <!-- Quantity Display -->
+                                    <div class="col-md-3">
+                                        <div class="d-flex align-items-center">
+                                            <span class="fw-semibold text-muted">Quantity: @product.Quantity</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Total Price & Actions -->
+                                    <div class="col-md-3">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="text-end">
+                                                <span class="h6 fw-bold text-dark">
+                                                    $@((product.NetPrice * product.Quantity).ToString("N2"))
+                                                </span>
+                                                <div class="text-muted small">
+                                                    $@product.NetPrice.ToString("N2") each
+                                                </div>
+                                            </div>
+                                            <form method="post" asp-action="Delete" class="ms-3">
+                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 sticky-top" style="top: 2rem;">
+                    <div class="card-header bg-light py-3 border-0">
+                        <h5 class="card-title mb-0 fw-semibold text-dark">Order Summary</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Summary Details -->
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal</span>
+                                <span class="fw-semibold">$@Model.TotalPrice.ToString("N2")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Shipping</span>
+                                <span class="fw-semibold">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Tax</span>
+                                <span class="fw-semibold">$0.00</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="h5 fw-bold text-dark">Total</span>
+                                <span class="h5 fw-bold text-primary">$@Model.TotalPrice.ToString("N2")</span>
+                            </div>
+                        </div>
+
+                        <!-- Checkout Button -->
+                        <button class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
+                        </button>
+
+                        <!-- Additional Info -->
+                        <div class="text-center">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Secure checkout • 30-day money back guarantee
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support Card -->
+                <div class="card shadow-sm border-0 mt-4">
+                    <div class="card-body text-center">
+                        <i class="bi bi-headset display-4 text-primary d-block mb-3"></i>
+                        <h6 class="fw-bold mb-2">Need Help?</h6>
+                        <p class="text-muted small mb-3">Our support team is here to help</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-telephone me-1"></i>Contact Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Empty Cart -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-cart-x display-1 text-muted d-block mb-4"></i>
+                <h3 class="text-muted mb-3">Your cart is empty</h3>
+                <p class="text-muted mb-4">Looks like you haven't added any items to your cart yet.</p>
+                <a asp-controller="Market" asp-action="Index" class="btn btn-primary btn-lg">
+                    <i class="bi bi-bag me-2"></i>Start Shopping
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .cart-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .sticky-top {
+        position: sticky;
+        z-index: 10;
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+
+    .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+    .text-decoration-line-through {
+        text-decoration: line-through;
+    }
+
+    a.text-decoration-none:hover h6 {
+        color: #0d6efd !important;
+    }
+</style>
