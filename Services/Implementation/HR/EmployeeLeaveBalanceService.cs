@@ -8,17 +8,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ERP_System_Project.Services.Implementation.HR
 {
-    /// <summary>
-    /// Service for managing employee leave balances.
-    /// Handles creation, updates, carry-forward, and integration with leave requests.
-    /// </summary>
     public class EmployeeLeaveBalanceService : GenericService<EmployeeLeaveBalance>, IEmployeeLeaveBalanceService
     {
         private readonly ILeavePolicyService _leavePolicyService;
         private readonly IMapper _mapper;
 
         public EmployeeLeaveBalanceService(
-            IUnitOfWork uow, 
+            IUnitOfWork uow,
             ILeavePolicyService leavePolicyService,
             IMapper mapper) : base(uow)
         {
@@ -26,15 +22,13 @@ namespace ERP_System_Project.Services.Implementation.HR
             _mapper = mapper;
         }
 
-        // ========== BALANCE RETRIEVAL ==========
-
         public async Task<EmployeeLeaveBalance?> GetBalanceAsync(int employeeId, int leaveTypeId, int year)
         {
             return await _repository
                 .GetAllAsIQueryable()
-                .FirstOrDefaultAsync(b => 
-                    b.EmployeeId == employeeId && 
-                    b.LeaveTypeId == leaveTypeId && 
+                .FirstOrDefaultAsync(b =>
+                    b.EmployeeId == employeeId &&
+                    b.LeaveTypeId == leaveTypeId &&
                     b.Year == year);
         }
 
@@ -94,16 +88,11 @@ namespace ERP_System_Project.Services.Implementation.HR
             return _mapper.Map<IEnumerable<EmployeeLeaveBalanceVM>>(balances);
         }
 
-        // ========== BALANCE CREATION ==========
 
-        /// <summary>
-        /// Creates balances for a new employee for the current year.
-        /// Called when employee is hired.
-        /// </summary>
         public async Task<bool> GenerateBalancesForNewEmployeeAsync(int employeeId)
         {
             int currentYear = DateTime.Now.Year;
-            
+
             // Get all active leave types
             var leaveTypes = await _uow.LeaveTypes
                 .GetAllAsIQueryable()
@@ -136,10 +125,7 @@ namespace ERP_System_Project.Services.Implementation.HR
             return await _uow.CompleteAsync() > 0;
         }
 
-        /// <summary>
-        /// Generates balances for all active employees for a specific year.
-        /// Optionally can generate for a specific leave type only.
-        /// </summary>
+
         public async Task<bool> GenerateBalancesForAllEmployeesAsync(int year, int? leaveTypeId = null)
         {
             // Get all active employees
@@ -150,7 +136,7 @@ namespace ERP_System_Project.Services.Implementation.HR
 
             // Get leave types to generate balances for
             var leaveTypesQuery = _uow.LeaveTypes.GetAllAsIQueryable().Where(lt => lt.IsActive);
-            
+
             if (leaveTypeId.HasValue)
                 leaveTypesQuery = leaveTypesQuery.Where(lt => lt.Id == leaveTypeId.Value);
 
@@ -200,7 +186,6 @@ namespace ERP_System_Project.Services.Implementation.HR
             return await _uow.CompleteAsync() > 0;
         }
 
-        // ========== BALANCE UPDATES ==========
 
         public async Task<bool> UpdateBalanceEntitlementAsync(int balanceId, decimal newEntitledDays)
         {
@@ -214,14 +199,11 @@ namespace ERP_System_Project.Services.Implementation.HR
             return await _uow.CompleteAsync() > 0;
         }
 
-        /// <summary>
-        /// Updates UsedDays when a leave request is APPROVED.
-        /// Called automatically from leave request approval process.
-        /// </summary>
+
         public async Task<bool> UpdateUsedDaysAsync(int employeeId, int leaveTypeId, int year, decimal daysToAdd)
         {
             var balance = await GetBalanceAsync(employeeId, leaveTypeId, year);
-            
+
             if (balance == null)
             {
                 // Auto-create balance if it doesn't exist
@@ -245,9 +227,7 @@ namespace ERP_System_Project.Services.Implementation.HR
             return await _uow.CompleteAsync() > 0;
         }
 
-        /// <summary>
-        /// Reverses UsedDays when a leave request is REJECTED or DELETED.
-        /// </summary>
+
         public async Task<bool> ReverseUsedDaysAsync(int employeeId, int leaveTypeId, int year, decimal daysToSubtract)
         {
             var balance = await GetBalanceAsync(employeeId, leaveTypeId, year);
@@ -260,13 +240,7 @@ namespace ERP_System_Project.Services.Implementation.HR
             return await _uow.CompleteAsync() > 0;
         }
 
-        // ========== CARRY FORWARD ==========
 
-        /// <summary>
-        /// Carries forward ALL unused leave days from one year to the next.
-        /// Runs for all employees and leave types.
-        /// NO MAX LIMIT - carries forward full remaining balance.
-        /// </summary>
         public async Task<bool> CarryForwardUnusedDaysAsync(int fromYear, int toYear)
         {
             // Get all balances from the previous year with remaining days > 0
@@ -279,15 +253,15 @@ namespace ERP_System_Project.Services.Implementation.HR
             {
                 // Check if balance for next year already exists
                 var nextYearBalance = await GetBalanceAsync(
-                    oldBalance.EmployeeId, 
-                    oldBalance.LeaveTypeId, 
+                    oldBalance.EmployeeId,
+                    oldBalance.LeaveTypeId,
                     toYear);
 
                 if (nextYearBalance == null)
                 {
                     // Create new balance for next year with carried forward days
                     var entitledDays = await _leavePolicyService.CalculateEntitledDaysAsync(
-                        oldBalance.EmployeeId, 
+                        oldBalance.EmployeeId,
                         oldBalance.LeaveTypeId);
 
                     nextYearBalance = new EmployeeLeaveBalance
@@ -326,7 +300,7 @@ namespace ERP_System_Project.Services.Implementation.HR
                 if (nextYearBalance == null)
                 {
                     var entitledDays = await _leavePolicyService.CalculateEntitledDaysAsync(
-                        employeeId, 
+                        employeeId,
                         oldBalance.LeaveTypeId);
 
                     nextYearBalance = new EmployeeLeaveBalance
@@ -350,16 +324,11 @@ namespace ERP_System_Project.Services.Implementation.HR
             return await _uow.CompleteAsync() > 0;
         }
 
-        // ========== VALIDATION ==========
 
-        /// <summary>
-        /// Validates if employee has sufficient balance for a leave request.
-        /// NO BORROWING FROM FUTURE - strictly enforces non-negative balance.
-        /// </summary>
         public async Task<(bool IsValid, string? ErrorMessage)> ValidateLeaveRequestAsync(
-            int employeeId, 
-            int leaveTypeId, 
-            int year, 
+            int employeeId,
+            int leaveTypeId,
+            int year,
             decimal requestedDays)
         {
             var balance = await GetBalanceAsync(employeeId, leaveTypeId, year);
@@ -368,10 +337,10 @@ namespace ERP_System_Project.Services.Implementation.HR
             {
                 // No balance exists - auto-create and validate
                 var entitledDays = await _leavePolicyService.CalculateEntitledDaysAsync(employeeId, leaveTypeId);
-                
+
                 if (requestedDays > entitledDays)
                     return (false, $"Insufficient balance. You have {entitledDays} days available, but requested {requestedDays} days.");
-                
+
                 return (true, null);
             }
 
@@ -388,15 +357,13 @@ namespace ERP_System_Project.Services.Implementation.HR
         {
             return await _repository
                 .GetAllAsIQueryable()
-                .AnyAsync(b => 
-                    b.EmployeeId == employeeId && 
-                    b.LeaveTypeId == leaveTypeId && 
+                .AnyAsync(b =>
+                    b.EmployeeId == employeeId &&
+                    b.LeaveTypeId == leaveTypeId &&
                     b.Year == year);
         }
 
-        /// <summary>
-        /// Gets a balance by ID with all navigation properties loaded.
-        /// </summary>
+
         public async Task<EmployeeLeaveBalance?> GetByIdWithDetailsAsync(int id)
         {
             return await _repository

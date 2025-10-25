@@ -13,34 +13,31 @@ namespace ERP_System_Project.Services.Implementation
             _uow = uow;
             _repository = _uow.Repository<T>();
         }
+        
+        /// <summary>
+        /// Creates a new entity. Let exceptions propagate to controller for proper error handling.
+        /// </summary>
         public async Task<bool> CreateAsync(T entity)
         {
-            try
-            {
-                await _repository.AddAsync(entity);
-                await _uow.CompleteAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            await _repository.AddAsync(entity);
+            await _uow.CompleteAsync();
+            return true;
         }
 
+        /// <summary>
+        /// Updates an existing entity. Let exceptions propagate to controller for proper error handling.
+        /// </summary>
         public async Task<bool> UpdateAsync(T entity)
         {
-            try
-            {
-                _repository.Update(entity);
-                await _uow.CompleteAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            _repository.Update(entity);
+            await _uow.CompleteAsync();
+            return true;
         }
 
+        /// <summary>
+        /// Deletes an entity by ID. Let exceptions propagate to controller for proper error handling.
+        /// Returns false only if entity doesn't exist (not an error condition).
+        /// </summary>
         public async Task<bool> DeleteAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
@@ -61,7 +58,5 @@ namespace ERP_System_Project.Services.Implementation
         {
             return await _repository.GetByIdAsync(id);
         }
-
-
     }
 }

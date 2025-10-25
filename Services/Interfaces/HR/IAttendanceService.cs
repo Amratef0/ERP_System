@@ -13,5 +13,14 @@ namespace ERP_System_Project.Services.Interfaces.HR
             int? departmentId,
             int? typeId,
             int? jobTitleId);
+
+        Task<IEnumerable<EmployeeMonthlyAttendanceSummary>> GetMonthlyAttendanceSummaryAsync(
+            int year,
+            int month,
+            int? countryId = null,
+            int? branchId = null,
+            int? departmentId = null,
+            int? employeeTypeId = null,
+            int? jobTitleId = null);
     }
 }

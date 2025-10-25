@@ -1,0 +1,376 @@
+@model PayrollRunDetailsVM
+
+@{
+    ViewData["Title"] = $"{Model.Name} - Details";
+}
+
+<div class="container-fluid mt-4">
+    <!-- Header with Actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-cash-stack"></i> @Model.Name
+            @if (Model.IsLocked)
+            {
+                <span class="badge bg-success ms-2">
+                    <i class="bi bi-lock-fill"></i> Confirmed
+                </span>
+            }
+            else
+            {
+                <span class="badge bg-warning text-dark ms-2">
+                    <i class="bi bi-unlock-fill"></i> Draft
+                </span>
+            }
+        </h2>
+
+        <div>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+
+            @if (!Model.IsLocked)
+            {
+                <form asp-action="Regenerate" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('This will delete all entries and regenerate them. Continue?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-arrow-clockwise"></i> Regenerate
+                    </button>
+                </form>
+
+                <form asp-action="Lock" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('This will lock the payroll and send email notifications to all employees. Continue?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-lock-fill"></i> Confirm Payroll
+                    </button>
+                </form>
+
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to delete this payroll run?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </form>
+            }
+            else
+            {
+                <form asp-action="Unlock" asp-route-id="@Model.Id" method="post" style="display: inline;"
+                      onsubmit="return confirm('This will unlock the payroll for editing. Continue?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-unlock-fill"></i> Unlock
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Period</h6>
+                    <h5 class="mb-0">@Model.PeriodStart.ToString("MMM yyyy")</h5>
+                    <small class="text-muted">@Model.PeriodStart.ToString("dd MMM") - @Model.PeriodEnd.ToString("dd MMM yyyy")</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Total Employees</h6>
+                    <h5 class="mb-0">@Model.Entries.Count</h5>
+                    <small class="text-muted">Active employees</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Currencies Used</h6>
+                    <h5 class="mb-0">@Model.CurrenciesUsed.Count</h5>
+                    <small class="text-muted">
+                        @foreach (var currency in Model.CurrenciesUsed.Take(3))
+                        {
+                            <span class="badge bg-info me-1">@currency.Code</span>
+                        }
+                        @if (Model.CurrenciesUsed.Count > 3)
+                        {
+                            <span>+@(Model.CurrenciesUsed.Count - 3)</span>
+                        }
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card @(Model.IsLocked ? "border-success" : "border-warning")">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Status</h6>
+                    <h5 class="mb-0">@Model.Status</h5>
+                    @if (Model.ProcessedDate.HasValue)
+                    {
+                        <small class="text-muted">@Model.ProcessedDate.Value.ToString("dd MMM yyyy HH:mm")</small>
+                    }
+                    else
+                    {
+                        <small class="text-muted">Not processed</small>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Currency Breakdown Card -->
+    @if (Model.CurrencyTotals.Any())
+    {
+        <div class="card mb-4 shadow-sm border-info">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-currency-exchange"></i> Currency Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @foreach (var currencyTotal in Model.CurrencyTotals)
+                    {
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted mb-2">@currencyTotal.Key</h6>
+                                    <h4 class="mb-0 text-success">@currencyTotal.Value.ToString("N2")</h4>
+                                    <small class="text-muted">Total Net Amount</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Payroll Entries Table -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-people-fill"></i> Payroll Entries (@Model.Entries.Count)
+            </h5>
+            <div class="d-flex gap-2">
+                @if (Model.CurrenciesUsed.Any())
+                {
+                    <select id="currencyFilter" class="form-select form-select-sm" style="width: 150px;">
+                        <option value="">All Currencies</option>
+                        @foreach (var currency in Model.CurrenciesUsed)
+                        {
+                            <option value="@currency.Code">@currency.Code - @currency.Name</option>
+                        }
+                    </select>
+                }
+                <input type="text" id="searchInput" class="form-control form-control-sm" placeholder="Search employee..." style="width: 250px;">
+            </div>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Entries.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="payrollTable">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th>Employee</th>
+                                <th>Department</th>
+                                <th>Job Title</th>
+                                <th class="text-end">Base Salary</th>
+                                <th class="text-end">Overtime</th>
+                                <th class="text-end">Bonus</th>
+                                <th class="text-end">Allowances</th>
+                                <th class="text-end">Deductions</th>
+                                <th class="text-end">Tax (10%)</th>
+                                <th class="text-end">Net Amount</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var entry in Model.Entries)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@entry.EmployeeName</strong>
+                                        <br />
+                                        <small class="text-muted">@entry.EmployeeEmail</small>
+                                    </td>
+                                    <td>@entry.DepartmentName</td>
+                                    <td>@entry.JobTitleName</td>
+                                    <td class="text-end">@entry.BaseSalaryAmount.ToString("N2")</td>
+                                    <td class="text-end text-success">+@entry.OvertimeAmount.ToString("N2")</td>
+                                    <td class="text-end text-success">+@entry.BonusAmount.ToString("N2")</td>
+                                    <td class="text-end text-success">+@entry.AllowanceAmount.ToString("N2")</td>
+                                    <td class="text-end text-danger">-@entry.DeductionAmount.ToString("N2")</td>
+                                    <td class="text-end text-danger">-@entry.TaxAmount.ToString("N2")</td>
+                                    <td class="text-end">
+                                        <strong class="text-primary">@entry.NetAmount.ToString("N2") @entry.CurrencyCode</strong>
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-controller="PayrollEntry" asp-action="Details" asp-route-id="@entry.Id" 
+                                           class="btn btn-sm btn-primary" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        
+                                        @if (!Model.IsLocked)
+                                        {
+                                            <a asp-controller="PayrollEntry" asp-action="Edit" asp-route-id="@entry.Id" 
+                                               class="btn btn-sm btn-warning" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            <form asp-controller="PayrollEntry" asp-action="Delete" 
+                                                  asp-route-id="@entry.Id" asp-route-payrollRunId="@Model.Id"
+                                                  method="post" style="display: inline;"
+                                                  onsubmit="return confirm('Delete this payroll entry?');">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot class="table-light fw-bold">
+                            <tr>
+                                <td colspan="3">TOTAL (Mixed Currencies)</td>
+                                <td class="text-end">@Model.Entries.Sum(e => e.BaseSalaryAmount).ToString("N2")</td>
+                                <td class="text-end text-success">@Model.Entries.Sum(e => e.OvertimeAmount).ToString("N2")</td>
+                                <td class="text-end text-success">@Model.Entries.Sum(e => e.BonusAmount).ToString("N2")</td>
+                                <td class="text-end text-success">@Model.Entries.Sum(e => e.AllowanceAmount).ToString("N2")</td>
+                                <td class="text-end text-danger">@Model.Entries.Sum(e => e.DeductionAmount).ToString("N2")</td>
+                                <td class="text-end text-danger">@Model.Entries.Sum(e => e.TaxAmount).ToString("N2")</td>
+                                <td class="text-end text-primary">See Currency Breakdown</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
+                    <p class="text-muted mt-3">No payroll entries found.</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Breakdown Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-0">Totals are grouped by currency - see "Currency Breakdown" card above.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Actions Guide</h5>
+                </div>
+                <div class="card-body">
+                    @if (!Model.IsLocked)
+                    {
+                        <h6>Draft Mode - Available Actions:</h6>
+                        <ul>
+                            <li><strong>Edit Entries:</strong> Click the edit icon to adjust individual payroll amounts</li>
+                            <li><strong>Regenerate:</strong> Recalculate all entries based on current attendance/leave data</li>
+                            <li><strong>Confirm Payroll:</strong> Lock the payroll and send email notifications to employees</li>
+                            <li><strong>Delete:</strong> Remove this entire payroll run</li>
+                        </ul>
+                        <div class="alert alert-warning mb-0 mt-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Remember:</strong> Once confirmed, the payroll cannot be edited without unlocking it first.
+                        </div>
+                    }
+                    else
+                    {
+                        <h6>Confirmed & Locked:</h6>
+                        <ul>
+                            <li><i class="bi bi-check-circle text-success"></i> Payroll has been processed</li>
+                            <li><i class="bi bi-envelope-check text-success"></i> Email notifications sent to all employees</li>
+                            <li><i class="bi bi-lock-fill text-success"></i> Entries are protected from editing</li>
+                        </ul>
+                        <div class="alert alert-info mb-0 mt-3">
+                            <i class="bi bi-info-circle"></i>
+                            If you need to make corrections, use the <strong>Unlock</strong> button.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Search functionality
+            $("#searchInput").on("keyup", function() {
+                filterTable();
+            });
+
+            // Currency filter functionality
+            $("#currencyFilter").on("change", function() {
+                filterTable();
+            });
+
+            function filterTable() {
+                var searchValue = $("#searchInput").val().toLowerCase();
+                var currencyValue = $("#currencyFilter").val();
+
+                $("#payrollTable tbody tr").filter(function() {
+                    var textMatch = $(this).text().toLowerCase().indexOf(searchValue) > -1;
+                    var currencyMatch = true;
+
+                    if (currencyValue) {
+                        // Check if the row contains the selected currency in the Net Amount column
+                        var netAmountCell = $(this).find("td").eq(9).text(); // 10th column (Net Amount)
+                        currencyMatch = netAmountCell.indexOf(currencyValue) > -1;
+                    }
+
+                    $(this).toggle(textMatch && currencyMatch);
+                });
+
+                // Update visible count
+                var visibleCount = $("#payrollTable tbody tr:visible").length;
+                var totalCount = $("#payrollTable tbody tr").length;
+                
+                // You can add a counter display here if needed
+                console.log(`Showing ${visibleCount} of ${totalCount} entries`);
+            }
+        });
+    </script>
+}

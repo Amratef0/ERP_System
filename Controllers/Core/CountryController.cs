@@ -20,8 +20,16 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Country> countries = await _countryService.GetAllAsync();
-            return View("Index", countries);
+            try
+            {
+                IEnumerable<Country> countries = await _countryService.GetAllAsync();
+                return View("Index", countries);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading countries. Please try again.";
+                return View("Index", new List<Country>());
+            }
         }
 
         [HttpGet]
@@ -35,9 +43,35 @@ namespace ERP_System_Project.Controllers.Core
         {
             if (ModelState.IsValid)
             {
-                await _countryService.CreateAsync(country);
-                TempData["SuccessMessage"] = $"Country '{country.Name}' has been created successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    await _countryService.CreateAsync(country);
+                    TempData["SuccessMessage"] = $"Country '{country.Name}' has been created successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        ModelState.AddModelError("Name", $"A country with the name '{country.Name}' already exists.");
+                        TempData["ErrorMessage"] = "This country name is already in use.";
+                    }
+                    else if (ex.InnerException != null && ex.InnerException.Message.Contains("Code"))
+                    {
+                        ModelState.AddModelError("Code", $"A country with the code '{country.Code}' already exists.");
+                        TempData["ErrorMessage"] = "This country code is already in use.";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes.");
+                        TempData["ErrorMessage"] = "Failed to create country due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while creating the country.";
+                }
             }
 
             return View("Create", country);
@@ -46,13 +80,21 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public async Task<IActionResult> EditAsync(int id)
         {
-            Country country = await _countryService.GetByIdAsync(id);
-            if (country == null)
+            try
             {
-                TempData["ErrorMessage"] = "Country not found!";
-                return NotFound();
+                Country country = await _countryService.GetByIdAsync(id);
+                if (country == null)
+                {
+                    TempData["ErrorMessage"] = "Country not found!";
+                    return NotFound();
+                }
+                return View("Edit", country);
             }
-            return View("Edit", country);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the country.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -60,9 +102,49 @@ namespace ERP_System_Project.Controllers.Core
         {
             if (ModelState.IsValid)
             {
-                await _countryService.UpdateAsync(country);
-                TempData["SuccessMessage"] = $"Country '{country.Name}' has been updated successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    await _countryService.UpdateAsync(country);
+                    TempData["SuccessMessage"] = $"Country '{country.Name}' has been updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    var exists = await _countryService.GetByIdAsync(country.Id);
+                    if (exists == null)
+                    {
+                        TempData["ErrorMessage"] = "This country has been deleted by another user.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "This country was modified by another user.");
+                        TempData["WarningMessage"] = "The country was modified by another user. Please refresh and try again.";
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        ModelState.AddModelError("Name", $"A country with the name '{country.Name}' already exists.");
+                        TempData["ErrorMessage"] = "This country name is already in use.";
+                    }
+                    else if (ex.InnerException != null && ex.InnerException.Message.Contains("Code"))
+                    {
+                        ModelState.AddModelError("Code", $"A country with the code '{country.Code}' already exists.");
+                        TempData["ErrorMessage"] = "This country code is already in use.";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes.");
+                        TempData["ErrorMessage"] = "Failed to update country due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while updating the country.";
+                }
             }
 
             return View("Edit", country);
@@ -72,34 +154,42 @@ namespace ERP_System_Project.Controllers.Core
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var country = await _countryService.GetByIdAsync(id);
-            if (country == null)
-            {
-                TempData["ErrorMessage"] = "Country not found!";
-                return NotFound();
-            }
-
             try
             {
+                var country = await _countryService.GetByIdAsync(id);
+                if (country == null)
+                {
+                    TempData["ErrorMessage"] = "Country not found!";
+                    return NotFound();
+                }
+
                 await _countryService.DeleteAsync(id);
                 TempData["SuccessMessage"] = $"Country '{country.Name}' has been deleted successfully!";
             }
             catch (DbUpdateException ex)
             {
-                // Log the full exception for debugging
-                System.Diagnostics.Debug.WriteLine($"DbUpdateException: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"InnerException: {ex.InnerException?.Message}");
+                var country = await _countryService.GetByIdAsync(id);
+                var countryName = country?.Name ?? "this country";
 
-
-                TempData["ErrorMessage"] = $"Cannot delete country '{country.Name}' because it is being used by other records (addresses, branches, public holidays, or employees).";
+                if (ex.InnerException != null &&
+                    (ex.InnerException.Message.Contains("REFERENCE constraint") ||
+                     ex.InnerException.Message.Contains("FOREIGN KEY constraint") ||
+                     ex.InnerException.Message.Contains("DELETE statement conflicted")))
+                {
+                    TempData["ErrorMessage"] = $"Cannot delete '{countryName}' because it is being used by addresses, branches, public holidays, or employees. Please remove these associations first.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"Cannot delete '{countryName}' due to a database error.";
+                }
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = $"Cannot delete country '{country.Name}': {ex.Message}";
+                TempData["ErrorMessage"] = $"Cannot delete this country: {ex.Message}";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while deleting country '{country.Name}': {ex.Message}";
+                TempData["ErrorMessage"] = "An unexpected error occurred while deleting the country.";
             }
 
             return RedirectToAction("Index");
@@ -109,8 +199,15 @@ namespace ERP_System_Project.Controllers.Core
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Search(string name)
         {
-            IEnumerable<Country> filteredCountries = await _countryService.SearchByNameAsync(name);
-            return Json(filteredCountries);
+            try
+            {
+                IEnumerable<Country> filteredCountries = await _countryService.SearchByNameAsync(name);
+                return Json(filteredCountries);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to search countries." });
+            }
         }
     }
 }

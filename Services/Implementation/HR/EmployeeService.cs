@@ -36,20 +36,23 @@ namespace ERP_System_Project.Services.Implementation.HR
             employee.ImageURL = imageUrl;
             employee.ModifiedDate = DateTime.UtcNow;
 
+            // Let exceptions bubble up to the controller for proper handling
+            await _uow.Employees.AddAsync(employee);
+            await _uow.CompleteAsync();
+
+            // AUTO-GENERATE LEAVE BALANCES for new employee (non-critical)
             try
             {
-                await _uow.Employees.AddAsync(employee);
-                await _uow.CompleteAsync();
-
-                // AUTO-GENERATE LEAVE BALANCES for new employee
                 await _leaveBalanceService.GenerateBalancesForNewEmployeeAsync(employee.Id);
-
-                return true;
             }
             catch (Exception ex)
             {
-                return false;
+                // Log the error but don't fail the employee creation
+                // Leave balances can be generated manually later if needed
+                System.Diagnostics.Debug.WriteLine($"Failed to generate leave balances for employee {employee.Id}: {ex.Message}");
             }
+
+            return true;
         }
 
         public async Task<bool> UpdateAsync(EmployeeVM model)
@@ -76,16 +79,10 @@ namespace ERP_System_Project.Services.Implementation.HR
             mapper.Map(model, employee);
             employee.ModifiedDate = DateTime.UtcNow;
 
-            try
-            {
-                _repository.Update(employee);
-                await _uow.CompleteAsync();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
+            // Let exceptions bubble up to the controller for proper handling
+            _repository.Update(employee);
+            await _uow.CompleteAsync();
+            return true;
         }
 
         public async Task<bool> IsExistAsync(int id)
@@ -108,6 +105,7 @@ namespace ERP_System_Project.Services.Implementation.HR
 
             return employee;
         }
+        
         public new async Task<IEnumerable<EmployeeIndexVM>> GetAllAsync()
         {
             IEnumerable<EmployeeIndexVM> employees = await _repository.GetAllAsync(
@@ -179,6 +177,5 @@ namespace ERP_System_Project.Services.Implementation.HR
                 .Include(e => e.SalaryCurrency)
                 .FirstOrDefaultAsync(e => e.ApplicationUserId == applicationUserId);
         }
-
     }
 }

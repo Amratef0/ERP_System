@@ -19,8 +19,16 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Department> departments = await _departmentService.GetAllAsync();
-            return View("Index", departments);
+            try
+            {
+                IEnumerable<Department> departments = await _departmentService.GetAllAsync();
+                return View("Index", departments);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading departments. Please try again.";
+                return View("Index", new List<Department>());
+            }
         }
 
         [HttpGet]
@@ -34,9 +42,30 @@ namespace ERP_System_Project.Controllers.HR
         {
             if (ModelState.IsValid)
             {
-                await _departmentService.CreateAsync(department);
-                TempData["SuccessMessage"] = $"Department '{department.Name}' has been created successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    await _departmentService.CreateAsync(department);
+                    TempData["SuccessMessage"] = $"Department '{department.Name}' has been created successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        ModelState.AddModelError("Name", $"A department with the name '{department.Name}' already exists.");
+                        TempData["ErrorMessage"] = "This department name is already in use. Please choose a different name.";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Please check your input and try again.");
+                        TempData["ErrorMessage"] = "Failed to create department due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while creating the department.";
+                }
             }
 
             return View("Create", department);
@@ -45,13 +74,21 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            Department department = await _departmentService.GetByIdAsync(id);
-            if (department == null)
+            try
             {
-                TempData["ErrorMessage"] = "Department not found!";
-                return NotFound();
+                Department department = await _departmentService.GetByIdAsync(id);
+                if (department == null)
+                {
+                    TempData["ErrorMessage"] = "Department not found!";
+                    return NotFound();
+                }
+                return View("Edit", department);
             }
-            return View("Edit", department);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the department.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -59,9 +96,44 @@ namespace ERP_System_Project.Controllers.HR
         {
             if (ModelState.IsValid)
             {
-                await _departmentService.UpdateAsync(department);
-                TempData["SuccessMessage"] = $"Department '{department.Name}' has been updated successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    await _departmentService.UpdateAsync(department);
+                    TempData["SuccessMessage"] = $"Department '{department.Name}' has been updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    var exists = await _departmentService.GetByIdAsync(department.Id);
+                    if (exists == null)
+                    {
+                        TempData["ErrorMessage"] = "This department has been deleted by another user.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "This department was modified by another user. Please refresh and try again.");
+                        TempData["WarningMessage"] = "The department was modified by another user. Please review the current data.";
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        ModelState.AddModelError("Name", $"A department with the name '{department.Name}' already exists.");
+                        TempData["ErrorMessage"] = "This department name is already in use.";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes.");
+                        TempData["ErrorMessage"] = "Failed to update department due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while updating the department.";
+                }
             }
 
             return View("Edit", department);
@@ -70,44 +142,42 @@ namespace ERP_System_Project.Controllers.HR
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            var department = await _departmentService.GetByIdAsync(id);
-            if (department == null)
-            {
-                TempData["ErrorMessage"] = "Department not found!";
-                return NotFound();
-            }
-            
             try
             {
+                var department = await _departmentService.GetByIdAsync(id);
+                if (department == null)
+                {
+                    TempData["ErrorMessage"] = "Department not found!";
+                    return NotFound();
+                }
+                
                 await _departmentService.DeleteAsync(id);
                 TempData["SuccessMessage"] = $"Department '{department.Name}' has been deleted successfully!";
             }
             catch (DbUpdateException ex)
             {
-                // Log the full exception for debugging
-                System.Diagnostics.Debug.WriteLine($"DbUpdateException: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"InnerException: {ex.InnerException?.Message}");
+                var department = await _departmentService.GetByIdAsync(id);
+                var deptName = department?.Name ?? "this department";
                 
-                // Check if it's a foreign key constraint violation
                 if (ex.InnerException != null && 
                     (ex.InnerException.Message.Contains("REFERENCE constraint") || 
                      ex.InnerException.Message.Contains("FOREIGN KEY constraint") ||
                      ex.InnerException.Message.Contains("DELETE statement conflicted")))
                 {
-                    TempData["ErrorMessage"] = $"Cannot delete department '{department.Name}' because it is being used by employees or other records.";
+                    TempData["ErrorMessage"] = $"Cannot delete '{deptName}' because it has associated employees or records. Please reassign or remove them first.";
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = $"Cannot delete department '{department.Name}': {ex.InnerException?.Message ?? ex.Message}";
+                    TempData["ErrorMessage"] = $"Cannot delete '{deptName}' due to a database error.";
                 }
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = $"Cannot delete department '{department.Name}': {ex.Message}";
+                TempData["ErrorMessage"] = $"Cannot delete this department: {ex.Message}";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while deleting department '{department.Name}': {ex.Message}";
+                TempData["ErrorMessage"] = "An unexpected error occurred while deleting the department.";
             }
             
             return RedirectToAction("Index");
@@ -116,16 +186,35 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            Department department = await _departmentService.GetByIdAsync(id);
-            if (department == null) return NotFound();
-            return View("Details", department);
+            try
+            {
+                Department department = await _departmentService.GetByIdAsync(id);
+                if (department == null)
+                {
+                    TempData["ErrorMessage"] = "Department not found!";
+                    return NotFound();
+                }
+                return View("Details", department);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading department details.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Search(string name)
         {
-            IEnumerable<Department> departments = await _departmentService.SearchAsync(name);
-            return Json(departments);
+            try
+            {
+                IEnumerable<Department> departments = await _departmentService.SearchAsync(name);
+                return Json(departments);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to search departments." });
+            }
         }
     }
 }
