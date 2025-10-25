@@ -3,23 +3,23 @@
     ViewData["Title"] = Model.Name;
     @if (TempData["AddReviewSuccess"] != null)
     {
-        <div class="alert alert-success">@TempData["ReviewSuccess"]</div>
+        <div class="alert alert-success">@TempData["AddReviewSuccess"]</div>
     }
     @if (TempData["AddReviewError"] != null)
     {
-        <div class="alert alert-danger">@TempData["ReviewError"]</div>
+        <div class="alert alert-danger">@TempData["AddReviewError"]</div>
     }
     @if (TempData["AddReviewInfo"] != null)
     {
-        <div class="alert alert-info">@TempData["ReviewInfo"]</div>
+        <div class="alert alert-info">@TempData["AddReviewInfo"]</div>
     }
     @if (TempData["EditReviewSuccess"] != null)
     {
-        <div class="alert alert-success">@TempData["ReviewSuccess"]</div>
+        <div class="alert alert-success">@TempData["EditReviewSuccess"]</div>
     }
     @if (TempData["EditReviewError"] != null)
     {
-        <div class="alert alert-danger">@TempData["ReviewError"]</div>
+        <div class="alert alert-danger">@TempData["EditReviewError"]</div>
     }
 
 }

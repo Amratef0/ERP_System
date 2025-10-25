@@ -15,10 +15,13 @@ namespace ERP_System_Project.Controllers.CRM
     {
         private readonly ICustomerAddressService _customerAddressService;
         private readonly UserManager<ApplicationUser> _userManager;
-        public CustomerAddressController(ICustomerAddressService customerAddressService, UserManager<ApplicationUser> userManager)
+        private readonly ICustomerService _customerService; 
+
+        public CustomerAddressController(ICustomerAddressService customerAddressService, UserManager<ApplicationUser> userManager, ICustomerService customerService)
         {
             _customerAddressService = customerAddressService;
             _userManager = userManager;
+            _customerService = customerService;
         }
 
         private async Task<int> GetLoggedInUserCustomerId()
@@ -34,6 +37,7 @@ namespace ERP_System_Project.Controllers.CRM
 
             var customerId = await GetLoggedInUserCustomerId();
             if (customerId == 0) return Unauthorized();
+            ViewBag.CustomerId = customerId;
 
             var addresses = await _customerAddressService.GetAllAddressesVMsByCustomerAsync(customerId);
             return View(addresses);
@@ -61,9 +65,11 @@ namespace ERP_System_Project.Controllers.CRM
             return View(model);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            int customerId = await GetLoggedInUserCustomerId();
+            var vm = new CustomerAddressVM { CustomerId = customerId };
+            return View(vm);
         }
 
         // POST: /CustomerAddress/Create
@@ -168,11 +174,25 @@ namespace ERP_System_Project.Controllers.CRM
             if (existing == null) return NotFound();
 
             var customerId = await GetLoggedInUserCustomerId();
+            if (customerId == 0) return Unauthorized();
+
+            // Only owner or Admin can delete
             if (existing.CustomerId != customerId && !User.IsInRole("Admin"))
                 return Forbid();
 
             try
             {
+                // get all addresses for this customer to check count
+                var addresses = await _customerAddressService.GetAllAddressesVMsByCustomerAsync(existing.CustomerId);
+                var addressCount = addresses?.Count() ?? 0;
+
+                if (addressCount <= 1)
+                {
+                    // Customer has only one address -> cannot delete
+                    TempData["Error"] = "You cannot delete the only address. Please add another address first if you want to remove this one.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 var deleted = await _customerAddressService.RemoveAddressAsync(id);
                 if (!deleted)
                 {
@@ -189,10 +209,7 @@ namespace ERP_System_Project.Controllers.CRM
                 TempData["Error"] = "An unexpected error occurred while deleting the address. Please contact support.";
                 return RedirectToAction(nameof(Details), new { id });
             }
-        } 
-
-
-
+        }
 
     }
 }

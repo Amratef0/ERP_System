@@ -1,23 +1,78 @@
-﻿@model Customer
+﻿@model CustomerVM
+
 @{
     ViewData["Title"] = "Create Customer";
-
 }
 
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Create New Customer</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="FirstName" class="form-label"></label>
+                                    <input asp-for="FirstName" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="LastName" class="form-label"></label>
+                                    <input asp-for="LastName" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
 
-<h1>Create New Customer</h1>
+                        <div class="form-group mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
 
-<br />
-<br />  
+                        <div class="form-group mb-3">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
 
-<form asp-action="Create" enctype="multipart/form-data">
-   
-    <partial name="PartialViews/CreateUpdateCustomerPartialView" />
-    <br />
+                        <div class="form-group mb-3">
+                            <label asp-for="CustomerTypeId" class="form-label">Customer Type *</label>
+                            <select asp-for="CustomerTypeId" class="form-control"
+                                    asp-items="ViewBag.CustomerTypes">
+                                <option value="">Select Customer Type</option>
+                            </select>
+                            <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
+                        </div>
 
-    <input type="submit" class="btn btn-success"/> | <a asp-action="Index" class="btn btn-light">Back to List</a>
-</form>
+                        <div class="form-group mb-3">
+                            <label asp-for="CustomerTypeId" class="form-label"></label>
+                            <select asp-for="CustomerTypeId" class="form-control">
+                                <option value="">Select Customer Type</option>
+                                <!-- You'll need to populate this from ViewBag or ViewData -->
+                            </select>
+                            <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">Create Customer</button>
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -3,7 +3,11 @@ using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Repository.Interfaces;
 using ERP_System_Project.Services.Interfaces.CRM;
 using ERP_System_Project.UOW;
+using ERP_System_Project.ViewModels;
+using ERP_System_Project.ViewModels.CRM;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.CRM
 {
@@ -156,5 +160,149 @@ namespace ERP_System_Project.Services.Implementation.CRM
 
 
         }
+
+
+
+
+        public async Task<PageSourcePagination<CustomerVM>> GetCustomersPaginatedAsync(
+            int pageNumber,
+            int pageSize,
+            string? searchByName = null,
+            bool includeInactive = false)
+        {
+            Expression<Func<Customer, bool>> filter = c => true;
+
+            if (!includeInactive)
+                filter = filter.And(c => c.IsActive);
+
+            if (!string.IsNullOrEmpty(searchByName))
+                filter = filter.And(c =>
+                    c.FirstName.Contains(searchByName) ||
+                    c.LastName.Contains(searchByName) ||
+                    c.Email.Contains(searchByName));
+
+
+            return await _uow.Customers.GetAllPaginatedAsync(
+                selector: c => new CustomerVM
+                {
+                    Id = c.Id,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    Email = c.Email,
+                    PhoneNumber = c.PhoneNumber,
+                    DateOfBirth = c.DateOfBirth,
+                    LastLoginDate = c.LastLoginDate,
+                    ModifiedDate = c.ModifiedDate,
+                    IsActive = c.IsActive,
+                    DeactivatedAt = c.DeactivatedAt,
+                    ApplicationUserId = c.ApplicationUserId,
+                    CustomerTypeId = c.CustomerTypeId,
+                    CustomerTypeName = c.CustomerType != null ? c.CustomerType.Name : null,
+                    MainAddress = c.CustomerAddresses
+                        .Select(ca => ca.City + ", " + ca.Street + " " + ca.BuildingNumber)
+                        .FirstOrDefault(),
+                    NumOfOrders = c.Orders.Count()
+                },
+                expandable: true,
+                filter: filter,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                Includes: new Expression<Func<Customer, object>>[]
+                {
+                    c => c.CustomerType,
+                    c => c.CustomerAddresses,
+                    c => c.Orders
+                }
+            );
+        }
+        public async Task<CustomerVM?> GetCustomerVMByIdAsync(int id) { 
+        
+            var customerVM = await _uow.Customers.GetAllAsIQueryable()
+                .Where(c => c.Id == id)
+                .Select(c => new CustomerVM
+                {
+                    Id = c.Id,
+                    FirstName = c.FirstName,
+                    LastName = c.LastName,
+                    Email = c.Email,
+                    PhoneNumber = c.PhoneNumber,
+                    DateOfBirth = c.DateOfBirth,
+                    LastLoginDate = c.LastLoginDate,
+                    ModifiedDate = c.ModifiedDate,
+                    IsActive = c.IsActive,
+                    DeactivatedAt = c.DeactivatedAt,
+                    ApplicationUserId = c.ApplicationUserId,
+                    CustomerTypeId = c.CustomerTypeId,
+                    CustomerTypeName = c.CustomerType.Name,
+                    MainAddress = c.CustomerAddresses.Select(ca => ca.City + ", " + ca.Street + " " + ca.BuildingNumber).FirstOrDefault() ?? "City, Street, Building Number.",
+                    NumOfOrders = c.Orders.Count() 
+
+                })
+                .FirstOrDefaultAsync();
+            return customerVM;
+        }
+
+
+        public async Task<bool> CreateCustomerVMAsync(CustomerVM customerVM)
+        {
+            try
+            {
+                var customer = new Customer
+                {
+                    FirstName = customerVM.FirstName,
+                    LastName = customerVM.LastName,
+                    Email = customerVM.Email,
+                    PhoneNumber = customerVM.PhoneNumber,
+                    DateOfBirth = customerVM.DateOfBirth,
+                    RegistrationDate = DateTime.Now,
+                    IsActive = true,
+                    LastLoginDate = DateTime.Now,
+                    CustomerTypeId = customerVM.CustomerTypeId,
+                    ApplicationUserId = customerVM.ApplicationUserId
+                };
+
+                await _uow.Customers.AddAsync(customer);
+                return await _uow.CompleteAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error creating customer: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateCustomerVMAsync(CustomerVM customerVM)
+        {
+            try
+            {
+                var customer = await _uow.Customers.GetByIdAsync(customerVM.Id);
+                if (customer == null) return false;
+
+                // Update properties from VM
+                customer.FirstName = customerVM.FirstName;
+                customer.LastName = customerVM.LastName;
+                customer.Email = customerVM.Email;
+                customer.PhoneNumber = customerVM.PhoneNumber;
+                customer.DateOfBirth = customerVM.DateOfBirth;
+                customer.IsActive = customerVM.IsActive;
+                customer.CustomerTypeId = customerVM.CustomerTypeId;
+                customer.ModifiedDate = DateTime.Now;
+                customer.ApplicationUserId = customerVM.ApplicationUserId;
+                customer.LastLoginDate = DateTime.Now; 
+
+                _uow.Customers.Update(customer);
+                return await _uow.CompleteAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error updating customer: {ex.Message}");
+                return false;
+            }
+        }
+
+
+
     }
 }

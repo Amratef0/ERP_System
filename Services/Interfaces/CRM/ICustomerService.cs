@@ -1,5 +1,7 @@
 ﻿using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.CRM;
+using ERP_System_Project.ViewModels;
+using ERP_System_Project.ViewModels.CRM;
 
 namespace ERP_System_Project.Services.Interfaces.CRM
 {
@@ -11,6 +13,16 @@ namespace ERP_System_Project.Services.Interfaces.CRM
         Task<IEnumerable<Customer>> GetAllCustomersAsync(bool includeInactive = false);
         Task CreateCustomerByApplicationUserAsync(ApplicationUser user, RegisterViewModel model);
 
+
+
+        Task<PageSourcePagination<CustomerVM>> GetCustomersPaginatedAsync(
+                   int pageNumber,
+                   int pageSize,
+                   string? searchByName = null,
+                   bool includeInactive = false);
+        Task<CustomerVM?> GetCustomerVMByIdAsync(int id);
+        Task<bool> CreateCustomerVMAsync(CustomerVM customerVM);
+        Task<bool> UpdateCustomerVMAsync(CustomerVM customerVM);
 
     }
 }
