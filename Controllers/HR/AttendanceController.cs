@@ -42,34 +42,101 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            AttendanceIndexVM model = new AttendanceIndexVM()
+            try
             {
-                Countries = await _countryService.GetAllAsync(),
-                Branches = await _branchService.GetAllAsync(),
-                Departments = await _departmentService.GetAllAsync(),
-                EmployeeTypes = await _employeeTypeService.GetAllAsync(),
-                JobTitles = await _jobTitleService.GetAllAsync()
-            };
-            return View("Index", model);
+                AttendanceIndexVM model = new AttendanceIndexVM()
+                {
+                    Countries = await _countryService.GetAllAsync(),
+                    Branches = await _branchService.GetAllAsync(),
+                    Departments = await _departmentService.GetAllAsync(),
+                    EmployeeTypes = await _employeeTypeService.GetAllAsync(),
+                    JobTitles = await _jobTitleService.GetAllAsync()
+                };
+                return View("Index", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the attendance page. Please try again.";
+                return View("Index", new AttendanceIndexVM());
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> GetAttendance(DateOnly date, int countryId, string? name, int? branchId, int? departmentId, int? typeId, int? jobTitleId)
         {
-            IEnumerable<EmployeeAttendanceRecordVM> attendanceRecords = await _attendanceService.GetAllByDateAsync(date, countryId, name, branchId, departmentId, typeId, jobTitleId);
+            try
+            {
+                IEnumerable<EmployeeAttendanceRecordVM> attendanceRecords = await _attendanceService.GetAllByDateAsync(date, countryId, name, branchId, departmentId, typeId, jobTitleId);
 
-            bool isDayOff = await _workScheduleService.CheckIfDayOffAsync(date, WorkScheduleId);
-            bool isPublicHoliday = await _publicHolidayService.CheckIfPublicHolidayAsync(date, countryId);
+                bool isDayOff = await _workScheduleService.CheckIfDayOffAsync(date, WorkScheduleId);
+                bool isPublicHoliday = await _publicHolidayService.CheckIfPublicHolidayAsync(date, countryId);
 
-            string infoMessage = null;
+                string infoMessage = null;
 
-            if (isDayOff)
-                infoMessage = "The selected date is a day off according to the work schedule.";
-            else if (isPublicHoliday)
-                infoMessage = "The selected date is a public holiday.";
+                if (isDayOff)
+                    infoMessage = "The selected date is a day off according to the work schedule.";
+                else if (isPublicHoliday)
+                    infoMessage = "The selected date is a public holiday.";
 
 
-            return Json(new { attendanceRecords, infoMessage });
+                return Json(new { attendanceRecords, infoMessage });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to retrieve attendance records. Please try again." });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MonthlyReport()
+        {
+            try
+            {
+                var model = new MonthlyAttendanceReportVM
+                {
+                    Countries = await _countryService.GetAllAsync(),
+                    Branches = await _branchService.GetAllAsync(),
+                    Departments = await _departmentService.GetAllAsync(),
+                    EmployeeTypes = await _employeeTypeService.GetAllAsync(),
+                    JobTitles = await _jobTitleService.GetAllAsync(),
+                    SelectedYear = DateTime.Now.Year,
+                    SelectedMonth = DateTime.Now.Month
+                };
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the monthly report page. Please try again.";
+                return View(new MonthlyAttendanceReportVM());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMonthlyReport(int year, int month, int? countryId, int? branchId, int? departmentId, int? employeeTypeId, int? jobTitleId)
+        {
+            try
+            {
+                var summaries = await _attendanceService.GetMonthlyAttendanceSummaryAsync(
+                    year, month, countryId, branchId, departmentId, employeeTypeId, jobTitleId);
+
+                var totalEmployees = summaries.Count();
+                var avgAttendanceRate = summaries.Any() ? summaries.Average(s => s.AttendanceRate) : 0;
+                var totalWorkingHours = summaries.Sum(s => s.TotalHoursWorked);
+                var totalOvertimeHours = summaries.Sum(s => s.OvertimeHours);
+
+                return Json(new
+                {
+                    summaries,
+                    totalEmployees,
+                    avgAttendanceRate = Math.Round(avgAttendanceRate, 2),
+                    totalWorkingHours = Math.Round(totalWorkingHours, 2),
+                    totalOvertimeHours = Math.Round(totalOvertimeHours, 2)
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to retrieve monthly report. Please try again." });
+            }
         }
     }
 }

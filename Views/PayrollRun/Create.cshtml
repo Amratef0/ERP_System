@@ -1,0 +1,144 @@
+@model CreatePayrollRunVM
+
+@{
+    ViewData["Title"] = "Generate New Payroll Run";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">
+                <i class="bi bi-plus-circle"></i> Generate New Payroll Run
+            </h2>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Payroll Period Selection</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Year" class="form-label"></label>
+                                <select asp-for="Year" class="form-select" id="yearSelect">
+                                    @for (int y = DateTime.Now.Year; y >= DateTime.Now.Year - 2; y--)
+                                    {
+                                        <option value="@y">@y</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Year" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Month" class="form-label"></label>
+                                <select asp-for="Month" class="form-select" id="monthSelect">
+                                    @for (int m = 1; m <= 12; m++)
+                                    {
+                                        var monthName = new DateTime(2000, m, 1).ToString("MMMM");
+                                        <option value="@m">@monthName</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Month" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Preview Card -->
+                        <div class="card bg-light mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">Preview</h6>
+                                <p class="mb-0">
+                                    <strong>Payroll Run Name:</strong> <span id="previewName">@Model.MonthName @Model.Year Payroll</span>
+                                </p>
+                                <p class="mb-0">
+                                    <strong>Period:</strong> <span id="previewPeriod"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Warning -->
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Note:</strong> This will generate payroll entries for all active employees. The process may take a few moments.
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Generate Payroll Run
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Info Card -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> What happens when you generate?</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>System creates a new Payroll Run for the selected period</li>
+                        <li>Fetches all active employees</li>
+                        <li>For each employee:
+                            <ul>
+                                <li>Calculates base salary (in employee's currency)</li>
+                                <li>Calculates overtime (1.5x hourly rate)</li>
+                                <li>Applies unpaid leave deductions</li>
+                                <li>Calculates tax (10% of gross)</li>
+                                <li>Computes net amount</li>
+                            </ul>
+                        </li>
+                        <li>Creates a Payroll Entry for each employee (in their salary currency)</li>
+                        <li>Payroll run is created in <strong>DRAFT</strong> status (you can review and edit)</li>
+                        <li>Supports <strong>multiple currencies</strong> in one payroll run!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    <script>
+        $(document).ready(function() {
+            updatePreview();
+
+            $('#yearSelect, #monthSelect').change(function() {
+                updatePreview();
+            });
+
+            function updatePreview() {
+                var year = parseInt($('#yearSelect').val());
+                var month = parseInt($('#monthSelect').val());
+                
+                var monthNames = ["January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"];
+                
+                var monthName = monthNames[month - 1];
+                var startDate = new Date(year, month - 1, 1);
+                var endDate = new Date(year, month, 0);
+                
+                $('#previewName').text(monthName + ' ' + year + ' Payroll');
+                $('#previewPeriod').text(
+                    startDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' - ' +
+                    endDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+                );
+            }
+        });
+    </script>
+}

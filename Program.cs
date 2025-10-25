@@ -165,6 +165,9 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ILeavePolicyService, LeavePolicyService>();
 builder.Services.AddScoped<IEmployeeLeaveBalanceService, EmployeeLeaveBalanceService>();
 builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+builder.Services.AddScoped<IPayrollCalculationService, PayrollCalculationService>();
+builder.Services.AddScoped<IPayrollEntryService, PayrollEntryService>();
+builder.Services.AddScoped<IPayrollRunService, PayrollRunService>();
 
 // Log Services
 builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();
@@ -213,19 +216,15 @@ RecurringJob.AddOrUpdate<IEmployeeLeaveBalanceService>(
         TimeZone = TimeZoneInfo.Local
     });
 
-// Schedule Recurring Jobs (Attendance Generation) - COMMENTED OUT
-//var times = new[] { 9, 13, 18 };
-
-//foreach (var hour in times)
-//{
-//    string jobId = $"GenerateAttendance_{hour}";
-//    string cron = $"0 {hour} * * *";
-
-//    RecurringJob.AddOrUpdate<AttendanceService>(
-//        jobId,
-//        service => service.GenerateDailyAttendance(),
-//        cron);
-//}
+// 3. PAYROLL: Auto-generate monthly payroll (Last day of month at 11:00 PM)
+RecurringJob.AddOrUpdate<IPayrollRunService>(
+    "GenerateMonthlyPayroll",
+    service => service.GeneratePayrollRunAsync(DateTime.Now.Year, DateTime.Now.Month),
+    "0 23 L * *", // Cron: At 11:00 PM on the last day of every month
+    new RecurringJobOptions
+    {
+        TimeZone = TimeZoneInfo.Local
+    });
 
 // Configure HTTP pipeline
 if (!app.Environment.IsDevelopment())

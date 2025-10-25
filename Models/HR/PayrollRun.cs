@@ -45,12 +45,6 @@ namespace ERP_System_Project.Models.HR
         public DateOnly? DeletedAt { get; set; }
 
         // Navigation properties
-        [Required(ErrorMessage = "Currency is required.")]
-        [ForeignKey("Currency")]
-        [Display(Name = "Currency")]
-        public int CurrencyId { get; set; }
-        public virtual Currency Currency { get; set; }
-
         [Display(Name = "Payroll Entries")]
         public virtual ICollection<PayrollEntry> PayrollEntries { get; set; } = new List<PayrollEntry>();
     }

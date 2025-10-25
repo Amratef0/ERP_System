@@ -20,8 +20,16 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Currency> currencies = await _currencyService.GetAllAsync();
-            return View("Index", currencies);
+            try
+            {
+                IEnumerable<Currency> currencies = await _currencyService.GetAllAsync();
+                return View("Index", currencies);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading currencies. Please try again.";
+                return View("Index", new List<Currency>());
+            }
         }
 
         [HttpGet]
@@ -36,9 +44,38 @@ namespace ERP_System_Project.Controllers.Core
         {
             if (ModelState.IsValid)
             {
-                await _currencyService.CreateAsync(currency);
-                TempData["SuccessMessage"] = $"Currency '{currency.Name}' ({currency.Code}) has been created successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    await _currencyService.CreateAsync(currency);
+                    TempData["SuccessMessage"] = $"Currency '{currency.Name}' ({currency.Code}) has been created successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        if (ex.InnerException.Message.Contains("Code"))
+                        {
+                            ModelState.AddModelError("Code", $"A currency with the code '{currency.Code}' already exists.");
+                            TempData["ErrorMessage"] = "This currency code is already in use.";
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Name", $"A currency with the name '{currency.Name}' already exists.");
+                            TempData["ErrorMessage"] = "This currency name is already in use.";
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes.");
+                        TempData["ErrorMessage"] = "Failed to create currency due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while creating the currency.";
+                }
             }
             return View("Create", currency);
         }
@@ -47,33 +84,42 @@ namespace ERP_System_Project.Controllers.Core
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var currency = await _currencyService.GetByIdAsync(id);
-            if (currency == null)
-            {
-                TempData["ErrorMessage"] = "Currency not found!";
-                return NotFound();
-            }
-
             try
             {
+                var currency = await _currencyService.GetByIdAsync(id);
+                if (currency == null)
+                {
+                    TempData["ErrorMessage"] = "Currency not found!";
+                    return NotFound();
+                }
+
                 await _currencyService.DeleteAsync(id);
                 TempData["SuccessMessage"] = $"Currency '{currency.Name}' has been deleted successfully!";
             }
             catch (DbUpdateException ex)
             {
-                // Log the full exception for debugging
-                System.Diagnostics.Debug.WriteLine($"DbUpdateException: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"InnerException: {ex.InnerException?.Message}");
-
-                TempData["ErrorMessage"] = $"Cannot delete currency '{currency.Name}' ({currency.Code}) because it is being used by other records (employees, salary configurations, etc.).";
+                var currency = await _currencyService.GetByIdAsync(id);
+                var currencyName = currency?.Name ?? "this currency";
+                
+                if (ex.InnerException != null && 
+                    (ex.InnerException.Message.Contains("REFERENCE constraint") || 
+                     ex.InnerException.Message.Contains("FOREIGN KEY constraint") ||
+                     ex.InnerException.Message.Contains("DELETE statement conflicted")))
+                {
+                    TempData["ErrorMessage"] = $"Cannot delete '{currencyName}' because it is being used by employees, payroll entries, or other records. Please update these records first.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"Cannot delete '{currencyName}' due to a database error.";
+                }
             }
             catch (InvalidOperationException ex)
             {
-                TempData["ErrorMessage"] = $"Cannot delete currency '{currency.Name}': {ex.Message}";
+                TempData["ErrorMessage"] = $"Cannot delete this currency: {ex.Message}";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while deleting currency '{currency.Name}': {ex.Message}";
+                TempData["ErrorMessage"] = "An unexpected error occurred while deleting the currency.";
             }
 
             return RedirectToAction("Index");
@@ -82,13 +128,21 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            Currency currency = await _currencyService.GetByIdAsync(id);
-            if (currency == null)
+            try
             {
-                TempData["ErrorMessage"] = "Currency not found!";
-                return NotFound();
+                Currency currency = await _currencyService.GetByIdAsync(id);
+                if (currency == null)
+                {
+                    TempData["ErrorMessage"] = "Currency not found!";
+                    return NotFound();
+                }
+                return View("Edit", currency);
             }
-            return View("Edit", currency);
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the currency.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -97,9 +151,52 @@ namespace ERP_System_Project.Controllers.Core
         {
             if (ModelState.IsValid)
             {
-                await _currencyService.UpdateAsync(currency);
-                TempData["SuccessMessage"] = $"Currency '{currency.Name}' ({currency.Code}) has been updated successfully!";
-                return RedirectToAction("Index");
+                try
+                {
+                    await _currencyService.UpdateAsync(currency);
+                    TempData["SuccessMessage"] = $"Currency '{currency.Name}' ({currency.Code}) has been updated successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    var exists = await _currencyService.GetByIdAsync(currency.Id);
+                    if (exists == null)
+                    {
+                        TempData["ErrorMessage"] = "This currency has been deleted by another user.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "This currency was modified by another user.");
+                        TempData["WarningMessage"] = "The currency was modified by another user. Please refresh and try again.";
+                    }
+                }
+                catch (DbUpdateException ex)
+                {
+                    if (ex.InnerException != null && ex.InnerException.Message.Contains("duplicate key"))
+                    {
+                        if (ex.InnerException.Message.Contains("Code"))
+                        {
+                            ModelState.AddModelError("Code", $"A currency with the code '{currency.Code}' already exists.");
+                            TempData["ErrorMessage"] = "This currency code is already in use.";
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("Name", $"A currency with the name '{currency.Name}' already exists.");
+                            TempData["ErrorMessage"] = "This currency name is already in use.";
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes.");
+                        TempData["ErrorMessage"] = "Failed to update currency due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while updating the currency.";
+                }
             }
             return View("Edit", currency);
         }
@@ -108,8 +205,15 @@ namespace ERP_System_Project.Controllers.Core
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Search(string name)
         {
-            IEnumerable<Currency> currencies = await _currencyService.SearchByNameAsync(name);
-            return Json(currencies);
+            try
+            {
+                IEnumerable<Currency> currencies = await _currencyService.SearchByNameAsync(name);
+                return Json(currencies);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to search currencies." });
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace ERP_System_Project.Controllers.HR
@@ -71,38 +72,61 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            EmployeesIndexVM model = new EmployeesIndexVM
+            try
             {
-                Employees = await _employeeService.GetAllAsync(),
-                Branches = await _branchService.GetAllAsync(),
-                Departments = await _departmentService.GetAllAsync(),
-                EmployeeTypes = await _employeeTypeService.GetAllAsync(),
-                JobTitles = await _jobTitleService.GetAllAsync()
-            };
-            return View("Index", model);
+                EmployeesIndexVM model = new EmployeesIndexVM
+                {
+                    Employees = await _employeeService.GetAllAsync(),
+                    Branches = await _branchService.GetAllAsync(),
+                    Departments = await _departmentService.GetAllAsync(),
+                    EmployeeTypes = await _employeeTypeService.GetAllAsync(),
+                    JobTitles = await _jobTitleService.GetAllAsync()
+                };
+                return View("Index", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading employees. Please try again.";
+                return View("Index", new EmployeesIndexVM());
+            }
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Search(string? name, int? branchId, int? departmentId, int? employeeTypeId, int? jobTitleId)
         {
-            IEnumerable<EmployeeIndexVM> employees = await _employeeService.SearchAsync(name, branchId, departmentId, employeeTypeId, jobTitleId);
-            return Json(employees);
+            try
+            {
+                IEnumerable<EmployeeIndexVM> employees = await _employeeService.SearchAsync(name, branchId, departmentId, employeeTypeId, jobTitleId);
+                return Json(employees);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "Failed to search employees." });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            EmployeeVM model = new EmployeeVM
+            try
             {
-                Branches = await _branchService.GetAllAsync(),
-                Departments = await _departmentService.GetAllAsync(),
-                EmployeeTypes = await _employeeTypeService.GetAllAsync(),
-                JobTitles = await _jobTitleService.GetAllAsync(),
-                Countries = await _countryService.GetAllAsync(),
-                Currencies = await _currencyService.GetAllAsync()
-            };
-            return View("Create", model);
+                EmployeeVM model = new EmployeeVM
+                {
+                    Branches = await _branchService.GetAllAsync(),
+                    Departments = await _departmentService.GetAllAsync(),
+                    EmployeeTypes = await _employeeTypeService.GetAllAsync(),
+                    JobTitles = await _jobTitleService.GetAllAsync(),
+                    Countries = await _countryService.GetAllAsync(),
+                    Currencies = await _currencyService.GetAllAsync()
+                };
+                return View("Create", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the create form.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -113,53 +137,155 @@ namespace ERP_System_Project.Controllers.HR
 
             if (result.IsValid)
             {
-                var appuser = new ApplicationUser
+                try
                 {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    UserName = $"{model.FirstName} {model.LastName}",
-                    Email = model.WorkEmail,
-                    PhoneNumber = model.WorkPhone,
-                    DateOfBirth = model.DateOfBirth,
-                    CreatedAt = DateTime.Now,
-                };
-
-                IdentityResult creationUserResult = await _userManager.CreateAsync(appuser);
-
-                if (creationUserResult.Succeeded)
-                {
-                    model.ApplicationUserId = appuser.Id;
-                    var isCreated = await _employeeService.CreateAsync(model);
-
-                    if (isCreated)
+                    var appuser = new ApplicationUser
                     {
-                        var token = await _userManager.GeneratePasswordResetTokenAsync(appuser);
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        UserName = $"{model.FirstName} {model.LastName}",
+                        Email = model.WorkEmail,
+                        PhoneNumber = model.WorkPhone,
+                        DateOfBirth = model.DateOfBirth,
+                        CreatedAt = DateTime.Now,
+                    };
 
-                        var ResetLink = Url.Action("ResetPassword", "Account",
-                            new { userEmail = appuser.Email, token = token }, Request.Scheme);
+                    IdentityResult creationUserResult = await _userManager.CreateAsync(appuser);
 
-                        await _emailSender.SendEmailAsync(
-                            model.WorkEmail,
-                            "Reset your password",
-                            $"Welcome To Optima ERP System! Please Reset your password by <a href='{ResetLink}'>clicking here</a> to join us."
-                        );
+                    if (creationUserResult.Succeeded)
+                    {
+                        try
+                        {
+                            model.ApplicationUserId = appuser.Id;
+                            var isCreated = await _employeeService.CreateAsync(model);
 
-                        if (!await _roleManager.RoleExistsAsync("Employee"))
-                            await _roleManager.CreateAsync(new IdentityRole("Employee"));
+                            if (isCreated)
+                            {
+                                try
+                                {
+                                    var token = await _userManager.GeneratePasswordResetTokenAsync(appuser);
 
-                        await _userManager.AddToRoleAsync(appuser, "Employee");
+                                    var ResetLink = Url.Action("ResetPassword", "Account",
+                                        new { userEmail = appuser.Email, token = token }, Request.Scheme);
 
-                        TempData["SuccessMessage"] = $"Employee {model.FirstName} {model.LastName} has been created successfully! Welcome email sent.";
-                        return RedirectToAction("Index");
+                                    await _emailSender.SendEmailAsync(
+                                        model.WorkEmail,
+                                        "Reset your password",
+                                        $"Welcome To Optima ERP System! Please Reset your password by <a href='{ResetLink}'>clicking here</a> to join us."
+                                    );
+                                }
+                                catch (Exception emailEx)
+                                {
+                                    // Email failed but employee created - show warning
+                                    TempData["WarningMessage"] = $"Employee {model.FirstName} {model.LastName} has been created, but the welcome email could not be sent. Please contact them manually.";
+                                    return RedirectToAction("Index");
+                                }
+
+                                if (!await _roleManager.RoleExistsAsync("Employee"))
+                                    await _roleManager.CreateAsync(new IdentityRole("Employee"));
+
+                                await _userManager.AddToRoleAsync(appuser, "Employee");
+
+                                TempData["SuccessMessage"] = $"Employee {model.FirstName} {model.LastName} has been created successfully! Welcome email sent.";
+                                return RedirectToAction("Index");
+                            }
+
+                            // This code should never execute now since exceptions will be thrown
+                            await _userManager.DeleteAsync(appuser);
+                            ModelState.AddModelError(string.Empty, "Cannot add employee!");
+                            TempData["ErrorMessage"] = "Failed to create employee record. Please try again.";
+                        }
+                        catch (DbUpdateException dbEx)
+                        {
+                            // Database error - delete the user account
+                            await _userManager.DeleteAsync(appuser);
+
+                            if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("duplicate key"))
+                            {
+                                // Determine which unique constraint was violated
+                                if (dbEx.InnerException.Message.Contains("NationalId"))
+                                {
+                                    ModelState.AddModelError("NationalId", $"An employee with this National ID already exists.");
+                                    TempData["ErrorMessage"] = "This National ID is already registered in the system.";
+                                }
+                                else if (dbEx.InnerException.Message.Contains("PassportNumber"))
+                                {
+                                    ModelState.AddModelError("PassportNumber", $"An employee with this Passport Number already exists.");
+                                    TempData["ErrorMessage"] = "This Passport Number is already registered in the system.";
+                                }
+                                else if (dbEx.InnerException.Message.Contains("WorkEmail"))
+                                {
+                                    ModelState.AddModelError("WorkEmail", $"An employee with this work email already exists.");
+                                    TempData["ErrorMessage"] = "This work email is already in use.";
+                                }
+                                else if (dbEx.InnerException.Message.Contains("WorkPhone"))
+                                {
+                                    ModelState.AddModelError("WorkPhone", $"An employee with this work phone already exists.");
+                                    TempData["ErrorMessage"] = "This work phone number is already in use.";
+                                }
+                                else if (dbEx.InnerException.Message.Contains("PersonalEmail"))
+                                {
+                                    ModelState.AddModelError("PersonalEmail", $"An employee with this personal email already exists.");
+                                    TempData["ErrorMessage"] = "This personal email is already in use.";
+                                }
+                                else if (dbEx.InnerException.Message.Contains("PersonalPhone"))
+                                {
+                                    ModelState.AddModelError("PersonalPhone", $"An employee with this personal phone already exists.");
+                                    TempData["ErrorMessage"] = "This personal phone number is already in use.";
+                                }
+                                else if (dbEx.InnerException.Message.Contains("BankAccountNumber"))
+                                {
+                                    ModelState.AddModelError("BankAccountNumber", $"An employee with this bank account number already exists.");
+                                    TempData["ErrorMessage"] = "This bank account number is already registered.";
+                                }
+                                else
+                                {
+                                    ModelState.AddModelError("", "An employee with this information already exists.");
+                                    TempData["ErrorMessage"] = "An employee with this information already exists in the system.";
+                                }
+                            }
+                            else if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("FOREIGN KEY"))
+                            {
+                                ModelState.AddModelError("", "Invalid selection for Branch, Department, Job Title, Employee Type, or Currency.");
+                                TempData["ErrorMessage"] = "Invalid reference data selected. Please check your selections.";
+                            }
+                            else if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("CHECK constraint"))
+                            {
+                                ModelState.AddModelError("BaseSalary", "Base salary must be a positive value.");
+                                TempData["ErrorMessage"] = "Invalid salary amount entered.";
+                            }
+                            else
+                            {
+                                ModelState.AddModelError(string.Empty, "An employee with this information already exists.");
+                                TempData["ErrorMessage"] = "Failed to create employee due to a database error.";
+                            }
+                        }
                     }
+                    else
+                    {
+                        foreach (var error in creationUserResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
 
-                    ModelState.AddModelError(string.Empty, "Cannot add employee!");
+                        if (creationUserResult.Errors.Any(e => e.Code.Contains("DuplicateEmail")))
+                            TempData["ErrorMessage"] = "An account with this email already exists.";
+                        else if (creationUserResult.Errors.Any(e => e.Code.Contains("DuplicateUserName")))
+                            TempData["ErrorMessage"] = "An employee with this name already exists.";
+                        else
+                            TempData["ErrorMessage"] = "Failed to create user account. " + string.Join(", ", creationUserResult.Errors.Select(e => e.Description));
+                    }
                 }
-
-                foreach (var error in creationUserResult.Errors)
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    ModelState.AddModelError(string.Empty, "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while creating the employee.";
                 }
+            }
+            else
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
 
             model.Branches = await _branchService.GetAllAsync();
@@ -174,19 +300,31 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var employee = await _employeeService.GetByIdWithDetailsAsync(id);
+            try
+            {
+                var employee = await _employeeService.GetByIdWithDetailsAsync(id);
 
-            if (employee == null) return NotFound();
+                if (employee == null)
+                {
+                    TempData["ErrorMessage"] = "Employee not found!";
+                    return NotFound();
+                }
 
-            EmployeeVM model = _mapper.Map<EmployeeVM>(employee);
-            model.Branches = await _branchService.GetAllAsync();
-            model.Departments = await _departmentService.GetAllAsync();
-            model.EmployeeTypes = await _employeeTypeService.GetAllAsync();
-            model.JobTitles = await _jobTitleService.GetAllAsync();
-            model.Countries = await _countryService.GetAllAsync();
-            model.Currencies = await _currencyService.GetAllAsync();
+                EmployeeVM model = _mapper.Map<EmployeeVM>(employee);
+                model.Branches = await _branchService.GetAllAsync();
+                model.Departments = await _departmentService.GetAllAsync();
+                model.EmployeeTypes = await _employeeTypeService.GetAllAsync();
+                model.JobTitles = await _jobTitleService.GetAllAsync();
+                model.Countries = await _countryService.GetAllAsync();
+                model.Currencies = await _currencyService.GetAllAsync();
 
-            return View("Edit", model);
+                return View("Edit", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading the employee.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -196,15 +334,128 @@ namespace ERP_System_Project.Controllers.HR
             ValidationResult result = await _validator.ValidateAsync(model);
             if (result.IsValid)
             {
-                var appuser = await _userManager.FindByIdAsync(model.ApplicationUserId);
-                appuser.Email = model.WorkEmail;
-                var isUpdated = await _employeeService.UpdateAsync(model);
-                if (isUpdated)
+                try
                 {
-                    TempData["SuccessMessage"] = $"Employee {model.FirstName} {model.LastName} has been updated successfully!";
-                    return RedirectToAction("Index");
+                    var appuser = await _userManager.FindByIdAsync(model.ApplicationUserId);
+
+                    if (appuser != null)
+                    {
+                        appuser.Email = model.WorkEmail;
+                        var updateUserResult = await _userManager.UpdateAsync(appuser);
+
+                        if (!updateUserResult.Succeeded)
+                        {
+                            foreach (var error in updateUserResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            TempData["ErrorMessage"] = "Failed to update user account. " + string.Join(", ", updateUserResult.Errors.Select(e => e.Description));
+                        }
+                    }
+
+                    // Service will throw exception if update fails due to database constraints
+                    var isUpdated = await _employeeService.UpdateAsync(model);
+                    
+                    if (isUpdated)
+                    {
+                        TempData["SuccessMessage"] = $"Employee {model.FirstName} {model.LastName} has been updated successfully!";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        // Employee not found (returned false)
+                        TempData["ErrorMessage"] = "Employee not found or could not be updated.";
+                        return RedirectToAction("Index");
+                    }
+                }
+                catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+                {
+                    var exists = await _employeeService.GetByIdAsync(model.Id);
+                    if (exists == null)
+                    {
+                        TempData["ErrorMessage"] = "This employee has been deleted by another user.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "This employee was modified by another user.");
+                        TempData["WarningMessage"] = "The employee was modified by another user. Please refresh and try again.";
+                    }
+                }
+                catch (Microsoft.EntityFrameworkCore.DbUpdateException dbEx)
+                {
+                    if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("duplicate key"))
+                    {
+                        // Determine which unique constraint was violated
+                        if (dbEx.InnerException.Message.Contains("NationalId"))
+                        {
+                            ModelState.AddModelError("NationalId", $"An employee with this National ID already exists.");
+                            TempData["ErrorMessage"] = "This National ID is already registered in the system.";
+                        }
+                        else if (dbEx.InnerException.Message.Contains("PassportNumber"))
+                        {
+                            ModelState.AddModelError("PassportNumber", $"An employee with this Passport Number already exists.");
+                            TempData["ErrorMessage"] = "This Passport Number is already registered in the system.";
+                        }
+                        else if (dbEx.InnerException.Message.Contains("WorkEmail"))
+                        {
+                            ModelState.AddModelError("WorkEmail", $"An employee with this work email already exists.");
+                            TempData["ErrorMessage"] = "This work email is already in use.";
+                        }
+                        else if (dbEx.InnerException.Message.Contains("WorkPhone"))
+                        {
+                            ModelState.AddModelError("WorkPhone", $"An employee with this work phone already exists.");
+                            TempData["ErrorMessage"] = "This work phone number is already in use.";
+                        }
+                        else if (dbEx.InnerException.Message.Contains("PersonalEmail"))
+                        {
+                            ModelState.AddModelError("PersonalEmail", $"An employee with this personal email already exists.");
+                            TempData["ErrorMessage"] = "This personal email is already in use.";
+                        }
+                        else if (dbEx.InnerException.Message.Contains("PersonalPhone"))
+                        {
+                            ModelState.AddModelError("PersonalPhone", $"An employee with this personal phone already exists.");
+                            TempData["ErrorMessage"] = "This personal phone number is already in use.";
+                        }
+                        else if (dbEx.InnerException.Message.Contains("BankAccountNumber"))
+                        {
+                            ModelState.AddModelError("BankAccountNumber", $"An employee with this bank account number already exists.");
+                            TempData["ErrorMessage"] = "This bank account number is already registered.";
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "An employee with this information already exists.");
+                            TempData["ErrorMessage"] = "An employee with this information already exists in the system.";
+                        }
+                    }
+                    else if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("FOREIGN KEY"))
+                    {
+                        ModelState.AddModelError("", "Invalid selection for Branch, Department, Job Title, Employee Type, or Currency.");
+                        TempData["ErrorMessage"] = "Invalid reference data selected. Please check your selections.";
+                    }
+                    else if (dbEx.InnerException != null && dbEx.InnerException.Message.Contains("CHECK constraint"))
+                    {
+                        ModelState.AddModelError("BaseSalary", "Base salary must be a positive value.");
+                        TempData["ErrorMessage"] = "Invalid salary amount entered.";
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes.");
+                        TempData["ErrorMessage"] = "Failed to update employee due to a database error.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "An unexpected error occurred.");
+                    TempData["ErrorMessage"] = "An unexpected error occurred while updating the employee.";
                 }
             }
+            else
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
             model.Branches = await _branchService.GetAllAsync();
             model.Departments = await _departmentService.GetAllAsync();
             model.EmployeeTypes = await _employeeTypeService.GetAllAsync();
@@ -217,46 +468,76 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var employee = await _employeeService.GetByIdWithDetailsAsync(id);
-            if (employee == null) return NotFound();
-            EmployeeVM model = _mapper.Map<EmployeeVM>(employee);
-            return View("Details", model);
+            try
+            {
+                var employee = await _employeeService.GetByIdWithDetailsAsync(id);
+                if (employee == null)
+                {
+                    TempData["ErrorMessage"] = "Employee not found!";
+                    return NotFound();
+                }
+                EmployeeVM model = _mapper.Map<EmployeeVM>(employee);
+                return View("Details", model);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading employee details.";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var employee = await _employeeService.GetByIdAsync(id);
-            if (employee == null)
-            {
-                TempData["ErrorMessage"] = "Employee not found!";
-                return NotFound();
-            }
-
-            var appuser = await _userManager.FindByIdAsync(employee.ApplicationUserId);
-
-            if (appuser != null)
-            {
-                var result = await _userManager.DeleteAsync(appuser);
-
-                if (!result.Succeeded)
-                {
-                    TempData["ErrorMessage"] = $"Failed to delete employee: {string.Join(", ", result.Errors.Select(e => e.Description))}";
-                    return RedirectToAction("Index");
-                }
-            }
-
             try
             {
+                var employee = await _employeeService.GetByIdAsync(id);
+                if (employee == null)
+                {
+                    TempData["ErrorMessage"] = "Employee not found!";
+                    return NotFound();
+                }
+
+                var appuser = await _userManager.FindByIdAsync(employee.ApplicationUserId);
+
+                if (appuser != null)
+                {
+                    var result = await _userManager.DeleteAsync(appuser);
+
+                    if (!result.Succeeded)
+                    {
+                        TempData["ErrorMessage"] = $"Failed to delete user account: {string.Join(", ", result.Errors.Select(e => e.Description))}";
+                        return RedirectToAction("Index");
+                    }
+                }
+
                 await _employeeService.DeleteAsync(id);
                 TempData["SuccessMessage"] = $"Employee {employee.FirstName} {employee.LastName} has been deleted successfully!";
+                return RedirectToAction("Index");
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException dbEx)
+            {
+                var employee = await _employeeService.GetByIdAsync(id);
+                var empName = employee != null ? $"{employee.FirstName} {employee.LastName}" : "this employee";
+
+                if (dbEx.InnerException != null &&
+                    (dbEx.InnerException.Message.Contains("REFERENCE constraint") ||
+                     dbEx.InnerException.Message.Contains("FOREIGN KEY constraint") ||
+                     dbEx.InnerException.Message.Contains("DELETE statement conflicted")))
+                {
+                    TempData["ErrorMessage"] = $"Cannot delete {empName} because they have associated records (attendance, leaves, payroll, etc.). Please remove these records first or deactivate the employee instead.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"Cannot delete {empName} due to a database error.";
+                }
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Failed to delete employee: {ex.Message}";
-                return BadRequest();
+                return RedirectToAction("Index");
             }
         }
 

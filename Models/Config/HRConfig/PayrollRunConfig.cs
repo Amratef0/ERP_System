@@ -24,12 +24,6 @@ namespace ERP_System_Project.Models.Config.HRConfig
                    .HasDefaultValue(false);
 
             builder.HasQueryFilter(pr => !pr.IsDeleted);
-
-            // Configure relationships with restrict delete behavior
-            builder.HasOne(pr => pr.Currency)
-                   .WithMany(c => c.PayrollRuns)
-                   .HasForeignKey(pr => pr.CurrencyId)
-                   .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

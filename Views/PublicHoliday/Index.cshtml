@@ -4,6 +4,9 @@
     ViewData["Title"] = "Public Holidays";
 }
 
+<!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@@6.1.10/index.global.min.css' rel='stylesheet' />
+
 <div class="container-fluid mt-4">
     <!-- Header Section -->
     <div class="row mb-4">
@@ -60,7 +63,7 @@
             <form id="searchForm">
                 @Html.AntiForgeryToken()
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-5">
                         <label for="countryFilter" class="form-label">
                             <i class="bi bi-globe"></i> Filter by Country
                         </label>
@@ -69,7 +72,7 @@
                             <option value="">All Countries</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <label class="form-label">
                             <i class="bi bi-search"></i> Search Holiday
                         </label>
@@ -78,8 +81,8 @@
                     </div>
                     <div class="col-md-2">
                         <label class="form-label d-block">&nbsp;</label>
-                        <button type="button" id="searchBtn" class="btn btn-primary btn-lg w-100">
-                            <i class="bi bi-search"></i> Search
+                        <button type="button" id="clearBtn" class="btn btn-secondary btn-lg w-100">
+                            <i class="bi bi-x-circle"></i> Clear
                         </button>
                     </div>
                 </div>
@@ -87,92 +90,32 @@
         </div>
     </div>
 
-    <!-- Public Holidays Table -->
+    <!-- Calendar View -->
     <div class="card">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="bi bi-table"></i> Holidays List</h5>
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="bi bi-calendar3"></i> Holiday Calendar</h5>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th><i class="bi bi-calendar-event"></i> Holiday Name</th>
-                            <th><i class="bi bi-globe"></i> Country</th>
-                            <th><i class="bi bi-calendar3"></i> Date</th>
-                            <th><i class="bi bi-calendar-week"></i> Day of Week</th>
-                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="publicHolidays">
-                        @foreach (var item in Model.PublicHolidays.OrderBy(h => h.Date))
-                        {
-                            var isPast = item.Date < DateOnly.FromDateTime(DateTime.Today);
-                            var isToday = item.Date == DateOnly.FromDateTime(DateTime.Today);
-                            var isFuture = item.Date > DateOnly.FromDateTime(DateTime.Today);
-                            var rowClass = isToday ? "table-warning" : (isPast ? "table-secondary" : "");
-
-                            <tr class="@rowClass">
-                                <td>
-                                    <strong>@item.Name</strong>
-                                    @if (isToday)
-                                    {
-                                        <span class="badge bg-warning text-dark ms-2">Today</span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="badge bg-primary">@item.Country.Name</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-info">@item.Date.ToString("dd MMM yyyy")</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary">@item.Date.DayOfWeek</span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" 
-                                           class="btn btn-sm btn-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
-                                                title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Delete Modal -->
-                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Confirm Delete</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Delete holiday <strong>@item.Name</strong> on <strong>@item.Date.ToString("dd MMM yyyy")</strong>?</p>
-                                                    <p class="text-danger mb-0">
-                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
-                                                    </p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <button type="submit" class="btn btn-danger">
-                                                            <i class="bi bi-trash"></i> Delete
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+        <div class="card-body">
+            <div id="calendar"></div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-center gap-4 flex-wrap">
+                <div class="legend-item">
+                    <span class="legend-box bg-danger"></span>
+                    <span>National Holidays</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-box bg-primary"></span>
+                    <span>Religious Holidays</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-box bg-success"></span>
+                    <span>Cultural Events</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-box bg-warning"></span>
+                    <span>Other Holidays</span>
+                </div>
             </div>
         </div>
     </div>
@@ -187,100 +130,232 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    <!-- FullCalendar JS -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@@6.1.10/index.global.min.js'></script>
 
     <script>
         $(document).ready(function () {
-            function filter() {
-                var searchTerm = $("#searchTerm").val();
-                var country = parseInt($("#countryFilter").val()) || 0;
-                var token = $('input[name="__RequestVerificationToken"]').val();
+            let calendar = null;
+            let allHolidays = @Html.Raw(Json.Serialize(Model.PublicHolidays.Select(h => new {
+                id = h.Id,
+                title = h.Name,
+                date = h.Date.ToString("yyyy-MM-dd"),
+                country = h.Country.Name,
+                countryId = h.CountryId
+            })));
 
-                $.ajax({
-                    type: "POST",
-                    url: '@Url.Action("Filter", "PublicHoliday")',
-                    data: {
-                        name: searchTerm,
-                        countryId: country,
-                        __RequestVerificationToken: token
+            // Get holiday color based on name/type
+            function getHolidayColor(name) {
+                name = name.toLowerCase();
+                if (name.includes('national') || name.includes('independence') || name.includes('revolution')) {
+                    return '#dc3545'; // Red for national holidays
+                } else if (name.includes('eid') || name.includes('ramadan') || name.includes('christmas') || name.includes('easter')) {
+                    return '#0d6efd'; // Blue for religious holidays
+                } else if (name.includes('labor') || name.includes('workers') || name.includes('culture')) {
+                    return '#198754'; // Green for cultural/labor events
+                } else {
+                    return '#ffc107'; // Yellow for other holidays
+                }
+            }
+
+            // Initialize FullCalendar
+            function initCalendar(holidays) {
+                if (calendar) {
+                    calendar.destroy();
+                }
+
+                var calendarEl = document.getElementById('calendar');
+                
+                calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,dayGridWeek,listYear'
                     },
-                    success: function (response) {
-                        fillTable(response);
+                    height: 'auto',
+                    events: holidays.map(function(holiday) {
+                        return {
+                            id: holiday.id,
+                            title: holiday.title,
+                            start: holiday.date,
+                            allDay: true,
+                            backgroundColor: getHolidayColor(holiday.title),
+                            borderColor: getHolidayColor(holiday.title),
+                            extendedProps: {
+                                country: holiday.country,
+                                countryId: holiday.countryId
+                            }
+                        };
+                    }),
+                    eventClick: function(info) {
+                        showHolidayDetails(info.event);
                     },
-                    error: function (xhr, status, error) {
-                        console.error("Search failed:", error);
-                        alert("An error occurred while searching.");
+                    eventContent: function(arg) {
+                        return {
+                            html: '<div class="fc-event-main-frame"><div class="fc-event-title-container"><div class="fc-event-title fc-sticky"><strong>' + arg.event.title + '</strong></div></div></div>'
+                        };
                     }
+                });
+                
+                calendar.render();
+            }
+
+            // Show holiday details in modal
+            function showHolidayDetails(event) {
+                var eventDate = new Date(event.start);
+                var formattedDate = eventDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                var modalHtml = '<div class="modal fade" id="holidayDetailModal" tabindex="-1">' +
+                    '<div class="modal-dialog modal-dialog-centered">' +
+                    '<div class="modal-content">' +
+                    '<div class="modal-header text-white" style="background-color: ' + event.backgroundColor + ';">' +
+                    '<h5 class="modal-title"><i class="bi bi-calendar-event me-2"></i>' + event.title + '</h5>' +
+                    '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>' +
+                    '</div>' +
+                    '<div class="modal-body">' +
+                    '<div class="mb-3"><strong><i class="bi bi-calendar3 me-2"></i>Date:</strong> ' + formattedDate + '</div>' +
+                    '<div class="mb-3"><strong><i class="bi bi-globe me-2"></i>Country:</strong> <span class="badge bg-primary">' + event.extendedProps.country + '</span></div>' +
+                    '</div>' +
+                    '<div class="modal-footer">' +
+                    '<a href="/PublicHoliday/Edit/' + event.id + '" class="btn btn-warning"><i class="bi bi-pencil me-1"></i>Edit</a>' +
+                    '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>' +
+                    '</div>' +
+                    '</div></div></div>';
+
+                $('#holidayDetailModal').remove();
+                $('body').append(modalHtml);
+                var modal = new bootstrap.Modal(document.getElementById('holidayDetailModal'));
+                modal.show();
+                
+                $('#holidayDetailModal').on('hidden.bs.modal', function() {
+                    $(this).remove();
                 });
             }
 
-            $("#searchForm").submit(function (e) {
-                e.preventDefault();
-                filter();
-            });
+            // Filter functionality
+            function filterHolidays() {
+                var searchTerm = $("#searchTerm").val().toLowerCase();
+                var countryId = parseInt($("#countryFilter").val()) || 0;
 
-            $("#searchBtn").click(function () {
-                filter();
+                var filteredHolidays = allHolidays.filter(function(holiday) {
+                    var matchesSearch = searchTerm === '' || holiday.title.toLowerCase().includes(searchTerm);
+                    var matchesCountry = countryId === 0 || holiday.countryId === countryId;
+                    return matchesSearch && matchesCountry;
+                });
+
+                initCalendar(filteredHolidays);
+            }
+
+            $("#searchTerm").on('input', function() {
+                filterHolidays();
             });
 
             $("#countryFilter").change(function () {
-                filter();
+                filterHolidays();
             });
 
-            $("#searchTerm").keyup(function() {
-                if ($(this).val() === '') {
-                    location.reload();
-                }
+            $("#clearBtn").click(function() {
+                $("#searchTerm").val('');
+                $("#countryFilter").val('');
+                filterHolidays();
             });
 
-            function fillTable(response) {
-                var tableBody = $("#publicHolidays");
-                tableBody.empty();
-
-                if (response && response.length > 0) {
-                    var newRows = "";
-                    var token = $('input[name="__RequestVerificationToken"]').val();
-                    
-                    response.forEach(function (holiday) {
-                        var date = new Date(holiday.date);
-                        var today = new Date();
-                        today.setHours(0, 0, 0, 0);
-                        
-                        var rowClass = "";
-                        var todayBadge = "";
-                        
-                        if (date.toDateString() === today.toDateString()) {
-                            rowClass = "table-warning";
-                            todayBadge = '<span class="badge bg-warning text-dark ms-2">Today</span>';
-                        } else if (date < today) {
-                            rowClass = "table-secondary";
-                        }
-
-                        newRows += `<tr class="${rowClass}">
-                                        <td><strong>${holiday.name}</strong>${todayBadge}</td>
-                                        <td><span class="badge bg-primary">${holiday.country.name}</span></td>
-                                        <td><span class="badge bg-info">${date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'})}</span></td>
-                                        <td><span class="badge bg-secondary">${date.toLocaleDateString('en-US', {weekday: 'long'})}</span></td>
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="/PublicHoliday/Edit/${holiday.id}" class="btn btn-sm btn-warning" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${holiday.name}?')) { document.getElementById('deleteForm${holiday.id}').submit(); }" title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                            <form id="deleteForm${holiday.id}" action="/PublicHoliday/Delete/${holiday.id}" method="post" style="display:none;">
-                                                <input type="hidden" name="__RequestVerificationToken" value="${token}" />
-                                            </form>
-                                        </td>
-                                    </tr>`;
-                    });
-                    tableBody.html(newRows);
-                } else {
-                    var noResultsRow = "<tr><td colspan='5' class='text-center'>No results found.</td></tr>";
-                    tableBody.html(noResultsRow);
-                }
-            }
+            // Initialize calendar on page load
+            initCalendar(allHolidays);
         });
     </script>
+
+    <style>
+        /* Calendar styling */
+        #calendar {
+            max-width: 100%;
+            margin: 0 auto;
+            font-size: 0.95rem;
+        }
+
+        /* Blue navigation buttons */
+        .fc .fc-button {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+            color: white !important;
+        }
+
+        .fc .fc-button:hover {
+            background-color: #0b5ed7 !important;
+            border-color: #0a58ca !important;
+        }
+
+        .fc .fc-button:disabled {
+            background-color: #6c757d !important;
+            border-color: #6c757d !important;
+            opacity: 0.65;
+        }
+
+        .fc .fc-button-primary:not(:disabled):active,
+        .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #0a58ca !important;
+            border-color: #0a53be !important;
+        }
+
+        .fc-event {
+            cursor: pointer;
+            border-radius: 3px;
+            padding: 2px 4px;
+            font-weight: 600;
+            border: 2px solid;
+        }
+
+        .fc-event:hover {
+            opacity: 0.85;
+            transform: scale(1.05);
+            transition: all 0.2s ease;
+        }
+
+        .fc .fc-daygrid-day.fc-day-today {
+            background-color: #fff3cd !important;
+        }
+
+        .fc-daygrid-day-frame {
+            min-height: 100px;
+        }
+
+        /* Legend styling */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .legend-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            display: inline-block;
+            border: 2px solid #dee2e6;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .fc .fc-toolbar {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .fc .fc-toolbar-chunk {
+                margin: 5px 0;
+            }
+
+            .fc .fc-toolbar-title {
+                font-size: 1.2em !important;
+            }
+        }
+    </style>
 }

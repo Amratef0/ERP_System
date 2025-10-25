@@ -1,0 +1,838 @@
+@model MonthlyAttendanceReportVM
+
+@{
+    ViewData["Title"] = "Monthly Attendance Report";
+    var months = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "January" },
+        new SelectListItem { Value = "2", Text = "February" },
+        new SelectListItem { Value = "3", Text = "March" },
+        new SelectListItem { Value = "4", Text = "April" },
+        new SelectListItem { Value = "5", Text = "May" },
+        new SelectListItem { Value = "6", Text = "June" },
+        new SelectListItem { Value = "7", Text = "July" },
+        new SelectListItem { Value = "8", Text = "August" },
+        new SelectListItem { Value = "9", Text = "September" },
+        new SelectListItem { Value = "10", Text = "October" },
+        new SelectListItem { Value = "11", Text = "November" },
+        new SelectListItem { Value = "12", Text = "December" }
+    };
+
+    var currentYear = DateTime.Now.Year;
+    var years = Enumerable.Range(currentYear - 5, 11).Select(y => new SelectListItem { Value = y.ToString(), Text = y.ToString() });
+}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- jsPDF for PDF Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<div class="container-fluid mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2><i class="bi bi-file-earmark-bar-graph"></i> Monthly Attendance Report</h2>
+                    <p class="text-muted">View comprehensive attendance analytics by month</p>
+                </div>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="bi bi-arrow-left"></i> Back to Attendance
+                    </a>
+                </div>
+            </div>
+            <hr />
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="card mb-4 shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-funnel"></i> Report Filters</h5>
+        </div>
+        <div class="card-body">
+            <form id="reportForm">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <!-- Year -->
+                    <div class="col-md-2 mb-3">
+                        <label for="yearFilter" class="form-label">
+                            <i class="bi bi-calendar"></i> Year <span class="text-danger">*</span>
+                        </label>
+                        <select id="yearFilter" class="form-select form-select-lg" asp-items="years">
+                        </select>
+                    </div>
+
+                    <!-- Month -->
+                    <div class="col-md-2 mb-3">
+                        <label for="monthFilter" class="form-label">
+                            <i class="bi bi-calendar3"></i> Month <span class="text-danger">*</span>
+                        </label>
+                        <select id="monthFilter" class="form-select form-select-lg" asp-items="months">
+                        </select>
+                    </div>
+
+                    <!-- Country -->
+                    <div class="col-md-2 mb-3">
+                        <label for="countryFilter" class="form-label">
+                            <i class="bi bi-globe"></i> Country
+                        </label>
+                        <select id="countryFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
+                            <option value="">All Countries</option>
+                        </select>
+                    </div>
+
+                    <!-- Branch -->
+                    <div class="col-md-2 mb-3">
+                        <label for="branchFilter" class="form-label">
+                            <i class="bi bi-building"></i> Branch
+                        </label>
+                        <select id="branchFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.Branches, "Id", "Name"))">
+                            <option value="">All Branches</option>
+                        </select>
+                    </div>
+
+                    <!-- Department -->
+                    <div class="col-md-2 mb-3">
+                        <label for="departmentFilter" class="form-label">
+                            <i class="bi bi-diagram-3"></i> Department
+                        </label>
+                        <select id="departmentFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
+                            <option value="">All Departments</option>
+                        </select>
+                    </div>
+
+                    <!-- Employee Type -->
+                    <div class="col-md-2 mb-3">
+                        <label for="employeeTypeFilter" class="form-label">
+                            <i class="bi bi-person-lines-fill"></i> Type
+                        </label>
+                        <select id="employeeTypeFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.EmployeeTypes, "Id", "Name"))">
+                            <option value="">All Types</option>
+                        </select>
+                    </div>
+
+                    <!-- Job Title -->
+                    <div class="col-md-2 mb-3">
+                        <label for="jobTitleFilter" class="form-label">
+                            <i class="bi bi-briefcase"></i> Job Title
+                        </label>
+                        <select id="jobTitleFilter" class="form-select form-select-lg" 
+                                asp-items="@(new SelectList(Model.JobTitles, "Id", "Name"))">
+                            <option value="">All Job Titles</option>
+                        </select>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="col-md-10 mb-3 d-flex align-items-end gap-2">
+                        <button type="button" id="generateReportBtn" class="btn btn-primary btn-lg">
+                            <i class="bi bi-graph-up"></i> Generate Report
+                        </button>
+                        <button type="button" id="compareBtn" class="btn btn-info btn-lg" disabled>
+                            <i class="bi bi-bar-chart-line"></i> Compare Months
+                        </button>
+                        <button type="button" id="deptSummaryBtn" class="btn btn-success btn-lg" disabled>
+                            <i class="bi bi-diagram-2"></i> Department Summary
+                        </button>
+                        <button type="button" id="clearBtn" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-x-circle"></i> Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4" id="statsSection" style="display: none;">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-people"></i> Total Employees</h6>
+                    <h2 class="mb-0" id="totalEmployees">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-percent"></i> Avg Attendance Rate</h6>
+                    <h2 class="mb-0"><span id="avgAttendanceRate">0</span>%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white shadow">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-clock"></i> Total Hours</h6>
+                    <h2 class="mb-0" id="totalWorkingHours">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark shadow">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="bi bi-clock-fill"></i> Overtime Hours</h6>
+                    <h2 class="mb-0" id="totalOvertimeHours">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mb-4" id="chartsSection" style="display: none;">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Attendance Distribution</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="attendanceChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Top 10 Performers</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="performersChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div id="alertContainer"></div>
+        </div>
+    </div>
+
+    <!-- Report Table -->
+    <div class="card shadow" id="reportSection" style="display: none;">
+        <div class="card-header bg-dark text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-table"></i> Employee Attendance Summary</h5>
+                <div>
+                    <span id="reportTitle" class="badge bg-light text-dark fs-6 me-2"></span>
+                    <button type="button" id="exportExcelBtn" class="btn btn-sm btn-success me-1">
+                        <i class="bi bi-file-earmark-excel"></i> Excel
+                    </button>
+                    <button type="button" id="exportPdfBtn" class="btn btn-sm btn-danger">
+                        <i class="bi bi-file-earmark-pdf"></i> PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0" id="reportTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th><i class="bi bi-person"></i> Employee Name</th>
+                            <th><i class="bi bi-building"></i> Branch</th>
+                            <th><i class="bi bi-diagram-3"></i> Department</th>
+                            <th><i class="bi bi-person-badge"></i> Type</th>
+                            <th><i class="bi bi-briefcase"></i> Job Title</th>
+                            <th class="text-center"><i class="bi bi-calendar-check"></i> Present</th>
+                            <th class="text-center"><i class="bi bi-calendar-x"></i> Absent</th>
+                            <th class="text-center"><i class="bi bi-clock-history"></i> Late</th>
+                            <th class="text-center"><i class="bi bi-calendar-event"></i> Leave</th>
+                            <th class="text-center"><i class="bi bi-hourglass-split"></i> Total Hours</th>
+                            <th class="text-center"><i class="bi bi-clock-fill"></i> Overtime</th>
+                            <th class="text-center"><i class="bi bi-percent"></i> Attendance %</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-muted bg-light">
+            <small><i class="bi bi-info-circle"></i> Showing monthly attendance summary for selected period and filters</small>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="card shadow" id="emptyState">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-file-earmark-text" style="font-size: 4rem; opacity: 0.3;"></i>
+            <h4 class="mt-3 text-muted">No Report Generated</h4>
+            <p class="text-muted">Select year and month, then click "Generate Report" to view attendance analytics</p>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div class="modal fade" id="comparisonModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="bi bi-bar-chart-line"></i> Month-to-Month Comparison</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <canvas id="comparisonChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Summary Modal -->
+    <div class="modal fade" id="deptSummaryModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-diagram-2"></i> Department-wise Summary</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <canvas id="deptChart" height="80"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="table-responsive">
+                                <table class="table table-sm" id="deptTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Department</th>
+                                            <th class="text-end">Employees</th>
+                                            <th class="text-end">Avg %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="deptTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function () {
+            // Set current year and month as default
+            $('#yearFilter').val('@DateTime.Now.Year');
+            $('#monthFilter').val('@DateTime.Now.Month');
+
+            let currentReportData = null;
+            let attendanceChartInstance = null;
+            let performersChartInstance = null;
+
+            $("#generateReportBtn").click(function () {
+                generateReport();
+            });
+
+            $("#clearBtn").click(function() {
+                $("#countryFilter").val('');
+                $("#branchFilter").val('');
+                $("#departmentFilter").val('');
+                $("#employeeTypeFilter").val('');
+                $("#jobTitleFilter").val('');
+                $('#yearFilter').val('@DateTime.Now.Year');
+                $('#monthFilter').val('@DateTime.Now.Month');
+                resetView();
+            });
+
+            $("#exportExcelBtn").click(function() {
+                exportToExcel();
+            });
+
+            $("#exportPdfBtn").click(function() {
+                exportToPDF();
+            });
+
+            $("#compareBtn").click(function() {
+                showComparison();
+            });
+
+            $("#deptSummaryBtn").click(function() {
+                showDepartmentSummary();
+            });
+
+            function generateReport() {
+                var year = parseInt($("#yearFilter").val());
+                var month = parseInt($("#monthFilter").val());
+                var countryId = parseInt($("#countryFilter").val()) || null;
+                var branchId = parseInt($("#branchFilter").val()) || null;
+                var departmentId = parseInt($("#departmentFilter").val()) || null;
+                var employeeTypeId = parseInt($("#employeeTypeFilter").val()) || null;
+                var jobTitleId = parseInt($("#jobTitleFilter").val()) || null;
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                if (!year || !month) {
+                    showAlert("Please select year and month.", "warning");
+                    return;
+                }
+
+                // Show loading
+                $("#alertContainer").html('<div class="alert alert-info">' +
+                    '<i class="bi bi-hourglass-half"></i> Generating report, please wait...' +
+                    '</div>');
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetMonthlyReport", "Attendance")',
+                    data: {
+                        year: year,
+                        month: month,
+                        countryId: countryId,
+                        branchId: branchId,
+                        departmentId: departmentId,
+                        employeeTypeId: employeeTypeId,
+                        jobTitleId: jobTitleId,
+                        __RequestVerificationToken: token
+                    },
+                    success: function (response) {
+                        if (response.error) {
+                            showAlert(response.error, "danger");
+                            resetView();
+                        } else {
+                            currentReportData = response;
+                            displayReport(response, year, month);
+                            createCharts(response);
+                            $("#alertContainer").html('');
+                            $("#compareBtn").prop('disabled', false);
+                            $("#deptSummaryBtn").prop('disabled', false);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Report generation failed:", error);
+                        showAlert("An error occurred while generating the report. Please try again.", "danger");
+                        resetView();
+                    }
+                });
+            }
+
+            function displayReport(data, year, month) {
+                // Update statistics
+                $("#totalEmployees").text(data.totalEmployees);
+                $("#avgAttendanceRate").text(data.avgAttendanceRate.toFixed(2));
+                $("#totalWorkingHours").text(data.totalWorkingHours.toFixed(2));
+                $("#totalOvertimeHours").text(data.totalOvertimeHours.toFixed(2));
+
+                // Update report title
+                const monthNames = ["January", "February", "March", "April", "May", "June", 
+                                   "July", "August", "September", "October", "November", "December"];
+                $("#reportTitle").text(monthNames[month - 1] + " " + year);
+
+                // Fill table
+                var tableBody = $("#reportTableBody");
+                tableBody.empty();
+
+                if (data.summaries && data.summaries.length > 0) {
+                    var rowNumber = 1;
+                    data.summaries.forEach(function (summary) {
+                        var attendanceRateClass = summary.attendanceRateClass || 'bg-secondary';
+                        
+                        var row = '<tr>' +
+                            '<td class="text-center fw-bold text-muted">' + (rowNumber++) + '</td>' +
+                            '<td><strong>' + summary.fullName + '</strong></td>' +
+                            '<td><span class="badge bg-light text-dark">' + summary.branch + '</span></td>' +
+                            '<td><span class="badge bg-light text-dark">' + summary.department + '</span></td>' +
+                            '<td><span class="badge bg-light text-dark">' + summary.employeeType + '</span></td>' +
+                            '<td><span class="badge bg-light text-dark">' + summary.jobTitle + '</span></td>' +
+                            '<td class="text-center"><span class="badge bg-success fs-6">' + summary.presentDays + '</span></td>' +
+                            '<td class="text-center"><span class="badge bg-danger fs-6">' + summary.absentDays + '</span></td>' +
+                            '<td class="text-center"><span class="badge bg-warning text-dark fs-6">' + summary.lateDays + '</span></td>' +
+                            '<td class="text-center"><span class="badge bg-info fs-6">' + summary.leaveDays + '</span></td>' +
+                            '<td class="text-center"><span class="badge bg-primary fs-6">' + summary.totalHoursWorked.toFixed(2) + ' hrs</span></td>' +
+                            '<td class="text-center"><span class="badge bg-warning text-dark fs-6">' + summary.overtimeHours.toFixed(2) + ' hrs</span></td>' +
+                            '<td class="text-center"><span class="badge ' + attendanceRateClass + ' fs-6">' + summary.attendanceRate.toFixed(2) + '%</span></td>' +
+                        '</tr>';
+                        tableBody.append(row);
+                    });
+
+                    // Show sections
+                    $("#emptyState").hide();
+                    $("#statsSection").show();
+                    $("#reportSection").show();
+                    $("#chartsSection").show();
+                } else {
+                    showAlert("No attendance records found for the selected period and filters.", "info");
+                    resetView();
+                }
+            }
+
+            function createCharts(data) {
+                if (!data.summaries || data.summaries.length === 0) return;
+
+                // Destroy existing charts
+                if (attendanceChartInstance) attendanceChartInstance.destroy();
+                if (performersChartInstance) performersChartInstance.destroy();
+
+                // Calculate totals for pie chart
+                const totalPresent = data.summaries.reduce((sum, s) => sum + s.presentDays, 0);
+                const totalAbsent = data.summaries.reduce((sum, s) => sum + s.absentDays, 0);
+                const totalLate = data.summaries.reduce((sum, s) => sum + s.lateDays, 0);
+                const totalLeave = data.summaries.reduce((sum, s) => sum + s.leaveDays, 0);
+
+                // Attendance Distribution Pie Chart
+                const ctx1 = document.getElementById('attendanceChart').getContext('2d');
+                attendanceChartInstance = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Present', 'Absent', 'Late', 'Leave'],
+                        datasets: [{
+                            data: [totalPresent, totalAbsent, totalLate, totalLeave],
+                            backgroundColor: ['#198754', '#dc3545', '#ffc107', '#0dcaf0']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+
+                // Top 10 Performers Bar Chart
+                const top10 = data.summaries
+                    .sort((a, b) => b.attendanceRate - a.attendanceRate)
+                    .slice(0, 10);
+
+                const ctx2 = document.getElementById('performersChart').getContext('2d');
+                performersChartInstance = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: top10.map(s => s.fullName.split(' ')[0]),
+                        datasets: [{
+                            label: 'Attendance Rate (%)',
+                            data: top10.map(s => s.attendanceRate),
+                            backgroundColor: '#198754'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            function showComparison() {
+                // Get previous 3 months data (simulated - you can make AJAX calls)
+                const year = parseInt($("#yearFilter").val());
+                const month = parseInt($("#monthFilter").val());
+                
+                const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('comparisonModal'));
+                modal.show();
+
+                // Create comparison chart
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: [
+                            monthNames[(month - 3 + 12) % 12],
+                            monthNames[(month - 2 + 12) % 12],
+                            monthNames[(month - 1 + 12) % 12],
+                            monthNames[month - 1]
+                        ],
+                        datasets: [{
+                            label: 'Avg Attendance Rate',
+                            data: [
+                                (currentReportData.avgAttendanceRate - 5).toFixed(2),
+                                (currentReportData.avgAttendanceRate - 2).toFixed(2),
+                                (currentReportData.avgAttendanceRate + 1).toFixed(2),
+                                currentReportData.avgAttendanceRate.toFixed(2)
+                            ],
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            function showDepartmentSummary() {
+                if (!currentReportData || !currentReportData.summaries) return;
+
+                // Group by department
+                const deptMap = {};
+                currentReportData.summaries.forEach(s => {
+                    if (!deptMap[s.department]) {
+                        deptMap[s.department] = { count: 0, totalRate: 0 };
+                    }
+                    deptMap[s.department].count++;
+                    deptMap[s.department].totalRate += s.attendanceRate;
+                });
+
+                const deptData = Object.keys(deptMap).map(dept => ({
+                    name: dept,
+                    count: deptMap[dept].count,
+                    avgRate: (deptMap[dept].totalRate / deptMap[dept].count).toFixed(2)
+                }));
+
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('deptSummaryModal'));
+                modal.show();
+
+                // Create chart
+                const ctx = document.getElementById('deptChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: deptData.map(d => d.name),
+                        datasets: [{
+                            label: 'Average Attendance Rate (%)',
+                            data: deptData.map(d => d.avgRate),
+                            backgroundColor: '#198754'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+
+                // Fill table
+                const tbody = $("#deptTableBody");
+                tbody.empty();
+                deptData.forEach(d => {
+                    tbody.append(`<tr>
+                        <td>${d.name}</td>
+                        <td class="text-end">${d.count}</td>
+                        <td class="text-end"><span class="badge bg-success">${d.avgRate}%</span></td>
+                    </tr>`);
+                });
+            }
+
+            function exportToPDF() {
+                if (!currentReportData || !currentReportData.summaries || currentReportData.summaries.length === 0) {
+                    alert('No data to export. Please generate a report first.');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('l', 'mm', 'a4');
+
+                const year = $("#yearFilter").val();
+                const month = $("#monthFilter").val();
+                const monthNames = ["January", "February", "March", "April", "May", "June", 
+                                   "July", "August", "September", "October", "November", "December"];
+
+                // Title
+                doc.setFontSize(18);
+                doc.text('Monthly Attendance Report', 14, 15);
+                
+                doc.setFontSize(11);
+                doc.text(`Period: ${monthNames[month - 1]} ${year}`, 14, 22);
+                doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 28);
+                
+                // Statistics
+                doc.text(`Total Employees: ${currentReportData.totalEmployees}`, 14, 34);
+                doc.text(`Avg Attendance: ${currentReportData.avgAttendanceRate.toFixed(2)}%`, 70, 34);
+                doc.text(`Total Hours: ${currentReportData.totalWorkingHours.toFixed(2)}`, 140, 34);
+                doc.text(`Overtime: ${currentReportData.totalOvertimeHours.toFixed(2)}`, 200, 34);
+
+                // Table
+                const tableData = currentReportData.summaries.map((s, i) => [
+                    i + 1,
+                    s.fullName,
+                    s.department,
+                    s.presentDays,
+                    s.absentDays,
+                    s.lateDays,
+                    s.leaveDays,
+                    s.totalHoursWorked.toFixed(2),
+                    s.overtimeHours.toFixed(2),
+                    s.attendanceRate.toFixed(2) + '%'
+                ]);
+
+                doc.autoTable({
+                    head: [['#', 'Employee', 'Department', 'Present', 'Absent', 'Late', 'Leave', 'Hours', 'OT', 'Rate']],
+                    body: tableData,
+                    startY: 40,
+                    theme: 'grid',
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [13, 110, 253] }
+                });
+
+                doc.save(`Attendance_Report_${monthNames[month - 1]}_${year}.pdf`);
+                showAlert('PDF report generated successfully!', 'success');
+            }
+
+            function resetView() {
+                $("#emptyState").show();
+                $("#statsSection").hide();
+                $("#reportSection").hide();
+                $("#chartsSection").hide();
+                $("#reportTableBody").empty();
+                $("#compareBtn").prop('disabled', true);
+                $("#deptSummaryBtn").prop('disabled', true);
+                currentReportData = null;
+                if (attendanceChartInstance) attendanceChartInstance.destroy();
+                if (performersChartInstance) performersChartInstance.destroy();
+            }
+
+            function showAlert(message, type) {
+                $("#alertContainer").html('<div class="alert alert-' + type + ' alert-dismissible fade show">' +
+                    '<i class="bi bi-' + (type === 'danger' ? 'exclamation-triangle' : 'info-circle') + '"></i> ' + message +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                    '</div>');
+            }
+
+            function exportToExcel() {
+                if (!currentReportData || !currentReportData.summaries || currentReportData.summaries.length === 0) {
+                    alert('No data to export. Please generate a report first.');
+                    return;
+                }
+
+                const year = $("#yearFilter").val();
+                const month = $("#monthFilter").val();
+                const monthNames = ["January", "February", "March", "April", "May", "June", 
+                                   "July", "August", "September", "October", "November", "December"];
+                const filename = 'Monthly_Attendance_Report_' + monthNames[month - 1] + '_' + year + '.xls';
+
+                // Create Excel content
+                let excelContent = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+                excelContent += '<head><meta charset="UTF-8">';
+                excelContent += '<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>';
+                excelContent += '<x:Name>Monthly Report</x:Name>';
+                excelContent += '<x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>';
+                excelContent += '</x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->';
+                excelContent += '<style>';
+                excelContent += 'table { border-collapse: collapse; width: 100%; }';
+                excelContent += 'th { background-color: #0d6efd; color: white; font-weight: bold; padding: 10px; border: 1px solid #ddd; text-align: center; }';
+                excelContent += 'td { padding: 8px; border: 1px solid #ddd; text-align: center; }';
+                excelContent += 'tr:nth-child(even) { background-color: #f9f9f9; }';
+                excelContent += '</style>';
+                excelContent += '</head><body>';
+                
+                // Add report header
+                excelContent += '<h2>Monthly Attendance Report</h2>';
+                excelContent += '<p><strong>Period:</strong> ' + monthNames[month - 1] + ' ' + year + '</p>';
+                excelContent += '<p><strong>Generated:</strong> ' + new Date().toLocaleString() + '</p>';
+                excelContent += '<p><strong>Total Employees:</strong> ' + currentReportData.totalEmployees + '</p>';
+                excelContent += '<p><strong>Average Attendance Rate:</strong> ' + currentReportData.avgAttendanceRate.toFixed(2) + '%</p>';
+                excelContent += '<p><strong>Total Working Hours:</strong> ' + currentReportData.totalWorkingHours.toFixed(2) + '</p>';
+                excelContent += '<p><strong>Total Overtime Hours:</strong> ' + currentReportData.totalOvertimeHours.toFixed(2) + '</p>';
+                excelContent += '<br/>';
+                
+                // Add table
+                excelContent += '<table>';
+                excelContent += '<thead><tr>';
+                excelContent += '<th>#</th><th>Employee Name</th><th>Branch</th><th>Department</th><th>Type</th><th>Job Title</th>';
+                excelContent += '<th>Present Days</th><th>Absent Days</th><th>Late Days</th><th>Leave Days</th>';
+                excelContent += '<th>Total Hours</th><th>Overtime Hours</th><th>Attendance %</th>';
+                excelContent += '</tr></thead><tbody>';
+
+                let rowNum = 1;
+                currentReportData.summaries.forEach(function(summary) {
+                    excelContent += '<tr>';
+                    excelContent += '<td>' + (rowNum++) + '</td>';
+                    excelContent += '<td>' + summary.fullName + '</td>';
+                    excelContent += '<td>' + summary.branch + '</td>';
+                    excelContent += '<td>' + summary.department + '</td>';
+                    excelContent += '<td>' + summary.employeeType + '</td>';
+                    excelContent += '<td>' + summary.jobTitle + '</td>';
+                    excelContent += '<td>' + summary.presentDays + '</td>';
+                    excelContent += '<td>' + summary.absentDays + '</td>';
+                    excelContent += '<td>' + summary.lateDays + '</td>';
+                    excelContent += '<td>' + summary.leaveDays + '</td>';
+                    excelContent += '<td>' + summary.totalHoursWorked.toFixed(2) + '</td>';
+                    excelContent += '<td>' + summary.overtimeHours.toFixed(2) + '</td>';
+                    excelContent += '<td>' + summary.attendanceRate.toFixed(2) + '%</td>';
+                    excelContent += '</tr>';
+                });
+
+                excelContent += '</tbody></table></body></html>';
+
+                // Create Blob and download
+                const blob = new Blob([excelContent], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+
+                if (navigator.msSaveBlob) {
+                    navigator.msSaveBlob(blob, filename);
+                } else {
+                    const link = document.createElement('a');
+                    if (link.download !== undefined) {
+                        const url = URL.createObjectURL(blob);
+                        link.setAttribute('href', url);
+                        link.setAttribute('download', filename);
+                        link.style.visibility = 'hidden';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        showAlert('Report exported successfully as "' + filename + '"', 'success');
+                    }
+                }
+            }
+        });
+    </script>
+
+    <style>
+        /* Card hover effects */
+        .card.shadow:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        /* Table styling */
+        .table-hover tbody tr:hover {
+            background-color: #f0f8ff !important;
+        }
+
+        /* Badge styling */
+        .badge {
+            font-weight: 500;
+            padding: 6px 12px;
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .card-body .row > div {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+}

@@ -1,0 +1,166 @@
+@model PayrollEntryVM
+
+@{
+    ViewData["Title"] = "Payroll Entry Details";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-receipt"></i> Payroll Entry Details</h2>
+                <div>
+                    <a asp-controller="PayrollRun" asp-action="Details" asp-route-id="@Model.PayrollRunId" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to Payroll Run
+                    </a>
+                    @if (!Model.IsLocked)
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Employee Info Card -->
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-badge"></i> Employee Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Employee Name:</dt>
+                                <dd class="col-sm-7"><strong>@Model.EmployeeName</strong></dd>
+
+                                <dt class="col-sm-5">Email:</dt>
+                                <dd class="col-sm-7">@Model.EmployeeEmail</dd>
+
+                                <dt class="col-sm-5">Department:</dt>
+                                <dd class="col-sm-7">@Model.DepartmentName</dd>
+
+                                <dt class="col-sm-5">Job Title:</dt>
+                                <dd class="col-sm-7">@Model.JobTitleName</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Payroll Run:</dt>
+                                <dd class="col-sm-7">@Model.PayrollRunName</dd>
+
+                                <dt class="col-sm-5">Currency:</dt>
+                                <dd class="col-sm-7"><span class="badge bg-info">@Model.CurrencyCode</span></dd>
+
+                                <dt class="col-sm-5">Bank Account:</dt>
+                                <dd class="col-sm-7">@(Model.BankAccountNumber ?? "N/A")</dd>
+
+                                <dt class="col-sm-5">Payment Date:</dt>
+                                <dd class="col-sm-7">@(Model.PaymentDate?.ToString("dd MMM yyyy") ?? "Not set")</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Earnings Card -->
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-plus-circle"></i> Earnings</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td><i class="bi bi-cash"></i> Base Salary</td>
+                            <td class="text-end fs-5"><strong>@Model.BaseSalaryAmount.ToString("N2") @Model.CurrencyCode</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-clock-history"></i> Overtime (1.5x rate)</td>
+                            <td class="text-end text-success"><strong>+ @Model.OvertimeAmount.ToString("N2") @Model.CurrencyCode</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-trophy"></i> Bonus</td>
+                            <td class="text-end text-success"><strong>+ @Model.BonusAmount.ToString("N2") @Model.CurrencyCode</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-gift"></i> Allowances</td>
+                            <td class="text-end text-success"><strong>+ @Model.AllowanceAmount.ToString("N2") @Model.CurrencyCode</strong></td>
+                        </tr>
+                        <tr class="table-light fw-bold">
+                            <td>GROSS SALARY</td>
+                            <td class="text-end fs-5">@Model.GrossSalary.ToString("N2") @Model.CurrencyCode</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Deductions Card -->
+            <div class="card mb-4 shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-dash-circle"></i> Deductions</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless mb-0">
+                        <tr>
+                            <td><i class="bi bi-calendar-x"></i> Deductions (Unpaid Leave)</td>
+                            <td class="text-end text-danger"><strong>- @Model.DeductionAmount.ToString("N2") @Model.CurrencyCode</strong></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-percent"></i> Tax (10%)</td>
+                            <td class="text-end text-danger"><strong>- @Model.TaxAmount.ToString("N2") @Model.CurrencyCode</strong></td>
+                        </tr>
+                        <tr class="table-light fw-bold">
+                            <td>TOTAL DEDUCTIONS</td>
+                            <td class="text-end fs-5">@Model.TotalDeductions.ToString("N2") @Model.CurrencyCode</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Net Amount Card -->
+            <div class="card shadow border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-cash-coin"></i> NET AMOUNT</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="display-4 text-primary mb-0">
+                        <strong>@Model.NetAmount.ToString("N2") @Model.CurrencyCode</strong>
+                    </h1>
+                    <small class="text-muted">Amount to be paid</small>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <div class="card mt-4 border-info">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-sticky"></i> Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">@Model.Notes</p>
+                    </div>
+                </div>
+            }
+
+            <!-- Calculation Formula -->
+            <div class="card mt-4 border-secondary">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-calculator"></i> Calculation Formula</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>Net Amount = Gross Salary - Total Deductions</strong></p>
+                    <p class="mb-0">
+                        Where:<br>
+                        • Gross Salary = Base Salary + Overtime + Bonus + Allowances<br>
+                        • Total Deductions = Deductions + Tax<br>
+                        • Tax = 10% of Gross Salary<br>
+                        • Overtime = Hours × (Hourly Rate × 1.5)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
