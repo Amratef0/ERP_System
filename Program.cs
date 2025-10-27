@@ -1,3 +1,4 @@
+using System;
 using ERP_System_Project.BackgroundServices;
 using ERP_System_Project.Extensions;
 using ERP_System_Project.Middlewares;
@@ -12,6 +13,7 @@ using ERP_System_Project.Services.Implementation.ECommerce;
 using ERP_System_Project.Services.Implementation.HR;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Implementation.Log;
+using ERP_System_Project.Services.Implementation.System_Security;
 using ERP_System_Project.Services.Interfaces;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.CRM;
@@ -19,6 +21,7 @@ using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.Services.Interfaces.Inventory;
 using ERP_System_Project.Services.Interfaces.Log;
+using ERP_System_Project.Services.Interfaces.System_Security;
 using ERP_System_Project.UOW;
 using ERP_System_Project.Validators.HR;
 using ERP_System_Project.Validators.Inventory;
@@ -27,7 +30,6 @@ using FluentValidation.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -173,6 +175,8 @@ builder.Services.AddScoped<IPayrollRunService, PayrollRunService>();
 // Log Services
 builder.Services.AddScoped<IPerformanceLogService, PerformanceLogService>();
 
+// User Services
+builder.Services.AddScoped<IUserService, UserService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

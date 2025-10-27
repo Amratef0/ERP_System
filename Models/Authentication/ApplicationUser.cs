@@ -12,6 +12,7 @@ namespace ERP_System_Project.Models.Authentication
     {
         public int CustomerId { get; set; }
         public virtual Customer? Customer { get; set; }
+        public int? EmployeeId { get; set; }
 
         public virtual Employee? Employee { get; set; }
 
@@ -36,5 +37,6 @@ namespace ERP_System_Project.Models.Authentication
             get => $"{FirstName} {LastName}";
             set => base.UserName = value;
         }
+        public bool IsActive { get; internal set; }
     }
 }

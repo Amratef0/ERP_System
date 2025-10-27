@@ -90,59 +90,67 @@ namespace ERP_System_Project.Models
 
 
         protected override void OnModelCreating(ModelBuilder builder)
-{
-    base.OnModelCreating(builder);
+        {
+            base.OnModelCreating(builder);
 
-    // PurchaseOrder -> Warehouse
-    builder.Entity<PurchaseOrder>()
-        .HasOne(p => p.Warehouse)
-        .WithMany(w => w.PurchaseOrders)
-        .HasForeignKey(p => p.WarehouseId)
-        .OnDelete(DeleteBehavior.NoAction);
+            // PurchaseOrder -> Warehouse
+            builder.Entity<PurchaseOrder>()
+                .HasOne(p => p.Warehouse)
+                .WithMany(w => w.PurchaseOrders)
+                .HasForeignKey(p => p.WarehouseId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-    // PurchaseOrder -> WarehouseProduct
-    builder.Entity<PurchaseOrder>()
-        .HasOne(p => p.WarehouseProduct)
-        .WithMany()
-        .HasForeignKey(p => p.WarehouseProductId)
-        .OnDelete(DeleteBehavior.NoAction);
+            // PurchaseOrder -> WarehouseProduct
+            builder.Entity<PurchaseOrder>()
+                .HasOne(p => p.WarehouseProduct)
+                .WithMany()
+                .HasForeignKey(p => p.WarehouseProductId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-    // WarehouseProduct -> Warehouse
-    builder.Entity<WarehouseProduct>()
-        .HasOne(wp => wp.Warehouse)
-        .WithMany(w => w.WarehouseProducts)
-        .HasForeignKey(wp => wp.WarehouseId)
-        .OnDelete(DeleteBehavior.NoAction);
+            // WarehouseProduct -> Warehouse
+            builder.Entity<WarehouseProduct>()
+                .HasOne(wp => wp.Warehouse)
+                .WithMany(w => w.WarehouseProducts)
+                .HasForeignKey(wp => wp.WarehouseId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-    // SupplierProduct -> Supplier
-    builder.Entity<SupplierProduct>()
-        .HasOne(sp => sp.Supplier)
-        .WithMany()
-        .HasForeignKey(sp => sp.SupplierId)
-        .OnDelete(DeleteBehavior.NoAction);
+            // SupplierProduct -> Supplier
+            builder.Entity<SupplierProduct>()
+                .HasOne(sp => sp.Supplier)
+                .WithMany()
+                .HasForeignKey(sp => sp.SupplierId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-    // SupplierProduct -> Product
-    builder.Entity<SupplierProduct>()
-        .HasOne(sp => sp.Product)
-        .WithMany()
-        .HasForeignKey(sp => sp.ProductId)
-        .OnDelete(DeleteBehavior.Cascade);
+            // SupplierProduct -> Product
+            builder.Entity<SupplierProduct>()
+                .HasOne(sp => sp.Product)
+                .WithMany()
+                .HasForeignKey(sp => sp.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-    // Product -> Brand
-    builder.Entity<Product>()
-        .HasOne(p => p.Brand)
-        .WithMany(b => b.Products)
-        .HasForeignKey(p => p.BrandId)
-        .OnDelete(DeleteBehavior.Cascade);
+            // Product -> Brand
+            builder.Entity<Product>()
+                .HasOne(p => p.Brand)
+                .WithMany(b => b.Products)
+                .HasForeignKey(p => p.BrandId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-    // Product -> Category
-    builder.Entity<Product>()
-        .HasOne(p => p.Category)
-        .WithMany(c => c.Products)
-        .HasForeignKey(p => p.CategoryId)
-        .OnDelete(DeleteBehavior.Cascade);
+            // Product -> Category
+            builder.Entity<Product>()
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-    builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
+            // User -> Employee
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Employee)
+                .WithOne(e => e.ApplicationUser)
+                .HasForeignKey<ApplicationUser>(u => u.EmployeeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            builder.ApplyConfigurationsFromAssembly(typeof(EmployeeConfig).Assembly);
 }
     }
 }

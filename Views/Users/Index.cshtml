@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ERP_System_Project.ViewModels.User.UserViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h3>Users</h3>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>Active</th>
+            <th>EmployeeId</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>@user.IsActive</td>
+            <td>@user.EmployeeId</td>
+            <td>@string.Join(", ", user.Roles ?? Enumerable.Empty<string>())</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Edit</a>
+                <form asp-action="Delete" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@user.Id" />
+                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete user?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

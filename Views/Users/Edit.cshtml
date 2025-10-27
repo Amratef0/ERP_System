@@ -1,0 +1,46 @@
+﻿@model ERP_System_Project.ViewModels.User.UserViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h3>Edit User</h3>
+
+<form asp-action="Edit" method="post">
+    <div class="form-group">
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsActive"></label>
+        <input asp-for="IsActive" type="checkbox" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EmployeeId"></label>
+        <input asp-for="EmployeeId" class="form-control" />
+    </div>
+
+   <div class="form-group">
+    <label>Roles</label>
+    @foreach (var role in Model.AllRoles)
+    {
+        <div class="form-check">
+            <input type="checkbox" name="SelectedRoles" value="@role"
+                   class="form-check-input"
+                   @(Model.Roles.Contains(role) ? "checked" : "") />
+            <label class="form-check-label">@role</label>
+        </div>
+    }
+</div>
+
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
