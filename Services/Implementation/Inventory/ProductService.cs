@@ -137,6 +137,12 @@ namespace ERP_System_Project.Services.Implementation.Inventory
 
         }
 
+        public async Task<string> GetProductImagePathAsync(int productId)
+            => await _uow.Products.GetAsync(
+                filter :p => p.Id == productId,
+                selector : p => p.ImageURL
+                ) ?? "";
+
 
         public async Task<PageSourcePagination<ProductCardVM>> GetFavoriteProductsPaginatedAsync(
       int customerId, int pageNumber, int pageSize, string? searchByName = null, string? brandName = null, string? categoryName = null,

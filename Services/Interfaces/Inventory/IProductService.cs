@@ -43,6 +43,7 @@ namespace ERP_System_Project.Services.Interfaces.Inventory
         Task<ProductDetailsVM> GetProductDetails(int productId);
         Task AddNewProduct(ProductVM product);
         Task<EditProductVM> GetCustomProduct(int productId);
+        Task<string> GetProductImagePathAsync(int productId);
         Task UpdateCustomProduct(EditProductVM product);
 
         //Task<PageSourcePagination<AttributeVM>> GetAllAttributesPaginated(int pageNumber, int pageSize, string? searchByName = null);

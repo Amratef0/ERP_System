@@ -112,6 +112,8 @@ namespace ERP_System_Project.Controllers.Inventory
             }
             foreach (var error in result.Errors)
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            // solve problem of clearing image field
+            productVM.ImageURL = await _productService.GetProductImagePathAsync(productVM.Id);
             return View(productVM);
         }
 
