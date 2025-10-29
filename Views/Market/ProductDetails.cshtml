@@ -634,65 +634,45 @@
             // Initialize highlight on load for checked radios
             document.querySelectorAll('input[type="radio"]:checked').forEach(r => highlightRadioGroup(r));
 
-            // Quantity controls
-            // const decreaseBtn = document.getElementById('decreaseQty');
-            // const increaseBtn = document.getElementById('increaseQty');
-            // const quantityInput = document.getElementById('quantity');
-            // const maxStock = @Model.QuantityInStock;
+            // ===== Quantity Controls =====
+            const decreaseBtn = document.getElementById('decreaseQty');
+            const increaseBtn = document.getElementById('increaseQty');
+            const quantityInput = document.getElementById('quantity');
+            const formQuantityInput = document.getElementById('formQuantity');
+            const maxStock = @Model.QuantityInStock;
 
-            // decreaseBtn?.addEventListener('click', function () {
-            //     if (!quantityInput) return;
-            //     let current = parseInt(quantityInput.value) || 1;
-            //     if (current > 1) quantityInput.value = current - 1;
-            // });
+            function updateQuantity(value) {
+                quantityInput.value = value;
+                formQuantityInput.value = value;
 
-            // increaseBtn?.addEventListener('click', function () {
-            //     if (!quantityInput) return;
-            //     let current = parseInt(quantityInput.value) || 1;
-            //     if (current < maxStock) quantityInput.value = current + 1;
-            // });
-
-            // quantityInput?.addEventListener('change', function () {
-            //     let value = parseInt(this.value);
-            //     if (isNaN(value) || value < 1) this.value = 1;
-            //     else if (value > maxStock) this.value = maxStock;
-            // });
-                    // Quantity controls
-        const decreaseBtn = document.getElementById('decreaseQty');
-        const increaseBtn = document.getElementById('increaseQty');
-        const quantityInput = document.getElementById('quantity');
-        const formQuantityInput = document.getElementById('formQuantity');
-        const maxStock = @Model.QuantityInStock;
-
-        function updateQuantity(value) {
-            quantityInput.value = value;
-            formQuantityInput.value = value;
-        }
-
-        decreaseBtn?.addEventListener('click', function () {
-            if (!quantityInput) return;
-            let current = parseInt(quantityInput.value) || 1;
-            if (current > 1) updateQuantity(current - 1);
-        });
-
-        increaseBtn?.addEventListener('click', function () {
-            if (!quantityInput) return;
-            let current = parseInt(quantityInput.value) || 1;
-            if (current < maxStock) updateQuantity(current + 1);
-        });
-
-        quantityInput?.addEventListener('change', function () {
-            let value = parseInt(this.value);
-            if (isNaN(value) || value < 1) {
-                value = 1;
-            } else if (value > maxStock) {
-                value = maxStock;
+                // تحديث المظهر وقت التغيير
+                quantityInput.style.transform = "scale(1.1)";
+                setTimeout(() => quantityInput.style.transform = "scale(1)", 150);
             }
-            updateQuantity(value);
-        });
+
+            decreaseBtn?.addEventListener('click', function () {
+                if (!quantityInput) return;
+                let current = parseInt(quantityInput.value) || 1;
+                if (current > 1) updateQuantity(current - 1);
+            });
+
+            increaseBtn?.addEventListener('click', function () {
+                if (!quantityInput) return;
+                let current = parseInt(quantityInput.value) || 1;
+                if (current < maxStock) updateQuantity(current + 1);
+            });
+
+            quantityInput?.addEventListener('change', function () {
+                let value = parseInt(this.value);
+                if (isNaN(value) || value < 1) {
+                    value = 1;
+                } else if (value > maxStock) {
+                    value = maxStock;
+                }
+                updateQuantity(value);
+            });
 
         }); // DOMContentLoaded
-        
     </script>
 }
 
@@ -704,11 +684,11 @@
         padding: 1rem 1.5rem;
     }
 
-    .nav-underline .nav-link.active {
-        color: #0d6efd;
-        border-bottom: 3px solid #0d6efd;
-        background: transparent;
-    }
+        .nav-underline .nav-link.active {
+            color: #0d6efd;
+            border-bottom: 3px solid #0d6efd;
+            background: transparent;
+        }
 
     .review-item:last-child {
         border-bottom: none !important;
@@ -720,14 +700,41 @@
         cursor: pointer;
     }
 
-    .input-group .btn {
-        border-color: #dee2e6;
+    .input-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        margin: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        overflow: hidden;
     }
 
-    .input-group .form-control {
-        border-left: none;
-        border-right: none;
-    }
+        .input-group .btn {
+            background-color: #007bff;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            width: 40px;
+            height: 40px;
+            transition: 0.2s ease;
+        }
+
+            .input-group .btn:hover {
+                background-color: #0056b3;
+            }
+
+        .input-group .form-control {
+            border: none;
+            width: 60px;
+            height: 40px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            outline: none;
+        }
 
     .tab-content {
         min-height: 300px;
