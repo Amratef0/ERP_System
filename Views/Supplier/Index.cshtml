@@ -4,38 +4,45 @@
     ViewData["Title"] = "Suppliers";
 }
 
-<h2>Suppliers</h2>
+<div class="suppliers-page">
+    <div class="card">
+        <h2>Suppliers</h2>
+        <a asp-action="Create" class="floating-btn" title="Add New Supplier">
+            <i class="fa-solid fa-plus"></i>
+        </a>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add New Supplier</a>
-</p>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Contact</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>TaxId</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.SupplierCode</td>
-                <td>@item.SupplierName</td>
-              
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.SupplierId" class="btn btn-info btn-sm">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@item.SupplierId" class="btn btn-warning btn-sm">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.SupplierId" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="Code">@item.SupplierCode</td>
+                        <td data-label="Name">@item.SupplierName</td>
+                        <td data-label="Category">@item.SupplierCategory?.CategoryName</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <a asp-action="Details" asp-route-id="@item.SupplierId" class="btn btn-view btn-sm"><i class="fa-solid fa-eye"></i></a>
+                                <a asp-action="Edit" asp-route-id="@item.SupplierId" class="btn btn-update btn-sm"><i class="fa-solid fa-pen"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.SupplierId" class="btn btn-delete btn-sm"><i class="fa-solid fa-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+  <link rel="stylesheet" href="~/css/Purchase/Supplier/Index.css">
+
+
