@@ -1,0 +1,131 @@
+﻿/* ===================== GENERAL MODAL WRAPPER ===================== */
+.general-modal-wrapper {
+    --modal-bg: var(--color-bg-content);
+    --modal-text: var(--color-text-main);
+    --modal-accent: var(--color-accent);
+    --modal-muted: var(--color-text-muted);
+    --modal-shadow: rgba(0, 0, 0, 0.2);
+}
+
+    /* Animation and Layout */
+    .general-modal-wrapper .modal.fade .modal-dialog {
+        transform: scale(0.9) translateY(20px);
+        opacity: 0;
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .general-modal-wrapper .modal.show .modal-dialog {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+
+    /* Modal Content */
+    .general-modal-wrapper .modal-content {
+        border-radius: 20px;
+        border: none;
+        background-color: var(--modal-bg);
+        color: var(--modal-text);
+        box-shadow: 0 8px 25px var(--modal-shadow);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    /* Header */
+    .general-modal-wrapper .modal-header {
+        background: linear-gradient(135deg, var(--modal-accent), var(--color-hover-accent));
+        color: var(--color-text-contrast, #fdfdfd);
+        border-bottom: none;
+        padding: 1rem 1.5rem;
+        position: relative;
+    }
+
+        .general-modal-wrapper .modal-header h5 {
+            color: var(--color-text-contrast, #ffffff);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .general-modal-wrapper .modal-header::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0.15), transparent, rgba(255,255,255,0.15));
+            transform: translateX(-100%);
+            animation: shine 3s infinite linear;
+        }
+
+@@keyframes shine {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Body */
+.general-modal-wrapper .modal-body {
+    padding: 1.8rem;
+    background: var(--modal-bg);
+    color: var(--modal-text);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    animation: bodyFade 0.4s ease-in-out;
+}
+
+@@keyframes bodyFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Spinner */
+.general-modal-wrapper .spinner-border {
+    color: var(--modal-accent);
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+/* Buttons in footer (if added) */
+.general-modal-wrapper .modal-footer {
+    background: var(--modal-bg);
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+    .general-modal-wrapper .modal-footer .btn {
+        border-radius: 10px;
+        padding: 0.6rem 1.3rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+.general-modal-wrapper .btn-primary {
+    background: var(--modal-accent);
+    border: none;
+    color: #fff;
+}
+
+    .general-modal-wrapper .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px var(--modal-accent);
+    }
+
+.general-modal-wrapper .btn-secondary {
+    border: 1px solid var(--modal-accent);
+    color: var(--modal-accent);
+    background: transparent;
+}
+
+    .general-modal-wrapper .btn-secondary:hover {
+        background: var(--modal-accent);
+        color: #fff;
+    }
