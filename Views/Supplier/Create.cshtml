@@ -1,39 +1,28 @@
-﻿
-    @model ERP_System_Project.Models.Supplier
+﻿@model ERP_System_Project.Models.Supplier
 
-<div class="create-supplier">
+<h2>Create Supplier</h2>
 
-    <div class="form"> 
-        <h3 class="formTitle" id="form-title">Add Supplier</h3>
-
-        <form id="supplierForm" asp-action="Create" method="post">
-            <div class="form-group">
-                <input asp-for="SupplierName" class="form-control" placeholder=" " />
-                <label asp-for="SupplierName"></label>
-                <span asp-validation-for="SupplierName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input asp-for="SupplierCode" class="form-control" placeholder=" " />
-                <label asp-for="SupplierCode"></label>
-                <span asp-validation-for="SupplierCode" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <select class="form-select" asp-for="SupplierCategoryId" asp-items="@(ViewData["SupplierCategories"] as SelectList)">
-                    <option value="" disabled selected hidden>-- Select Category --</option>
-                </select>
-                <label asp-for="SupplierCategoryId">Category</label>
-                <span asp-validation-for="SupplierCategoryId" class="text-danger"></span>
-            </div>
-
-            <div class="form-buttons">
-                <button type="submit" class="btn btn-primary">Create</button>
-                <a asp-action="Index" class="btn btn-secondary">Back</a>
-            </div>
-        </form>
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="SupplierName"></label>
+        <input asp-for="SupplierName" class="form-control" />
+        <span asp-validation-for="SupplierName" class="text-danger"></span>
     </div>
-</div>
 
-  <link rel="stylesheet" href="~/css/Purchase/Supplier/CreateSupplier.css">
+    <div class="form-group">
+        <label asp-for="SupplierCode"></label>
+        <input asp-for="SupplierCode" class="form-control" />
+        <span asp-validation-for="SupplierCode" class="text-danger"></span>
+    </div>
 
+    <div class="form-group">
+        <label asp-for="SupplierCategoryId">Category</label>
+        <select asp-for="SupplierCategoryId" class="form-control" asp-items="@(ViewData["SupplierCategories"] as SelectList)">
+            <option value="">-- Select Category --</option>
+        </select>
+        <span asp-validation-for="SupplierCategoryId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</form>
