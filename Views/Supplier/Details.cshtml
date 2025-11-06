@@ -4,56 +4,77 @@
     ViewData["Title"] = "Supplier Details";
 }
 
-<h2>Supplier Details</h2>
+<div class="supplier-details-wrapper">
+    <h2 class="title">Supplier Details</h2>
 
-<div>
-    <h4>@Model.SupplierName (@Model.SupplierCode)</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">Category</dt>
-        <dd class="col-sm-9">@Model.SupplierCategory?.CategoryName</dd>
+    <div class="details-section">
+        <h3 class="supplier-name">@Model.SupplierName (@Model.SupplierCode)</h3>
+        <dl class="details-grid">
+            <div class="detail-item">
+                <dt>Category</dt>
+                <dd>@Model.SupplierCategory?.CategoryName</dd>
+            </div>
 
-      
+            <div class="detail-item">
+                <dt>Created</dt>
+                <dd>@Model.CreatedDate?.ToString("yyyy-MM-dd")</dd>
+            </div>
 
-        <dt class="col-sm-3">Created</dt>
-        <dd class="col-sm-9">@Model.CreatedDate</dd>
+            <div class="detail-item">
+                <dt>Modified</dt>
+                <dd>@Model.ModifiedDate?.ToString("yyyy-MM-dd")</dd>
+            </div>
+        </dl>
+    </div>
 
-        <dt class="col-sm-3">Modified</dt>
-        <dd class="col-sm-9">@Model.ModifiedDate</dd>
-    </dl>
+    <div class="lists-section">
+        <h4>Products</h4>
+        @if (Model.SupplierProducts != null && Model.SupplierProducts.Any())
+        {
+            <ul class="item-list">
+                @foreach (var sp in Model.SupplierProducts)
+                {
+                    <li>@sp.Product?.Name</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No products linked to this supplier.</p>
+        }
+
+        <h4>Purchase Orders</h4>
+        @if (Model.PurchaseOrders != null && Model.PurchaseOrders.Any())
+        {
+            <ul class="item-list">
+                @foreach (var po in Model.PurchaseOrders)
+                {
+                    <li>PO#: @po.PurchaseOrderId - Date: @po.OrderDate.ToString("yyyy-MM-dd")</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>No purchase orders found.</p>
+        }
+    </div>
+
+    <div class="viewActions">
+        <div class="left-buttons">
+            <a href="javascript:void(0)" 
+               onclick="openModalWithAjax('@Url.Action("Edit", "Supplier", new { id = Model.SupplierId })', 'Edit Supplier')" 
+               class="btn btn-edit">Edit</a>
+
+            <a href="javascript:void(0)" 
+               onclick="openModalWithAjax('@Url.Action("Delete", "Supplier", new { id = Model.SupplierId })', 'Delete Supplier')" 
+               class="btn btn-delete">Delete</a>
+        </div>
+
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back to List</a>
+        </div>
+    </div>
 </div>
 
-<h4>Products</h4>
-@if (Model.SupplierProducts != null && Model.SupplierProducts.Any())
-{
-    <ul>
-        @foreach (var sp in Model.SupplierProducts)
-        {
-            <li>@sp.Product?.Name</li>
-        }
-    </ul>
-}
-else
-{
-    <p>No products linked to this supplier.</p>
-}
+<link rel="stylesheet" href="@(Url.Content("~/css/Purchase/Supplier/Details.css"))" />
 
-<h4>Purchase Orders</h4>
-@if (Model.PurchaseOrders != null && Model.PurchaseOrders.Any())
-{
-    <ul>
-        @foreach (var po in Model.PurchaseOrders)
-        {
-            <li>PO#: @po.PurchaseOrderId - Date: @po.OrderDate</li>
-        }
-    </ul>
-}
-else
-{
-    <p>No purchase orders found.</p>
-}
-
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.SupplierId" class="btn btn-warning">Edit</a> |
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</p>
