@@ -48,7 +48,12 @@ namespace ERP_System_Project.Controllers
         public IActionResult Create()
         {
             ViewData["SupplierCategories"] = new SelectList(_context.SupplierCategories, "CategoryId", "CategoryName");
-            return View();
+
+            //if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return PartialView("Create");
+
+
+            //return View();
         }
 
         // POST: Create Supplier

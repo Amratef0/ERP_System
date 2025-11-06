@@ -1,0 +1,186 @@
+﻿.create-supplier {
+    padding: 20px;
+}
+
+    .create-supplier .form {
+        background: var(--color-bg-content);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        color: var(--color-text-main);
+    }
+
+        .create-supplier .form:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+    /* Title gradient */
+    .create-supplier h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 25px;
+        font-weight: 600;
+        background: linear-gradient(90deg, #635BFF, #00D4FF, #8E7CFF, #00D4FF, #635BFF);
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: moveGradient 10s linear infinite;
+    }
+
+@@keyframes moveGradient {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 300% center;
+    }
+}
+
+/* Form grid */
+.create-supplier form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+}
+
+/* Form group */
+.create-supplier .form-group {
+    position: relative;
+}
+
+/* Inputs & selects */
+.create-supplier .form-control,
+.create-supplier .form-select {
+    width: 100%;
+    border-radius: 15px;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    background: var(--color-bg-body);
+    color: var(--color-text-main);
+    font-size: 15px;
+    transition: all 0.3s ease;
+    appearance: none;
+}
+
+/* Select arrow */
+.create-supplier .form-select {
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23aaa' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+}
+
+    /* Focus state */
+    .create-supplier .form-control:focus,
+    .create-supplier .form-select:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 8px var(--color-hover-accent);
+        outline: none;
+        background: var(--color-bg-body);
+        color: var(--color-text-main);
+    }
+
+/* Labels floating */
+.create-supplier .form-group label {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    transform: translateY(-50%);
+    padding: 0 6px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    background: var(--color-bg-body);
+}
+
+.create-supplier .form-control:focus + label,
+.create-supplier .form-control:not(:placeholder-shown) + label,
+.create-supplier .form-select:focus + label,
+.create-supplier .form-select:not([value=""]) + label {
+    top: -8px;
+    left: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+/* Options */
+.create-supplier select option {
+    background: var(--color-bg-body);
+    color: var(--color-text-main);
+}
+
+    .create-supplier select option:hover,
+    .create-supplier select option:focus {
+        background: var(--color-accent);
+        color: var(--color-active-accent);
+    }
+
+/* Buttons */
+.create-supplier .form-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.create-supplier .btn {
+    border-radius: 20px;
+    padding: 12px 25px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Create Button */
+.create-supplier .btn-primary {
+    background: linear-gradient(90deg, #635BFF, #8E7CFF, #00D4FF);
+    border: none;
+    color: #fff;
+}
+
+    .create-supplier .btn-primary:hover {
+        background: linear-gradient(90deg, #4d46d3, #6d5cff, #00aadd);
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(99,91,255,0.3);
+    }
+
+/* Back Button */
+.create-supplier .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+}
+
+    .create-supplier .btn-secondary:hover {
+        background: var(--color-accent);
+        color: var(--color-active-accent);
+        transform: scale(1.05);
+    }
+
+/* Responsive */
+@@media (max-width: 600px) {
+    .create-supplier form {
+        grid-template-columns: 1fr;
+    }
+
+    .create-supplier .form-buttons {
+        flex-direction: column;
+    }
+}
+
+/* Autofill fix for dark mode */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-body) inset !important;
+    -webkit-text-fill-color: var(--color-text-main) !important;
+}
