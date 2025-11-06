@@ -40,7 +40,7 @@ namespace ERP_System_Project.Controllers
             if (supplier == null)
                 return NotFound();
 
-            return View(supplier);
+            return PartialView(supplier);
         }
 
         // GET: Create Supplier
@@ -83,7 +83,7 @@ namespace ERP_System_Project.Controllers
             if (supplier == null || !supplier.IsActive) return NotFound();
 
             ViewData["SupplierCategories"] = new SelectList(_context.SupplierCategories, "CategoryId", "CategoryName", supplier.SupplierCategoryId);
-            return View(supplier);
+            return PartialView(supplier);
         }
 
         // POST: Edit Supplier
@@ -116,7 +116,7 @@ namespace ERP_System_Project.Controllers
             if (supplier == null)
                 return NotFound();
 
-            return View(supplier);
+            return PartialView(supplier);
         }
 
         // POST: Supplier/Delete/5
