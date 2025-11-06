@@ -3,21 +3,22 @@
 @{
     ViewData["Title"] = "Suppliers";
 }
+<link rel="stylesheet" href="@(Url.Content("~/css/Purchase/Supplier/Index.css"))" />
 
 <div class="suppliers-page">
     <div class="card">
         <h2>Suppliers</h2>
+
         @* <a asp-action="Create" class="floating-btn" title="Add New Supplier">
             <i class="fa-solid fa-plus"></i>
         </a> *@
 
-     <a href="javascript:void(0)" 
-   onclick="openModalWithAjax('@Url.Action("Create", "Supplier")', 'Add New Supplier')" 
-   class="floating-btn" 
-   title="Add New Supplier">
-   <i class="fa-solid fa-plus"></i>
-</a>
-
+        <a href="javascript:void(0)" 
+           onclick="openModalWithAjax('@Url.Action("Create", "Supplier")', 'Add New Supplier')" 
+           class="floating-btn" 
+           title="Add New Supplier">
+           <i class="fa-solid fa-plus"></i>
+        </a>
 
         <table>
             <thead>
@@ -37,9 +38,30 @@
                         <td data-label="Category">@item.SupplierCategory?.CategoryName</td>
                         <td data-label="Actions">
                             <div class="action-buttons">
-                                <a asp-action="Details" asp-route-id="@item.SupplierId" class="btn btn-view btn-sm"><i class="fa-solid fa-eye"></i></a>
-                                <a asp-action="Edit" asp-route-id="@item.SupplierId" class="btn btn-update btn-sm"><i class="fa-solid fa-pen"></i></a>
-                                <a asp-action="Delete" asp-route-id="@item.SupplierId" class="btn btn-delete btn-sm"><i class="fa-solid fa-trash"></i></a>
+                                <!-- View Button -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Details", "Supplier", new { id = item.SupplierId })', 'View Supplier')" 
+                                   class="btn btn-view btn-sm" 
+                                   title="View Supplier">
+                                   <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <!-- Edit Button -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Edit", "Supplier", new { id = item.SupplierId })', 'Edit Supplier')" 
+                                   class="btn btn-update btn-sm" 
+                                   title="Edit Supplier">
+                                   <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <!-- Delete Button -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Delete", "Supplier", new { id = item.SupplierId })', 'Delete Supplier')" 
+                                   class="btn btn-delete btn-sm" 
+                                   title="Delete Supplier">
+                                   <i class="fa-solid fa-trash"></i>
+                                </a>
+
                             </div>
                         </td>
                     </tr>
@@ -49,7 +71,10 @@
     </div>
 </div>
 
-  <link rel="stylesheet" href="~/css/Purchase/Supplier/Index.css">
+<link rel="stylesheet" href="@(Url.Content("~/css/Purchase/Supplier/Index.css"))" />
+
+
+
 
 @await Html.PartialAsync("_GeneralModal")
 
