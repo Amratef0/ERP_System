@@ -121,12 +121,135 @@ namespace ERP_System_Project.Controllers
 
 
 
+        // GET: PurchaseOrder/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var order = await _context.PurchaseOrders
+                .Include(po => po.WarehouseProduct)
+                .ThenInclude(wp => wp.Product)
+                .FirstOrDefaultAsync(po => po.PurchaseOrderId == id);
+
+            if (order == null)
+                return NotFound();
+
+            // Suppliers
+            ViewData["Suppliers"] = new SelectList(_context.Suppliers.Where(s => s.IsActive), "SupplierId", "SupplierName", order.SupplierId);
+
+            // Warehouses
+            ViewData["Warehouses"] = new SelectList(_context.Warehouses.Where(w => w.IsActive), "WarehouseId", "Name", order.WarehouseId);
+
+            // Products (based on Supplier)
+            var products = _context.SupplierProducts
+                .Include(sp => sp.Product)
+                .Where(sp => sp.SupplierId == order.SupplierId && sp.IsActive)
+                .Select(sp => new { sp.ProductId, sp.Product!.Name })
+                .ToList();
+
+            ViewData["Products"] = new SelectList(products, "ProductId", "Name", order.WarehouseProduct?.ProductId);
+
+            return View(order);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, PurchaseOrder updatedOrder)
+        {
+            if (id != updatedOrder.PurchaseOrderId)
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    updatedOrder.ModifiedDate = DateTime.Now;
+                    _context.Update(updatedOrder);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.PurchaseOrders.Any(e => e.PurchaseOrderId == id))
+                        return NotFound();
+                    else
+                        throw;
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(updatedOrder);
+        }
+
+        // GET: PurchaseOrder/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var order = await _context.PurchaseOrders
+                .Include(po => po.Supplier)
+                .FirstOrDefaultAsync(po => po.PurchaseOrderId == id);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
+
+        // POST: PurchaseOrder/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var order = await _context.PurchaseOrders.FindAsync(id);
+            if (order != null)
+            {
+                _context.PurchaseOrders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
 
 
 
 
+        [HttpGet]
+        public IActionResult GetSupplierProducts(int supplierId)
+        {
+            var products = _context.SupplierProducts
+                .Include(sp => sp.Product)
+                .Where(sp => sp.SupplierId == supplierId && sp.IsActive)
+                .Select(sp => new
+                {
+                    productId = sp.ProductId,
+                    name = sp.Product!.Name
+                })
+                .ToList();
 
+            return Json(products);
+        }
+
+        // GET: PurchaseOrder/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var order = await _context.PurchaseOrders
+                .Include(po => po.Supplier)
+                .Include(po => po.Warehouse)
+                .Include(po => po.WarehouseProduct)
+                    .ThenInclude(wp => wp.Product)
+                .FirstOrDefaultAsync(po => po.PurchaseOrderId == id);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
 
 
         // GET: PurchaseOrder
