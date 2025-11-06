@@ -29,7 +29,7 @@
         animation: moveGradient 10s linear infinite;
     }
 
-@@keyframes moveGradient {
+@keyframes moveGradient {
     0% {
         background-position: 0% center;
     }
@@ -164,7 +164,7 @@
     }
 
 /* Responsive */
-@@media (max-width: 600px) {
+@media (max-width: 600px) {
     .create-supplier form {
         grid-template-columns: 1fr;
     }
@@ -183,4 +183,69 @@ select:-webkit-autofill,
 select:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-body) inset !important;
     -webkit-text-fill-color: var(--color-text-main) !important;
+}
+
+
+
+/* Scoped styling for Supplier Category checkbox */
+.create-supplier .form-group.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+    /* Custom checkbox */
+    .create-supplier .form-group.form-check .form-check-input {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--color-accent);
+        border-radius: 4px;
+        background-color: var(--color-bg-content);
+        cursor: pointer;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+
+        /* Checkmark */
+        .create-supplier .form-group.form-check .form-check-input:checked::after {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 6px;
+            width: 4px;
+            height: 9px;
+            border: solid var(--color-accent);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Hover effect */
+        .create-supplier .form-group.form-check .form-check-input:hover {
+            box-shadow: 0 0 4px rgba(99, 91, 255, 0.4);
+        }
+
+    /* Label */
+    .create-supplier .form-group.form-check .form-check-label {
+        cursor: pointer;
+        font-weight: 500;
+        color: var(--color-text-main);
+        line-height: 1.4;
+    }
+
+/* Dark mode adjustments */
+.dark .create-supplier .form-group.form-check .form-check-input {
+    background-color: var(--color-bg-content);
+    border-color: var(--color-accent);
+}
+
+    .dark .create-supplier .form-group.form-check .form-check-input:checked::after {
+        border-color: var(--color-accent);
+    }
+
+.dark .create-supplier .form-group.form-check .form-check-label {
+    color: var(--color-text-main);
 }
