@@ -1,10 +1,24 @@
-﻿<div class="general-modal-wrapper">
+﻿<link rel="stylesheet" href="@(Url.Content("~/css/GeneralModal.css"))" />
+
+    @* Confirm Delete *@
+<div id="confirmOverlay" class="confirm-overlay" style="display:none;"></div>
+<div id="confirmMessage" class="confirm-message" style="display:none;">
+    <p id="confirmText">Are you sure?</p>
+    <div class="confirm-buttons">
+        <button type="button" id="confirmYes" class="btn btn-confirm">Yes</button>
+        <button type="button" id="confirmNo" class="btn btn-back">Cancel</button>
+    </div>
+</div>
+
+
+<div class="general-modal-wrapper">
     <!-- General Modal -->
     <div class="modal fade" id="generalModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="generalModalLabel">Modal Title</h5>
+                    <div class="shine-overlay"></div> 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="generalModalBody">
@@ -19,5 +33,6 @@
     </div>
 </div>
 
-  <link rel="stylesheet" href="~/css/GeneralModal.css">
-  <script src = "~/js/GeneralModal.js"></script>
+
+<script src="~/js/GeneralModal.js"></script>
+

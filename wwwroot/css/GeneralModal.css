@@ -1,13 +1,12 @@
-﻿/* ===================== GENERAL MODAL WRAPPER ===================== */
-.general-modal-wrapper {
-    --modal-bg: var(--color-bg-content);
-    --modal-text: var(--color-text-main);
-    --modal-accent: var(--color-accent);
-    --modal-muted: var(--color-text-muted);
+﻿.general-modal-wrapper {
+    --modal-bg: var(--color-bg-content, #fff);
+    --modal-text: var(--color-text-main, #333);
+    --modal-accent: var(--color-accent, #635BFF);
+    --modal-muted: var(--color-text-muted, #999);
     --modal-shadow: rgba(0, 0, 0, 0.2);
 }
 
-    /* Animation and Layout */
+    /* Modal Animation */
     .general-modal-wrapper .modal.fade .modal-dialog {
         transform: scale(0.9) translateY(20px);
         opacity: 0;
@@ -32,32 +31,37 @@
 
     /* Header */
     .general-modal-wrapper .modal-header {
-        background: linear-gradient(135deg, var(--modal-accent), var(--color-hover-accent));
-        color: var(--color-text-contrast, #fdfdfd);
-        border-bottom: none;
-        padding: 1rem 1.5rem;
         position: relative;
+        padding: 1rem 1.5rem;
+        border-bottom: none;
+        background: linear-gradient(135deg, var(--modal-accent), var(--color-hover-accent, #8E7CFF));
+        color: #fff;
+        overflow: hidden;
     }
 
         .general-modal-wrapper .modal-header h5 {
-            color: var(--color-text-contrast, #ffffff);
             font-weight: 600;
             letter-spacing: 0.3px;
+            color: #fff;
         }
 
-        .general-modal-wrapper .modal-header::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -50%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(120deg, rgba(255,255,255,0.15), transparent, rgba(255,255,255,0.15));
-            transform: translateX(-100%);
-            animation: shine 3s infinite linear;
-        }
+    /* Shine Overlay Animation */
+    .general-modal-wrapper .shine-overlay {
+        position: absolute;
+        top: 0;
+        left: -50%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(120deg, rgba(255,255,255,0.15), transparent, rgba(255,255,255,0.15));
+        animation-name: shine;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        pointer-events: none;
+    }
 
-@@keyframes shine {
+
+@keyframes shine {
     0% {
         transform: translateX(-100%);
     }
@@ -76,7 +80,7 @@
     animation: bodyFade 0.4s ease-in-out;
 }
 
-@@keyframes bodyFade {
+@keyframes bodyFade {
     from {
         opacity: 0;
         transform: translateY(10px);
@@ -94,19 +98,6 @@
     width: 2.5rem;
     height: 2.5rem;
 }
-
-/* Buttons in footer (if added) */
-.general-modal-wrapper .modal-footer {
-    background: var(--modal-bg);
-    border-top: 1px solid rgba(0,0,0,0.05);
-}
-
-    .general-modal-wrapper .modal-footer .btn {
-        border-radius: 10px;
-        padding: 0.6rem 1.3rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
 
 .general-modal-wrapper .btn-primary {
     background: var(--modal-accent);
@@ -129,3 +120,88 @@
         background: var(--modal-accent);
         color: #fff;
     }
+
+
+
+/* ================== Confirm Overlay ================== */
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5); 
+    z-index: 2000;
+    display: none; 
+}
+
+/* ================== Confirm Message ================== */
+.confirm-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2001;
+    background-color: var(--color-bg-container); 
+    border: 1px solid var(--color-accent); 
+    padding: 20px 25px;
+    border-radius: 12px;
+    text-align: center;
+    color: var(--color-text-main);
+    min-width: 280px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    display: none; 
+    transition: all 0.3s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ================== Buttons ================== */
+.confirm-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+    .confirm-buttons .btn {
+        padding: 8px 18px;
+        border-radius: 15px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .confirm-buttons .btn-confirm {
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+    }
+
+        .confirm-buttons .btn-confirm:hover {
+            background: #c0392b;
+        }
+
+    .confirm-buttons .btn-back {
+        background: transparent;
+        border: 1px solid var(--color-accent);
+        color: var(--color-accent);
+    }
+
+        .confirm-buttons .btn-back:hover {
+            background: var(--color-accent);
+            color: var(--color-active-accent);
+            transform: scale(1.05);
+        }
+
+/* ================== Fade Animation ================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
