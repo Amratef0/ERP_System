@@ -106,8 +106,21 @@ namespace ERP_System_Project.Controllers
         }
 
 
-        // GET: Delete Supplier
-        [HttpPost]
+        // GET: Supplier/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            var supplier = await _context.Suppliers
+                .Include(s => s.SupplierCategory)
+                .FirstOrDefaultAsync(s => s.SupplierId == id && s.IsActive);
+
+            if (supplier == null)
+                return NotFound();
+
+            return View(supplier);
+        }
+
+        // POST: Supplier/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -121,6 +134,7 @@ namespace ERP_System_Project.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
 
     }
 }
