@@ -1,11 +1,11 @@
 ﻿/* ================== Wrapper ================== */
 .supplier-details-wrapper {
-    max-width: 825px; 
-    margin: 30px auto;
-    padding: 18px;
+    max-width: 700px;
+    margin: 25px auto;
+    padding: 15px;
     font-family: Arial, sans-serif;
     background: var(--color-bg-content);
-    border-radius: 15px;
+    border-radius: 12px;
     box-shadow: 0 3px 9px rgba(0,0,0,0.08);
     color: var(--color-text-main);
 }
@@ -20,10 +20,10 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: moveGradient 10s linear infinite;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }
 
-@@keyframes moveGradient {
+@keyframes moveGradient {
     0% {
         background-position: 0% center;
     }
@@ -81,36 +81,60 @@
 
 /* ================== Lists (Products & Purchase Orders) ================== */
 .supplier-details-wrapper .lists-section {
-    display: grid;
-    grid-template-columns: 1fr; 
-    gap: 12px;
-    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
 }
 
-    .supplier-details-wrapper .lists-section .item-list li {
-        background: linear-gradient(135deg, #ffffff, #f8f9ff);
-        margin-bottom: 6px;
-        padding: 8px 12px;
-        border-radius: 8px;
-        border: 1px solid #eee;
-        font-size: 13px;
-        transition: all 0.3s ease;
-        color: var(--color-text-main);
+    .supplier-details-wrapper .lists-section .item-list {
+        max-height: 90px; 
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-left: 0;
+        margin: 0;
+        list-style: none;
     }
 
-        .supplier-details-wrapper .lists-section .item-list li:hover {
-            background: linear-gradient(135deg, #e6ebff, #cfd9ff);
-            transform: scale(1.01);
-            box-shadow: 0 1px 4px var(--color-hover-accent);
+        .supplier-details-wrapper .lists-section .item-list::-webkit-scrollbar {
+            width: 5px;
         }
+
+        .supplier-details-wrapper .lists-section .item-list::-webkit-scrollbar-thumb {
+            background-color: var(--color-accent);
+            border-radius: 3px;
+        }
+
+        .supplier-details-wrapper .lists-section .item-list::-webkit-scrollbar-track {
+            background-color: var(--color-bg-container);
+        }
+
+        .supplier-details-wrapper .lists-section .item-list li {
+            background: var(--color-bg-container);
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #eee;
+            font-size: 12px;
+            color: var(--color-text-main);
+            transition: background 0.25s ease;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+            .supplier-details-wrapper .lists-section .item-list li:hover {
+                background: var(--color-hover-accent);
+                box-shadow: 0 1px 2px var(--color-hover-accent);
+            }
 
 /* ================== Buttons ================== */
 .supplier-details-wrapper .viewActions {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 18px;
     flex-wrap: wrap;
+    gap: 8px;
 }
 
     .supplier-details-wrapper .viewActions .left-buttons {
@@ -120,14 +144,13 @@
 
 .supplier-details-wrapper .btn {
     padding: 7px 15px;
-    border-radius: 15px;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
     font-size: 13px;
     color: var(--color-active-accent);
     text-decoration: none;
     transition: 0.3s;
-    display: inline-block;
 }
 
 .supplier-details-wrapper .btn-back {
@@ -155,15 +178,105 @@
         background: #c0392b;
     }
 
-/* ================== Responsive ================== */
-@@media (max-width: 690px) {
-    .supplier-details-wrapper .details-grid,
-    .supplier-details-wrapper .lists-section {
-        grid-template-columns: 1fr;
+/* ================== Dark mode ================== */
+.dark .supplier-details-wrapper .lists-section .item-list {
+    background: #222d45;
+    border: 1px solid #444;
+    color: var(--color-text-main);
+}
+
+    .dark .supplier-details-wrapper .lists-section .item-list li:hover {
+        background: rgba(142, 124, 255, 0.15);
+        box-shadow: 0 1px 2px rgba(142, 124, 255, 0.25);
     }
 
-    .supplier-details-wrapper .viewActions {
-        flex-direction: column;
-        gap: 8px;
+
+
+/* ================== Responsive ================== */
+@media (max-width: 690px) {
+    .supplier-details-wrapper {
+        max-width: 90%;
+        padding: 6px 8px; /* قللنا البادينج أكتر */
+        margin: 10px auto; /* قللنا المسافة من فوق */
+        transform: scale(0.9); /* صغرنا الشكل العام */
     }
+
+        .supplier-details-wrapper h2.title {
+            font-size: 17px;
+            margin-bottom: 10px;
+        }
+
+        .supplier-details-wrapper .supplier-name {
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .supplier-details-wrapper .details-grid {
+            grid-template-columns: 1fr;
+            gap: 4px; /* مسافة أصغر بين التفاصيل */
+        }
+
+        .supplier-details-wrapper .detail-item {
+            padding: 4px 6px;
+            font-size: 11px;
+            border-radius: 5px;
+        }
+
+            .supplier-details-wrapper .detail-item dt {
+                font-size: 11px;
+            }
+
+            .supplier-details-wrapper .detail-item dd {
+                font-size: 11px;
+            }
+
+        .supplier-details-wrapper .lists-section {
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+            .supplier-details-wrapper .lists-section .item-list {
+                max-height: 65px; /* أصغر ارتفاع */
+            }
+
+                .supplier-details-wrapper .lists-section .item-list li {
+                    font-size: 10px;
+                    padding: 3px 5px;
+                    border-radius: 4px;
+                }
+
+        .supplier-details-wrapper .viewActions {
+            flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 12px;
+        }
+
+        .supplier-details-wrapper .btn {
+            flex: 1 1 45%;
+            padding: 6px 0;
+            font-size: 12px;
+            border-radius: 8px;
+        }
+}
+
+/* Extra small screens */
+@media (max-width: 420px) {
+    .supplier-details-wrapper {
+        padding: 4px;
+        transform: scale(0.88);
+    }
+
+        .supplier-details-wrapper h2.title {
+            font-size: 16px;
+        }
+
+        .supplier-details-wrapper .btn {
+            flex: 1 1 100%; /* الزرارين تحت بعض فقط في الموبايل الصغير جدًا */
+        }
+
+        .supplier-details-wrapper .lists-section .item-list {
+            max-height: 55px;
+        }
 }
