@@ -127,6 +127,29 @@
                 box-shadow: 0 1px 2px var(--color-hover-accent);
             }
 
+/* ====== Active / Inactive Status ====== */
+.supplier-details-wrapper .status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: capitalize;
+    transition: all 0.3s ease;
+}
+
+    .supplier-details-wrapper .status.active {
+        color: #0f9d58; 
+        background-color: rgba(15, 157, 88, 0.15); 
+        border: 1px solid rgba(15, 157, 88, 0.3);
+    }
+
+    .supplier-details-wrapper .status.inactive {
+        color: #d93025;
+        background-color: rgba(217, 48, 37, 0.15); 
+        border: 1px solid rgba(217, 48, 37, 0.3);
+    }
+
 /* ================== Buttons ================== */
 .supplier-details-wrapper .viewActions {
     display: flex;

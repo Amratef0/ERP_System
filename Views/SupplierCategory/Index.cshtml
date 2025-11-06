@@ -32,7 +32,17 @@
                     <tr>
                         <td data-label="Category Name">@item.CategoryName</td>
                         <td data-label="Description">@item.Description</td>
-                        <td data-label="Is Active">@item.IsActive</td>
+                        <td data-label="Is Active">
+                            @if (item.IsActive)
+                            {
+                                <span class="status active">Active</span>
+                            }
+                            else
+                            {
+                                <span class="status inactive">InActive</span>
+                            }
+                        </td>
+
                         <td data-label="Suppliers Count">@((item.Suppliers?.Count() ?? 0))</td>
                         <td data-label="Actions">
                             <div class="action-buttons">

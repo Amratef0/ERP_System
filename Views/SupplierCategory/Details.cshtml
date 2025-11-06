@@ -15,8 +15,18 @@
 
             <div class="detail-item">
                 <dt>Is Active</dt>
-                <dd>@Model.IsActive</dd>
+                <dd>
+                    @if (Model.IsActive)
+                    {
+                        <span class="status active">Active</span>
+                    }
+                    else
+                    {
+                        <span class="status inactive">Inactive</span>
+                    }
+                </dd>
             </div>
+
 
             <div class="detail-item">
                 <dt>Suppliers Count</dt>
