@@ -1,30 +1,31 @@
-﻿.suppliers-page .card {
+﻿/* ====== Card Container ====== */
+.suppliers-page .card {
     font-family: Arial, sans-serif;
     margin: 40px auto;
     border-radius: 20px;
-    background: var(--color-bg-content);
+    background: var(--color-bg-content, #fff);
     width: 95%;
     max-width: 1200px;
     padding: 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     transition: all 0.3s ease;
     box-sizing: border-box;
-    overflow-x: auto;
 }
 
+/* ====== Title ====== */
 .suppliers-page h2 {
     text-align: center;
     margin-bottom: 30px;
     font-size: 28px;
     font-weight: 600;
-    background: linear-gradient(90deg, var(--color-accent), #00D4FF, var(--color-accent));
+    background: linear-gradient(90deg, var(--color-accent, #635BFF), #00D4FF, var(--color-accent, #635BFF));
     background-size: 300% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: moveGradient 10s linear infinite;
 }
 
-@@keyframes moveGradient {
+@keyframes moveGradient {
     0% {
         background-position: 0% center;
     }
@@ -34,17 +35,18 @@
     }
 }
 
+/* ====== Table ====== */
 .suppliers-page table {
     width: 100%;
     border-collapse: collapse;
     border-radius: 15px;
     overflow: hidden;
     table-layout: fixed;
-    background: var(--color-bg-container);
+    background: var(--color-bg-container, #f8f8f8);
 }
 
 .suppliers-page thead {
-    background: linear-gradient(90deg, var(--color-accent), #8E7CFF, #00D4FF);
+    background: linear-gradient(90deg, var(--color-accent, #635BFF), #8E7CFF, #00D4FF);
     color: #fff;
 }
 
@@ -55,23 +57,25 @@
         font-weight: 600;
     }
 
+/* ====== Table Body ====== */
 .suppliers-page tbody tr {
-    border-bottom: 1px solid var(--color-hover-accent);
+    border-bottom: 1px solid var(--color-hover-accent, #eee);
     transition: all 0.3s ease;
 }
 
     .suppliers-page tbody tr:hover {
-        background: var(--color-hover-accent);
+        background: var(--color-hover-accent, #f0f0ff);
         transform: scale(1.01);
     }
 
 .suppliers-page tbody td {
     padding: 8px;
     font-size: 14px;
-    color: var(--color-text-main);
+    color: var(--color-text-main, #333);
     text-align: center;
 }
 
+/* ====== Action Buttons ====== */
 .suppliers-page .btn {
     border: none;
     outline: none;
@@ -120,92 +124,7 @@
         color: #fff;
     }
 
-@@media (max-width: 800px) {
-    .suppliers-page table,
-    .suppliers-page thead,
-    .suppliers-page tbody,
-    .suppliers-page th,
-    .suppliers-page td,
-    .suppliers-page tr {
-        display: block;
-        width: 100%;
-    }
-
-    .suppliers-page thead {
-        display: none;
-    }
-
-    .suppliers-page tbody tr {
-        background: var(--color-bg-content);
-        margin-bottom: 20px;
-        border-radius: 15px;
-        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-        padding: 15px;
-        transition: all 0.3s ease;
-    }
-
-        .suppliers-page tbody tr:hover {
-            transform: translateY(-3px);
-        }
-
-    .suppliers-page tbody td {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 8px 10px;
-        border-bottom: 1px solid var(--color-hover-accent);
-    }
-
-        .suppliers-page tbody td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: var(--color-accent);
-        }
-
-        .suppliers-page tbody td:last-child {
-            border-bottom: none;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-            .suppliers-page tbody td:last-child::before {
-                content: "Actions";
-                color: var(--color-accent);
-                font-weight: 600;
-                margin-right: auto;
-            }
-
-    .suppliers-page .btn {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 15px;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-        .suppliers-page .btn i {
-            font-size: 15px;
-        }
-
-        .suppliers-page .btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-    .suppliers-page .action-buttons {
-        margin-left: auto;
-        display: flex;
-        gap: 6px;
-    }
-}
-
-
+/* ====== Floating Add Button ====== */
 .floating-btn {
     position: fixed;
     bottom: 25px;
@@ -220,11 +139,11 @@
     justify-content: center;
     font-size: 24px;
     color: #fff;
-    background: linear-gradient(90deg, var(--color-accent), #8E7CFF);
+    background: linear-gradient(90deg, var(--color-accent, #635BFF), #8E7CFF);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     text-decoration: none;
     transition: all 0.3s ease;
-    z-index: 999; /* دا بيخليه فوق كل حاجة */
+    z-index: 999;
 }
 
     .floating-btn:hover {
@@ -240,17 +159,84 @@
         font-size: 24px;
     }
 
-/* تحسينات للموبايل */
-@@media (max-width: 600px) {
-    .floating-btn {
-        width: 50px;
-        height: 50px;
-        font-size: 20px;
-        bottom: 20px;
-        right: 20px;
+/* ====== Responsive: Table to Card ====== */
+@media (max-width: 800px) {
+    .suppliers-page table,
+    .suppliers-page thead,
+    .suppliers-page tbody,
+    .suppliers-page th,
+    .suppliers-page td,
+    .suppliers-page tr {
+        display: block;
+        width: 100%;
+        table-layout: auto;
     }
 
-        .floating-btn i {
-            font-size: 20px;
+    .suppliers-page thead {
+        display: none;
+    }
+
+        .suppliers-page thead th:last-child {
+            text-align: left;
         }
+
+    .suppliers-page tbody tr {
+        background: var(--color-bg-content, #fff);
+        margin-bottom: 20px;
+        border-radius: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .suppliers-page tbody tr:hover {
+            transform: translateY(-3px);
+        }
+
+    .suppliers-page tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--color-hover-accent, #eee);
+        text-align: left;
+    }
+
+        .suppliers-page tbody td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: var(--color-accent, #635BFF);
+            margin-right: 10px;
+        }
+
+        .suppliers-page tbody td:last-child {
+            border-bottom: none;
+            display: flex;
+            gap: 10px;
+            text-align: left;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+    .suppliers-page .btn {
+        width: 25px;
+        height: 25px;
+        font-size: 13px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .suppliers-page .btn i {
+            font-size: 15px;
+        }
+
+        .suppliers-page .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+}
+
+.suppliers-page tbody td:last-child .action-buttons {
+    margin-left: auto; 
+    display: flex;
+    gap: 10px;
 }
