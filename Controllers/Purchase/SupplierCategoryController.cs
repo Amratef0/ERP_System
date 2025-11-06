@@ -33,7 +33,7 @@ namespace ERP_System_Project.Controllers
 
             if (category == null) return NotFound();
 
-            return View(category);
+            return PartialView(category);
         }
 
         // GET: Create
@@ -41,7 +41,7 @@ namespace ERP_System_Project.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return PartialView();
         }
 
         // POST: Create
@@ -65,7 +65,7 @@ public async Task<IActionResult> Create(SupplierCategory category) // استخد
             var category = await _context.SupplierCategories.FindAsync(id);
             if (category == null) return NotFound();
 
-            return View(category);
+            return PartialView(category);
         }
 
         // POST: Edit
@@ -103,7 +103,7 @@ public async Task<IActionResult> Create(SupplierCategory category) // استخد
 
             if (category == null) return NotFound();
 
-            return View(category);
+            return PartialView(category);
         }
 
         // POST: Delete
