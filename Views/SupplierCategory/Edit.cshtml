@@ -1,4 +1,4 @@
-﻿@model ERP_System_Project.Models.SupplierCategory
+﻿@* @model ERP_System_Project.Models.SupplierCategory
 
 <h2>Edit Supplier Category</h2>
 
@@ -19,4 +19,42 @@
     </div>
     <button type="submit" class="btn btn-success">Update</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</form> *@
+
+
+
+
+@model ERP_System_Project.Models.SupplierCategory
+
+<link rel="stylesheet" href="~/css/Purchase/Supplier/CreateSupplier.css" />
+
+<div class="create-supplier">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Supplier Category</h3>
+
+        <form id="categoryForm" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="CategoryId" />
+
+            <div class="form-group">
+                <input asp-for="CategoryName" class="form-control" placeholder=" " />
+                <label asp-for="CategoryName"></label>
+                <span asp-validation-for="CategoryName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Description" class="form-control" placeholder=" " />
+                <label asp-for="Description"></label>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label"></label>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
