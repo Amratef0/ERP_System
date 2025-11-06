@@ -1,24 +1,42 @@
-@model ERP_System_Project.Models.Supplier
+﻿@model ERP_System_Project.Models.Supplier
 
 @{
     ViewData["Title"] = "Delete Supplier";
 }
 
-<h2>Delete Supplier</h2>
+<div class="delete-wrapper">
+    <h2 class="title">Delete Supplier</h2>
 
-<div>
-    <h4>@Model.SupplierName (@Model.SupplierCode)</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-3">Category</dt>
-        <dd class="col-sm-9">@Model.SupplierCategory?.CategoryName</dd>
+    <div class="details-section">
+        <h3 class="supplier-name">@Model.SupplierName (@Model.SupplierCode)</h3>
+        <dl class="details-grid">
+            <div class="detail-item">
+                <dt>Category</dt>
+                <dd>@Model.SupplierCategory?.CategoryName</dd>
+            </div>
 
-       
-    </dl>
+            <div class="detail-item">
+                <dt>Created</dt>
+                <dd>@Model.CreatedDate?.ToString("yyyy-MM-dd")</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Modified</dt>
+                <dd>@Model.ModifiedDate?.ToString("yyyy-MM-dd")</dd>
+            </div>
+        </dl>
+    </div>
+
+    <form id="deleteSupplierForm" asp-action="Delete" method="post">
+        <input type="hidden" asp-for="SupplierId" />
+        <div class="viewActions">
+            <div class="left-buttons">
+                <button type="button" class="btn btn-delete" onclick="confirmDeleteSupplier()">Delete</button>
+                <button type="button" class="btn btn-back" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </form>
 </div>
 
-<form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete this supplier?');">
-    <input type="hidden" asp-for="SupplierId" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+<link rel="stylesheet" href="@(Url.Content("~/css/Purchase/Supplier/Delete.css"))" />
+

@@ -1,0 +1,138 @@
+﻿/* ================== Wrapper ================== */
+.delete-wrapper {
+    max-width: 825px;
+    margin: 30px auto;
+    padding: 18px;
+    font-family: Arial, sans-serif;
+    background: var(--color-bg-content);
+    border-radius: 15px;
+    box-shadow: 0 3px 9px rgba(0,0,0,0.08);
+    color: var(--color-text-main);
+}
+
+    /* ================== Title ================== */
+    .delete-wrapper h2.title {
+        text-align: center;
+        font-size: 20px;
+        font-weight: 600;
+        background: linear-gradient(90deg, var(--color-accent), #00D4FF, var(--color-accent));
+        background-size: 300% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: moveGradient 10s linear infinite;
+        margin-bottom: 18px;
+    }
+
+@@keyframes moveGradient {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 300% center;
+    }
+}
+
+/* ================== Supplier Name ================== */
+.delete-wrapper .supplier-name {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--color-accent);
+    text-align: center;
+}
+
+/* ================== Details Grid ================== */
+.delete-wrapper .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.delete-wrapper .detail-item {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-container);
+    border-radius: 6px;
+    padding: 6px 10px;
+    border: 1px solid #eee;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+    .delete-wrapper .detail-item:hover {
+        transform: scale(1.01);
+        box-shadow: 0 1px 4px var(--color-hover-accent);
+    }
+
+    .delete-wrapper .detail-item dt {
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--color-accent);
+        margin-bottom: 4px;
+    }
+
+    .delete-wrapper .detail-item dd {
+        font-size: 13px;
+        color: var(--color-text-main);
+        margin: 0;
+    }
+
+/* ================== Buttons ================== */
+.delete-wrapper .viewActions {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+    .delete-wrapper .viewActions .left-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+.delete-wrapper .btn {
+    padding: 7px 15px;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--color-active-accent);
+    text-decoration: none;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.delete-wrapper .btn-back {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+}
+
+    .delete-wrapper .btn-back:hover {
+        background: var(--color-accent);
+        color: var(--color-active-accent);
+        transform: scale(1.05);
+    }
+
+.delete-wrapper .btn-delete {
+    background: #e74c3c;
+}
+
+    .delete-wrapper .btn-delete:hover {
+        background: #c0392b;
+    }
+
+/* ================== Responsive ================== */
+@@media (max-width: 690px) {
+    .delete-wrapper .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .delete-wrapper .viewActions {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
