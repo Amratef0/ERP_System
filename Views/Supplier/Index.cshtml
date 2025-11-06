@@ -7,9 +7,16 @@
 <div class="suppliers-page">
     <div class="card">
         <h2>Suppliers</h2>
-        <a asp-action="Create" class="floating-btn" title="Add New Supplier">
+        @* <a asp-action="Create" class="floating-btn" title="Add New Supplier">
             <i class="fa-solid fa-plus"></i>
-        </a>
+        </a> *@
+
+     <a href="javascript:void(0)" 
+   onclick="openModalWithAjax('@Url.Action("Create", "Supplier")', 'Add New Supplier')" 
+   class="floating-btn" 
+   title="Add New Supplier">
+   <i class="fa-solid fa-plus"></i>
+</a>
 
 
         <table>
@@ -42,7 +49,10 @@
     </div>
 </div>
 
-
   <link rel="stylesheet" href="~/css/Purchase/Supplier/Index.css">
+
+@await Html.PartialAsync("_GeneralModal")
+
+
 
 
