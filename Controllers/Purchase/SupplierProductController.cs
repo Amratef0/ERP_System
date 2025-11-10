@@ -36,7 +36,7 @@ namespace ERP_System_Project.Controllers
                 .FirstOrDefaultAsync(s => s.SupplierProductId == id && s.IsActive);
 
             if (sp == null) return NotFound();
-            return View(sp);
+            return PartialView(sp);
         }
 
         // GET: Create
@@ -45,7 +45,7 @@ namespace ERP_System_Project.Controllers
         {
             ViewBag.Suppliers = new SelectList(_context.Suppliers.Where(s => s.IsActive), "SupplierId", "SupplierName");
             ViewBag.Products = new SelectList(_context.Products.Where(p => p.IsActive), "Id", "Name");
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
@@ -77,7 +77,7 @@ namespace ERP_System_Project.Controllers
 
             ViewBag.Suppliers = new SelectList(_context.Suppliers.Where(s => s.IsActive), "SupplierId", "SupplierName", sp.SupplierId);
             ViewBag.Products = new SelectList(_context.Products.Where(p => p.IsActive), "Id", "Name", sp.ProductId);
-            return View(sp);
+            return PartialView(sp);
         }
 
         // POST: Edit
@@ -117,7 +117,7 @@ namespace ERP_System_Project.Controllers
                 .FirstOrDefaultAsync(s => s.SupplierProductId == id && s.IsActive);
 
             if (sp == null) return NotFound();
-            return View(sp);
+            return PartialView(sp);
         }
 
         // POST: Delete (Soft Delete)
