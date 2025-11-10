@@ -249,3 +249,19 @@ select:-webkit-autofill:focus {
 .dark .create-supplier .form-group.form-check .form-check-label {
     color: var(--color-text-main);
 }
+
+
+
+
+.create-supplier .form-group-select select {
+    position: relative;
+    z-index: 2;
+}
+
+.create-supplier .form-group-select label {
+    all: unset;
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--modal-text);
+}
