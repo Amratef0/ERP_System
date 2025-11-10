@@ -1,23 +1,38 @@
 ﻿@model ERP_System_Project.Models.SupplierProduct
 
-<h2>Edit Supplier Product</h2>
+<link rel="stylesheet" href="~/css/Purchase/Supplier/CreateSupplier.css" />
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="SupplierProductId" />
+<div class="create-supplier">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Supplier Product</h3>
 
-    <div class="form-group">
-        <label>Supplier</label>
-        <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.Suppliers"></select>
+        <form id="supplierProductForm" asp-action="Edit" method="post">
+            <input type="hidden" asp-for="SupplierProductId" />
+
+            <div class="form-group">
+                <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.Suppliers">
+                    <option value="">Select Supplier</option>
+                </select>
+                <label asp-for="SupplierId"></label>
+            </div>
+
+            <div class="form-group">
+                <select asp-for="ProductId" class="form-control" asp-items="ViewBag.Products">
+                    <option value="">Select Product</option>
+                </select>
+                <label asp-for="ProductId"></label>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="UnitPrice" class="form-control" placeholder=" " />
+                <label asp-for="UnitPrice"></label>
+                <span asp-validation-for="UnitPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label>Product</label>
-        <select asp-for="ProductId" class="form-control" asp-items="ViewBag.Products"></select>
-    </div>
-    <div class="form-group">
-        <label asp-for="UnitPrice"></label>
-        <input asp-for="UnitPrice" class="form-control" />
-        <span asp-validation-for="UnitPrice" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-success">Update</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
