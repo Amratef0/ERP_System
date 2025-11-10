@@ -1,16 +1,54 @@
 ﻿@model ERP_System_Project.Models.SupplierProduct
 
-<h2>Supplier Product Details</h2>
+<link rel="stylesheet" href="~/css/Purchase/Supplier/Details.css" />
 
-<div>
-    <p><b>Supplier:</b> @Model.Supplier?.SupplierName</p>
-    <p><b>Product:</b> @Model.Product?.Name</p>
-    <p><b>Unit Price:</b> @Model.UnitPrice</p>
-    <p><b>Created Date:</b> @Model.CreatedDate</p>
-    <p><b>Modified Date:</b> @Model.ModifiedDate</p>
+<div class="supplier-details-wrapper">
+    <h2 class="title">Supplier Product Details</h2>
+
+    <div class="details-section">
+        <h3 class="supplier-name">@Model.Product?.Name</h3>
+
+        <dl class="details-grid">
+            <div class="detail-item">
+                <dt>Supplier</dt>
+                <dd>@Model.Supplier?.SupplierName</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Product</dt>
+                <dd>@Model.Product?.Name</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Unit Price</dt>
+                <dd>@Model.UnitPrice</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Created Date</dt>
+                <dd>@Model.CreatedDate.ToString("yyyy-MM-dd")</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Modified Date</dt>
+                <dd>@Model.ModifiedDate.ToString("yyyy-MM-dd")</dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="viewActions">
+        <div class="left-buttons">
+            <a href="javascript:void(0)" 
+               onclick="openModalWithAjax('@Url.Action("Edit", "SupplierProduct", new { id = Model.SupplierProductId })', 'Edit Supplier Product')" 
+               class="btn btn-edit">Edit</a>
+
+            <a href="javascript:void(0)" 
+               onclick="openModalWithAjax('@Url.Action("Delete", "SupplierProduct", new { id = Model.SupplierProductId })', 'Delete Supplier Product')" 
+               class="btn btn-delete">Delete</a>
+        </div>
+
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back</a>
+        </div>
+    </div>
 </div>
-
-<p>
-    <a asp-action="Edit" asp-route-id="@Model.SupplierProductId" class="btn btn-warning">Edit</a>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-</p>
