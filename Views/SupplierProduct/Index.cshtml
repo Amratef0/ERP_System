@@ -1,36 +1,74 @@
 ﻿@model IEnumerable<ERP_System_Project.Models.SupplierProduct>
 
-<h2>Supplier Products</h2>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Supplier Product</a>
-</p>
+@{
+    ViewData["Title"] = "Supplier Products";
+}
+<link rel="stylesheet" href="@(Url.Content("~/css/Purchase/Supplier/Index.css"))" />
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Supplier</th>
-            <th>Product</th>
-            <th>Unit Price</th>
-            <th>Created Date</th>
-            <th>Modified Date</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Supplier?.SupplierName</td>
-                <td>@item.Product?.Name</td>
-                <td>@item.UnitPrice</td>
-                <td>@item.CreatedDate.ToShortDateString()</td>
-                <td>@item.ModifiedDate.ToShortDateString()</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.SupplierProductId" class="btn btn-info">Details</a>
-                    <a asp-action="Edit" asp-route-id="@item.SupplierProductId" class="btn btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.SupplierProductId" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="suppliers-page">
+    <div class="card">
+        <h2>Supplier Products</h2>
+
+        <!-- Floating Add Button -->
+        <a href="javascript:void(0)" 
+           onclick="openModalWithAjax('@Url.Action("Create", "SupplierProduct")', 'Add Supplier Product')" 
+           class="floating-btn" 
+           title="Add Supplier Product">
+           <i class="fa-solid fa-plus"></i>
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Supplier</th>
+                    <th>Product</th>
+                    <th>Unit Price</th>
+                    <th>Created Date</th>
+                    <th>Modified Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="Supplier">@item.Supplier?.SupplierName</td>
+                        <td data-label="Product">@item.Product?.Name</td>
+                        <td data-label="Unit Price">@item.UnitPrice</td>
+                        <td data-label="Created Date">@item.CreatedDate.ToShortDateString()</td>
+                        <td data-label="Modified Date">@item.ModifiedDate.ToShortDateString()</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <!-- Details -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Details", "SupplierProduct", new { id = item.SupplierProductId })', 'Product Details')" 
+                                   class="btn btn-view btn-sm" 
+                                   title="Details">
+                                   <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <!-- Edit -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Edit", "SupplierProduct", new { id = item.SupplierProductId })', 'Edit Supplier Product')" 
+                                   class="btn btn-update btn-sm" 
+                                   title="Edit">
+                                   <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Delete", "SupplierProduct", new { id = item.SupplierProductId })', 'Delete Supplier Product')" 
+                                   class="btn btn-delete btn-sm" 
+                                   title="Delete">
+                                   <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@await Html.PartialAsync("_GeneralModal")
