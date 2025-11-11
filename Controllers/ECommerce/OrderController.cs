@@ -1,6 +1,7 @@
 ﻿using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.ViewModels.Inventory;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ERP_System_Project.Controllers.ECommerce
@@ -15,7 +16,8 @@ namespace ERP_System_Project.Controllers.ECommerce
         }
         public async Task<IActionResult> MakeOrder()
         {
-            await _orderService.MakeOrderAsync();
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _orderService.MakeOrderAsync(userId);
             TempData["SuccessMessage"] = "Your order is on its way and will reach you soon";
             return RedirectToAction("Index","Market");
         }
