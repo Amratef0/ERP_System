@@ -153,6 +153,7 @@ builder.Services.AddScoped<IAttributeService, AttributeService>();
 // ECommerce Services
 builder.Services.AddScoped<IOfferService, OfferService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 // HR Services
 builder.Services.AddScoped<IWorkScheduleService, WorkScheduleService>();
