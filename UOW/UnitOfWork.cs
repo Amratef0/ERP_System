@@ -8,7 +8,6 @@ using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Models.Logs;
 using ERP_System_Project.Repository.Implementation;
 using ERP_System_Project.Repository.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace ERP_System_Project.UOW
 {
@@ -36,10 +35,7 @@ namespace ERP_System_Project.UOW
         public IRepository<Order> Orders { get; }
         public IRepository<OrderItem> OrderItems { get; }
         public IRepository<OrderStatusCode> OrderStatusCodes { get; }
-        public IRepository<PaymentMethod> PaymentMethods { get; }
         public IRepository<PaymentMethodType> PaymentMethodTypes { get; }
-        public IRepository<PaymentStatusCode> PaymentStatusCodes { get; }
-        public IRepository<ShippingMethod> ShippingMethods { get; }
         #endregion
 
         #region CRM
@@ -99,10 +95,7 @@ namespace ERP_System_Project.UOW
             Orders = new Repository<Order>(_db);
             OrderItems = new Repository<OrderItem>(_db);
             OrderStatusCodes = new Repository<OrderStatusCode>(_db);
-            PaymentMethods = new Repository<PaymentMethod>(_db);
             PaymentMethodTypes = new Repository<PaymentMethodType>(_db);
-            PaymentStatusCodes = new Repository<PaymentStatusCode>(_db);
-            ShippingMethods = new Repository<ShippingMethod>(_db);
 
             Customers = new Repository<Customer>(_db);
             CustomerAddresses = new Repository<CustomerAddress>(_db);

@@ -30,10 +30,7 @@ namespace ERP_System_Project.UOW
         IRepository<Order> Orders { get; }
         IRepository<OrderItem> OrderItems { get; }
         IRepository<OrderStatusCode> OrderStatusCodes { get; }
-        IRepository<PaymentMethod> PaymentMethods { get; }
         IRepository<PaymentMethodType> PaymentMethodTypes { get; }
-        IRepository<PaymentStatusCode> PaymentStatusCodes { get; }
-        IRepository<ShippingMethod> ShippingMethods { get; }
 
         IRepository<Customer> Customers { get; }
         IRepository<CustomerAddress> CustomerAddresses { get; }
