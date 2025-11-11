@@ -117,7 +117,8 @@ namespace ERP_System_Project.Services.Implementation.CRM
                     throw new ArgumentException("Address not found");
                 // Check if the address is associated with any orders
                 bool isAssociatedWithOrders = await _uow.Orders.GetAllAsIQueryable()
-                    .AnyAsync(o => (o.BillingAddressId == addressId || o.ShippingAddressId == addressId) && o.ActualDeliveryDate == null);
+                    .AnyAsync(o => (o.BillingAddressId == addressId) && o.ActualDeliveryDate == null);
+                    //.AnyAsync(o => (o.BillingAddressId == addressId || o.ShippingAddressId == addressId) && o.ActualDeliveryDate == null);
                 if (isAssociatedWithOrders)
                     throw new InvalidOperationException("Cannot delete address associated with orders.");
                 _uow.CustomerAddresses.Delete(addressId);
