@@ -34,9 +34,6 @@ namespace ERP_System_Project.Models.ECommerce
         [DecimalPrecisionScale(15, 4)]
         public decimal LineTotal { get; set; }
 
-        [DecimalPrecisionScale(15, 4)]
-        public decimal TaxAmount { get; set; }
-
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; }
     }
 }

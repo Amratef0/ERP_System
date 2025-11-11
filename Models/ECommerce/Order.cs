@@ -20,10 +20,6 @@ namespace ERP_System_Project.Models.ECommerece
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; }
 
-        [Required(ErrorMessage = "Order Number Is Required")]
-        [StringLength(50, ErrorMessage = "Order Number Must Be Less Than 50 Characters")]
-        public string OrderNumber { get; set; } = null!;
-
         [Required(ErrorMessage = "Order Date Is Required")]
         public DateTime OrderDate { get; set; }
 
@@ -35,46 +31,24 @@ namespace ERP_System_Project.Models.ECommerece
         public decimal TotalAmount { get; set; }
 
         [DecimalPrecisionScale(15, 4)]
-        public decimal SubTotalAmount { get; set; }
-
-        [DecimalPrecisionScale(15, 4)]
         public decimal TaxAmount { get; set; }
 
         [DecimalPrecisionScale(15, 4)]
         public decimal ShippingAmount { get; set; }
 
-        [DecimalPrecisionScale(15, 4)]
-        public decimal DiscountAmount { get; set; } = 0;
-
-        [ForeignKey("ShippingAddress")]
-        public int? ShippingAddressId { get; set; }
-        public CustomerAddress? ShippingAddress { get; set; }
-
         [ForeignKey("BillingAddress")]
         public int BillingAddressId { get; set; }
         public CustomerAddress BillingAddress { get; set; }
 
-        [ForeignKey("PaymentMethod")]
-        public int PaymentMethodId { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
-
-        [ForeignKey("PaymentStatusCode")]
-        public int PaymentStatusId { get; set; }
-        public PaymentStatusCode PaymentStatusCode { get; set; }
-
-        [ForeignKey("ShippingMethod")]
-        public int ShippingMethodId { get; set; }
-        public ShippingMethod ShippingMethod { get; set; }
-
-        [StringLength(100, ErrorMessage = "Tracking Number Must Be Less Than 100 Characters")]
-        public string? TrackingNumber { get; set; }
+        [ForeignKey("PaymentMethodType")]
+        public int? PaymentMethodTypeId { get; set; }
+        public PaymentMethodType? PaymentMethodType { get; set; }
         public DateTime? EstimatedDeliveryDate { get; set; }
         public DateTime? ActualDeliveryDate { get; set; }
 
         [StringLength(1000, ErrorMessage = "Notes Must Be Less Than 1000 Characters")]
         public string? Notes { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
-        public DateTime ModifiedDate { get; set; } = DateTime.Now;
+        public DateTime? ModifiedDate { get; set; }
 
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();

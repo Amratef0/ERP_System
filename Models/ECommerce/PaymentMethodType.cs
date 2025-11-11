@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using ERP_System_Project.Models.ECommerece;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 
 namespace ERP_System_Project.Models.ECommerce
@@ -16,7 +17,6 @@ namespace ERP_System_Project.Models.ECommerce
         public string? Provider { get; set; }
         public bool IsActive { get; set; } = true;
 
-
-        public ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
+        public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

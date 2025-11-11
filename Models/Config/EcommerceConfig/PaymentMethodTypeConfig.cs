@@ -9,6 +9,15 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
         public void Configure(EntityTypeBuilder<PaymentMethodType> builder)
         {
             builder.Property(pmt => pmt.IsActive).HasDefaultValue(true);
+
+
+            builder.HasData(
+                new PaymentMethodType { 
+                    Id = 1,
+                    Type = "Cash",
+                    IsActive = true,
+                }
+                );
         }
     }
 }

@@ -66,7 +66,7 @@ namespace ERP_System_Project.Models.CRM
         public virtual ICollection<CustomerFavorite> CustomerFavorites { get; set; } = new HashSet<CustomerFavorite>();
 
         //public virtual ShoppingCart ShoppingCart { get; set; }
-        public virtual ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>(); // one to many or many yo many?????
+        //public virtual ICollection<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>(); // one to many or many yo many?????
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
         public virtual ICollection<CustomerReview> Reviews { get; set; } = new HashSet<CustomerReview>();
         public virtual ICollection<CustomerWishlist> Wishlists { get; set; } = new HashSet<CustomerWishlist>();

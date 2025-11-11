@@ -20,11 +20,6 @@ namespace ERP_System_Project.Models.ECommerce
         [StringLength(500, ErrorMessage = "Category Name Must Be Less Than 500 Characters")]
         public string? Description { get; set; }
 
-        [DecimalPrecisionScale(19,4)] 
-        public decimal Cost { get; set; }
-        public bool IsActive { get; set; } = true;
-
-
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

@@ -13,7 +13,6 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
             builder.Property(oi => oi.DiscountAmount).HasPrecision(15, 4).HasDefaultValue(0);
             builder.Property(oi => oi.DiscountPercentage).HasPrecision(15, 4).HasDefaultValue(0);
             builder.Property(oi => oi.LineTotal).HasPrecision(15, 4);
-            builder.Property(oi => oi.TaxAmount).HasPrecision(15, 4);
             builder.Property(oi => oi.CreatedDate).HasDefaultValueSql("GETDATE()");
         }
     } 

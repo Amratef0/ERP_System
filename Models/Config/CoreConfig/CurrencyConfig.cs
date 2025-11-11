@@ -20,6 +20,18 @@ namespace ERP_System_Project.Models.Config.CoreConfig
                    .HasDefaultValue(false);
 
             builder.HasQueryFilter(c => !c.IsDeleted);
+
+            builder.HasData(
+                new Currency
+                {
+                    Id = 1,
+                    IsActive = true,
+                    Code = "USD",
+                    IsDeleted = false,
+                    Name = "US Dollar",
+                    Symbol = "$"
+                }
+            );
         }
     }
 }
