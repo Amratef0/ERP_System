@@ -126,10 +126,6 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             SaveDictionarySession(dictionary);
         }
 
-        public void ClearCartSession()
-           => _httpContextAccessor.HttpContext.Session.Remove("MyCart");
-
-
         private Dictionary<int, int> GetDictionaryFromSession(string sessionKey)
         {
             var json = _httpContextAccessor

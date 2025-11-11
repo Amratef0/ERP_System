@@ -7,6 +7,5 @@ namespace ERP_System_Project.Services.Interfaces.ECommerce
         Task<CartVM> GetAllFromCart();
         void AddToCart(int productId, int quantity);
         void RemoveFromCart(int productId);
-        void ClearCartSession();
     }
 }
