@@ -125,7 +125,7 @@
                         </div>
 
                         <!-- Checkout Button -->
-                        <button class="btn btn-primary btn-lg w-100 mb-3">
+                        <button class="btn btn-primary btn-lg w-100 mb-3" data-bs-toggle="modal" data-bs-target="#paymentModal">
                             <i class="bi bi-lock-fill me-2"></i>Proceed to Checkout
                         </button>
 
@@ -147,6 +147,70 @@
                         <p class="text-muted small mb-3">Our support team is here to help</p>
                         <a href="#" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-telephone me-1"></i>Contact Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="paymentModalLabel">Select Payment Method</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <!-- Cash on Delivery Option -->
+                            <div class="col-12">
+                                <div class="card payment-option-card" data-payment-type="cash">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <i class="bi bi-wallet2 display-6 text-success"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-4">
+                                                <h6 class="fw-bold mb-1">Cash on Delivery</h6>
+                                                <p class="text-muted mb-0">Pay when your order arrives at your doorstep</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <i class="bi bi-check-circle-fill text-success payment-check" style="font-size: 1.5rem; display: none;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Online Payment Option -->
+                            <div class="col-12">
+                                <div class="card payment-option-card" data-payment-type="online">
+                                    <div class="card-body p-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <i class="bi bi-credit-card display-6 text-primary"></i>
+                                            </div>
+                                            <div class="flex-grow-1 ms-4">
+                                                <h6 class="fw-bold mb-1">Online Payment</h6>
+                                                <p class="text-muted mb-0">Pay securely with your credit/debit card</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <i class="bi bi-check-circle-fill text-primary payment-check" style="font-size: 1.5rem; display: none;"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <a id="proceedWithCash" asp-controller="Order" asp-action="MakeOrder" class="btn btn-success" style="display: none;">
+                            <i class="bi bi-wallet2 me-2"></i>Proceed with Cash
+                        </a>
+                        <a id="proceedWithOnline" asp-controller="Payment" asp-action="ProcessPayment" class="btn btn-primary" style="display: none;">
+                            <i class="bi bi-credit-card me-2"></i>Proceed to Payment
                         </a>
                     </div>
                 </div>
@@ -200,4 +264,56 @@
     a.text-decoration-none:hover h6 {
         color: #0d6efd !important;
     }
+
+    /* Payment option card styles */
+    .payment-option-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+    }
+
+        .payment-option-card:hover {
+            border-color: #dee2e6;
+            transform: translateY(-2px);
+        }
+
+        .payment-option-card.selected {
+            border-color: #0d6efd;
+            background-color: #f8f9ff;
+        }
 </style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Payment option selection
+            const paymentOptionCards = document.querySelectorAll('.payment-option-card');
+            const proceedWithCash = document.getElementById('proceedWithCash');
+            const proceedWithOnline = document.getElementById('proceedWithOnline');
+
+            paymentOptionCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    paymentOptionCards.forEach(c => {
+                        c.classList.remove('selected');
+                        c.querySelector('.payment-check').style.display = 'none';
+                    });
+
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+                    this.querySelector('.payment-check').style.display = 'block';
+
+                    // Show appropriate proceed button
+                    const paymentType = this.getAttribute('data-payment-type');
+                    if (paymentType === 'cash') {
+                        proceedWithCash.style.display = 'inline-block';
+                        proceedWithOnline.style.display = 'none';
+                    } else if (paymentType === 'online') {
+                        proceedWithCash.style.display = 'none';
+                        proceedWithOnline.style.display = 'inline-block';
+                    }
+                });
+            });
+        });
+    </script>
+}
