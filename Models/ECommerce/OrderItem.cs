@@ -19,8 +19,7 @@ namespace ERP_System_Project.Models.ECommerce
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        [DecimalPrecisionScale(15,4)]
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
 
         [DecimalPrecisionScale(15, 4)]
         public decimal UnitPrice { get; set; }
