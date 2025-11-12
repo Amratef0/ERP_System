@@ -1,0 +1,368 @@
+﻿@model PageSourcePagination<MyOrdersVM>
+@{
+    ViewData["Title"] = "My Orders";
+
+    // Status color mapping
+    var statusColors = new Dictionary<string, string>
+    {
+        { "Pending", "status-pending" },
+        { "Processing", "status-processing" },
+        { "Shipped", "status-shipped" },
+        { "Delivered", "status-delivered" },
+        { "Cancelled", "status-cancelled" },
+        { "Returned", "status-returned" }
+    };
+}
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-6">
+        <div>
+            <h1 class="h2 fw-bold text-dark mb-1">My Orders</h1>
+            <p class="text-muted mb-0">Track and manage your orders</p>
+        </div>
+        <div class="text-end">
+            <div class="fw-semibold text-primary fs-5">@Model.TotalRecords orders</div>
+            <small class="text-muted">Total records</small>
+        </div>
+    </div>
+
+    @if (Model.Data?.Any() == true)
+    {
+        <div class="row g-4">
+            @foreach (var order in Model.Data)
+            {
+                var statusClass = statusColors.ContainsKey(order.OrderStatus) ? statusColors[order.OrderStatus] : "status-pending";
+
+                <div class="col-12">
+                    <div class="card border-0 shadow-lg hover-lift">
+                        <div class="card-header bg-gradient-primary text-white py-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="order-icon">
+                                            <i class="fas fa-receipt fa-2x"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 fw-bold">Order #ORD-@(order.OrderDate.ToString("yyyyMMdd"))-@(Model.Data.IndexOf(order) + 1 + ((Model.PageNumber - 1) * Model.PageSize))</h4>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <span class="badge @statusClass">@order.OrderStatus</span>
+                                                <span class="text-white-50"><i class="fas fa-calendar me-1"></i>@order.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="total-amount display-6 fw-bold text-white">$@order.TotalAmount.ToString("F2")</div>
+                                    <small class="text-white-50">Including tax & shipping</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-0">
+                            <!-- Order Meta Info -->
+                            <div class="row g-0 bg-light rounded-top">
+                                <div class="col-md-3 p-4 border-end">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="fas fa-credit-card text-primary"></i>
+                                        <strong>Payment Method</strong>
+                                    </div>
+                                    <span class="text-dark">@order.PaymentMethodType</span>
+                                </div>
+                                <div class="col-md-3 p-4 border-end">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="fas fa-map-marker-alt text-success"></i>
+                                        <strong>Delivery Address</strong>
+                                    </div>
+                                    <span class="text-dark">@order.BillingAddress</span>
+                                </div>
+                                <div class="col-md-3 p-4 border-end">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="fas fa-truck text-warning"></i>
+                                        <strong>Estimated Delivery</strong>
+                                    </div>
+                                    <span class="text-dark">@(order.EstimatedDeliveryDate?.ToString("MMM dd, yyyy") ?? "Processing")</span>
+                                </div>
+                                <div class="col-md-3 p-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="fas fa-receipt text-info"></i>
+                                        <strong>Order Summary</strong>
+                                    </div>
+                                    <div class="small">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Subtotal:</span>
+                                            <span>$@((order.TotalAmount - order.TaxAmount - order.ShippingAmount).ToString("F2"))</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Shipping:</span>
+                                            <span>$@order.ShippingAmount.ToString("F2")</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Tax:</span>
+                                            <span>$@order.TaxAmount.ToString("F2")</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Items -->
+                            <div class="p-4">
+                                <h6 class="fw-bold text-dark mb-3 border-bottom pb-2">
+                                    <i class="fas fa-boxes me-2"></i>Order Items (@order.OrderItemsVMs.Count)
+                                </h6>
+                                <div class="row g-3">
+                                    @foreach (var item in order.OrderItemsVMs)
+                                    {
+                                        <div class="col-12">
+                                            <div class="card border hover-shadow-sm">
+                                                <div class="card-body">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-md-6">
+                                                            <div class="d-flex align-items-center gap-3">
+                                                                @if (!string.IsNullOrEmpty(item.ProductImagePath))
+                                                                {
+                                                                    <div class="product-image-container">
+                                                                        <img src="@item.ProductImagePath" alt="@item.ProductName"
+                                                                             class="rounded-3 shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                                                                    </div>
+                                                                }
+                                                                <div class="flex-grow-1">
+                                                                    <h6 class="fw-bold text-dark mb-1">@item.ProductName</h6>
+                                                                    <div class="text-muted small">SKU: @(item.ProductName.Replace(" ", "-").ToUpper())</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="row text-center">
+                                                                <div class="col-3">
+                                                                    <div class="text-muted small">Price</div>
+                                                                    <div class="fw-semibold">$@item.UnitPrice.ToString("F2")</div>
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <div class="text-muted small">Qty</div>
+                                                                    <div class="fw-semibold">@item.Quantity</div>
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <div class="text-muted small">Discount</div>
+                                                                    @if (item.DiscountPercentage > 0)
+                                                                    {
+                                                                        <div class="text-success fw-semibold">
+                                                                            -$@item.DiscountAmount.ToString("F2")
+                                                                        </div>
+                                                                        <small class="text-success">(@item.DiscountPercentage.ToString("F1")%)</small>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div class="text-muted">—</div>
+                                                                    }
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    <div class="text-muted small">Total</div>
+                                                                    <div class="fw-bold text-primary">$@item.LineTotal.ToString("F2")</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Enhanced Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="d-flex justify-content-between align-items-center mt-6 pt-4 border-top">
+                <div class="text-muted">
+                    Showing page @Model.PageNumber of @Model.TotalPages
+                    <span class="mx-2">•</span>
+                    @((Model.PageNumber - 1) * Model.PageSize + 1)-@Math.Min(Model.PageNumber * Model.PageSize, Model.TotalRecords) of @Model.TotalRecords orders
+                </div>
+
+                <nav aria-label="Order pagination">
+                    <ul class="pagination pagination-lg">
+                        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                            <a class="page-link rounded-pill me-2" href="?pageNumber=@(Model.PageNumber - 1)&pageSize=@Model.PageSize">
+                                <i class="fas fa-chevron-left me-1"></i>Previous
+                            </a>
+                        </li>
+
+                        @for (int i = 1; i <= Model.TotalPages; i++)
+                        {
+                            if (i == 1 || i == Model.TotalPages || (i >= Model.PageNumber - 2 && i <= Model.PageNumber + 2))
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="?pageNumber=@i&pageSize=@Model.PageSize">@i</a>
+                                </li>
+                            }
+                            else if (i == Model.PageNumber - 3 || i == Model.PageNumber + 3)
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link">...</span>
+                                </li>
+                            }
+                        }
+
+                        <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                            <a class="page-link rounded-pill ms-2" href="?pageNumber=@(Model.PageNumber + 1)&pageSize=@Model.PageSize">
+                                Next<i class="fas fa-chevron-right ms-1"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center py-8">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-shopping-bag fa-4x text-muted"></i>
+                </div>
+                <h3 class="mt-4 fw-bold text-dark">No orders yet</h3>
+                <p class="text-muted mb-4">You haven't placed any orders. Start shopping to see your orders here.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/products" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-shopping-cart me-2"></i>Start Shopping
+                    </a>
+                    <a href="/" class="btn btn-outline-secondary btn-lg px-5">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-5px);
+        }
+
+    .hover-shadow-sm:hover {
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .order-icon {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Status Color Coding */
+    .status-pending {
+        background: linear-gradient(135deg, #ffc107, #ff8c00);
+        color: #000;
+    }
+
+    .status-processing {
+        background: linear-gradient(135deg, #17a2b8, #20c997);
+        color: white;
+    }
+
+    .status-shipped {
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+    }
+
+    .status-delivered {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #dc3545, #e83e8c);
+        color: white;
+    }
+
+    .status-returned {
+        background: linear-gradient(135deg, #6c757d, #868e96);
+        color: white;
+    }
+
+    .product-image-container {
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+        .product-image-container:hover {
+            transform: scale(1.05);
+        }
+
+    .empty-state {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .empty-state-icon {
+        opacity: 0.5;
+    }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+    }
+
+    .page-link {
+        border: none;
+        margin: 0 2px;
+        border-radius: 8px !important;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+        .page-link:hover {
+            background-color: #f8f9fa;
+            color: #667eea;
+        }
+
+    .display-6 {
+        font-size: 2.5rem;
+    }
+
+    .py-8 {
+        padding-top: 6rem !important;
+        padding-bottom: 6rem !important;
+    }
+
+    .mb-6 {
+        margin-bottom: 4rem !important;
+    }
+
+    .mt-6 {
+        margin-top: 4rem !important;
+    }
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
