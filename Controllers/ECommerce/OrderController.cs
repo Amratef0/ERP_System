@@ -21,5 +21,12 @@ namespace ERP_System_Project.Controllers.ECommerce
             TempData["SuccessMessage"] = "Your order is on its way and will reach you soon";
             return RedirectToAction("Index","Market");
         }
+
+        public async Task<IActionResult> MyOrders(int pageNumber, int pageSize)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var orders = await _orderService.GetCustomerOrdersAsync(userId, pageNumber, pageSize);
+            return View(orders);
+        }
     }
 }
