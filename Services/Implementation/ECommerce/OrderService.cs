@@ -1,10 +1,14 @@
 ﻿using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Enums;
+using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.UOW;
+using ERP_System_Project.ViewModels;
+using ERP_System_Project.ViewModels.ECommerce;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.ECommerce
 {
@@ -19,6 +23,54 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        public async Task<PageSourcePagination<MyOrdersVM>> GetCustomerOrdersAsync(string userId, int pageNumber, int pageSize)
+        {
+            var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
+                .Include(c => c.CustomerAddresses)
+                .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+
+            var customerAddress = await GetCustomerAddressAsync(customer.Id);
+
+            var customerOrders = await _unitOfWork.Orders
+                .GetAllPaginatedEnhancedAsync(
+                    filter: o => o.CustomerId == customer.Id,
+                    orderBy: o => o.OrderByDescending(o => o.OrderDate),
+                    selector: o => new MyOrdersVM
+                    {
+                        BillingAddress = customerAddress,
+                        OrderDate = o.OrderDate,
+                        EstimatedDeliveryDate = o.EstimatedDeliveryDate,
+                        OrderStatus = o.OrderStatusCode.Name,
+                        PaymentMethodType = o.PaymentMethodType.Type,
+                        ShippingAmount = o.ShippingAmount,
+                        TaxAmount = o.TaxAmount,
+                        TotalAmount = o.TotalAmount,
+
+                        OrderItemsVMs = o.Items.Select(oi => new MyOrderItemsVM
+                        {
+                            ProductName = oi.Product.Name,
+                            ProductImagePath = oi.Product.ImageURL,
+                            DiscountAmount = oi.DiscountAmount,
+                            DiscountPercentage = oi.DiscountPercentage,
+                            UnitPrice = oi.UnitPrice,
+                            Quantity = oi.Quantity,
+                            LineTotal = oi.LineTotal,
+                        } ).ToList()
+                    },
+                    pageNumber: pageNumber,
+                    pageSize: pageSize,
+                    include: o => 
+                    o.Include(o => o.Items).ThenInclude(oi => oi.Product)
+                    .Include(o => o.OrderStatusCode)
+                    .Include(o => o.PaymentMethodType)
+                );
+
+            return customerOrders;
+        }
+
+        
+
         public async Task MakeOrderAsync(string userId)
         {
             var productDictionary = GetDictionaryFromSession(SessionKey);
@@ -87,7 +139,14 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             ClearCartSession(SessionKey);
         }
 
+        private async Task<string> GetCustomerAddressAsync(int customerId)
+        {
+            var customerAddress = await _unitOfWork.CustomerAddresses.GetAllAsIQueryable()
+                .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
+            string addressFormat = $"{customerAddress.ApartmentNumber} {customerAddress.BuildingNumber} {customerAddress.Street} | {customerAddress.City} {customerAddress.Country}";
+            return addressFormat;
+        }
         private void ClearCartSession(string sessionKey)
            => _httpContextAccessor.HttpContext.Session.Remove(SessionKey);
 
