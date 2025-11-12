@@ -119,6 +119,53 @@ namespace ERP_System_Project.Repository.Implementation
             };
         }
 
+        public async Task<PageSourcePagination<TResult>> GetAllPaginatedEnhancedAsync<TResult>(
+            Expression<Func<TEntity, TResult>> selector,
+            int pageNumber = 1,
+            int pageSize = 10,
+            Expression<Func<TEntity, bool>>? filter = null,
+            bool expandable = false,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
+            where TResult : class
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 5) pageSize = 5;
+
+            IQueryable<TEntity> query = _dbSet;
+
+            if (filter != null)
+            {
+                if (expandable)
+                    query = query.AsExpandableEFCore().Where(filter);
+                else
+                    query = query.Where(filter);
+            }
+
+            if (include != null)
+                query = include(query);
+
+            if (orderBy != null)
+                query = orderBy(query);
+
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+
+            query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+
+            var result = query.Select(selector);
+
+            return new PageSourcePagination<TResult>
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords,
+                TotalPages = totalPages,
+                Data = await result.ToListAsync()
+            };
+        }
+
+
 
         public async Task<List<object>> GetBySpecificationAsync(ISpecification<TEntity> specification)
         {

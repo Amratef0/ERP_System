@@ -36,6 +36,16 @@ namespace ERP_System_Project.Repository.Interfaces
             params Expression<Func<TEntity, object>>[] Includes)
             where TResult : class;
 
+        Task<PageSourcePagination<TResult>> GetAllPaginatedEnhancedAsync<TResult>(
+            Expression<Func<TEntity, TResult>> selector,
+            int pageNumber = 1,
+            int pageSize = 10,
+            Expression<Func<TEntity, bool>>? filter = null,
+            bool expandable = false,
+            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null)
+            where TResult : class;
+
         Task<List<object>> GetBySpecificationAsync(ISpecification<TEntity> specification);
 
         #endregion
