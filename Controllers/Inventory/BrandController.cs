@@ -27,7 +27,7 @@ namespace ERP_System_Project.Controllers.Inventory
 
         public async Task<IActionResult> New()
         {
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
@@ -54,7 +54,7 @@ namespace ERP_System_Project.Controllers.Inventory
             if (brand is null) return NotFound();
             var brandVM = _mapper.Map<BrandVM>(brand);
 
-            return View(brandVM);
+            return PartialView(brandVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,7 +81,7 @@ namespace ERP_System_Project.Controllers.Inventory
             var brand = await _brandService.GetByIdAsync(id);
             if (brand is null) return NotFound();
             var brandVM = _mapper.Map<BrandVM>(brand);
-            return View(brandVM);
+            return PartialView(brandVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
