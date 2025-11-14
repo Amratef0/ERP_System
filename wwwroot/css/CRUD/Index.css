@@ -1,4 +1,12 @@
-﻿/* ====== Card Container ====== */
+﻿/* =========================== 
+   🔹 List Page (Reusable) 
+   Used for: Suppliers, Customers, Products, etc.
+   Old class: .suppliers-page
+   New reusable class: .list-page
+   =========================== */
+
+/* ====== Card Container ====== */
+.list-page .card,
 .suppliers-page .card {
     font-family: Arial, sans-serif;
     margin: 40px auto;
@@ -13,6 +21,7 @@
 }
 
 /* ====== Title ====== */
+.list-page h2,
 .suppliers-page h2 {
     text-align: center;
     margin-bottom: 30px;
@@ -25,17 +34,8 @@
     animation: moveGradient 10s linear infinite;
 }
 
-@keyframes moveGradient {
-    0% {
-        background-position: 0% center;
-    }
-
-    100% {
-        background-position: 300% center;
-    }
-}
-
 /* ====== Table ====== */
+.list-page table,
 .suppliers-page table {
     width: 100%;
     border-collapse: collapse;
@@ -45,11 +45,13 @@
     background: var(--color-bg-container, #f8f8f8);
 }
 
+.list-page thead,
 .suppliers-page thead {
     background: linear-gradient(90deg, var(--color-accent, #635BFF), #8E7CFF, #00D4FF);
     color: #fff;
 }
 
+    .list-page thead th,
     .suppliers-page thead th {
         padding: 10px 5px;
         text-align: center;
@@ -58,16 +60,19 @@
     }
 
 /* ====== Table Body ====== */
+.list-page tbody tr,
 .suppliers-page tbody tr {
     border-bottom: 1px solid var(--color-hover-accent, #eee);
     transition: all 0.3s ease;
 }
 
+    .list-page tbody tr:hover,
     .suppliers-page tbody tr:hover {
         background: var(--color-hover-accent, #f0f0ff);
         transform: scale(1.01);
     }
 
+.list-page tbody td,
 .suppliers-page tbody td {
     padding: 8px;
     font-size: 14px;
@@ -76,6 +81,7 @@
 }
 
 /* ====== Action Buttons ====== */
+.list-page .btn,
 .suppliers-page .btn {
     border: none;
     outline: none;
@@ -91,33 +97,39 @@
     justify-content: center;
 }
 
+.list-page .btn-update,
 .suppliers-page .btn-update {
     background: #F8C20A;
     color: #fff;
 }
 
+    .list-page .btn-update:hover,
     .suppliers-page .btn-update:hover {
         background: #f8c10a64;
         transform: scale(1.05);
         color: #fff;
     }
 
+.list-page .btn-view,
 .suppliers-page .btn-view {
     background: #16CDC7;
     color: #fff;
 }
 
+    .list-page .btn-view:hover,
     .suppliers-page .btn-view:hover {
         background: #16cdc760;
         transform: scale(1.05);
         color: #fff;
     }
 
+.list-page .btn-delete,
 .suppliers-page .btn-delete {
     background: #FF6692;
     color: #fff;
 }
 
+    .list-page .btn-delete:hover,
     .suppliers-page .btn-delete:hover {
         background: #ff669165;
         transform: scale(1.05);
@@ -125,6 +137,7 @@
     }
 
 /* ====== Active / Inactive Status ====== */
+.list-page .status,
 .suppliers-page .status {
     display: inline-block;
     padding: 4px 10px;
@@ -135,21 +148,23 @@
     transition: all 0.3s ease;
 }
 
+    .list-page .status.active,
     .suppliers-page .status.active {
-        color: #0f9d58; 
-        background-color: rgba(15, 157, 88, 0.15); 
+        color: #0f9d58;
+        background-color: rgba(15, 157, 88, 0.15);
         border: 1px solid rgba(15, 157, 88, 0.3);
     }
 
+    .list-page .status.inactive,
     .suppliers-page .status.inactive {
         color: #d93025;
         background-color: rgba(217, 48, 37, 0.15);
         border: 1px solid rgba(217, 48, 37, 0.3);
     }
 
-
 /* ====== Floating Add Button ====== */
-.floating-btn {
+.list-page .floating-btn,
+.suppliers-page .floating-btn {
     position: fixed;
     bottom: 25px;
     right: 25px;
@@ -170,14 +185,16 @@
     z-index: 999;
 }
 
-    .floating-btn:hover {
+    .list-page .floating-btn:hover,
+    .suppliers-page .floating-btn:hover {
         background: linear-gradient(90deg, #4d46d3, #6b5de6);
         transform: scale(1.1);
         color: #fff;
         box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     }
 
-    .floating-btn i {
+    .list-page .floating-btn i,
+    .suppliers-page .floating-btn i {
         margin: 0;
         line-height: 1;
         font-size: 24px;
@@ -185,6 +202,12 @@
 
 /* ====== Responsive: Table to Card ====== */
 @media (max-width: 800px) {
+    .list-page table,
+    .list-page thead,
+    .list-page tbody,
+    .list-page th,
+    .list-page td,
+    .list-page tr,
     .suppliers-page table,
     .suppliers-page thead,
     .suppliers-page tbody,
@@ -196,14 +219,12 @@
         table-layout: auto;
     }
 
+    .list-page thead,
     .suppliers-page thead {
         display: none;
     }
 
-        .suppliers-page thead th:last-child {
-            text-align: left;
-        }
-
+    .list-page tbody tr,
     .suppliers-page tbody tr {
         background: var(--color-bg-content, #fff);
         margin-bottom: 20px;
@@ -213,10 +234,12 @@
         transition: all 0.3s ease;
     }
 
+        .list-page tbody tr:hover,
         .suppliers-page tbody tr:hover {
             transform: translateY(-3px);
         }
 
+    .list-page tbody td,
     .suppliers-page tbody td {
         display: flex;
         justify-content: space-between;
@@ -226,6 +249,7 @@
         text-align: left;
     }
 
+        .list-page tbody td::before,
         .suppliers-page tbody td::before {
             content: attr(data-label);
             font-weight: 600;
@@ -233,6 +257,7 @@
             margin-right: 10px;
         }
 
+        .list-page tbody td:last-child,
         .suppliers-page tbody td:last-child {
             border-bottom: none;
             display: flex;
@@ -242,6 +267,7 @@
             align-items: center;
         }
 
+    .list-page .btn,
     .suppliers-page .btn {
         width: 25px;
         height: 25px;
@@ -249,18 +275,21 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
+        .list-page .btn i,
         .suppliers-page .btn i {
             font-size: 15px;
         }
 
+        .list-page .btn:hover,
         .suppliers-page .btn:hover {
             transform: scale(1.1);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 }
 
+.list-page tbody td:last-child .action-buttons,
 .suppliers-page tbody td:last-child .action-buttons {
-    margin-left: auto; 
+    margin-left: auto;
     display: flex;
     gap: 10px;
 }

@@ -1,7 +1,15 @@
-﻿.create-supplier {
+﻿/* ===========================
+   🔹 General Form Page Style
+   Used for: Create & Edit forms across modules
+   Modules: Supplier, Customer, Product, etc.
+   =========================== */
+
+.form-page,
+.create-supplier {
     padding: 20px;
 }
 
+    .form-page .form,
     .create-supplier .form {
         background: var(--color-bg-content);
         border-radius: 20px;
@@ -11,12 +19,14 @@
         color: var(--color-text-main);
     }
 
+        .form-page .form:hover,
         .create-supplier .form:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
 
     /* Title gradient */
+    .form-page h3,
     .create-supplier h3 {
         text-align: center;
         margin-bottom: 20px;
@@ -40,6 +50,7 @@
 }
 
 /* Form grid */
+.form-page form,
 .create-supplier form {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -47,11 +58,14 @@
 }
 
 /* Form group */
+.form-page .form-group,
 .create-supplier .form-group {
     position: relative;
 }
 
 /* Inputs & selects */
+.form-page .form-control,
+.form-page .form-select,
 .create-supplier .form-control,
 .create-supplier .form-select {
     width: 100%;
@@ -66,6 +80,7 @@
 }
 
 /* Select arrow */
+.form-page .form-select,
 .create-supplier .form-select {
     background-image: url("data:image/svg+xml;utf8,<svg fill='%23aaa' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
     background-repeat: no-repeat;
@@ -74,6 +89,8 @@
 }
 
     /* Focus state */
+    .form-page .form-control:focus,
+    .form-page .form-select:focus,
     .create-supplier .form-control:focus,
     .create-supplier .form-select:focus {
         border-color: var(--color-accent);
@@ -84,6 +101,7 @@
     }
 
 /* Labels floating */
+.form-page .form-group label,
 .create-supplier .form-group label {
     position: absolute;
     top: 50%;
@@ -97,6 +115,10 @@
     background: var(--color-bg-body);
 }
 
+.form-page .form-control:focus + label,
+.form-page .form-control:not(:placeholder-shown) + label,
+.form-page .form-select:focus + label,
+.form-page .form-select:not([value=""]) + label,
 .create-supplier .form-control:focus + label,
 .create-supplier .form-control:not(:placeholder-shown) + label,
 .create-supplier .form-select:focus + label,
@@ -109,11 +131,14 @@
 }
 
 /* Options */
+.form-page select option,
 .create-supplier select option {
     background: var(--color-bg-body);
     color: var(--color-text-main);
 }
 
+    .form-page select option:hover,
+    .form-page select option:focus,
     .create-supplier select option:hover,
     .create-supplier select option:focus {
         background: var(--color-accent);
@@ -121,6 +146,7 @@
     }
 
 /* Buttons */
+.form-page .form-buttons,
 .create-supplier .form-buttons {
     grid-column: 1 / -1;
     display: flex;
@@ -129,6 +155,7 @@
     margin-top: 10px;
 }
 
+.form-page .btn,
 .create-supplier .btn {
     border-radius: 20px;
     padding: 12px 25px;
@@ -138,12 +165,14 @@
 }
 
 /* Create Button */
+.form-page .btn-primary,
 .create-supplier .btn-primary {
     background: linear-gradient(90deg, #635BFF, #8E7CFF, #00D4FF);
     border: none;
     color: #fff;
 }
 
+    .form-page .btn-primary:hover,
     .create-supplier .btn-primary:hover {
         background: linear-gradient(90deg, #4d46d3, #6d5cff, #00aadd);
         transform: scale(1.05);
@@ -151,12 +180,14 @@
     }
 
 /* Back Button */
+.form-page .btn-secondary,
 .create-supplier .btn-secondary {
     background: transparent;
     border: 1px solid var(--color-accent);
     color: var(--color-accent);
 }
 
+    .form-page .btn-secondary:hover,
     .create-supplier .btn-secondary:hover {
         background: var(--color-accent);
         color: var(--color-active-accent);
@@ -165,10 +196,12 @@
 
 /* Responsive */
 @media (max-width: 600px) {
+    .form-page form,
     .create-supplier form {
         grid-template-columns: 1fr;
     }
 
+    .form-page .form-buttons,
     .create-supplier .form-buttons {
         flex-direction: column;
     }
@@ -185,9 +218,8 @@ select:-webkit-autofill:focus {
     -webkit-text-fill-color: var(--color-text-main) !important;
 }
 
-
-
-/* Scoped styling for Supplier Category checkbox */
+/* Scoped styling for checkbox */
+.form-page .form-group.form-check,
 .create-supplier .form-group.form-check {
     display: flex;
     align-items: center;
@@ -196,6 +228,7 @@ select:-webkit-autofill:focus {
 }
 
     /* Custom checkbox */
+    .form-page .form-group.form-check .form-check-input,
     .create-supplier .form-group.form-check .form-check-input {
         -webkit-appearance: none;
         -moz-appearance: none;
@@ -211,6 +244,7 @@ select:-webkit-autofill:focus {
     }
 
         /* Checkmark */
+        .form-page .form-group.form-check .form-check-input:checked::after,
         .create-supplier .form-group.form-check .form-check-input:checked::after {
             content: "";
             position: absolute;
@@ -224,11 +258,13 @@ select:-webkit-autofill:focus {
         }
 
         /* Hover effect */
+        .form-page .form-group.form-check .form-check-input:hover,
         .create-supplier .form-group.form-check .form-check-input:hover {
             box-shadow: 0 0 4px rgba(99, 91, 255, 0.4);
         }
 
     /* Label */
+    .form-page .form-group.form-check .form-check-label,
     .create-supplier .form-group.form-check .form-check-label {
         cursor: pointer;
         font-weight: 500;
@@ -236,28 +272,30 @@ select:-webkit-autofill:focus {
         line-height: 1.4;
     }
 
-/* Dark mode adjustments */
+/* Dark mode */
+.dark .form-page .form-group.form-check .form-check-input,
 .dark .create-supplier .form-group.form-check .form-check-input {
     background-color: var(--color-bg-content);
     border-color: var(--color-accent);
 }
 
+    .dark .form-page .form-group.form-check .form-check-input:checked::after,
     .dark .create-supplier .form-group.form-check .form-check-input:checked::after {
         border-color: var(--color-accent);
     }
 
+.dark .form-page .form-group.form-check .form-check-label,
 .dark .create-supplier .form-group.form-check .form-check-label {
     color: var(--color-text-main);
 }
 
-
-
-
+.form-page .form-group-select select,
 .create-supplier .form-group-select select {
     position: relative;
     z-index: 2;
 }
 
+.form-page .form-group-select label,
 .create-supplier .form-group-select label {
     all: unset;
     display: block;

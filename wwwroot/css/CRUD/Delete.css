@@ -1,4 +1,8 @@
-﻿/* ================== Wrapper ================== */
+﻿/* =========================================================
+   GENERAL DELETE VIEW STYLES (For all modules)
+   ========================================================= */
+
+/* ================== Wrapper ================== */
 .delete-wrapper {
     max-width: 825px;
     margin: 30px auto;
@@ -23,7 +27,7 @@
         margin-bottom: 18px;
     }
 
-@@keyframes moveGradient {
+@keyframes moveGradient {
     0% {
         background-position: 0% center;
     }
@@ -33,7 +37,8 @@
     }
 }
 
-/* ================== Supplier Name ================== */
+/* ================== Record Name ================== */
+.delete-wrapper .record-name,
 .delete-wrapper .supplier-name {
     font-size: 15px;
     font-weight: 600;
@@ -126,7 +131,7 @@
     }
 
 /* ================== Responsive ================== */
-@@media (max-width: 690px) {
+@media (max-width: 690px) {
     .delete-wrapper .details-grid {
         grid-template-columns: 1fr;
     }
