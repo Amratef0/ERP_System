@@ -3,39 +3,41 @@
     ViewData["Title"] = "Delete Brand";
 }
 
-<div class="container mt-4">
+<div class="delete-wrapper">
+    <h2 class="title">Delete Brand</h2>
+
     <form method="post" asp-action="Delete">
         <input asp-for="Id" type="hidden" />
-        <div class="card p-4 shadow-sm">
-            <div class="mb-3">
-                <h2 class="text-primary">Delete Brand</h2>
-                <hr />
+
+        <div class="details-grid">
+            <div class="detail-item">
+                <dt>Name</dt>
+                <dd>@Model.Name</dd>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" disabled />
+            <div class="detail-item">
+                <dt>Description</dt>
+                <dd>@Model.Description</dd>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <input asp-for="Description" class="form-control" disabled />
+            <div class="detail-item">
+                <dt>Logo URL</dt>
+                <dd>@Model.LogoURL</dd>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="LogoURL" class="form-label"></label>
-                <input asp-for="LogoURL" class="form-control" disabled />
+            <div class="detail-item">
+                <dt>Website URL</dt>
+                <dd>@Model.WebsiteURL</dd>
             </div>
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="WebsiteURL" class="form-label"></label>
-                <input asp-for="WebsiteURL" class="form-control" disabled />
-            </div>
-
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-danger flex-fill">Delete</button>
-                <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary flex-fill">Back to Brands</a>
+        <div class="viewActions">
+            <div class="left-buttons">
+                <button type="submit" class="btn btn-delete">Delete</button>
+                <a asp-action="Index" asp-controller="Brand" class="btn btn-back">Back to Brands</a>
             </div>
         </div>
     </form>
 </div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Delete.css"))" />
