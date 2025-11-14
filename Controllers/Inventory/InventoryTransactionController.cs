@@ -40,7 +40,7 @@ namespace ERP_System_Project.Controllers.Inventory
 
             if (transaction == null) return NotFound();
 
-            return View(transaction);
+            return PartialView(transaction);
         }
     }
 }
