@@ -1,36 +1,76 @@
 ﻿@model IEnumerable<ERP_System_Project.Models.Inventory.Warehouse>
+
 @{
     ViewData["Title"] = "Warehouses";
 }
 
-<h2>Warehouses</h2>
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
 
-<a asp-action="Create" class="btn btn-success mb-3">Create New Warehouse</a>
+<div class="list-page warehouses-page">
+    <div class="card">
+        <h2>Warehouses</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Code</th>
-            <th>Name</th>
-            <th>Branch</th>
-            <th>Products Count</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var w in Model)
-        {
-            <tr>
-                <td>@w.Code</td>
-                <td>@w.Name</td>
-                <td>@w.Branch?.Name</td>
-                <td>@w.WarehouseProducts.Count()</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@w.WarehouseId" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Edit" asp-route-id="@w.WarehouseId" class="btn btn-primary btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@w.WarehouseId" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <!-- Floating Button -->
+        <a href="javascript:void(0)" 
+           onclick="openModalWithAjax('@Url.Action("Create", "Warehouse")', 'Add New Warehouse')" 
+           class="floating-btn" 
+           title="Add New Warehouse">
+           <i class="fa-solid fa-plus"></i>
+        </a>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Branch</th>
+                    <th>Products Count</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @foreach (var w in Model)
+                {
+                    <tr>
+                        <td data-label="Code">@w.Code</td>
+                        <td data-label="Name">@w.Name</td>
+                        <td data-label="Branch">@w.Branch?.Name</td>
+                        <td data-label="Products Count">@w.WarehouseProducts.Count()</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <!-- View -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Details", "Warehouse", new { id = w.WarehouseId })', 'View Warehouse')" 
+                                   class="btn btn-view btn-sm" 
+                                   title="View Warehouse">
+                                   <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <!-- Edit -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Edit", "Warehouse", new { id = w.WarehouseId })', 'Edit Warehouse')" 
+                                   class="btn btn-update btn-sm" 
+                                   title="Edit Warehouse">
+                                   <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Delete", "Warehouse", new { id = w.WarehouseId })', 'Delete Warehouse')" 
+                                   class="btn btn-delete btn-sm" 
+                                   title="Delete Warehouse">
+                                   <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- General Modal -->
+@await Html.PartialAsync("_GeneralModal")
+
