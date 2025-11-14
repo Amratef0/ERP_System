@@ -4,184 +4,137 @@
     ViewData["Title"] = "Employee Types";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-person-lines-fill"></i> Employee Types</h2>
-                    <p class="text-muted">Manage employee classifications and types</p>
-                </div>
-                <div>
-                    <a asp-action="Create" class="btn btn-primary btn-lg">
-                        <i class="bi bi-plus-circle"></i> Add New Type
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
+<div class="page-section">
+
+    <!-- Header -->
+    <div class="bp-header">
+        <h1>Employee Types</h1>
+        <p>Manage employee classifications and types</p>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-list"></i> Total Types</h6>
-                    <h2 class="mb-0">@Model.Count()</h2>
-                </div>
+        <!-- Search Card -->
+    <div class="bp-search-card top-search mt-4">
+        <form id="searchForm" class="bp-search-form">
+            @Html.AntiForgeryToken()
+            <div class="bp-search-group">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchTerm" placeholder="Search employee types..." />
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-check-circle"></i> Active</h6>
-                    <h2 class="mb-0">@Model.Count(t => t.IsActive)</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-warning text-dark">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-x-circle"></i> Inactive</h6>
-                    <h2 class="mb-0">@Model.Count(t => !t.IsActive)</h2>
-                </div>
-            </div>
-        </div>
+            <button type="button" id="searchBtn">Search</button>
+        </form>
     </div>
 
-    <!-- Search Section -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form id="searchForm">
-                @Html.AntiForgeryToken()
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-white">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" id="searchTerm" class="form-control" 
-                                   placeholder="Search employee types by name..." />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" id="searchBtn" class="btn btn-primary btn-lg w-100">
-                            <i class="bi bi-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </form>
+    <!-- Stats Row -->
+    <div class="bp-stats-row">
+
+        <div class="bp-stat-card stat-1">
+            <div>
+                <h3>@Model.Count()</h3>
+                <p>Total Types</p>
+            </div>
+            <i class="bi bi-list"></i>
         </div>
+
+        <div class="bp-stat-card stat-2">
+            <div>
+                <h3>@Model.Count(t => t.IsActive)</h3>
+                <p>Active</p>
+            </div>
+            <i class="bi bi-check-circle"></i>
+        </div>
+
+        <div class="bp-stat-card stat-3">
+            <div>
+                <h3>@Model.Count(t => !t.IsActive)</h3>
+                <p>Inactive</p>
+            </div>
+            <i class="bi bi-x-circle"></i>
+        </div>
+
     </div>
 
-    <!-- Employee Types Table -->
+    <!-- Table -->
+   <div class="list-page employee-types-page mt-4">
     <div class="card">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="bi bi-table"></i> Employee Types List</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th><i class="bi bi-tag"></i> Type Name</th>
-                            <th><i class="bi bi-card-text"></i> Description</th>
-                            <th class="text-center"><i class="bi bi-toggle-on"></i> Status</th>
-                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="types">
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <strong>@item.Name</strong>
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.Description))
-                                    {
-                                        <span class="text-muted">@(item.Description.Length > 50 ? item.Description.Substring(0, 50) + "..." : item.Description)</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    @if (item.IsActive)
-                                    {
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle"></i> Active
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-x-circle"></i> Inactive
-                                        </span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <a asp-action="Details" asp-route-id="@item.Id" 
-                                           class="btn btn-sm btn-info" title="Details">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a asp-action="Edit" asp-route-id="@item.Id" 
-                                           class="btn btn-sm btn-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
-                                                title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
 
-                                    <!-- Delete Modal -->
-                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Confirm Delete</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Delete employee type <strong>@item.Name</strong>?</p>
-                                                    <p class="text-danger mb-0">
-                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
-                                                    </p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <button type="submit" class="btn btn-danger">
-                                                            <i class="bi bi-trash"></i> Delete
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+        <h2>Employee Types List</h2>
+
+        <!-- Floating Add Button -->
+        <a asp-action="Create" class="floating-btn" title="Add New Type">
+            <i class="fa-solid fa-plus"></i>
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Type Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="types">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="Type Name"><strong>@item.Name</strong></td>
+                        <td data-label="Description">
+                            @if (!string.IsNullOrEmpty(item.Description))
+                            {
+                                <span class="text-muted">@((item.Description.Length > 50) ? item.Description.Substring(0, 50) + "..." : item.Description)</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td data-label="Status">
+                            @if (item.IsActive)
+                            {
+                                <span class="status active">Active</span>
+                            }
+                            else
+                            {
+                                <span class="status inactive">Inactive</span>
+                            }
+                        </td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-view btn-sm" title="Details">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-update btn-sm" title="Edit">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Delete", "EmployeeType", new { id = item.Id })', 'Delete Employee Type')" 
+                                   class="btn btn-delete btn-sm" 
+                                   title="Delete">
+                                   <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle"></i> No employee types found. Click "Add New Type" to get started.
             </div>
-        </div>
-    </div>
+        }
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info mt-4">
-            <i class="bi bi-info-circle"></i> No employee types found. Click "Add New Type" to get started.
-        </div>
-    }
+    </div>
 </div>
+</div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/ListPageHeader.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/pagination.css"))" />
+@await Html.PartialAsync("_GeneralModal")
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

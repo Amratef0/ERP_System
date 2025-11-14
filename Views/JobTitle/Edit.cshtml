@@ -4,143 +4,226 @@
     ViewData["Title"] = "Edit Job Title";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-pencil-square"></i> Edit Job Title</h2>
-                    <p class="text-muted">Update job title information</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
-    </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" /> <!-- optional: يمكنك حذف السطر لو هتستخدم الـ style المباشر أدناه -->
 
-    <!-- Edit Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-briefcase"></i> Job Title Information</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Edit" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Hidden ID field -->
-                        <input asp-for="Id" type="hidden" />
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Name Field -->
-                                <div class="mb-3">
-                                    <label asp-for="Name" class="form-label">
-                                        <i class="bi bi-tag"></i> Job Title Name <span class="text-danger">*</span>
-                                    </label>
-                                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter job title name" />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
-                            </div>
+<div class="create-supplier form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Job Title</h3>
 
-                            <div class="col-md-6">
-                                <!-- Code Field -->
-                                <div class="mb-3">
-                                    <label asp-for="Code" class="form-label">
-                                        <i class="bi bi-hash"></i> Job Code <span class="text-danger">*</span>
-                                    </label>
-                                    <input asp-for="Code" class="form-control form-control-lg" placeholder="Enter job code" />
-                                    <span asp-validation-for="Code" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+        <form asp-action="Edit" method="post" novalidate>
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Min Salary Field -->
-                                <div class="mb-3">
-                                    <label asp-for="MinSalary" class="form-label">
-                                        <i class="bi bi-cash-stack"></i> Minimum Salary
-                                    </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text">$</span>
-                                        <input asp-for="MinSalary" type="number" step="0.01" class="form-control" placeholder="0.00" />
-                                    </div>
-                                    <span asp-validation-for="MinSalary" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <!-- Max Salary Field -->
-                                <div class="mb-3">
-                                    <label asp-for="MaxSalary" class="form-label">
-                                        <i class="bi bi-cash-coin"></i> Maximum Salary
-                                    </label>
-                                    <div class="input-group input-group-lg">
-                                        <span class="input-group-text">$</span>
-                                        <input asp-for="MaxSalary" type="number" step="0.01" class="form-control" placeholder="0.00" />
-                                    </div>
-                                    <span asp-validation-for="MaxSalary" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Description Field -->
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label">
-                                <i class="bi bi-card-text"></i> Description
-                            </label>
-                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter job description and responsibilities"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                        </div>
-
-                        <!-- Is Active Field -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" />
-                                <label class="form-check-label" for="isActiveSwitch">
-                                    <i class="bi bi-toggle-on"></i> Job Title is Active
-                                </label>
-                            </div>
-                            <div class="form-text">Inactive job titles won't appear in selection lists</div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-warning btn-lg">
-                                <i class="bi bi-check-circle"></i> Update Job Title
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Name -->
+            <div class="form-group">
+                <label asp-for="Name">Job Title Name <span class="text-danger">*</span></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Salary Range Guidelines</h6>
-                    <ul class="mb-0 small">
-                        <li>Minimum Salary should be less than Maximum Salary</li>
-                        <li>Salary ranges help maintain pay equity across the organization</li>
-                        <li>These values are guidelines and can be adjusted per employee</li>
-                        <li>Leave salary fields empty if not applicable</li>
-                    </ul>
-                </div>
+            <!-- Code -->
+            <div class="form-group">
+                <label asp-for="Code">Job Code <span class="text-danger">*</span></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
             </div>
-        </div>
+
+            <!-- Min Salary -->
+            <div class="form-group">
+                <label asp-for="MinSalary">Minimum Salary</label>
+                <input asp-for="MinSalary" type="number" step="0.01" class="form-control" />
+                <span asp-validation-for="MinSalary" class="text-danger"></span>
+            </div>
+
+            <!-- Max Salary -->
+            <div class="form-group">
+                <label asp-for="MaxSalary">Maximum Salary</label>
+                <input asp-for="MaxSalary" type="number" step="0.01" class="form-control" />
+                <span asp-validation-for="MaxSalary" class="text-danger"></span>
+            </div>
+
+            <!-- Description (full width) -->
+            <div class="form-group full-width">
+                <label asp-for="Description">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- IsActive -->
+            <div class="form-group form-check">
+                <input asp-for="IsActive" class="form-check-input" id="isActiveSwitch" type="checkbox" />
+                <label asp-for="IsActive" class="form-check-label" for="isActiveSwitch">Job Title is Active</label>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Update Job Title</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style>
+/* ====== Form layout & visual (self-contained, safe to paste) ====== */
+
+/* Container */
+.create-supplier.form-page {
+    padding: 20px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    box-sizing: border-box;
+}
+
+/* Card */
+.create-supplier.form-page .form {
+    background: var(--color-bg-content, #fff);
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    color: var(--color-text-main, #1f2937);
+}
+
+/* Title */
+.create-supplier.form-page .formTitle {
+    text-align: center;
+    margin: 0 0 18px 0;
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #635BFF, #00D4FF, #8E7CFF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% auto;
+}
+
+/* Grid */
+.create-supplier.form-page form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+/* Each form-group is a vertical stack: label above control */
+.create-supplier.form-page .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels: FIXED above controls */
+.create-supplier.form-page .form-group > label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted, #6b7280);
+    line-height: 1;
+}
+
+/* Inputs & textarea */
+.create-supplier.form-page .form-control {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 12px;
+    padding: 12px 14px;
+    border: 1px solid #e5e7eb;
+    background: var(--color-bg-body, #ffffff);
+    color: var(--color-text-main, #111827);
+    font-size: 14px;
+    transition: box-shadow .15s ease, border-color .15s ease;
+}
+
+/* textarea specifics */
+.create-supplier.form-page textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.4;
+}
+
+/* Focus styling */
+.create-supplier.form-page .form-control:focus {
+    outline: none;
+    border-color: var(--color-accent, #635BFF);
+    box-shadow: 0 4px 18px rgba(99,91,255,0.12);
+}
+
+/* Full-width helper: forces the form-group to span across the grid */
+.create-supplier.form-page .form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Buttons row */
+.create-supplier.form-page .form-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* Button styles (keeps your look) */
+.create-supplier.form-page .btn {
+    border-radius: 12px;
+    padding: 10px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+}
+
+.create-supplier.form-page .btn-primary {
+    background: linear-gradient(90deg, #635BFF, #8E7CFF, #00D4FF);
+    color: #fff;
+}
+
+.create-supplier.form-page .btn-secondary {
+    background: transparent;
+    border: 1px solid rgba(99,91,255,0.18);
+    color: var(--color-text-main, #111827);
+}
+
+/* Checkbox row (inline label) */
+.create-supplier.form-page .form-group.form-check {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Small responsive tweaks */
+@@media (max-width: 640px) {
+    .create-supplier.form-page form {
+        grid-template-columns: 1fr;
+    }
+
+    .create-supplier.form-page .form-buttons {
+        justify-content: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .create-supplier.form-page .btn {
+        width: 100%;
+    }
+}
+
+/* Accessibility: increased hit area for checkbox */
+.create-supplier.form-page .form-check-input {
+    width: 18px;
+    height: 18px;
+}
+
+/* Minor helper: validation message spacing */
+.create-supplier.form-page .text-danger {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #dc2626;
+}
+
+/* If you want the description to visually separate a bit */
+.create-supplier.form-page .form-group.full-width textarea {
+    padding-top: 14px;
+}
+
+/* End of styles */
+</style>

@@ -3,27 +3,30 @@
     ViewData["Title"] = "Delete";
 }
 
-<form method="post" asp-action="Delete">
+<link rel="stylesheet" href="~/css/CRUD/Delete.css" />
+
+<form method="post" asp-action="Delete" class="delete-wrapper">
     <input asp-for="Id" hidden />
-    <div class="border p-3 mt-4">
+    <div class="details-section">
         <div class="row pb-2">
-            <h2 class="text-primary">Delete Attribute</h2>
+            <h2 class="title">Delete Attribute</h2>
             <hr />
         </div>
         <div class="mb-3">
             <label asp-for="Name"></label>
-            <input asp-for="Name" disabled class="form-control" />
+            <input asp-for="Name" disabled class="details-grid" />
         </div>
         <div class="mb-3">
             <label asp-for="Type"></label>
-            <input asp-for="Type" disabled class="form-control" />
+            <input asp-for="Type" disabled class="details-grid" />
         </div>
         <br />
         <hr />
-        <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
-        <a asp-action="Index" asp-controller="Attribute" class="btn btn-secondary" style="width:160px">
-            back to Attributes
-        </a>
+        <div class="viewActions">
+            <button type="submit" class="btn btn-delete" style="width:150px">Delete</button>
+            <a asp-action="Index" asp-controller="Attribute" class="btn btn-back" style="width:160px">
+                back to Attributes
+            </a>
+        </div>
     </div>
 </form>
-
