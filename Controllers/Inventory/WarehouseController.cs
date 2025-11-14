@@ -39,7 +39,7 @@ namespace ERP_System_Project.Controllers.Inventory
                 .FirstOrDefaultAsync(w => w.WarehouseId == id);
 
             if (warehouse == null) return NotFound();
-            return View(warehouse);
+            return PartialView(warehouse);
         }
 
         // GET: Create
@@ -47,7 +47,7 @@ namespace ERP_System_Project.Controllers.Inventory
         public IActionResult Create()
         {
             ViewData["Branches"] = new SelectList(_context.Branches, "Id", "Name");
-            return View();
+            return PartialView();
         }
 
         // POST: Create
@@ -76,7 +76,7 @@ namespace ERP_System_Project.Controllers.Inventory
             if (warehouse == null) return NotFound();
 
             ViewData["Branches"] = new SelectList(_context.Branches, "Id", "Name", warehouse.BranchId);
-            return View(warehouse);
+            return PartialView(warehouse);
         }
 
         // POST: Edit
@@ -109,7 +109,7 @@ namespace ERP_System_Project.Controllers.Inventory
                 .FirstOrDefaultAsync(w => w.WarehouseId == id);
 
             if (warehouse == null) return NotFound();
-            return View(warehouse);
+            return PartialView(warehouse);
         }
 
         // POST: Delete
