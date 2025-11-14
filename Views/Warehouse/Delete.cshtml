@@ -3,18 +3,33 @@
     ViewData["Title"] = "Delete Warehouse";
 }
 
-<h2>Delete Warehouse</h2>
+<link rel="stylesheet" href="~/css/CRUD/Delete.css" />
 
-@if (ViewBag.ErrorMessage != null)
-{
-    <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
-}
+<div class="delete-wrapper">
+    <h2 class="title">Delete Warehouse</h2>
 
-<h4>@Model.Name (@Model.Code)</h4>
-<p>Branch: @Model.Branch?.Name</p>
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+    }
 
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" asp-for="WarehouseId" />
-    <button type="submit" class="btn btn-danger">Delete</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+    <div class="details-section">
+        <h4 class="record-name">@Model.Name (@Model.Code)</h4>
+        <dl class="details-grid">
+            <div class="detail-item">
+                <dt>Branch</dt>
+                <dd>@Model.Branch?.Name</dd>
+            </div>
+        </dl>
+    </div>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" asp-for="WarehouseId" />
+        <div class="viewActions">
+            <div class="left-buttons">
+                <button type="submit" class="btn btn-delete">Delete</button>
+                <a asp-action="Index" class="btn btn-back">Cancel</a>
+            </div>
+        </div>
+    </form>
+</div>
