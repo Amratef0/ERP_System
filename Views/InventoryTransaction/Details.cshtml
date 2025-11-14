@@ -1,14 +1,48 @@
 ﻿@model ERP_System_Project.Models.Inventory.InventoryTransaction
 
-<h2>Transaction Details</h2>
+@{
+    ViewData["Title"] = "Transaction Details";
+}
 
-<div class="card p-3">
-    <p><strong>Product:</strong> @Model.Product.Name</p>
-    <p><strong>Warehouse:</strong> @Model.WarehouseProduct.Warehouse.Name</p>
-    <p><strong>Quantity:</strong> @Model.Quantity</p>
-    <p><strong>Type:</strong> @Model.TransactionType</p>
-    <p><strong>Date:</strong> @Model.TransactionDate.ToString("yyyy-MM-dd HH:mm")</p>
-    <p><strong>Notes:</strong> @Model.Notes</p>
+<div class="details-page">
+    <h2 class="title">Transaction Details</h2>
+
+    <div class="details-section">
+        <h3 class="supplier-name">@Model.Product.Name</h3>
+        <dl class="details-grid">
+            <div class="detail-item">
+                <dt>Warehouse</dt>
+                <dd>@Model.WarehouseProduct.Warehouse.Name</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Quantity</dt>
+                <dd>@Model.Quantity</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Type</dt>
+                <dd>@Model.TransactionType</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Date</dt>
+                <dd>@Model.TransactionDate.ToString("yyyy-MM-dd HH:mm")</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Notes</dt>
+                <dd>@Model.Notes</dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="viewActions">
+
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back</a>
+        </div>
+    </div>
 </div>
 
-<a asp-action="Index" class="btn btn-secondary mt-2">Back</a>
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Details.css"))" />
