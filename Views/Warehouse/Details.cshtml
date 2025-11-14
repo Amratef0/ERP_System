@@ -3,38 +3,64 @@
     ViewData["Title"] = "Warehouse Details";
 }
 
-<h2>Warehouse Details</h2>
+<link rel="stylesheet" href="~/css/CRUD/Details.css" />
 
-<div>
-    <h4>@Model.Name (@Model.Code)</h4>
-    <p>Branch: @Model.Branch?.Name</p>
-    <p>Created: @Model.CreatedDate.ToString("dd/MM/yyyy")</p>
+<div class="details-page">
+    <h2 class="title">Warehouse Details</h2>
+
+    <div class="details-section">
+        <h3 class="supplier-name">@Model.Name (@Model.Code)</h3>
+
+        <dl class="details-grid">
+            <div class="detail-item">
+                <dt>Branch</dt>
+                <dd>@Model.Branch?.Name</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Created Date</dt>
+                <dd>@Model.CreatedDate.ToString("dd/MM/yyyy")</dd>
+            </div>
+        </dl>
+    </div>
+
+    <div class="lists-section">
+        <h4>Products</h4>
+        @if (Model.WarehouseProducts.Any())
+        {
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity On Hand</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in Model.WarehouseProducts)
+                        {
+                            <tr>
+                                <td>@p.Product?.Name</td>
+                                <td>@p.QuantityOnHand</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <p>No products in this warehouse.</p>
+        }
+    </div>
+
+    <div class="viewActions">
+        <div class="left-buttons">
+            <!-- لو فيه Edit/Delete تقدر تضيفهم هنا -->
+        </div>
+
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back</a>
+        </div>
+    </div>
 </div>
-
-<h4>Products</h4>
-@if (Model.WarehouseProducts.Any())
-{
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity On Hand</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var p in Model.WarehouseProducts)
-            {
-                <tr>
-                    <td>@p.Product?.Name</td>
-                    <td>@p.QuantityOnHand</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No products in this warehouse.</p>
-}
-
-<a asp-action="Index" class="btn btn-secondary">Back</a>
