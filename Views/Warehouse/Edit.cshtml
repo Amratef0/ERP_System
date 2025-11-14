@@ -1,30 +1,39 @@
 ﻿@model ERP_System_Project.Models.Inventory.Warehouse
 
-<h2>Edit Warehouse</h2>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="WarehouseId" />
+<div class="form-page">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Warehouse</h3>
 
-    <div class="form-group">
-        <label asp-for="Code"></label>
-        <input asp-for="Code" class="form-control" />
-        <span asp-validation-for="Code" class="text-danger"></span>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="WarehouseId" />
+
+            <div class="form-group">
+                <input asp-for="Code" class="form-control" placeholder=" " />
+                <label asp-for="Code"></label>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name"></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <select asp-for="BranchId" class="form-select" asp-items="@(ViewData["Branches"] as SelectList)">
+                    <option value="" disabled selected hidden>-- Select Branch --</option>
+                </select>
+                <label asp-for="BranchId">Branch</label>
+                <span asp-validation-for="BranchId" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="BranchId">Branch</label>
-        <select asp-for="BranchId" class="form-control" asp-items="@(ViewData["Branches"] as SelectList)">
-            <option value="">-- Select Branch --</option>
-        </select>
-        <span asp-validation-for="BranchId" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>
