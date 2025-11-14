@@ -1,33 +1,51 @@
 ﻿@model IEnumerable<ERP_System_Project.Models.Inventory.InventoryTransaction>
 
-<h2>Inventory Transactions</h2>
+@{
+    ViewData["Title"] = "Inventory Transactions";
+}
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Product</th>
-            <th>Warehouse</th>
-            <th>Quantity</th>
-            <th>Type</th>
-            <th>Date</th>
-            <th>Notes</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in Model)
-        {
-            <tr>
-                <td>@t.Product.Name</td>
-                <td>@t.WarehouseProduct.Warehouse.Name</td>
-                <td>@t.Quantity</td>
-                <td>@t.TransactionType</td>
-                <td>@t.TransactionDate.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@t.Notes</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@t.Id" class="btn btn-info btn-sm">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="list-page">
+    <div class="card">
+        <h2>Inventory Transactions</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Warehouse</th>
+                    <th>Quantity</th>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model)
+                {
+                    <tr>
+                        <td data-label="Product">@t.Product.Name</td>
+                        <td data-label="Warehouse">@t.WarehouseProduct.Warehouse.Name</td>
+                        <td data-label="Quantity">@t.Quantity</td>
+                        <td data-label="Type">@t.TransactionType</td>
+                        <td data-label="Date">@t.TransactionDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td data-label="Notes">@t.Notes</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Details", "InventoryTransaction", new { id = t.Id })', 'Transaction Details')" 
+                                   class="btn btn-view btn-sm" 
+                                   title="View Details">
+                                   <i class="fa-solid fa-eye"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@await Html.PartialAsync("_GeneralModal")
