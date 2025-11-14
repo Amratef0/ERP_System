@@ -3,45 +3,47 @@
     ViewData["Title"] = "Add New Brand";
 }
 
-<div class="container mt-4">
-    <form method="post" enctype="multipart/form-data">
-        <div class="card p-4 shadow-sm">
-            <div class="mb-3">
-                <h2 class="text-primary">Add New Brand</h2>
-                <hr />
-            </div>
+<div class="form-page">
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
+    <div class="form"> 
+        <h3 class="formTitle" id="form-title">Add New Brand</h3>
+
+        <form method="post" enctype="multipart/form-data">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name"></label>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="form-group">
+                <input asp-for="Description" class="form-control" placeholder=" " />
+                <label asp-for="Description"></label>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="LogoURL" class="form-label"></label>
-                <input asp-for="LogoURL" class="form-control" />
+            <div class="form-group">
+                <input asp-for="LogoURL" class="form-control" placeholder=" " />
+                <label asp-for="LogoURL"></label>
                 <span asp-validation-for="LogoURL" class="text-danger"></span>
             </div>
 
-            <div class="mb-3">
-                <label asp-for="WebsiteURL" class="form-label"></label>
-                <input asp-for="WebsiteURL" class="form-control" />
+            <div class="form-group">
+                <input asp-for="WebsiteURL" class="form-control" placeholder=" " />
+                <label asp-for="WebsiteURL"></label>
                 <span asp-validation-for="WebsiteURL" class="text-danger"></span>
             </div>
 
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="btn btn-success flex-fill">Add</button>
-                <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary flex-fill">Back to Brands</a>
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Add</button>
+                <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary">Back to Brands</a>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
+
+<link rel="stylesheet" href="~/css/CRUD/Create.css">
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
