@@ -28,7 +28,7 @@ namespace ERP_System_Project.Controllers.Inventory
 
         public async Task<IActionResult> New()
         {
-            return PartialView();
+            return View();
         }
 
         [HttpPost]
@@ -54,7 +54,7 @@ namespace ERP_System_Project.Controllers.Inventory
             if (attribute is null) return NotFound();
             var attributeVM = _mapper.Map<AttributeVM>(attribute);
 
-            return PartialView(attributeVM);
+            return View(attributeVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -80,7 +80,7 @@ namespace ERP_System_Project.Controllers.Inventory
             var attribute = await _attributeService.GetByIdAsync(id);
             if (attribute is null) return NotFound();
             var attributeVM = _mapper.Map<AttributeVM>(attribute);
-            return PartialView(attributeVM);
+            return View(attributeVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
