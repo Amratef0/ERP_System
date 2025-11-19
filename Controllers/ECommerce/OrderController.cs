@@ -1,5 +1,6 @@
-﻿using ERP_System_Project.Services.Interfaces.ECommerce;
+using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.ViewModels.Inventory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace ERP_System_Project.Controllers.ECommerce
         {
             _orderService = orderService;
         }
+        [Authorize]
         public async Task<IActionResult> MakeOrder()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
