@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -166,7 +166,7 @@ namespace ERP_System_Project.Controllers.Authentication
                     if (found)
                     {
                         await _signInManager.SignInAsync(appuser, UserViewModel.RememberMe);
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Market");
                     }
                 }
                 ModelState.AddModelError("", "User Or Password Wrong");
@@ -391,7 +391,100 @@ namespace ERP_System_Project.Controllers.Authentication
 
             return LocalRedirect(returnUrl);
         }
+        [HttpGet]
+        public async Task<IActionResult> ViewProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login");
+
+            var model = new ViewProfileViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                DateOfBirth = user.DateOfBirth,
+                CreatedAt = user.CreatedAt
+            };
+
+            return View(model);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login");
+
+            var model = new EditProfileViewModel
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login");
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.UserName = $"{model.FirstName} {model.LastName}";
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Profile updated successfully!";
+            return RedirectToAction("ViewProfile");
+        }
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login");
+
+            var result = await _userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Password changed successfully!";
+            return RedirectToAction("ViewProfile");
+        }
+
+
     }
+
 }
 
 
