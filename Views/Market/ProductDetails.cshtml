@@ -1,4 +1,4 @@
-﻿@model ERP_System_Project.ViewModels.ECommerce.ProductDetailsVM
+@model ERP_System_Project.ViewModels.ECommerce.ProductDetailsVM
 @{
     ViewData["Title"] = Model.Name;
     @if (TempData["AddReviewSuccess"] != null)
@@ -677,71 +677,232 @@
 }
 
 <style>
-    .nav-underline .nav-link {
-        color: #6c757d;
-        font-weight: 500;
-        border: none;
-        padding: 1rem 1.5rem;
+    /* ===== General ===== */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #343a40;
+        background-color: #f8f9fa;
     }
 
-        .nav-underline .nav-link.active {
+    /* ===== Breadcrumb ===== */
+    .breadcrumb a {
+        color: #0d6efd;
+        text-decoration: none;
+    }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+    /* ===== Cards ===== */
+    .card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.75rem 1.5rem rgba(0,0,0,0.12);
+        }
+
+    /* ===== Product Images ===== */
+    .img-fluid {
+        border-radius: 1rem;
+    }
+
+    .img-thumbnail {
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+        .img-thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+    /* ===== Product Details ===== */
+    h1, h4, h5 {
+        font-weight: 700;
+    }
+
+    .text-dark {
+        color: #212529 !important;
+    }
+
+    /* ===== Buttons ===== */
+    .btn-primary, .btn-outline-primary, .btn-outline-danger {
+        border-radius: 0.75rem;
+        font-weight: 600;
+        padding: 0.65rem 1.5rem;
+        transition: all 0.2s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0b5ed7;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #e7f1ff;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #fde2e2;
+        }
+
+    /* ===== Quantity Input ===== */
+    .input-group {
+        width: fit-content;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #dee2e6;
+    }
+
+        .input-group .form-control {
+            border: none;
+            width: 60px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .input-group .btn {
+            background-color: #0d6efd;
+            color: #fff;
+            font-weight: bold;
+        }
+
+            .input-group .btn:hover {
+                background-color: #0b5ed7;
+            }
+
+    /* ===== Tabs ===== */
+    .nav-tabs .nav-link {
+        color: #6c757d;
+        font-weight: 500;
+        padding: 1rem 1.5rem;
+        border: none;
+        transition: color 0.2s ease, border-bottom 0.2s ease;
+    }
+
+        .nav-tabs .nav-link.active {
             color: #0d6efd;
             border-bottom: 3px solid #0d6efd;
             background: transparent;
         }
 
-    .review-item:last-child {
-        border-bottom: none !important;
-        margin-bottom: 0 !important;
-        padding-bottom: 0 !important;
+        .nav-tabs .nav-link:hover {
+            color: #0a58ca;
+        }
+
+    /* ===== Reviews ===== */
+    .reviews-container {
+        max-height: 450px;
+        overflow-y: auto;
+        padding-right: 5px;
     }
 
+    .review-item {
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #dee2e6;
+        transition: background-color 0.2s ease;
+    }
+
+        .review-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .review-item img, .review-item .rounded-circle {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+    /* ===== Star Ratings ===== */
+    .bi-star-fill, .bi-star-half, .bi-star {
+        color: #ffc107;
+    }
+
+    /* ===== Additional Info Icons ===== */
+    .display-6 {
+        font-size: 2.5rem;
+    }
+
+    .text-primary {
+        color: #0d6efd !important;
+    }
+
+    /* ===== Alerts ===== */
+    .alert {
+        border-radius: 0.75rem;
+        font-weight: 500;
+    }
+
+    /* ===== Forms ===== */
+    textarea.form-control {
+        border-radius: 0.75rem;
+        resize: none;
+    }
+
+    /* ===== Misc ===== */
     .cursor-pointer {
         cursor: pointer;
     }
 
-    .input-group {
+    .flex-fill {
+        flex: 1 1 auto;
+    }
+    /* ===== Modern Quantity Control ===== */
+    .input-group-lg {
         display: flex;
-        justify-content: center;
         align-items: center;
-        width: fit-content;
-        margin: auto;
         border: 1px solid #dee2e6;
-        border-radius: 10px;
+        border-radius: 1rem;
         overflow: hidden;
+        width: 150px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
-        .input-group .btn {
-            background-color: #007bff;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
+        .input-group-lg .btn {
+            width: 50px;
+            height: 50px;
             border: none;
-            width: 40px;
-            height: 40px;
-            transition: 0.2s ease;
+            background-color: #0d6efd;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-            .input-group .btn:hover {
-                background-color: #0056b3;
+            .input-group-lg .btn:hover {
+                background-color: #0b5ed7;
+                transform: scale(1.1);
             }
 
-        .input-group .form-control {
+        .input-group-lg .form-control {
             border: none;
-            width: 60px;
-            height: 40px;
             text-align: center;
-            font-size: 18px;
-            font-weight: 600;
-            outline: none;
+            font-weight: 700;
+            font-size: 1.3rem;
+            width: 60px;
+            color: #333;
         }
 
-    .tab-content {
-        min-height: 300px;
-    }
+            .input-group-lg .form-control:focus {
+                outline: none;
+                box-shadow: none;
+            }
 
-    .reviews-container {
-        max-height: 500px;
-        overflow-y: auto;
-    }
+        .input-group-lg .btn:first-child {
+            border-top-left-radius: 1rem;
+            border-bottom-left-radius: 1rem;
+        }
+
+        .input-group-lg .btn:last-child {
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
 </style>
