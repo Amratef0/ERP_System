@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     /* -------- Card 1 (Light) -------- */
     --card1-bg: #ebfaf0;
     --card1-h3: #1a3d2e;
@@ -25,7 +25,40 @@
     --statcard-p: #15545a;
     --statcard-icon: #1d4b59;
 }
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
 
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 .dark {
     /* -------- Card 1 (Dark) -------- */
     --card1-bg: #204642;
