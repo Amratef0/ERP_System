@@ -27,7 +27,7 @@
  <div class="sidebar-icons">
      <button id="menuToggle" title="Toggle submenu"><i class="fa fa-bars"></i></button>
 
-     <button id="iconHome" title="Home" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i></button>
+     <button id="iconHome" title="Home" asp-area="" asp-controller="Market" asp-action="Index"><i class="fa-solid fa-house"></i></button>
      <hr>
 
      <!-- HR -->
@@ -97,7 +97,7 @@
                      <i class="fa fa-bars"></i>
                   </button>
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><h5 class="mb-0 me-auto">Optima</h5></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Market" asp-action="Index"><h5 class="mb-0 me-auto">Optima</h5></a>
 
                 <div class="d-flex align-items-center">
                    <div class="mood">
@@ -109,16 +109,34 @@
 
 
             <!-- Profile Dropdown -->
-            <div class="dropdown">
-              <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="fa-regular fa-circle-user fs-4"></i>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">My Product</a></li>
-                <li><a class="dropdown-item text-danger" href="#">Sign Out</a></li>
-              </ul>
-            </div>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fa-regular fa-circle-user fs-4"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ViewProfile">My Profile</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Order" asp-action="MyOrders">My Orders</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="CustomerWishlist" asp-action="Index">My Wishlist</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="CustomerFavorite" asp-action="Index">My Favorite</a></li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Cart" asp-action="Index"> My Cart</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" asp-area="" asp-controller="Account" asp-action="Signout">
+                                    <button type="submit" class="dropdown-item text-danger">Sign Out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a></li>
+                        }
+                    </ul>
+                </div>
+
             </nav>
 
         @* <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -139,7 +157,7 @@
                        <h6>Home</h6>
                        <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Market" asp-action="Index">Home</a>
                         </li>
                         </ul>
                    </div>
