@@ -1,105 +1,176 @@
-﻿@using ERP_System_Project.Models.Authentication
+@using ERP_System_Project.Models.Authentication
 @model LoginUserViewModel
 
 @{
     ViewData["Title"] = "Login";
 }
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <div class="card shadow-sm border-light rounded">
-                <div class="card-body p-4">
-                    <h2 class="text-center mb-4">Login</h2>
+<div class="login-container">
+    <div class="login-card animate-slide">
+        <h2 class="text-center mb-4 fw-bold">Welcome Back</h2>
 
-
-                    @if (TempData["SuccessMessage"] != null)
-                    {
-                        <div class="alert alert-success alert-dismissible fade show"
-                             role="alert">
-                            @TempData["SuccessMessage"]
-                            <button type="button" class="btn-close" data-bs
-                                    dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
-
-                    @if (TempData["ErrorMessage"] != null)
-                    {
-                        <div class="alert alert-danger alert-dismissible fade show"
-                             role="alert">
-                            @TempData["ErrorMessage"]
-                            <button type="button" class="btn-close" data-bs
-                                    dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    }
-
-                    <form asp-action="SaveLogin">
-                        @Html.AntiForgeryToken()
-
-                        <div asp-validation-summary="All" class="text-danger mb
-3"></div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="UserNameOrEmail" class="form
-label">Username or Email</label>
-                            <input asp-for="UserNameOrEmail" class="form-control"
-                                   placeholder="Enter your username or email" />
-                            <span asp-validation-for="UserNameOrEmail" class="text
-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Password" class="form
-label">Password</label>
-                            <input asp-for="Password" class="form-control"
-                                   type="password" placeholder="Enter your password" />
-                            <span asp-validation-for="Password" class="text
-danger"></span>
-                        </div>
-
-                        <div class="form-group form-check mb-4 d-flex align-items
-center">
-                            <input class="form-check-input" type="checkbox" asp
-                                   for="RememberMe" id="RememberMe" />
-                            <label class="form-check-label" for="RememberMe"
-                                   style="margin-left: 8px;">Remember Me</label>
-                        </div>
-
-                                              <div class="d-grid">
-                            <input type="submit" value="Login" class="btn btn
-primary btn-lg" />
-                        </div>
-                        <div class="text-center mt-3">
-                            <a class="btn btn-danger w-100" asp-controller="Account" asp-action="GoogleLogin">
-                                <i class="bi bi-google"></i> Sign in with Google
-                            </a>
-                        </div>
-                        <div class="text-center mt-3">
-                            <a class="btn btn-primary w-100" asp-controller="Account" asp-action="FacebookLogin">
-                                <i class="bi bi-facebook"></i> Sign in with Facebook
-                            </a>
-                        </div>
-                    </form>
-
-                    <div class="text-center mt-4">
-                        <a asp-action="Register" class="text-decoration-none">
-                            Create
-                            an Account
-                        </a>
-                    </div>
-
-                    <div class="text-center mt-2">
-                        <a asp-controller="Account" asp-action="ForgotPassword"
-                           class="text-decoration-none">Forgot Password?</a>
-                    </div>
-                </div>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success custom-alert">
+                @TempData["SuccessMessage"]
             </div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger custom-alert">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+
+        <form asp-action="SaveLogin">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="UserNameOrEmail" class="form-control cool-input" placeholder="Username or Email" />
+                <label asp-for="UserNameOrEmail">Username or Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Password" type="password" class="form-control cool-input" placeholder="Password" />
+                <label asp-for="Password">Password</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="RememberMe" class="form-check-input" id="RememberMe" />
+                <label class="form-check-label" for="RememberMe">Remember Me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary login-btn w-100">Login</button>
+
+            <div class="mt-3">
+                <a class="btn btn-google w-100 mb-2" asp-controller="Account" asp-action="GoogleLogin">
+                    <i class="bi bi-google"></i> Sign in with Google
+                </a>
+                <a class="btn btn-facebook w-100" asp-controller="Account" asp-action="FacebookLogin">
+                    <i class="bi bi-facebook"></i> Sign in with Facebook
+                </a>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <a asp-action="Register" class="link-custom">Create an Account</a>
+        </div>
+        <div class="text-center mt-2">
+            <a asp-controller="Account" asp-action="ForgotPassword" class="link-custom">Forgot Password?</a>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<style>
+    /* Background */
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #4b79a1, #283e51);
+        padding: 20px;
+    }
+
+    /* Card */
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 35px;
+        color: white;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+        .login-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.35);
+        }
+
+    /* Floating Inputs */
+    .cool-input {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: #fff;
+        border-radius: 10px;
+    }
+
+        .cool-input:focus {
+            background: rgba(255,255,255,0.3);
+            box-shadow: 0 0 10px rgba(255,255,255,0.4);
+            color: #fff;
+        }
+
+    label {
+        color: #eee !important;
+    }
+
+    /* Buttons */
+    .login-btn {
+        padding: 12px;
+        font-size: 18px;
+        border-radius: 12px;
+        transition: .3s;
+    }
+
+        .login-btn:hover {
+            background-color: #0d6efd;
+            transform: scale(1.05);
+        }
+
+    .btn-google {
+        background-color: #db4437;
+        color: white;
+        border-radius: 10px;
+        transition: .3s;
+    }
+
+        .btn-google:hover {
+            background-color: #c43c31;
+            transform: scale(1.03);
+        }
+
+    .btn-facebook {
+        background-color: #1877f2;
+        color: white;
+        border-radius: 10px;
+        transition: .3s;
+    }
+
+        .btn-facebook:hover {
+            background-color: #0f67d1;
+            transform: scale(1.03);
+        }
+
+    /* Links */
+    .link-custom {
+        color: #fff;
+        transition: .3s;
+    }
+
+        .link-custom:hover {
+            color: #e3e3e3;
+            text-decoration: underline;
+        }
+
+    /* Alerts */
+    .custom-alert {
+        border-radius: 10px;
+    }
+
+   
+
+    .animate-slide {
+        animation: slideUp .8s ease;
+    }
+
+</style>
