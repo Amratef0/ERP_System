@@ -1,4 +1,5 @@
-﻿using ERP_System_Project.Models.ECommerce;
+﻿using ERP_System_Project.Models.CRM;
+using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Enums;
 using ERP_System_Project.Models.Inventory;
@@ -17,11 +18,15 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly string SessionKey = "MyCart";
+        private readonly Dictionary<string, CartViewModel> _tempCarts = new();
+        private readonly ICartService _cartService;
 
-        public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
+
+        public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, ICartService cartService)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
+            _cartService = cartService;
         }
 
         public async Task<PageSourcePagination<MyOrdersVM>> GetCustomerOrdersAsync(string userId, int pageNumber, int pageSize)
@@ -69,24 +74,52 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             return customerOrders;
         }
 
-        
 
-        public async Task MakeOrderAsync(string userId)
+
+        public async Task MakeOrderAsync(string userId, CartViewModel cart)
         {
-            var productDictionary = GetDictionaryFromSession(SessionKey);
+            if (cart == null || cart.productsCart.Count == 0)
+                throw new Exception("Cart is empty");
 
-            var productIDs = productDictionary.Keys.ToList();
-            var productQuantities = productDictionary.Values.ToList();
+            var productIDs = cart.productsCart.Select(p => p.ProductId).ToList();
+            var productQuantities = cart.productsCart.Select(p => p.Quantity).ToList();
             var numberOfItems = productIDs.Count;
 
+            // جلب العميل، لو مش موجود اعمل واحد جديد
             var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
                 .Include(c => c.CustomerAddresses)
-                .FirstOrDefaultAsync(c => c.ApplicationUserId ==  userId);
-            int customerId = customer!.Id;
+                .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
+
+            if (customer == null)
+            {
+                customer = new Customer
+                {
+                    ApplicationUserId = userId,
+                    FirstName = "Default",
+                    LastName = "Name"
+                };
+                await _unitOfWork.Customers.AddAsync(customer);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            // التأكد من وجود عنوان فواتير
+            var billingAddress = customer.CustomerAddresses.FirstOrDefault();
+            if (billingAddress == null)
+            {
+                billingAddress = new CustomerAddress
+                {
+                    CustomerId = customer.Id,
+                    Street = "NA",
+                    City = "NA",
+                    Country = "NA"
+                };
+                customer.CustomerAddresses.Add(billingAddress);
+                await _unitOfWork.CompleteAsync();
+            }
 
             var orderItems = new List<OrderItem>();
 
-            for(int i = 0; i < numberOfItems; i++)
+            for (int i = 0; i < numberOfItems; i++)
             {
                 await _unitOfWork.Products.GetAllAsIQueryable()
                    .Where(p => p.Id == productIDs[i])
@@ -99,30 +132,33 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     .Include(p => p.Offer)
                     .FirstOrDefault(p => p.Id == productIDs[i]);
 
-                OrderItem orderItem = new OrderItem()
+                if (product == null) continue; // لو المنتج مش موجود تجاهله
+
+                var discountAmount = product.Offer != null ?
+                    (product.StandardPrice * productQuantities[i])
+                    - (product.StandardPrice - ((product.Offer.DiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
+                    : 0;
+
+                var lineTotal = product.Offer != null ?
+                    (product.StandardPrice - ((product.Offer.DiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
+                    : product.StandardPrice * productQuantities[i];
+
+                orderItems.Add(new OrderItem
                 {
                     ProductId = productIDs[i],
                     Quantity = productQuantities[i],
                     CreatedDate = DateTime.Now,
-                    UnitPrice = product!.StandardPrice,
-                    DiscountPercentage = product.Offer != null ? product.Offer.DiscountPercentage : 0,
-                    DiscountAmount = product.Offer != null ?
-                                    (product.StandardPrice * productQuantities[i])
-                                    -
-                                    (product.StandardPrice - ((product.Offer.DiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
-                                    :0,
-                    LineTotal =
-                                   product.Offer != null ?
-                                   (product.StandardPrice - ((product.Offer.DiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
-                                   : product.StandardPrice * productQuantities[i],
-                };
-                orderItems.Add(orderItem);
+                    UnitPrice = product.StandardPrice,
+                    DiscountPercentage = product.Offer?.DiscountPercentage ?? 0,
+                    DiscountAmount = discountAmount,
+                    LineTotal = lineTotal
+                });
             }
 
-            Order order = new Order()
+            var order = new Order
             {
-                CustomerId = customerId,
-                BillingAddressId = customer.CustomerAddresses.FirstOrDefault()!.Id,
+                CustomerId = customer.Id,
+                BillingAddressId = billingAddress.Id,
                 CurrencyId = 1,
                 StatusId = (int)OrderStatus.Pending,
                 PaymentMethodTypeId = (int)PaymentMethod.Cash,
@@ -133,11 +169,12 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 TotalAmount = orderItems.Sum(oi => oi.LineTotal),
                 Items = orderItems
             };
+
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.CompleteAsync();
-
-            ClearCartSession(SessionKey);
         }
+
+
 
         private async Task<string> GetCustomerAddressAsync(int customerId)
         {
@@ -162,5 +199,28 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             return JsonConvert.DeserializeObject<Dictionary<int, int>>(json)
                 ?? new Dictionary<int, int>(); ;
         }
+        public async Task<CartVM> GetCartVMAsync(string userId)
+        {
+            // جلب السلة الحالية من الـ Session
+            var cart = await _cartService.GetAllFromCart();
+            return cart;
+        }
+        public async Task SaveCartForPayment(string userId, CartViewModel cart)
+        {
+            var session = _httpContextAccessor.HttpContext.Session;
+            session.SetString("PaymentCart_" + userId, JsonConvert.SerializeObject(cart));
+        }
+
+        public async Task<CartViewModel> GetCartFromPayment(string userId)
+        {
+            var session = _httpContextAccessor.HttpContext.Session;
+            var json = session.GetString("PaymentCart_" + userId);
+            if (string.IsNullOrEmpty(json))
+                return null;
+
+            return JsonConvert.DeserializeObject<CartViewModel>(json);
+        }
+
+
     }
 }

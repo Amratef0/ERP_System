@@ -75,7 +75,6 @@ namespace ERP_System_Project.Controllers.ECommerce
             if (product != null) return View(product);
             return NotFound();
         }
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddToCart(int productId, int quantity)

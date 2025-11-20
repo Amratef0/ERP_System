@@ -29,6 +29,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using ERP_System_Project.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -183,6 +184,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddHttpClient<PaymobService>();
+
 
 var app = builder.Build();
 
