@@ -1,37 +1,37 @@
 ﻿@model AttributeVM
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Attribute";
 }
 
-<form asp-action="Edit" asp-controller="Attribute" method="post">
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Edit Attribute</h2>
-            <hr />
-        </div>
-        @* <input asp-for="Id" hidden class="form-control"> *@
-        <input type="hidden" asp-for="Id" />
-        <div class="mb-3">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+<div class="form-page">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Attribute</h3>
 
-        <div class="mb-3">
-            <label asp-for="Type"></label>
-            <input asp-for="Type" class="form-control" />
-            <span asp-validation-for="Type" class="text-danger"></span>
-        </div>
+        <form asp-action="Edit" asp-controller="Attribute" method="post">
+            <input type="hidden" asp-for="Id" />
 
-        <br />
-        <hr />
-        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
-        <a asp-action="Index" asp-controller="Attribute" class="btn btn-secondary" style="width:160px">
-            back to Attributes
-        </a>
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name"></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Type" class="form-control" placeholder=" " />
+                <label asp-for="Type"></label>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" asp-controller="Attribute" class="btn btn-secondary">Back to Attributes</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
+<link rel="stylesheet" href="~/css/CRUD/Create.css">
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }
