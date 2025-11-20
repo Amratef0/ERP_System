@@ -45,7 +45,7 @@ namespace ERP_System_Project.Controllers.Inventory
             foreach (var error in result.Errors)
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
 
-            return PartialView(brandVM); // بدل return View
+            return PartialView(brandVM); 
         }
 
 
