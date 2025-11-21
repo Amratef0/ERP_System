@@ -57,8 +57,11 @@
             <h2>Job Titles List</h2>
 
             <!-- Floating Add Button -->
-            <a asp-action="Create" class="floating-btn" title="Add New Job Title">
-                <i class="fa-solid fa-plus"></i>
+            <a href="javascript:void(0);" 
+               onclick="openModalWithAjax('@Url.Action("Create", "JobTitle")', 'Add New Job Title')" 
+               class="floating-btn" 
+               title="Add New Job Title">
+               <i class="fa-solid fa-plus"></i>
             </a>
 
             <table>
