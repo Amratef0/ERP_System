@@ -32,7 +32,7 @@ namespace ERP_System_Project.Controllers.HR
         [HttpGet]
         public IActionResult Create()
         {
-            return View("Create");
+            return PartialView("Create");
         }
 
         [HttpPost]
@@ -90,7 +90,7 @@ namespace ERP_System_Project.Controllers.HR
                     TempData["ErrorMessage"] = "Job Title not found!";
                     return NotFound();
                 }
-                return View("Edit", JobTitle);
+                return PartialView("Edit", JobTitle);
             }
             catch (Exception ex)
             {
@@ -214,7 +214,7 @@ namespace ERP_System_Project.Controllers.HR
                     TempData["ErrorMessage"] = "Job Title not found!";
                     return NotFound();
                 }
-                return View("Details", JobTitle);
+                return PartialView("Details", JobTitle);
             }
             catch (Exception ex)
             {
