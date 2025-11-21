@@ -76,7 +76,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
 
 
-        public async Task MakeOrderAsync(string userId, CartViewModel cart)
+        public async Task MakeOrderAsync(string userId, CartViewModel cart, PaymentMethod paymentMethod)
         {
             if (cart == null || cart.productsCart.Count == 0)
                 throw new Exception("Cart is empty");
@@ -161,7 +161,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 BillingAddressId = billingAddress.Id,
                 CurrencyId = 1,
                 StatusId = (int)OrderStatus.Pending,
-                PaymentMethodTypeId = (int)PaymentMethod.Cash,
+                PaymentMethodTypeId = paymentMethod == PaymentMethod.Cash ? (int)PaymentMethod.Cash : (int)PaymentMethod.Visa,
                 OrderDate = DateTime.Now,
                 ShippingAmount = 0,
                 TaxAmount = 0,

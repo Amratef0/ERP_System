@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.ViewModels.ECommerce;
 using System.Linq;
+using ERP_System_Project.Models.Enums;
 
 namespace ERP_System_Project.Controllers.ECommerce
 {
@@ -131,7 +132,7 @@ namespace ERP_System_Project.Controllers.ECommerce
                 }
 
                 // إنشاء الأوردر باستخدام بيانات الكارت
-                await _orderService.MakeOrderAsync(userId, cart);
+                await _orderService.MakeOrderAsync(userId, cart, PaymentMethod.Visa);
 
                 TempData["SuccessMessage"] = "Your payment was successful and your order is on its way!";
                 return RedirectToAction("Index", "Market");

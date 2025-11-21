@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using ERP_System_Project.Services;
 using ERP_System_Project.Models.ECommerce;
+using ERP_System_Project.Models.Enums;
 
 namespace ERP_System_Project.Controllers.ECommerce
 {
@@ -46,7 +47,7 @@ namespace ERP_System_Project.Controllers.ECommerce
             };
 
             // ????? ??????? ???????? ?????? ??????
-            await _orderService.MakeOrderAsync(userId, cartModel);
+            await _orderService.MakeOrderAsync(userId, cartModel, PaymentMethod.Cash);
 
             TempData["SuccessMessage"] = "Your order is on its way and will reach you soon";
             return RedirectToAction("Index", "Market");
