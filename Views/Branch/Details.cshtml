@@ -5,184 +5,157 @@
     ViewData["Title"] = "Branch Details";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-info-circle"></i> Branch Details</h2>
-                    <p class="text-muted">View complete branch information</p>
-                </div>
-                <div>
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg me-2">
-                        <i class="bi bi-pencil"></i> Edit
-                    </a>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
+<link rel="stylesheet" href="~/css/CRUD/Details.css" />
+
+<div class="details-page">
+
+    <!-- Title -->
+    <h2 class="title">Branch Details</h2>
+
+    <!-- Name + Code -->
+    <h3 class="supplier-name">@Model.Name (@Model.Code)</h3>
+
+    <!-- MAIN DETAILS GRID -->
+    <dl class="details-grid">
+
+        <!-- Branch Name -->
+        <div class="detail-item">
+            <dt>Branch Name</dt>
+            <dd>@Model.Name</dd>
+        </div>
+
+        <!-- Branch Code -->
+        <div class="detail-item">
+            <dt>Branch Code</dt>
+            <dd>@Model.Code</dd>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="detail-item">
+            <dt>Phone Number</dt>
+            <dd>
+                @if (!string.IsNullOrEmpty(Model.PhoneNumber))
+                {
+                    @Model.PhoneNumber
+                }
+                else
+                {
+                    <span class="text-muted">Not provided</span>
+                }
+            </dd>
+        </div>
+
+        <!-- Email -->
+        <div class="detail-item">
+            <dt>Email</dt>
+            <dd>
+                @if (!string.IsNullOrEmpty(Model.Email))
+                {
+                    @Model.Email
+                }
+                else
+                {
+                    <span class="text-muted">Not provided</span>
+                }
+            </dd>
+        </div>
+
+        <!-- Address -->
+        <div class="detail-item">
+            <dt>Address</dt>
+            <dd>
+                @if (!string.IsNullOrEmpty(Model.Line1))
+                {
+                    @Model.Line1<br />
+                }
+                @if (!string.IsNullOrEmpty(Model.City))
+                {
+                    @Model.City
+                }
+                @if (!string.IsNullOrEmpty(Model.StateProvince))
+                {
+                    <text>, @Model.StateProvince </text>
+                }
+                @if (!string.IsNullOrEmpty(Model.PostalCode))
+                {
+                    @Model.PostalCode
+                }
+                @if (!string.IsNullOrEmpty(Model.Country))
+                {
+                    <br />@Model.Country
+                }
+            </dd>
+        </div>
+
+        <!-- Address Type -->
+        @if (!string.IsNullOrEmpty(Model.AddressType))
+        {
+            <div class="detail-item">
+                <dt>Address Type</dt>
+                <dd>@Model.AddressType</dd>
             </div>
-            <hr />
+        }
+
+        <!-- Status -->
+        <div class="detail-item">
+            <dt>Status</dt>
+            <dd>
+                @if (Model.IsActive)
+                {
+                    <span class="status active">Active</span>
+                }
+                else
+                {
+                    <span class="status inactive">Inactive</span>
+                }
+            </dd>
+        </div>
+
+        <!-- Main Branch -->
+        <div class="detail-item">
+            <dt>Main Branch</dt>
+            <dd>
+                @if (Model.IsMainBranch)
+                {
+                    <span class="status active">Yes</span>
+                }
+                else
+                {
+                    <span class="status inactive">No</span>
+                }
+            </dd>
+        </div>
+
+        <!-- Internal ID -->
+        <div class="detail-item">
+            <dt>Internal ID</dt>
+            <dd class="text-muted">@Model.Id</dd>
+        </div>
+
+    </dl>
+
+    <!-- INFO LIST -->
+    <div class="lists-section" style="margin-top:22px;">
+        <h4>Branch Information</h4>
+        <ul class="item-list">
+            <li><strong>Branch Name:</strong> Full name of the branch</li>
+            <li><strong>Branch Code:</strong> Unique identifier used in the system</li>
+            <li><strong>Phone Number:</strong> Optional contact number</li>
+            <li><strong>Email:</strong> Optional contact email</li>
+            <li><strong>Address:</strong> Street, City, State, Postal Code, Country</li>
+            <li><strong>Status:</strong> Indicates if the branch is active</li>
+            <li><strong>Main Branch:</strong> Shows if this is the main branch</li>
+        </ul>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="viewActions">
+        <div class="left-buttons">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-edit">Edit</a>
+        </div>
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back</a>
         </div>
     </div>
 
-    <!-- Details Card -->
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-building"></i> @Model.Name
-                        @if (Model.IsMainBranch)
-                        {
-                            <span class="badge bg-warning text-dark ms-2">
-                                <i class="bi bi-star-fill"></i> Main Branch
-                            </span>
-                        }
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <!-- Basic Information -->
-                    <h6 class="text-info mb-3"><i class="bi bi-info-circle"></i> Basic Information</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="row">
-                                <dt class="col-sm-5 mb-2">
-                                    <i class="bi bi-building"></i> Branch Name:
-                                </dt>
-                                <dd class="col-sm-7 mb-2">
-                                    <span class="badge bg-primary fs-6">@Model.Name</span>
-                                </dd>
-                                <dt class="col-sm-5 mb-2">
-                                    <i class="bi bi-hash"></i> Branch Code:
-                                </dt>
-                                <dd class="col-sm-7 mb-2">
-                                    <span class="badge bg-secondary fs-6">@Model.Code</span>
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <dl class="row">
-                                <dt class="col-sm-5 mb-2">
-                                    <i class="bi bi-toggle-on"></i> Status:
-                                </dt>
-                                <dd class="col-sm-7 mb-2">
-                                    @if (Model.IsActive)
-                                    {
-                                        <span class="badge bg-success fs-6">
-                                            <i class="bi bi-check-circle"></i> Active
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger fs-6">
-                                            <i class="bi bi-x-circle"></i> Inactive
-                                        </span>
-                                    }
-                                </dd>
-                                @if (!string.IsNullOrEmpty(Model.AddressType))
-                                {
-                                    <dt class="col-sm-5 mb-2">
-                                        <i class="bi bi-house"></i> Address Type:
-                                    </dt>
-                                    <dd class="col-sm-7 mb-2">
-                                        <span class="badge bg-info fs-6">@Model.AddressType</span>
-                                    </dd>
-                                }
-                            </dl>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <!-- Contact Information -->
-                    <h6 class="text-info mb-3"><i class="bi bi-telephone"></i> Contact Information</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="row">
-                                <dt class="col-sm-5 mb-2">
-                                    <i class="bi bi-telephone"></i> Phone:
-                                </dt>
-                                <dd class="col-sm-7 mb-2">
-                                    @if (!string.IsNullOrEmpty(Model.PhoneNumber))
-                                    {
-                                        <a href="tel:@Model.PhoneNumber" class="text-decoration-none">
-                                            <span class="badge bg-success fs-6">@Model.PhoneNumber</span>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Not provided</span>
-                                    }
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <dl class="row">
-                                <dt class="col-sm-5 mb-2">
-                                    <i class="bi bi-envelope"></i> Email:
-                                </dt>
-                                <dd class="col-sm-7 mb-2">
-                                    @if (!string.IsNullOrEmpty(Model.Email))
-                                    {
-                                        <a href="mailto:@Model.Email" class="text-decoration-none">
-                                            <span class="badge bg-primary fs-6">@Model.Email</span>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Not provided</span>
-                                    }
-                                </dd>
-                            </dl>
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <!-- Address Information -->
-                    <h6 class="text-info mb-3"><i class="bi bi-geo-alt"></i> Address</h6>
-                    <div class="card bg-light">
-                        <div class="card-body">
-                            <address class="mb-0">
-                                @if (!string.IsNullOrEmpty(Model.Line1))
-                                {
-                                    <div><strong>@Model.Line1</strong></div>
-                                }
-                                <div>
-                                    @if (!string.IsNullOrEmpty(Model.City))
-                                    {
-                                        @Model.City
-                                    }
-                                    @if (!string.IsNullOrEmpty(Model.StateProvince))
-                                    {
-                                        <text>, @Model.StateProvince</text>
-                                    }
-                                    @if (!string.IsNullOrEmpty(Model.PostalCode))
-                                    {
-                                        <text> @Model.PostalCode</text>
-                                    }
-                                </div>
-                                @if (!string.IsNullOrEmpty(Model.Country))
-                                {
-                                    <div><strong>@Model.Country</strong></div>
-                                }
-                            </address>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                            <i class="bi bi-pencil"></i> Edit Branch
-                        </a>
-                        <a asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-list"></i> View All Branches
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
