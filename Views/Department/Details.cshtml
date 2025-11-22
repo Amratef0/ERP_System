@@ -4,120 +4,93 @@
     ViewData["Title"] = "Department Details";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-info-circle"></i> Department Details</h2>
-                    <p class="text-muted">View complete department information</p>
-                </div>
-                <div>
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning btn-lg me-2">
-                        <i class="bi bi-pencil"></i> Edit
-                    </a>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </div>
-            <hr />
+<link rel="stylesheet" href="~/css/CRUD/Details.css" />
+
+<div class="details-page">
+
+    <!-- Title -->
+    <h2 class="title">Department Details</h2>
+
+    <!-- Name + Code -->
+    <h3 class="supplier-name">@Model.Name (@Model.Code)</h3>
+
+
+    <!-- MAIN DETAILS GRID -->
+    <dl class="details-grid">
+
+        <!-- Department Name -->
+        <div class="detail-item">
+            <dt>Department Name</dt>
+            <dd>@Model.Name</dd>
+        </div>
+
+        <!-- Department Code -->
+        <div class="detail-item">
+            <dt>Department Code</dt>
+            <dd>@Model.Code</dd>
+        </div>
+
+        <!-- Cost Center -->
+        <div class="detail-item">
+            <dt>Cost Center</dt>
+            <dd>
+                @if (!string.IsNullOrEmpty(Model.CostCenterCode))
+                {
+                    @Model.CostCenterCode
+                }
+                else
+                {
+                    <span class="text-muted">Not assigned</span>
+                }
+            </dd>
+        </div>
+
+        <!-- Status -->
+        <div class="detail-item">
+            <dt>Status</dt>
+            <dd>
+                @if (Model.IsActive)
+                {
+                    <span class="status active">Active</span>
+                }
+                else
+                {
+                    <span class="status inactive">Inactive</span>
+                }
+            </dd>
+        </div>
+
+        <!-- Internal ID -->
+        <div class="detail-item">
+            <dt>Internal ID</dt>
+            <dd class="text-muted">@Model.Id</dd>
+        </div>
+
+    </dl>
+
+
+    <!-- INFO LIST -->
+    <div class="lists-section" style="margin-top:22px;">
+        <h4>Department Information</h4>
+
+        <ul class="item-list">
+            <li><strong>Department Name:</strong> The official name of the department</li>
+            <li><strong>Department Code:</strong> Unique identifier used in the system</li>
+            <li><strong>Cost Center Code:</strong> Used for financial reporting and budget tracking</li>
+            <li><strong>Status:</strong> Indicates whether the department is currently active</li>
+        </ul>
+    </div>
+
+
+    <!-- ACTION BUTTONS -->
+    <div class="viewActions">
+        <div class="left-buttons">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-edit">Edit</a>
+        </div>
+
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back</a>
         </div>
     </div>
 
-    <!-- Details Card -->
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-diagram-3"></i> @Model.Name</h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <!-- Department Name -->
-                        <dt class="col-sm-4 mb-3">
-                            <i class="bi bi-tag"></i> Department Name:
-                        </dt>
-                        <dd class="col-sm-8 mb-3">
-                            <span class="badge bg-primary fs-6">@Model.Name</span>
-                        </dd>
-
-                        <!-- Department Code -->
-                        <dt class="col-sm-4 mb-3">
-                            <i class="bi bi-hash"></i> Department Code:
-                        </dt>
-                        <dd class="col-sm-8 mb-3">
-                            <span class="badge bg-secondary fs-6">@Model.Code</span>
-                        </dd>
-
-                        <!-- Cost Center Code -->
-                        <dt class="col-sm-4 mb-3">
-                            <i class="bi bi-currency-dollar"></i> Cost Center Code:
-                        </dt>
-                        <dd class="col-sm-8 mb-3">
-                            @if (!string.IsNullOrEmpty(Model.CostCenterCode))
-                            {
-                                <span class="badge bg-success fs-6">@Model.CostCenterCode</span>
-                            }
-                            else
-                            {
-                                <span class="text-muted">Not assigned</span>
-                            }
-                        </dd>
-
-                        <!-- Status -->
-                        <dt class="col-sm-4 mb-3">
-                            <i class="bi bi-toggle-on"></i> Status:
-                        </dt>
-                        <dd class="col-sm-8 mb-3">
-                            @if (Model.IsActive)
-                            {
-                                <span class="badge bg-success fs-6">
-                                    <i class="bi bi-check-circle"></i> Active
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger fs-6">
-                                    <i class="bi bi-x-circle"></i> Inactive
-                                </span>
-                            }
-                        </dd>
-
-                        <!-- ID (Hidden for users, useful for admins) -->
-                        <dt class="col-sm-4 mb-0">
-                            <i class="bi bi-key"></i> Internal ID:
-                        </dt>
-                        <dd class="col-sm-8 mb-0">
-                            <span class="text-muted small">@Model.Id</span>
-                        </dd>
-                    </dl>
-                </div>
-                <div class="card-footer bg-light">
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                            <i class="bi bi-pencil"></i> Edit Department
-                        </a>
-                        <a asp-action="Index" class="btn btn-secondary">
-                            <i class="bi bi-list"></i> View All Departments
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Additional Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-lightbulb"></i> Department Information</h6>
-                    <ul class="mb-0 small">
-                        <li><strong>Department Name:</strong> The official name of the department</li>
-                        <li><strong>Department Code:</strong> Unique identifier used in the system</li>
-                        <li><strong>Cost Center Code:</strong> Used for financial reporting and budget tracking</li>
-                        <li><strong>Status:</strong> Indicates whether the department is currently active</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
