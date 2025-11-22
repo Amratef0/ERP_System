@@ -55,7 +55,7 @@ namespace ERP_System_Project.Controllers.Core
                 {
                     Countries = await _countryService.GetAllAsync()
                 };
-                return View("Create", model);
+                return PartialView("Create", model);
             }
             catch (Exception ex)
             {
@@ -123,7 +123,7 @@ namespace ERP_System_Project.Controllers.Core
                 BranchVM model = _mapper.Map<BranchVM>(branch);
                 model.Country = branch.Address.Country.Name;
 
-                return View("Details", model);
+                return PartialView("Details", model);
             }
             catch (Exception ex)
             {
@@ -148,7 +148,7 @@ namespace ERP_System_Project.Controllers.Core
                 model.Countries = await _countryService.GetAllAsync();
                 model.Country = branch.Address.Country.Name;
 
-                return View("Edit", model);
+                return PartialView("Edit", model);
             }
             catch (Exception ex)
             {
