@@ -28,7 +28,7 @@ namespace ERP_System_Project.Controllers.Inventory
 
         public async Task<IActionResult> New()
         {
-            return View();
+            return PartialView();
         }
 
         [HttpPost]
@@ -54,7 +54,7 @@ namespace ERP_System_Project.Controllers.Inventory
             if (category is null) return NotFound();
             var categoryVM = _mapper.Map<CategoryVM>(category);
 
-            return View(categoryVM);
+            return PartialView(categoryVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -80,7 +80,7 @@ namespace ERP_System_Project.Controllers.Inventory
             var category = await _categoryService.GetByIdAsync(id);
             if (category is null) return NotFound();
             var categoryVM = _mapper.Map<CategoryVM>(category);
-            return View(categoryVM);
+            return PartialView(categoryVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
