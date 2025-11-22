@@ -4,178 +4,129 @@
     ViewData["Title"] = "Countries";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-globe"></i> Countries</h2>
-                    <p class="text-muted">Manage countries and regional settings</p>
-                </div>
-                <div>
-                    <a asp-action="Create" class="btn btn-primary btn-lg">
-                        <i class="bi bi-plus-circle"></i> Add New Country
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
+<div class="page-section">
+
+    <!-- Header -->
+    <div class="bp-header">
+        <h1>Countries</h1>
+        <p>Manage countries and regional settings</p>
     </div>
 
-    <!-- Error Message -->
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-globe"></i> Total Countries</h6>
-                    <h2 class="mb-0">@Model.Count()</h2>
-                </div>
+    <!-- Search Card -->
+    <div class="bp-search-card top-search mt-4">
+        <form id="searchForm" class="bp-search-form">
+            @Html.AntiForgeryToken()
+            <div class="bp-search-group">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchTerm" placeholder="Search countries by name, code, or phone code..." />
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-telephone"></i> Phone Codes</h6>
-                    <h2 class="mb-0">@Model.Count(c => !string.IsNullOrEmpty(c.PhoneCode))</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-hash"></i> Country Codes</h6>
-                    <h2 class="mb-0">@Model.Count(c => !string.IsNullOrEmpty(c.Code))</h2>
-                </div>
-            </div>
-        </div>
+            <button type="button" id="searchBtn">Search</button>
+        </form>
     </div>
 
-    <!-- Search Section -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <form id="searchForm">
-                @Html.AntiForgeryToken()
-                <div class="row">
-                    <div class="col-md-10">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-white">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" id="searchTerm" class="form-control" 
-                                   placeholder="Search countries by name, code, or phone code..." />
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" id="searchBtn" class="btn btn-primary btn-lg w-100">
-                            <i class="bi bi-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </form>
+    <!-- Stats Row -->
+    <div class="bp-stats-row">
+        <div class="bp-stat-card stat-1">
+            <div>
+                <h3>@Model.Count()</h3>
+                <p>Total Countries</p>
+            </div>
+            <i class="bi bi-globe"></i>
+        </div>
+
+        <div class="bp-stat-card stat-2">
+            <div>
+                <h3>@Model.Count(c => !string.IsNullOrEmpty(c.PhoneCode))</h3>
+                <p>Phone Codes</p>
+            </div>
+            <i class="bi bi-telephone"></i>
+        </div>
+
+        <div class="bp-stat-card stat-3">
+            <div>
+                <h3>@Model.Count(c => !string.IsNullOrEmpty(c.Code))</h3>
+                <p>Country Codes</p>
+            </div>
+            <i class="bi bi-hash"></i>
         </div>
     </div>
 
     <!-- Countries Table -->
-    <div class="card">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="bi bi-table"></i> Countries List</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th><i class="bi bi-globe"></i> Country Name</th>
-                            <th><i class="bi bi-hash"></i> Country Code</th>
-                            <th><i class="bi bi-telephone"></i> Phone Code</th>
-                            <th class="text-center"><i class="bi bi-gear"></i> Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="countries">
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <strong>@item.Name</strong>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary">@item.Code</span>
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.PhoneCode))
-                                    {
-                                        <span class="badge bg-info">@item.PhoneCode</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group" role="group">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" 
-                                           class="btn btn-sm btn-warning" title="Edit">
-                                            <i class="bi bi-pencil"></i>
-                                        </a>
-                                        <button type="button" class="btn btn-sm btn-danger" 
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal@(item.Id)" 
-                                                title="Delete">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
+    <div class="list-page departments-page mt-4">
+        <div class="card">
+            <h2>Countries List</h2>
 
-                                    <!-- Delete Modal -->
-                                    <div class="modal fade" id="deleteModal@(item.Id)" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-danger text-white">
-                                                    <h5 class="modal-title">Confirm Delete</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p>Delete country <strong>@item.Name</strong>?</p>
-                                                    <p class="text-danger mb-0">
-                                                        <i class="bi bi-exclamation-triangle"></i> This action cannot be undone!
-                                                    </p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: inline;">
-                                                        @Html.AntiForgeryToken()
-                                                        <button type="submit" class="btn btn-danger">
-                                                            <i class="bi bi-trash"></i> Delete
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+            <!-- Floating Add Button -->
+            <a href="javascript:void(0);" 
+               onclick="openModalWithAjax('@Url.Action("Create", "Country")', 'Add New Country')" 
+               class="floating-btn" 
+               title="Add New Country">
+               <i class="fa-solid fa-plus"></i>
+            </a>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Country Name</th>
+                        <th>Code</th>
+                        <th>Phone Code</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="countries">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="Country Name"><strong>@item.Name</strong></td>
+                            <td data-label="Code"><span class="text-muted">@item.Code</span></td>
+                            <td data-label="Phone Code">
+                                @if (!string.IsNullOrEmpty(item.PhoneCode))
+                                {
+                                    <span class="badge bg-info">@item.PhoneCode</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td data-label="Actions">
+                                <div class="action-buttons">
+                                    <!-- Edit (AJAX) -->
+                                    <a href="javascript:void(0)" 
+                                       onclick="openModalWithAjax('@Url.Action("Edit", "Country", new { id = item.Id })', 'Edit Country')"
+                                       class="btn btn-update btn-sm" 
+                                       title="Edit Country">
+                                       <i class="fa-solid fa-pen"></i>
+                                    </a>
+
+                                    <!-- Delete -->
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-delete btn-sm" title="Delete Country">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle"></i> No countries found. Click "Add New Country" to get started.
+                </div>
+            }
         </div>
     </div>
-
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info mt-4">
-            <i class="bi bi-info-circle"></i> No countries found. Click "Add New Country" to get started.
-        </div>
-    }
 </div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/ListPageHeader.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/pagination.css"))" />
+@await Html.PartialAsync("_GeneralModal")
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -194,7 +145,7 @@
                         __RequestVerificationToken: token
                     },
                     success: function (response) {
-                        fillTable(response);
+                        FillTable(response);
                     },
                     error: function (xhr, status, error) {
                         console.error("Search failed:", error);
@@ -218,7 +169,7 @@
                 }
             });
 
-            function fillTable(response) {
+            function FillTable(response) {
                 var tableBody = $("#countries");
                 tableBody.empty();
 
@@ -228,16 +179,16 @@
                     
                     response.forEach(function (country) {
                         var phoneCode = country.phoneCode 
-                            ? `<span class="badge bg-info">${country.phoneCode}</span>`
+                            ? `<span class="badge bg-info">${country.phoneCode}</span>` 
                             : '<span class="text-muted">-</span>';
 
                         newRows += `<tr>
                                         <td><strong>${country.name}</strong></td>
-                                        <td><span class="badge bg-secondary">${country.code}</span></td>
+                                        <td><span class="text-muted">${country.code}</span></td>
                                         <td>${phoneCode}</td>
                                         <td class="text-center">
                                             <div class="btn-group" role="group">
-                                                <a href="/Country/Edit?id=${country.id}" class="btn btn-sm btn-warning" title="Edit">
+                                                <a href="/Country/Edit/${country.id}" class="btn btn-sm btn-warning" title="Edit">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${country.name}?')) { document.getElementById('deleteForm${country.id}').submit(); }" title="Delete">
