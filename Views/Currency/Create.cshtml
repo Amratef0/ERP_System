@@ -4,127 +4,83 @@
     ViewData["Title"] = "Add Currency";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-plus-circle"></i> Add New Currency</h2>
-                    <p class="text-muted">Create a new currency in the system</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add Currency</h3>
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Currency Name -->
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name">Currency Name <span class="text-danger">*</span></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <hr />
-        </div>
-    </div>
 
-    <!-- Add Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-currency-exchange"></i> Currency Information</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Currency Name Field -->
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label">
-                                <i class="bi bi-tag"></i> Currency Name <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Name" class="form-control form-control-lg" placeholder="e.g., US Dollar" autofocus />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                            <div class="form-text">Full name of the currency</div>
-                        </div>
+            <!-- Currency Code -->
+            <div class="form-group">
+                <input asp-for="Code" class="form-control" placeholder=" " maxlength="3" style="text-transform: uppercase;" />
+                <label asp-for="Code">Currency Code <span class="text-danger">*</span></label>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
 
-                        <!-- Currency Code Field -->
-                        <div class="mb-3">
-                            <label asp-for="Code" class="form-label">
-                                <i class="bi bi-hash"></i> Currency Code <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Code" class="form-control form-control-lg" placeholder="e.g., USD" maxlength="3" style="text-transform: uppercase;" />
-                            <span asp-validation-for="Code" class="text-danger"></span>
-                            <div class="form-text">ISO 4217 currency code (e.g., USD, EUR, GBP, EGP)</div>
-                        </div>
+            <!-- Currency Symbol -->
+            <div class="form-group">
+                <input asp-for="Symbol" class="form-control" placeholder=" " maxlength="5" />
+                <label asp-for="Symbol">Currency Symbol <span class="text-danger">*</span></label>
+                <span asp-validation-for="Symbol" class="text-danger"></span>
+            </div>
 
-                        <!-- Currency Symbol Field -->
-                        <div class="mb-3">
-                            <label asp-for="Symbol" class="form-label">
-                                <i class="bi bi-currency-dollar"></i> Currency Symbol <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Symbol" class="form-control form-control-lg" placeholder="e.g., $" maxlength="5" />
-                            <span asp-validation-for="Symbol" class="text-danger"></span>
-                            <div class="form-text">Symbol used to represent the currency (e.g., $, €, £, ج.م)</div>
-                        </div>
+            <!-- Symbol Preview -->
+            <div class="symbol-preview-center">
+                <div class="symbol-preview-box">
+                    <h4 class="symbol-title">Symbol Preview</h4>
 
-                        <!-- Symbol Preview -->
-                        <div class="mb-3">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6 class="card-title text-muted mb-2">
-                                        <i class="bi bi-eye"></i> Symbol Preview
-                                    </h6>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <span class="badge bg-success fs-3" id="symbolPreview">$</span>
-                                        <span class="text-muted" id="previewText">1,234.56</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Is Active Field -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" checked />
-                                <label class="form-check-label" for="isActiveSwitch">
-                                    <i class="bi bi-toggle-on"></i> Currency is Active
-                                </label>
-                            </div>
-                            <div class="form-text">Active currencies appear in selection lists</div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Create Currency
-                            </button>
-                        </div>
-                    </form>
+                    <div class="symbol-preview-content">
+                        <span class="symbol-icon" id="symbolPreview">$</span>
+                        <span class="symbol-text" id="previewText">1,234.56</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Guidelines</h6>
-                    <ul class="mb-0 small">
-                        <li>Currency code should follow ISO 4217 standards (3-letter code)</li>
-                        <li>Currency code must be unique in the system</li>
-                        <li>Symbol can be 1-5 characters (e.g., $, £, €, ج.م, R$)</li>
-                        <li>Use official currency names and symbols</li>
-                    </ul>
-                </div>
+
+            <!-- Is Active -->
+            <div class="form-group form-check" style="margin-top: 18px;">
+                <input asp-for="IsActive" id="isActiveSwitch" type="checkbox" class="form-check-input" checked />
+                <label asp-for="IsActive" class="form-check-label" for="isActiveSwitch">
+                    Currency is Active
+                </label>
             </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+
+        <!-- Info Section -->
+        <div class="lists-section" style="margin-top:22px;">
+            <h4>Currency Information</h4>
+            <ul class="item-list">
+                <li><strong>Name:</strong> Full name of the currency</li>
+                <li><strong>Code:</strong> Standard 3-letter ISO code</li>
+                <li><strong>Symbol:</strong> Display symbol used in UI & reports</li>
+                <li><strong>Status:</strong> Only active currencies appear in lists</li>
+            </ul>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
     <script>
-        // Auto-uppercase currency code
-        document.querySelector('input[name="Code"]')?.addEventListener('input', function(e) {
+        // Auto-uppercase code
+        document.querySelector('input[name="Code"]')?.addEventListener('input', function () {
             this.value = this.value.toUpperCase();
         });
 
@@ -132,11 +88,11 @@
         const symbolInput = document.querySelector('input[name="Symbol"]');
         const symbolPreview = document.getElementById('symbolPreview');
         const previewText = document.getElementById('previewText');
-        
-        symbolInput?.addEventListener('input', function(e) {
+
+        symbolInput?.addEventListener('input', function () {
             const symbol = this.value || '$';
             symbolPreview.textContent = symbol;
-            previewText.textContent = symbol + '1,234.56';
+            previewText.textContent = symbol + ' 1,234.56';
         });
     </script>
 }
