@@ -5,220 +5,101 @@
     ViewData["Title"] = "Add Branch";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-plus-circle"></i> Add New Branch</h2>
-                    <p class="text-muted">Create a new branch location</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
-    </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
-    <!-- Add Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-building"></i> Branch Information</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Basic Information -->
-                        <h6 class="text-primary mb-3"><i class="bi bi-info-circle"></i> Basic Details</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Name Field -->
-                                <div class="mb-3">
-                                    <label asp-for="Name" class="form-label">
-                                        <i class="bi bi-building"></i> Branch Name <span class="text-danger">*</span>
-                                    </label>
-                                    <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter branch name" autofocus />
-                                    <span asp-validation-for="Name" class="text-danger"></span>
-                                </div>
-                            </div>
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add Branch</h3>
 
-                            <div class="col-md-6">
-                                <!-- Code Field -->
-                                <div class="mb-3">
-                                    <label asp-for="Code" class="form-label">
-                                        <i class="bi bi-hash"></i> Branch Code <span class="text-danger">*</span>
-                                    </label>
-                                    <input asp-for="Code" class="form-control form-control-lg" placeholder="Enter branch code" />
-                                    <span asp-validation-for="Code" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
 
-                        <!-- Contact Information -->
-                        <h6 class="text-primary mb-3 mt-3"><i class="bi bi-telephone"></i> Contact Information</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Phone Number Field -->
-                                <div class="mb-3">
-                                    <label asp-for="PhoneNumber" class="form-label">
-                                        <i class="bi bi-telephone"></i> Phone Number
-                                    </label>
-                                    <input asp-for="PhoneNumber" type="tel" class="form-control form-control-lg" placeholder="+1 (555) 123-4567" />
-                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <!-- Email Field -->
-                                <div class="mb-3">
-                                    <label asp-for="Email" class="form-label">
-                                        <i class="bi bi-envelope"></i> Email Address
-                                    </label>
-                                    <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="branch@company.com" />
-                                    <span asp-validation-for="Email" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Address Information -->
-                        <h6 class="text-primary mb-3 mt-3"><i class="bi bi-geo-alt"></i> Address Information</h6>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <!-- Street Address -->
-                                <div class="mb-3">
-                                    <label asp-for="Line1" class="form-label">
-                                        <i class="bi bi-pin-map"></i> Street Address
-                                    </label>
-                                    <input asp-for="Line1" class="form-control form-control-lg" placeholder="123 Main Street" />
-                                    <span asp-validation-for="Line1" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <!-- City Field -->
-                                <div class="mb-3">
-                                    <label asp-for="City" class="form-label">
-                                        <i class="bi bi-building"></i> City
-                                    </label>
-                                    <input asp-for="City" class="form-control form-control-lg" placeholder="City name" />
-                                    <span asp-validation-for="City" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <!-- State/Province Field -->
-                                <div class="mb-3">
-                                    <label asp-for="StateProvince" class="form-label">
-                                        <i class="bi bi-map"></i> State/Province
-                                    </label>
-                                    <input asp-for="StateProvince" class="form-control form-control-lg" placeholder="State or Province" />
-                                    <span asp-validation-for="StateProvince" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <!-- Postal Code Field -->
-                                <div class="mb-3">
-                                    <label asp-for="PostalCode" class="form-label">
-                                        <i class="bi bi-mailbox"></i> Postal Code
-                                    </label>
-                                    <input asp-for="PostalCode" class="form-control form-control-lg" placeholder="12345" />
-                                    <span asp-validation-for="PostalCode" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Country Field -->
-                                <div class="mb-3">
-                                    <label asp-for="CountryId" class="form-label">
-                                        <i class="bi bi-globe"></i> Country <span class="text-danger">*</span>
-                                    </label>
-                                    <select asp-for="CountryId" class="form-select form-select-lg" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
-                                        <option value="">-- Select Country --</option>
-                                    </select>
-                                    <span asp-validation-for="CountryId" class="text-danger"></span>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <!-- Address Type Field -->
-                                <div class="mb-3">
-                                    <label asp-for="AddressType" class="form-label">
-                                        <i class="bi bi-house"></i> Address Type
-                                    </label>
-                                    <input asp-for="AddressType" class="form-control form-control-lg" placeholder="e.g., Office, Warehouse" />
-                                    <span asp-validation-for="AddressType" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Status Fields -->
-                        <h6 class="text-primary mb-3 mt-3"><i class="bi bi-gear"></i> Branch Settings</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Is Main Branch Field -->
-                                <div class="mb-3">
-                                    <div class="form-check form-switch">
-                                        <input asp-for="IsMainBranch" class="form-check-input" type="checkbox" role="switch" id="isMainBranchSwitch" />
-                                        <label class="form-check-label" for="isMainBranchSwitch">
-                                            <i class="bi bi-star-fill"></i> This is the Main Branch
-                                        </label>
-                                    </div>
-                                    <div class="form-text">Mark as the company's headquarters or main location</div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <!-- Is Active Field -->
-                                <div class="mb-3">
-                                    <div class="form-check form-switch">
-                                        <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" checked />
-                                        <label class="form-check-label" for="isActiveSwitch">
-                                            <i class="bi bi-toggle-on"></i> Branch is Active
-                                        </label>
-                                    </div>
-                                    <div class="form-text">Active branches appear in selection lists</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Create Branch
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Branch Name -->
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name">Branch Name <span class="text-danger">*</span></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Guidelines</h6>
-                    <ul class="mb-0 small">
-                        <li>Branch code must be unique across all branches</li>
-                        <li>Contact information helps with communication and documentation</li>
-                        <li>Complete address is important for shipping and legal purposes</li>
-                        <li>Only one branch can be marked as the main branch at a time</li>
-                    </ul>
-                </div>
+            <!-- Branch Code -->
+            <div class="form-group">
+                <input asp-for="Code" class="form-control" placeholder=" " maxlength="10" />
+                <label asp-for="Code">Branch Code <span class="text-danger">*</span></label>
+                <span asp-validation-for="Code" class="text-danger"></span>
             </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+                <input asp-for="PhoneNumber" class="form-control" placeholder=" " />
+                <label asp-for="PhoneNumber">Phone Number</label>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <input asp-for="Email" class="form-control" placeholder=" " />
+                <label asp-for="Email">Email</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Address Fields -->
+            <div class="form-group">
+                <input asp-for="Line1" class="form-control" placeholder=" " />
+                <label asp-for="Line1">Street Address</label>
+                <span asp-validation-for="Line1" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="City" class="form-control" placeholder=" " />
+                <label asp-for="City">City</label>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="StateProvince" class="form-control" placeholder=" " />
+                <label asp-for="StateProvince">State/Province</label>
+                <span asp-validation-for="StateProvince" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="PostalCode" class="form-control" placeholder=" " />
+                <label asp-for="PostalCode">Postal Code</label>
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <select asp-for="CountryId" class="form-control" asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
+                    <option value="">-- Select Country --</option>
+                </select>
+                <label asp-for="CountryId">Country <span class="text-danger">*</span></label>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group form-check">
+                <input asp-for="IsActive" id="isActiveSwitch" type="checkbox" class="form-check-input" checked />
+                <label asp-for="IsActive" for="isActiveSwitch" class="form-check-label">
+                    Branch is Active
+                </label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+
+        <!-- Info Section -->
+        <div class="lists-section" style="margin-top:22px;">
+            <h4>Branch Information</h4>
+            <ul class="item-list">
+                <li><strong>Branch Name:</strong> Full name of the branch</li>
+                <li><strong>Code:</strong> Short unique identifier</li>
+                <li><strong>Phone Number:</strong> Optional contact number</li>
+                <li><strong>Email:</strong> Optional contact email</li>
+                <li><strong>Address:</strong> Street, City, State, Postal Code, Country</li>
+                <li><strong>Status:</strong> Only active branches will appear in lists</li>
+            </ul>
         </div>
     </div>
 </div>
@@ -226,3 +107,17 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<script>
+    // Auto-generate code from name
+    document.querySelector('input[name="Name"]').addEventListener('blur', function() {
+        const codeInput = document.querySelector('input[name="Code"]');
+        if (!codeInput.value) {
+            const code = this.value.split(' ')
+                .map(word => word.charAt(0))
+                .join('')
+                .toUpperCase();
+            codeInput.value = code.substring(0, 10);
+        }
+    });
+</script>
