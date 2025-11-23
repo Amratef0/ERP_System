@@ -1,64 +1,91 @@
 ﻿@model ERP_System_Project.Models.PurchaseOrder
 
-<h2>Edit Purchase Order</h2>
+@{
+    ViewData["Title"] = "Edit Purchase Order";
+}
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="PurchaseOrderId" />
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
-    <div class="form-group">
-        <label asp-for="PoNumber"></label>
-        <input asp-for="PoNumber" class="form-control" />
-        <span asp-validation-for="PoNumber" class="text-danger"></span>
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Purchase Order</h3>
+        <br />
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="PurchaseOrderId" type="hidden" />
+
+            <!-- PO Number -->
+            <div class="form-group">
+                <input asp-for="PoNumber" class="form-control" placeholder=" " />
+                <label asp-for="PoNumber">PO Number</label>
+                <span asp-validation-for="PoNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Order Date -->
+            <div class="number-field-group">
+                <label class="number-label" asp-for="OrderDate">Order Date</label>
+                <input asp-for="OrderDate" type="date" class="number-input" placeholder=" " />
+                <span asp-validation-for="OrderDate" class="text-danger"></span>
+            </div>
+
+            <!-- Supplier -->
+            <div class="form-group">
+                <select id="supplierDropdown" name="SupplierId" class="form-control" asp-items="ViewBag.Suppliers">
+                    <option value="">-- Select Supplier --</option>
+                </select>
+                <label>Supplier</label>
+            </div>
+
+            <!-- Product -->
+            <div class="form-group">
+                <select id="productDropdown" name="WarehouseProductId" class="form-control">
+                    <option value="">-- Select Product --</option>
+                </select>
+                <label>Product</label>
+            </div>
+
+            <!-- Warehouse -->
+            <div class="form-group">
+                <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.Warehouses">
+                    <option value="">-- Select Warehouse --</option>
+                </select>
+                <label asp-for="WarehouseId">Warehouse</label>
+                <span asp-validation-for="WarehouseId" class="text-danger"></span>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-group full-width">
+                <textarea asp-for="Notes" class="form-control" placeholder=" "></textarea>
+                <label asp-for="Notes">Notes</label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+
+        <!-- Info Section -->
+        <div class="lists-section" style="margin-top:22px;">
+            <h4>Purchase Order Information</h4>
+            <ul class="item-list">
+                <li><strong>PO Number:</strong> Unique purchase order number</li>
+                <li><strong>Order Date:</strong> Date of the order</li>
+                <li><strong>Supplier:</strong> Choose the supplier for this order</li>
+                <li><strong>Product:</strong> Select product from warehouse</li>
+                <li><strong>Warehouse:</strong> Where the product is stored</li>
+                <li><strong>Status Id:</strong> Status identifier</li>
+                <li><strong>Payment Terms Id:</strong> Payment terms identifier</li>
+                <li><strong>Notes:</strong> Any additional information</li>
+            </ul>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="OrderDate"></label>
-        <input asp-for="OrderDate" type="date" class="form-control" />
-        <span asp-validation-for="OrderDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Supplier</label>
-        <select id="supplierDropdown" name="SupplierId" class="form-control" asp-items="ViewBag.Suppliers">
-            <option value="">-- Select Supplier --</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>Product</label>
-        <select id="productDropdown" name="WarehouseProductId" class="form-control">
-            <option value="">-- Select Product --</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="WarehouseId"></label>
-        <select asp-for="WarehouseId" class="form-control" asp-items="ViewBag.Warehouses">
-            <option value="">-- Select Warehouse --</option>
-        </select>
-        <span asp-validation-for="WarehouseId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="StatusId"></label>
-        <input asp-for="StatusId" type="number" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="PaymentTermsId"></label>
-        <input asp-for="PaymentTermsId" type="number" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Notes"></label>
-        <textarea asp-for="Notes" class="form-control"></textarea>
-    </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>
 
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
