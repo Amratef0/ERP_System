@@ -4,121 +4,56 @@
     ViewData["Title"] = "Add Attendance Status Code";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-plus-circle"></i> Add New Status Code</h2>
-                    <p class="text-muted">Create a new attendance status classification</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
-    </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
-    <!-- Add Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-check2-square"></i> Status Code Information</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Name Field -->
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label">
-                                <i class="bi bi-tag"></i> Status Name <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Name" class="form-control form-control-lg" placeholder="e.g., Present, Absent, Late" autofocus />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                            <div class="form-text">Name of the attendance status</div>
-                        </div>
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add Attendance Status Code</h3>
 
-                        <!-- Code Field -->
-                        <div class="mb-3">
-                            <label asp-for="Code" class="form-label">
-                                <i class="bi bi-hash"></i> Status Code <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Code" class="form-control form-control-lg" placeholder="e.g., PRE, ABS, LAT" maxlength="10" style="text-transform: uppercase;" />
-                            <span asp-validation-for="Code" class="text-danger"></span>
-                            <div class="form-text">Short code for quick identification (e.g., PRE for Present)</div>
-                        </div>
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
 
-                        <!-- Description Field -->
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label">
-                                <i class="bi bi-card-text"></i> Description
-                            </label>
-                            <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description of this status..."></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
-                            <div class="form-text">Optional: Describe when this status should be used</div>
-                        </div>
-
-                        <!-- Is Active Field -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" checked />
-                                <label class="form-check-label" for="isActiveSwitch">
-                                    <i class="bi bi-toggle-on"></i> Status Code is Active
-                                </label>
-                            </div>
-                            <div class="form-text">Active status codes appear in selection lists</div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Create Status Code
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Name -->
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " autofocus />
+                <label asp-for="Name">Status Name <span class="text-danger">*</span></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Common Status Codes</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ul class="mb-0 small">
-                                <li><strong>PRE</strong> - Present</li>
-                                <li><strong>ABS</strong> - Absent</li>
-                                <li><strong>LAT</strong> - Late</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <ul class="mb-0 small">
-                                <li><strong>LEV</strong> - On Leave</li>
-                                <li><strong>SIC</strong> - Sick Leave</li>
-                                <li><strong>HOL</strong> - Holiday</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+            <!-- Code -->
+            <div class="form-group">
+                <input asp-for="Code" class="form-control" placeholder=" " maxlength="10" style="text-transform: uppercase;" />
+                <label asp-for="Code">Status Code <span class="text-danger">*</span></label>
+                <span asp-validation-for="Code" class="text-danger"></span>
             </div>
-        </div>
+
+            <!-- Description -->
+            <div class="form-group full-width">
+                <textarea asp-for="Description" class="form-control" placeholder=" " rows="3"></textarea>
+                <label asp-for="Description">Description</label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <!-- Is Active -->
+            <div class="form-group form-check">
+                <input asp-for="IsActive" id="isActiveSwitch" type="checkbox" class="form-check-input" checked />
+                <label asp-for="IsActive" for="isActiveSwitch" class="form-check-label">Status Code is Active</label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+
+        </form>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // Auto-uppercase status code
+        // Auto-uppercase for Code
         document.querySelector('input[name="Code"]')?.addEventListener('input', function(e) {
             this.value = this.value.toUpperCase();
         });
