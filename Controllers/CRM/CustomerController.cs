@@ -34,7 +34,7 @@ namespace ERP_System_Project.Controllers.CRM
         {
 
             await PopulateCustomerTypesDropdown();
-            return View();
+            return PartialView();
 
         }
         [HttpPost]
@@ -72,7 +72,7 @@ namespace ERP_System_Project.Controllers.CRM
             {
                 return NotFound();
             }
-            return View(viewName, customer);
+            return PartialView(viewName, customer);
         }
 
         // Renamed from Update to Edit for consistency with your view

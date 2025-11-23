@@ -4,75 +4,59 @@
     ViewData["Title"] = "Create Customer";
 }
 
-<div class="container-fluid py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Create New Customer</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="FirstName" class="form-label"></label>
-                                    <input asp-for="FirstName" class="form-control" />
-                                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="LastName" class="form-label"></label>
-                                    <input asp-for="LastName" class="form-control" />
-                                    <span asp-validation-for="LastName" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+<div class="form-page create-customer">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add Customer</h3>
 
-                        <div class="form-group mb-3">
-                            <label asp-for="Email" class="form-label"></label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
+        <form asp-action="Create" method="post">
 
-                        <div class="form-group mb-3">
-                            <label asp-for="PhoneNumber" class="form-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="CustomerTypeId" class="form-label">Customer Type *</label>
-                            <select asp-for="CustomerTypeId" class="form-control"
-                                    asp-items="ViewBag.CustomerTypes">
-                                <option value="">Select Customer Type</option>
-                            </select>
-                            <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="CustomerTypeId" class="form-label"></label>
-                            <select asp-for="CustomerTypeId" class="form-control">
-                                <option value="">Select Customer Type</option>
-                                <!-- You'll need to populate this from ViewBag or ViewData -->
-                            </select>
-                            <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-success">Create Customer</button>
-                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </form>
-                </div>
+            <!-- First Name -->
+            <div class="form-group">
+                <input asp-for="FirstName" class="form-control" placeholder=" " />
+                <label asp-for="FirstName"></label>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
-        </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <input asp-for="LastName" class="form-control" placeholder=" " />
+                <label asp-for="LastName"></label>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <input asp-for="Email" class="form-control" placeholder=" " />
+                <label asp-for="Email"></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <input asp-for="PhoneNumber" class="form-control" placeholder=" " />
+                <label asp-for="PhoneNumber"></label>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Customer Type -->
+            <div class="form-group">
+                <select asp-for="CustomerTypeId" class="form-select" asp-items="ViewBag.CustomerTypes">
+                    <option value="" disabled selected hidden>Select Customer Type</option>
+                </select>
+                <label asp-for="CustomerTypeId">Customer Type</label>
+                <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
     </div>
 </div>
 
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
