@@ -21,6 +21,7 @@
 }
 
 /* ====== Title ====== */
+.bp-header h2,
 .list-page h2,
 .suppliers-page h2 {
     text-align: center;
@@ -151,6 +152,18 @@
         gap: 10px;
     }
 
+
+
+/* Make DELETE button same size as action <a> buttons */
+.action-buttons form button.btn-delete {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* ====== Active / Inactive Status ====== */
 .list-page .status,

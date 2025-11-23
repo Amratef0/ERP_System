@@ -1,24 +1,24 @@
 :root {
     /* -------- Card 1 (Light) -------- */
-    --card1-bg: #ebfaf0;
-    --card1-h3: #1a3d2e;
-    --card1-p: #3a5f4d;
-    --card1-icon: #1a3d2e;
+    --card1-bg: #c8f7d1;
+    --card1-h3: #10632a;
+    --card1-p: #1e7b3a;
+    --card1-icon: #0b4f21;
     /* -------- Card 2 (Light) -------- */
-    --card2-bg: #fff9e5;
-    --card2-h3: #5a4712;
-    --card2-p: #7a6733;
-    --card2-icon: #5a4712;
+    --card2-bg: #fff1b8;
+    --card2-h3: #a37b00;
+    --card2-p: #d19c2c;
+    --card2-icon: #8a6200;
     /* -------- Card 3 (Light) -------- */
-    --card3-bg: #a6f7f5;
-    --card3-h3: #0c3e4a;
-    --card3-p: #2b5e65;
-    --card3-icon: #0c3e4a;
+    --card3-bg: #ff99b3;
+    --card3-h3: #8b004b;
+    --card3-p: #b33063;
+    --card3-icon: #7a003f;
     /* -------- Card 4 (Light) -------- */
-    --card4-bg: #ffccdb;
-    --card4-h3: #5e1130;
-    --card4-p: #7a3450;
-    --card4-icon: #5e1130;
+    --card4-bg: #66f0f7;
+    --card4-h3: #004d52;
+    --card4-p: #009aa4;
+    --card4-icon: #003d41;
     /*StatCard*/
     --statcard-bg: #a6f7f5; /* Default: Light */
     --statcard-h3: #1d4b59;
@@ -61,25 +61,25 @@
 }
 .dark {
     /* -------- Card 1 (Dark) -------- */
-    --card1-bg: #204642;
-    --card1-h3: #e9fff8;
-    --card1-p: #c7f2e7;
-    --card1-icon: #c7f2e7;
+    --card1-bg: #1a5d39;
+    --card1-h3: #c5ffd5;
+    --card1-p: #9df1b8;
+    --card1-icon: #81e6a0;
     /* -------- Card 2 (Dark) -------- */
-    --card2-bg: #47452c;
-    --card2-h3: #fff7d7;
-    --card2-p: #e9dfb2;
-    --card2-icon: #fff7d7;
+    --card2-bg: #5c5000;
+    --card2-h3: #fff7a5;
+    --card2-p: #f7e589;
+    --card2-icon: #ffe870;
     /* -------- Card 3 (Dark) -------- */
-    --card3-bg: #194754;
-    --card3-h3: #d4faff;
-    --card3-p: #aee3ea;
-    --card3-icon: #d4faff;
+    --card3-bg: #5a2140;
+    --card3-h3: #ffc4dc;
+    --card3-p: #f799bf;
+    --card3-icon: #ff8fc0;
     /* -------- Card 4 (Dark) -------- */
-    --card4-bg: #483249;
-    --card4-h3: #ffebf5;
-    --card4-p: #f3c6da;
-    --card4-icon: #ffebf5;
+    --card4-bg: #11555d;
+    --card4-h3: #aefbff;
+    --card4-p: #64e6ef;
+    --card4-icon: #32cfd6;
     /*StatCard*/
     --statcard-bg: #1d4b59;
     --statcard-h3: #ffffff;
@@ -263,6 +263,22 @@
     .bp-stats-row .bp-stat-card:nth-child(4) i {
         color: var(--card4-icon);
     }
+
+.bp-stats-row .bp-stat-card:nth-child(1):hover {
+    background: #b0f8d8;
+}
+
+.bp-stats-row .bp-stat-card:nth-child(2):hover {
+    background: #fff6a0;
+}
+
+.bp-stats-row .bp-stat-card:nth-child(3):hover {
+    background: #ff8cb0;
+}
+
+.bp-stats-row .bp-stat-card:nth-child(4):hover {
+    background: #5ce0f5;
+}
 
 .bp-stats-row {
     display: grid;

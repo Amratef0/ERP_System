@@ -13,6 +13,19 @@
     --color-hover-accent: #635bff36;
     --color-active-accent: #fff;
 }
+
+.dark {
+    --color-bg-body: #1a2537;
+    --color-bg-container: #222d45;
+    --color-bg-sidebar: #222d45;
+    --color-bg-content: #1a2537;
+    --color-text-main: #f5f5f5;
+    --color-text-muted: #aaaaaa;
+    --color-accent: #8e7cff;
+    --color-hover-accent: #8e7cff36;
+    --color-active-accent: #fff;
+}
+
 @keyframes slideUp {
     from {
         opacity: 0;
@@ -46,17 +59,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-.dark {
-    --color-bg-body: #1a2537;
-    --color-bg-container: #222d45;
-    --color-bg-sidebar: #222d45;
-    --color-bg-content: #1a2537;
-    --color-text-main: #f5f5f5;
-    --color-text-muted: #aaaaaa;
-    --color-accent: #8e7cff;
-    --color-hover-accent: #8e7cff36;
-    --color-active-accent: #fff;
 }
 
 

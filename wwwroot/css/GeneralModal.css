@@ -1,4 +1,4 @@
-.general-modal-wrapper {
+﻿.general-modal-wrapper {
     --modal-bg: var(--color-bg-content, #fff);
     --modal-text: var(--color-text-main, #333);
     --modal-accent: var(--color-accent, #635BFF);
