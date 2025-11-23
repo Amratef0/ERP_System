@@ -194,7 +194,7 @@ namespace ERP_System_Project.Controllers
             if (order == null)
                 return NotFound();
 
-            return View(order);
+            return PartialView(order);
         }
 
         // POST: PurchaseOrder/Delete/5
