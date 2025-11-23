@@ -1,63 +1,131 @@
 ﻿@model ERP_System_Project.Models.PurchaseOrder
 
-<h2>Create Purchase Order</h2>
+@{
+    ViewData["Title"] = "Create Purchase Order";
+}
 
-<form asp-action="Create" method="get">
-    <div class="form-group">
-        <label>Supplier</label>
-        <select name="supplierId" class="form-control" onchange="this.form.submit()">
-            <option value="">-- Select Supplier --</option>
-            @foreach (var s in (SelectList)ViewData["Suppliers"])
-            {
-                if (s.Selected)
-                {
-                    <option value="@s.Value" selected>@s.Text</option>
-                }
-                else
-                {
-                    <option value="@s.Value">@s.Text</option>
-                }
-            }
-        </select>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Create Purchase Order</h3>
+
+        <!-- Supplier Selection (GET) -->
+        <form asp-action="Create" method="get">
+            <div class="form-group">
+                <select name="supplierId" class="form-control" onchange="this.form.submit()">
+                    <option value="">-- Select Supplier --</option>
+                    @foreach (var s in (SelectList)ViewData["Suppliers"])
+                    {
+                        if (s.Selected)
+                        {
+                            <option value="@s.Value" selected>@s.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@s.Value">@s.Text</option>
+                        }
+                    }
+                </select>
+            </div>
+        </form>
+
+        <br />
+
+        <!-- Main Create Form (POST) -->
+        <form asp-action="Create" method="post">
+            <input type="hidden" name="SupplierId" value="@( ((SelectList)ViewData["Suppliers"])?.SelectedValue )" />
+
+            <div class="form-group">
+                <select name="ProductId" class="form-control" asp-items="@(ViewData["Products"] as SelectList)">
+                    <option value="">-- Select Product --</option>
+                </select>
+                <span asp-validation-for="WarehouseProductId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <select name="WarehouseId" class="form-control" asp-items="@(ViewData["Warehouses"] as SelectList)">
+                    <option value="">-- Select Warehouse --</option>
+                </select>
+                <span asp-validation-for="WarehouseId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input name="Quantity" type="number" step="0.01" class="form-control" placeholder=" " />
+                <label>Quantity</label>
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input name="PoNumber" class="form-control" placeholder=" " />
+                <label>PO Number</label>
+            </div>
+
+            <div class="form-group">
+                <input name="OrderDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <label>Order Date</label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="order">
+                    <span class="default">Create</span>
+                    <span class="success">
+                        Created
+                        <svg viewBox="0 0 12 10">
+                            <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                        </svg>
+                    </span>
+                    <div class="box"></div>
+                    <div class="truck">
+                        <div class="back"></div>
+                        <div class="front">
+                            <div class="window"></div>
+                        </div>
+                        <div class="light top"></div>
+                        <div class="light bottom"></div>
+                    </div>
+                    <div class="lines"></div>
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+
+        <!-- Info Section -->
+        <div class="lists-section" style="margin-top:22px;">
+            <h4>Purchase Order Information</h4>
+            <ul class="item-list">
+                <li><strong>Supplier:</strong> Choose the supplier for this order</li>
+                <li><strong>Product:</strong> Select product from warehouse</li>
+                <li><strong>Warehouse:</strong> Choose where the product is stored</li>
+                <li><strong>Quantity:</strong> Number of items</li>
+                <li><strong>PO Number:</strong> Unique purchase order number</li>
+                <li><strong>Order Date:</strong> Date of the order</li>
+            </ul>
+        </div>
     </div>
-</form>
+</div>
 
 
-<form asp-action="Create" method="post">
-    <input type="hidden" name="SupplierId" value="@( ((SelectList)ViewData["Suppliers"])?.SelectedValue )" />
+<link rel="stylesheet" href="~/css/OrderButton.css" />
 
-    <div class="form-group">
-        <label>Product</label>
-        <select name="ProductId" class="form-control" asp-items="@(ViewData["Products"] as SelectList)">
-            <option value="">-- Select Product --</option>
-        </select>
-        <span asp-validation-for="WarehouseProductId" class="text-danger"></span>
-    </div>
 
-    <div class="form-group">
-        <label>Warehouse</label>
-        <select name="WarehouseId" class="form-control" asp-items="@(ViewData["Warehouses"] as SelectList)">
-            <option value="">-- Select Warehouse --</option>
-        </select>
-        <span asp-validation-for="WarehouseId" class="text-danger"></span>
-    </div>
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const orderBtn = document.querySelector(".order");
+    const form = orderBtn.closest("form");
 
-    <div class="form-group">
-        <label>Quantity</label>
-        <input name="Quantity" type="number" step="0.01" class="form-control" />
-        <span asp-validation-for="Quantity" class="text-danger"></span>
-    </div>
+    orderBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        orderBtn.classList.add("animate");
 
-    <div class="form-group">
-        <label>PO Number</label>
-        <input name="PoNumber" class="form-control" />
-    </div>
+        setTimeout(() => {
+            form.submit();
+        }, 9000);
+    });
+});
 
-    <div class="form-group">
-        <label>Order Date</label>
-        <input name="OrderDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-    </div>
-
-    <button type="submit" class="btn btn-success">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</script>
