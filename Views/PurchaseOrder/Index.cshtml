@@ -1,41 +1,73 @@
 ﻿@model IEnumerable<ERP_System_Project.Models.PurchaseOrder>
 
-<h2>Purchase Orders</h2>
+@{
+    ViewData["Title"] = "Purchase Orders";
+}
 
-<p>
-    <a asp-action="Create" class="btn btn-success">Create New</a>
-</p>
+<div class="suppliers-page">
+    <div class="card">
+        <h2>Purchase Orders</h2>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>Po Number</th>
-            <th>Order Date</th>
-            <th>Supplier</th>
-            <th>Product</th>
-            <th>Warehouse</th>
-            <th>Status</th>
-            <th>Payment Terms</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.PoNumber</td>
-                <td>@item.OrderDate.ToShortDateString()</td>
-                <td>@item.Supplier?.SupplierName</td>
-                <td>@item.WarehouseProduct?.Product?.Name</td>
-                <td>@item.WarehouseProduct?.Warehouse?.Name</td>
-                <td>@item.StatusId</td>
-                <td>@item.PaymentTermsId</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.PurchaseOrderId" class="btn btn-info btn-sm">Details</a>
-                    <a asp-action="Edit" asp-route-id="@item.PurchaseOrderId" class="btn btn-warning btn-sm">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@item.PurchaseOrderId" class="btn btn-danger btn-sm">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <!-- Floating Add Button -->
+        <a asp-action="Create" 
+           class="floating-btn" 
+           title="Create New Purchase Order">
+           <i class="fa-solid fa-plus"></i>
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>PO Number</th>
+                    <th>Order Date</th>
+                    <th>Supplier</th>
+                    <th>Product</th>
+                    <th>Warehouse</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-label="PO Number">@item.PoNumber</td>
+                        <td data-label="Order Date">@item.OrderDate.ToShortDateString()</td>
+                        <td data-label="Supplier">@item.Supplier?.SupplierName</td>
+                        <td data-label="Product">@item.WarehouseProduct?.Product?.Name</td>
+                        <td data-label="Warehouse">@item.WarehouseProduct?.Warehouse?.Name</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <!-- Details -->
+                                <a asp-action="Details"
+                                   asp-route-id="@item.PurchaseOrderId"
+                                   class="btn btn-view btn-sm"
+                                   title="Details">
+                                   <i class="fa-solid fa-eye"></i>
+                                </a>
+
+                                <!-- Edit -->
+                                <a asp-action="Edit" 
+                                   asp-route-id="@item.PurchaseOrderId"
+                                   class="btn btn-update btn-sm"
+                                   title="Edit">
+                                   <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <a href="javascript:void(0)"
+                                   onclick="openModalWithAjax('@Url.Action("Delete", "PurchaseOrder", new { id = item.PurchaseOrderId })', 'Delete Purchase Order')"
+                                   class="btn btn-delete btn-sm"
+                                   title="Delete">
+                                   <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+@await Html.PartialAsync("_GeneralModal")
