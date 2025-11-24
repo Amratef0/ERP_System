@@ -125,7 +125,7 @@ namespace ERP_System_Project.Controllers.Inventory
             var product = await _productService.GetByIdAsync(id);
             if (product is null) return NotFound();
             var productVM = _mapper.Map<ProductVM>(product);
-            return View(productVM);
+            return PartialView(productVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

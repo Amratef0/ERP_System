@@ -1,176 +1,145 @@
 ﻿@model ERP_System_Project.ViewModels.Inventory.EditProductVM
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Product";
 }
 
-<form method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="All" class="text-danger"></div>
+<div class="form-page create-product">
+    <div class="form">
+        <h3 class="formTitle">Edit Product</h3>
 
-    <input type="hidden" asp-for="Id" />
+        <form method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Edit Product</h2>
-            <hr />
-        </div>
+            <input type="hidden" asp-for="Id" />
 
-        <!-- Basic Information -->
-        <div class="row">
-            <div class="mb-3 col-md-6">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
+            <!-- Basic Information -->
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name"></label>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label asp-for="Description" class="form-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="form-group">
+                <input asp-for="Description" class="form-control" placeholder=" " />
+                <label asp-for="Description"></label>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-        </div>
 
-        <!-- Pricing -->
-        <div class="row">
-            <div class="mb-3 col-md-6">
-                <label asp-for="UnitCost" class="form-label"></label>
-                <input asp-for="UnitCost" type="number" step="0.01" class="form-control" />
+            <!-- Pricing -->
+            <div class="number-field-group">
+                <label asp-for="UnitCost" class="number-label">Unit Cost</label>
+                <input asp-for="UnitCost" type="number" step="0.01" class="number-input" />
                 <span asp-validation-for="UnitCost" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label asp-for="StandardPrice" class="form-label"></label>
-                <input asp-for="StandardPrice" type="number" step="0.01" class="form-control" />
+            <div class="number-field-group">
+                <label asp-for="StandardPrice" class="number-label">Standard Price</label>
+                <input asp-for="StandardPrice" type="number" step="0.01" class="number-input" />
                 <span asp-validation-for="StandardPrice" class="text-danger"></span>
             </div>
-        </div>
 
-        <!-- Inventory & Selection -->
-        <div class="row">
-            <div class="mb-3 col-md-4">
-                <label asp-for="Quantity" class="form-label"></label>
-                <input asp-for="Quantity" type="number" class="form-control" />
+            <!-- Inventory & Selection -->
+            <div class="number-field-group">
+                <label asp-for="Quantity" class="number-label">Quantity</label>
+                <input asp-for="Quantity" type="number" class="number-input" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-4">
-                <label asp-for="BrandId" class="form-label"></label>
+            <div class="form-group">
                 <select asp-for="BrandId" asp-items="@ViewBag.Brands" class="form-select">
                     <option value="">-- Select Brand --</option>
                 </select>
+                <label asp-for="BrandId">Brand</label>
                 <span asp-validation-for="BrandId" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-4">
-                <label asp-for="CategoryId" class="form-label"></label>
+            <div class="form-group">
                 <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-select">
                     <option value="">-- Select Category --</option>
                 </select>
+                <label asp-for="CategoryId">Category</label>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-        </div>
 
-        <!-- Current Image Display -->
-        <div class="mb-3">
-            <label class="form-label">Current Image</label>
-            <div class="current-image-container">
-                @if (!string.IsNullOrEmpty(Model.ImageURL))
-                {
-                    <div class="mb-2">
-                        <img src="@Model.ImageURL" alt="Product Image" class="img-thumbnail" style="height: 200px; max-width: 400px;" />
-                        <div class="form-text">Current product image</div>
-                    </div>
-                }
-                else
-                {
-                    <div class="alert alert-info">
-                        <i class="fas fa-image"></i> No image uploaded for this product.
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- New Image Upload -->
-        <div class="mb-3">
-            <label asp-for="NewImage" class="form-label">Replace Image</label>
-            <input asp-for="NewImage" type="file" class="form-control" accept="image/*" />
-            <span asp-validation-for="NewImage" class="text-danger"></span>
-            <div class="form-text">Leave empty to keep current image</div>
-        </div>
-
-        <!-- Product Attributes -->
-        <div class="mb-3">
-            <label class="form-label">Product Attributes <small class="text-muted">(Maximum 5 attributes)</small></label>
-            <div id="attributes-container">
-                @if (Model?.AttributesVM != null)
-                {
-                    @for (int i = 0; i < Model.AttributesVM.Count; i++)
+            <!-- Current Image -->
+            <div class="form-group full-width">
+                <label class="form-label">Current Image</label>
+                <div class="current-image-container">
+                    @if (!string.IsNullOrEmpty(Model.ImageURL))
                     {
-                        <div class="attribute-group row mb-2">
-                            <div class="col-md-5">
-                                <select asp-for="AttributesVM[i].AtrributeId" asp-items="@ViewBag.Attributes" class="form-select">
-                                    <option value="">-- Select Attribute --</option>
-                                </select>
-                            </div>
-                            <div class="col-md-5">
-                                <input asp-for="AttributesVM[i].Value" class="form-control" placeholder="Value" />
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-danger remove-attribute">Remove</button>
-                            </div>
+                        <div class="mb-2">
+                            <img src="@Model.ImageURL" alt="Product Image" class="img-thumbnail" style="height:200px; max-width:400px;" />
+                            <div class="form-text">Current product image</div>
                         </div>
                     }
-                }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-image"></i> No image uploaded for this product.
+                        </div>
+                    }
+                </div>
             </div>
-            <button type="button" id="add-attribute" class="btn btn-dark mt-2">
-                <i class="fas fa-plus"></i> Add Attribute
-            </button>
-            <div id="max-attributes-message" class="text-danger mt-1" style="display: none;">
-                Maximum 5 attributes allowed
+
+            <!-- New Image Upload -->
+            <div class="form-group full-width">
+                <input asp-for="NewImage" type="file" class="form-control" accept="image/*" />
+                <label asp-for="NewImage">Replace Image</label>
+                <span asp-validation-for="NewImage" class="text-danger"></span>
+                <div class="form-text">Leave empty to keep current image</div>
             </div>
-        </div>
 
-        <br />
-        <hr />
+            <!-- Product Attributes -->
+            <div class="form-group full-width lists-section">
+                <h4>Product Attributes</h4>
+                <div id="attributes-container" class="item-list">
+                    @if (Model?.AttributesVM != null)
+                    {
+                        @for (int i = 0; i < Model.AttributesVM.Count; i++)
+                        {
+                            <div class="attribute-group row mb-2">
+                                <div class="col-md-5">
+                                    <select asp-for="AttributesVM[i].AtrributeId" asp-items="@ViewBag.Attributes" class="form-select">
+                                        <option value="">-- Select Attribute --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input asp-for="AttributesVM[i].Value" class="form-control" placeholder=" " />
+                                    <label asp-for="AttributesVM[i].Value">Value</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="add-attribute" class="btn btn-secondary mt-2">Add Attribute</button>
+            </div>
 
-        <!-- Action Buttons -->
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary" style="width:150px">
-                <i class="fas fa-save"></i> Update Product
-            </button>
-            <a asp-action="Index" asp-controller="Product" class="btn btn-secondary" style="width:160px">
-                <i class="fas fa-arrow-left"></i> Back to Products
-            </a>
-            
-        </div>
+            <!-- Action Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Dynamic attribute management
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const attributesContainer = document.getElementById('attributes-container');
             const addAttributeBtn = document.getElementById('add-attribute');
-            const maxAttributesMessage = document.getElementById('max-attributes-message');
-            const removeImageBtn = document.getElementById('remove-image-btn');
-            const MAX_ATTRIBUTES = 5;
             let attributeIndex = @(Model?.AttributesVM?.Count ?? 0);
 
-            // Update button state on page load
-            updateAddButtonState();
-
-            // Add attribute functionality
-            addAttributeBtn.addEventListener('click', function() {
-                const currentAttributes = attributesContainer.querySelectorAll('.attribute-group').length;
-
-                if (currentAttributes >= MAX_ATTRIBUTES) {
-                    showMaxAttributesMessage();
-                    return;
-                }
-
+            addAttributeBtn.addEventListener('click', function () {
                 const newAttributeHtml = `
                     <div class="attribute-group row mb-2">
                         <div class="col-md-5">
@@ -178,10 +147,10 @@
                                 <option value="">-- Select Attribute --</option>
                                 @if (ViewBag.Attributes != null)
                                 {
-                                        foreach (var item in ViewBag.Attributes)
-                                        {
-                                                <option value="@item.Value">@item.Text</option>
-                                        }
+                                    foreach (var item in ViewBag.Attributes)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
                                 }
                             </select>
                         </div>
@@ -193,66 +162,16 @@
                         </div>
                     </div>
                 `;
-
                 attributesContainer.insertAdjacentHTML('beforeend', newAttributeHtml);
                 attributeIndex++;
-
-                updateAddButtonState();
-                hideMaxAttributesMessage();
             });
 
-            // Remove attribute
-            attributesContainer.addEventListener('click', function(e) {
+            attributesContainer.addEventListener('click', function (e) {
                 if (e.target.classList.contains('remove-attribute')) {
                     e.target.closest('.attribute-group').remove();
                     reindexAttributes();
-                    updateAddButtonState();
-                    hideMaxAttributesMessage();
                 }
             });
-
-            // Remove image functionality
-            if (removeImageBtn) {
-                removeImageBtn.addEventListener('click', function() {
-                    if (confirm('Are you sure you want to remove the product image?')) {
-                        // Hide current image
-                        document.querySelector('.current-image-container').innerHTML = `
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle"></i> Image will be removed when you update the product.
-                            </div>
-                        `;
-
-                        // Create hidden input to indicate image removal
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'RemoveImage';
-                        hiddenInput.value = 'true';
-                        document.querySelector('form').appendChild(hiddenInput);
-
-                        // Hide remove button
-                        removeImageBtn.style.display = 'none';
-                    }
-                });
-            }
-
-            function updateAddButtonState() {
-                const currentAttributes = attributesContainer.querySelectorAll('.attribute-group').length;
-                if (currentAttributes >= MAX_ATTRIBUTES) {
-                    addAttributeBtn.disabled = true;
-                    addAttributeBtn.classList.add('disabled');
-                } else {
-                    addAttributeBtn.disabled = false;
-                    addAttributeBtn.classList.remove('disabled');
-                }
-            }
-
-            function showMaxAttributesMessage() {
-                maxAttributesMessage.style.display = 'block';
-            }
-
-            function hideMaxAttributesMessage() {
-                maxAttributesMessage.style.display = 'none';
-            }
 
             function reindexAttributes() {
                 const attributeGroups = attributesContainer.querySelectorAll('.attribute-group');
@@ -260,7 +179,6 @@
                 attributeGroups.forEach((group, index) => {
                     const select = group.querySelector('select');
                     const input = group.querySelector('input[type="text"]');
-
                     select.name = `AttributesVM[${index}].AtrributeId`;
                     input.name = `AttributesVM[${index}].Value`;
                     attributeIndex = index + 1;
@@ -268,22 +186,4 @@
             }
         });
     </script>
-
-    <style>
-        .attribute-group {
-            padding: 10px;
-            border: 1px solid #dee2e6;
-            border-radius: 5px;
-            background-color: #f8f9fa;
-        }
-
-        .btn.disabled {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        .current-image-container img {
-            border: 2px solid #dee2e6;
-        }
-    </style>
 }
