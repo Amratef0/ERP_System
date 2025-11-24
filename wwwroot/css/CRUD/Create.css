@@ -501,5 +501,325 @@ select:-webkit-autofill:focus {
     font-size: 14px;
     font-weight: 500;
     color: #fff;
-    opacity: 0.9;
 }
+
+
+
+/* Input with border + padding */
+.styled-input {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    padding: 12px 18px;
+    background: var(--color-bg-body);
+    transition: all 0.3s ease;
+}
+
+    .styled-input:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 8px var(--color-hover-accent);
+    }
+
+/* Clear button styling */
+.btn-clear {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 4px 10px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+    .btn-clear:hover {
+        background: var(--color-accent);
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+/* Input group to align properly */
+.input-with-clear .input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Floating label for time inputs */
+.input-with-clear label {
+    position: absolute;
+    top: 50%;
+    left: 18px;
+    transform: translateY(-50%);
+    padding: 0 6px;
+    color: var(--color-text-muted);
+    font-size: 15px;
+    pointer-events: none;
+    background: var(--color-bg-body);
+    transition: all 0.3s ease;
+}
+
+.input-with-clear input:focus + label,
+.input-with-clear input:not(:placeholder-shown) + label {
+    top: -8px;
+    left: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-accent);
+}
+.input-with-clear .input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-clear i {
+        font-size: 16px;
+    }
+.btn-clear-special {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 36px;
+    height: 36px;
+    background-color: #FF6B6B; /* لون مميز */
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s ease;
+}
+
+    .btn-clear-special:hover {
+        background-color: #ff4b4b;
+        transform: scale(1.05);
+    }
+
+/* ================================
+   🌟 Preview Box Styling (Only Create)
+   Matches Details Page Style
+   ================================= */
+
+/* Wrapper Box */
+.preview-box-create {
+    background: var(--color-bg-content);
+    border-radius: 12px;
+    box-shadow: 0 3px 9px rgba(0,0,0,0.08);
+    padding: 14px 18px;
+    color: var(--color-text-main);
+    margin-top: 18px;
+}
+
+/* Title */
+.preview-title-create {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    background: linear-gradient(90deg, var(--color-accent), #00D4FF, var(--color-accent));
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: moveGradient 10s linear infinite;
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 300% center;
+    }
+}
+.quick-action-btn,
+button.quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    gap: 0.5rem;
+    min-width: 180px;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    background-color: var(--color-bg-body);
+    border: 2px solid currentColor;
+    color: inherit;
+    cursor: pointer;
+    /* Reset styles for buttons */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-clip: padding-box;
+}
+
+    .quick-action-btn i {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Hover effect */
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        opacity: 0.9;
+    }
+
+/* ألوان الزرار حسب card */
+.card1 {
+    color: var(--card1-h3);
+}
+
+    .card1 i {
+        color: var(--card1-icon);
+    }
+
+.card2 {
+    color: var(--card2-h3);
+}
+
+    .card2 i {
+        color: var(--card2-icon);
+    }
+
+.card3 {
+    color: var(--card3-h3);
+}
+
+    .card3 i {
+        color: var(--card3-icon);
+    }
+
+.card4 {
+    color: var(--card4-h3);
+}
+
+    .card4 i {
+        color: var(--card4-icon);
+    }
+
+
+.quick-action-btn,
+button.quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    gap: 0.5rem;
+    min-width: 180px;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    /* الخلفية العامة للصفحة حسب المود */
+    background-color: var(--color-bg-body);
+    border: 2px solid currentColor; /* لون الحد نفس لون النص */
+    color: inherit; /* يرث لون الـ card */
+    cursor: pointer;
+}
+
+    /* أيقونات جوه الزرار */
+    .quick-action-btn i {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Hover effect */
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        opacity: 0.9; /* خفيف على hover */
+    }
+
+/* ألوان الزرار حسب card */
+.card1 {
+    color: var(--card1-h3);
+}
+
+    .card1 i {
+        color: var(--card1-icon);
+    }
+
+.card2 {
+    color: var(--card2-h3);
+}
+
+    .card2 i {
+        color: var(--card2-icon);
+    }
+
+.card3 {
+    color: var(--card3-h3);
+}
+
+    .card3 i {
+        color: var(--card3-icon);
+    }
+
+.card4 {
+    color: var(--card4-h3);
+}
+
+    .card4 i {
+        color: var(--card4-icon);
+    }
+
+
+form .preview-box-create {
+    grid-column: 1 / -1 !important;
+}
+
+.preview-grid-create {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+}
+/* Item Style */
+.preview-item-create {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-container);
+    border-radius: 6px;
+    padding: 6px 10px;
+    border: 1px solid #eee;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+    .preview-item-create:hover {
+        transform: scale(1.01);
+        box-shadow: 0 1px 4px var(--color-hover-accent);
+    }
+
+    /* Label (dt) */
+    .preview-item-create dt {
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--color-accent);
+        margin-bottom: 4px;
+    }
+
+    /* Value (dd) */
+    .preview-item-create dd {
+        font-size: 13px;
+        margin: 0;
+        color: var(--color-text-main);
+    }
+
+/* 🌚 Dark Mode Support */
+.dark .preview-box-create {
+    background: #222d45;
+    color: var(--color-text-main);
+    border: 1px solid #444;
+}
+
+.dark .preview-item-create {
+    background: #2b3856;
+    border: 1px solid #444;
+}
+
+    .dark .preview-item-create:hover {
+        box-shadow: 0 1px 4px rgba(142, 124, 255, 0.25);
+    }

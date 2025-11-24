@@ -74,6 +74,7 @@
 
     <!-- Stats Row (Optional) -->
     <div class="bp-stats-row">
+
         <div class="bp-stat-card stat-1">
             <div>
                 <h3>@Model.Data.Count()</h3>
@@ -81,6 +82,7 @@
             </div>
             <i class="bi bi-box-seam"></i>
         </div>
+
         <div class="bp-stat-card stat-2">
             <div>
                 <h3>@Model.Data.Count(p => p.Quantity > 0)</h3>
@@ -88,6 +90,7 @@
             </div>
             <i class="bi bi-check-circle"></i>
         </div>
+
         <div class="bp-stat-card stat-3">
             <div>
                 <h3>@Model.Data.Count(p => p.Quantity == 0)</h3>
@@ -95,6 +98,7 @@
             </div>
             <i class="bi bi-x-circle"></i>
         </div>
+
     </div>
 
     <!-- Products Table -->
@@ -268,3 +272,10 @@
 <link rel="stylesheet" href="~/css/CRUD/Index.css" />
 <link rel="stylesheet" href="~/css/pagination.css" />
 @await Html.PartialAsync("_GeneralModal")
+
+
+
+
+
+
+

@@ -25,6 +25,35 @@
     --statcard-p: #15545a;
     --statcard-icon: #1d4b59;
 }
+
+.dark {
+    /* -------- Card 1 (Dark) -------- */
+    --card1-bg: #1a5d39;
+    --card1-h3: #c5ffd5;
+    --card1-p: #9df1b8;
+    --card1-icon: #81e6a0;
+    /* -------- Card 2 (Dark) -------- */
+    --card2-bg: #5c5000;
+    --card2-h3: #fff7a5;
+    --card2-p: #f7e589;
+    --card2-icon: #ffe870;
+    /* -------- Card 3 (Dark) -------- */
+    --card3-bg: #5a2140;
+    --card3-h3: #ffc4dc;
+    --card3-p: #f799bf;
+    --card3-icon: #ff8fc0;
+    /* -------- Card 4 (Dark) -------- */
+    --card4-bg: #11555d;
+    --card4-h3: #aefbff;
+    --card4-p: #64e6ef;
+    --card4-icon: #32cfd6;
+    /*StatCard*/
+    --statcard-bg: #1d4b59;
+    --statcard-h3: #ffffff;
+    --statcard-p: #b3e0f2;
+    --statcard-icon: #c0e6f5;
+}
+
 @keyframes slideUp {
     from {
         opacity: 0;
@@ -59,33 +88,7 @@
         transform: translateY(0);
     }
 }
-.dark {
-    /* -------- Card 1 (Dark) -------- */
-    --card1-bg: #1a5d39;
-    --card1-h3: #c5ffd5;
-    --card1-p: #9df1b8;
-    --card1-icon: #81e6a0;
-    /* -------- Card 2 (Dark) -------- */
-    --card2-bg: #5c5000;
-    --card2-h3: #fff7a5;
-    --card2-p: #f7e589;
-    --card2-icon: #ffe870;
-    /* -------- Card 3 (Dark) -------- */
-    --card3-bg: #5a2140;
-    --card3-h3: #ffc4dc;
-    --card3-p: #f799bf;
-    --card3-icon: #ff8fc0;
-    /* -------- Card 4 (Dark) -------- */
-    --card4-bg: #11555d;
-    --card4-h3: #aefbff;
-    --card4-p: #64e6ef;
-    --card4-icon: #32cfd6;
-    /*StatCard*/
-    --statcard-bg: #1d4b59;
-    --statcard-h3: #ffffff;
-    --statcard-p: #b3e0f2;
-    --statcard-icon: #c0e6f5;
-}
+
 
 
 /* ============================================
@@ -286,6 +289,19 @@
     gap: 20px;
     margin-top: 20px;
 }
+
+.bp-stat-card small {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: var(--statcard-p);
+}
+
+.bp-stat-card span.badge {
+    font-size: 12px;
+    margin-right: 4px;
+}
+
 
 
 @media (max-width: 992px) {
@@ -526,3 +542,146 @@
             background: var(--color-accent);
             color: var(--color-active-accent);
         }
+
+.quick-action-btn,
+button.quick-action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    gap: 0.5rem;
+    min-width: 180px;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    background-color: var(--bg); /* ياخد لون الخلفية العام */
+    cursor: pointer;
+    font: inherit; /* يطابق الخط */
+    border-style: solid; /* نضمن انه solid */
+}
+
+button.quick-action-btn {
+    -webkit-appearance: none; /* Safari/Chrome */
+    -moz-appearance: none; /* Firefox */
+    appearance: none; /* الباقي */
+    border: 2px solid currentColor !important; /* اللون نفس النص */
+    background-color: var(--bg) !important;
+    color: inherit !important;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 180px;
+    font: inherit;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+/* تبقي باقي الكلاسات زي ما هي */
+
+
+    /* أيقونات جوه الزرار */
+    .quick-action-btn i {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+    }
+
+    /* Hover effect */
+    .quick-action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        background-color: var(--hover-bg); /* لون الخلفية عند hover */
+    }
+/* الألوان والحدود حسب card */
+.card1 {
+    color: var(--card1-h3);
+    border: 2px solid var(--card1-bg); /* البوردر يعتمد على الخلفية */
+}
+
+    .card1 span,
+    .card1 i {
+        color: var(--card1-h3);
+    }
+
+.card2 {
+    color: var(--card2-h3);
+    border: 2px solid var(--card2-bg);
+}
+
+    .card2 span,
+    .card2 i {
+        color: var(--card2-h3);
+    }
+
+.card3 {
+    color: var(--card3-h3);
+    border: 2px solid var(--card3-bg);
+}
+
+    .card3 span,
+    .card3 i {
+        color: var(--card3-h3);
+    }
+
+.card4 {
+    color: var(--card4-h3);
+    border: 2px solid var(--card4-bg);
+}
+
+    .card4 span,
+    .card4 i {
+        color: var(--card4-h3);
+    }
+
+
+
+/* ===== Filter Select Fix ===== */
+.bp-filter-select {
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: 1px solid #d0d0d0;
+    background: var(--color-bg-container);
+    color: var(--color-text-main);
+    font-size: 14px;
+    transition: .3s;
+}
+
+    .bp-filter-select:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 8px var(--color-hover-accent);
+    }
+
+/* ===== Apply Button Fix ===== */
+.bp-btn-filter {
+    background: var(--color-accent);
+    border-radius: 12px;
+    padding: 10px 12px;
+    border: none;
+    transition: .3s;
+}
+
+    .bp-btn-filter:hover {
+        background: #5349e8;
+    }
+
+/* ===== DARK MODE SUPPORT ===== */
+
+.dark .bp-search-card,
+.dark .bp-search-group,
+.dark .bp-filter-select {
+    background: var(--color-bg-container);
+    border-color: #555 !important;
+}
+
+    .dark .bp-filter-select option {
+        background: var(--color-bg-container);
+        color: var(--color-text-main);
+    }
+
+    /* Fix placeholder in dark */
+    .dark .bp-search-group input::placeholder {
+        color: var(--color-text-muted);
+    }
