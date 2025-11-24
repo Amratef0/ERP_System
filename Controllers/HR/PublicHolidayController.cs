@@ -56,7 +56,7 @@ namespace ERP_System_Project.Controllers.HR
                     Date = DateOnly.FromDateTime(DateTime.Now),
                     Countries = await _countryService.GetAllAsync()
                 };
-                return View("Create", vm);
+                return PartialView("Create", vm);
             }
             catch (Exception ex)
             {
