@@ -4,174 +4,158 @@
     ViewData["Title"] = "Work Schedule";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-calendar-week"></i> Work Schedule</h2>
-                    <p class="text-muted">Manage weekly work schedule and working hours</p>
-                </div>
-            </div>
-            <hr />
-        </div>
+<div class="page-section">
+
+    <!-- Header -->
+    <div class="bp-header">
+        <h2>Work Schedule</h2>
+        <p>Manage weekly work schedule and working hours</p>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-calendar-check"></i> Work Days</h6>
-                    <h2 class="mb-0">@Model.Count(d => d.IsWorkDay)</h2>
-                </div>
+    <!-- Stats Row -->
+    <div class="bp-stats-row mt-4">
+        <div class="bp-stat-card stat-1">
+            <div>
+                <h3>@Model.Count(d => d.IsWorkDay)</h3>
+                <p>Work Days</p>
             </div>
+            <i class="bi bi-calendar-check"></i>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-calendar-x"></i> Off Days</h6>
-                    <h2 class="mb-0">@Model.Count(d => !d.IsWorkDay)</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-clock"></i> Total Days</h6>
-                    <h2 class="mb-0">@Model.Count()</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-hourglass-split"></i> Weekly Hours</h6>
-                    <h2 class="mb-0">
-                        @{
-                            var totalHours = 0;
-                            foreach (var day in Model.Where(d => d.IsWorkDay))
-                            {
-                                if (day.WorkStartTime.HasValue && day.WorkEndTime.HasValue)
-                                {
-                                    totalHours += (int)(day.WorkEndTime.Value - day.WorkStartTime.Value).TotalHours;
-                                }
-                            }
+
+        <div class="bp-stat-card stat-2">
+            <div>
+                @{
+                    var totalHours = 0;
+                    foreach (var day in Model.Where(d => d.IsWorkDay))
+                    {
+                        if (day.WorkStartTime.HasValue && day.WorkEndTime.HasValue)
+                        {
+                            totalHours += (int)(day.WorkEndTime.Value - day.WorkStartTime.Value).TotalHours;
                         }
-                        @totalHours hrs
-                    </h2>
-                </div>
+                    }
+                }
+                <h3>@totalHours hrs</h3>
+                <p>Weekly Hours</p>
             </div>
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+
+        <div class="bp-stat-card stat-3">
+            <div>
+                <h3>@Model.Count(d => !d.IsWorkDay)</h3>
+                <p>Off Days</p>
+            </div>
+            <i class="bi bi-calendar-x"></i>
+           
+        </div>
+
+        <div class="bp-stat-card stat-4">
+             <div>
+                <h3>@Model.Count()</h3>
+                <p>Total Days</p>
+            </div>
+            <i class="bi bi-clock"></i>
         </div>
     </div>
 
     <!-- Work Schedule Table -->
-    <div class="card">
-        <div class="card-header bg-dark text-white">
-            <h5 class="mb-0"><i class="bi bi-calendar-week"></i> Weekly Schedule</h5>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th style="width: 20%;"><i class="bi bi-calendar3"></i> Day</th>
-                            <th style="width: 15%;" class="text-center"><i class="bi bi-toggle-on"></i> Work Day</th>
-                            <th style="width: 20%;"><i class="bi bi-clock"></i> Start Time</th>
-                            <th style="width: 20%;"><i class="bi bi-clock-history"></i> End Time</th>
-                            <th style="width: 15%;" class="text-center"><i class="bi bi-hourglass-split"></i> Duration</th>
-                            <th style="width: 10%;" class="text-center"><i class="bi bi-gear"></i> Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
+    <div class="list-page work-schedule-page mt-4">
+        <div class="card">
+            <h2>Weekly Schedule</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th class="text-center">Work Day</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th class="text-center">Duration</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        var dayClass = item.IsWorkDay ? "" : "table-secondary";
+                        var duration = "";
+                        if (item.IsWorkDay && item.WorkStartTime.HasValue && item.WorkEndTime.HasValue)
                         {
-                            var dayClass = item.IsWorkDay ? "" : "table-secondary";
-                            var duration = "";
-                            if (item.IsWorkDay && item.WorkStartTime.HasValue && item.WorkEndTime.HasValue)
-                            {
-                                var hours = (item.WorkEndTime.Value - item.WorkStartTime.Value).TotalHours;
-                                duration = $"{hours:F1} hrs";
-                            }
-
-                            <tr class="@dayClass">
-                                <td>
-                                    <strong class="fs-5">@item.Day</strong>
-                                </td>
-                                <td class="text-center">
-                                    @if (item.IsWorkDay)
-                                    {
-                                        <span class="badge bg-success fs-6">
-                                            <i class="bi bi-check-circle"></i> Work Day
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger fs-6">
-                                            <i class="bi bi-x-circle"></i> Day Off
-                                        </span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsWorkDay && item.WorkStartTime.HasValue)
-                                    {
-                                        <span class="badge bg-primary fs-6">
-                                            <i class="bi bi-clock"></i> @item.WorkStartTime.Value.ToString(@"hh\:mm")
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsWorkDay && item.WorkEndTime.HasValue)
-                                    {
-                                        <span class="badge bg-warning text-dark fs-6">
-                                            <i class="bi bi-clock-history"></i> @item.WorkEndTime.Value.ToString(@"hh\:mm")
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    @if (!string.IsNullOrEmpty(duration))
-                                    {
-                                        <span class="badge bg-info fs-6">@duration</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" 
-                                       class="btn btn-sm btn-warning" title="Edit Schedule">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                </td>
-                            </tr>
+                            var hours = (item.WorkEndTime.Value - item.WorkStartTime.Value).TotalHours;
+                            duration = $"{hours:F1} hrs";
                         }
-                    </tbody>
-                </table>
-            </div>
+
+                        <tr class="@dayClass">
+                            <td><strong>@item.Day</strong></td>
+                            <td class="text-center">
+                                @if (item.IsWorkDay)
+                                {
+                                    <span class="status active">Work Day</span>
+                                }
+                                else
+                                {
+                                    <span class="status inactive">Day Off</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.IsWorkDay && item.WorkStartTime.HasValue)
+                                {
+                                    @item.WorkStartTime.Value.ToString(@"hh\:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (item.IsWorkDay && item.WorkEndTime.HasValue)
+                                {
+                                    @item.WorkEndTime.Value.ToString(@"hh\:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (!string.IsNullOrEmpty(duration))
+                                {
+                                    <span class="status info">@duration</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" 
+                                       class="btn btn-update btn-sm" title="Edit Schedule">
+                                       <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle"></i> No work schedule found.
+                </div>
+            }
         </div>
+
+
     </div>
 
-    <!-- Info Card -->
-    <div class="card mt-4 border-info">
-        <div class="card-body">
-            <h6 class="card-title"><i class="bi bi-info-circle"></i> Schedule Information</h6>
-            <ul class="mb-0">
-                <li><strong>Work Days:</strong> Days when employees are expected to work</li>
-                <li><strong>Off Days:</strong> Regular days off (typically weekends)</li>
-                <li><strong>Start/End Times:</strong> Standard working hours for each work day</li>
-                <li><strong>Duration:</strong> Total hours per work day</li>
-                <li><strong>Weekly Hours:</strong> Total working hours per week</li>
-            </ul>
-        </div>
-    </div>
 </div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/ListPageHeader.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
