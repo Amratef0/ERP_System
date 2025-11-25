@@ -55,33 +55,90 @@
 </div>
 
 <style>
-    .toast {
-        min-width: 350px;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-        animation: slideInRight 0.3s ease-out;
-        margin-bottom: 0.5rem;
-    }
+/* ==============================
+    Modern Toast Styles - Creative & Clean
+   ============================== */
 
-    @@keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
+.toast-container {
+    z-index: 11055 !important;
+    pointer-events: none;
+}
 
-    .toast-body {
-        font-weight: 500;
-        padding: 1rem;
-        font-size: 0.95rem;
-    }
+.toast {
+    pointer-events: auto;
+    min-width: 330px;
+    border-radius: 14px !important;
+    border: none !important;
+    overflow: hidden;
+    padding: 0 !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: slideToast 0.45s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12) !important;
+}
 
-    .toast .btn-close {
-        font-size: 0.8rem;
+/* === Gradient Backgrounds === */
+.toast.text-bg-success {
+    background: linear-gradient(135deg, #0f9d58, #34a853) !important;
+}
+
+.toast.text-bg-danger {
+    background: linear-gradient(135deg, #d93025, #ea4335) !important;
+}
+
+.toast.text-bg-warning {
+    background: linear-gradient(135deg, #fbbc04, #f9ab00) !important;
+    color: #4a3e02 !important;
+}
+
+.toast.text-bg-info {
+    background: linear-gradient(135deg, #4285f4, #2b7de9) !important;
+}
+
+/* === Content Style === */
+.toast-body {
+    padding: 1rem 1.2rem !important;
+    font-size: 0.95rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: #fff !important;
+}
+
+.toast-body i {
+    font-size: 1.2rem;
+}
+
+/* === Close Button === */
+.toast .btn-close,
+.toast .btn-close-white {
+    filter: invert(1);
+    opacity: 0.9;
+    margin-right: 8px;
+    transition: 0.2s;
+}
+
+.toast .btn-close:hover {
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+/* === Slide Animation === */
+@@keyframes slideToast {
+    0% {
+        transform: translateX(120%) scale(0.85);
+        opacity: 0;
     }
+    60% {
+        transform: translateX(-5%) scale(1.03);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(0) scale(1);
+    }
+}
+
 </style>
 
 <script>
@@ -96,4 +153,10 @@
             toast.show();
         });
     });
+    toastEl.addEventListener('hide.bs.toast', () => {
+    toastEl.style.transition = "0.3s";
+    toastEl.style.transform = "translateX(120%)";
+    toastEl.style.opacity = "0";
+});
+
 </script>
