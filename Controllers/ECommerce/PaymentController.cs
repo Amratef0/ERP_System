@@ -9,6 +9,8 @@ using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.ViewModels.ECommerce;
 using System.Linq;
 using ERP_System_Project.Models.Enums;
+using Microsoft.AspNetCore.Identity;
+using ERP_System_Project.Models.Authentication;
 
 namespace ERP_System_Project.Controllers.ECommerce
 {
@@ -16,16 +18,19 @@ namespace ERP_System_Project.Controllers.ECommerce
     {
         private readonly IOrderService _orderService;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly UserManager<ApplicationUser> _userManager;
+
 
         private readonly string _apiKey = "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRBM09UZ3hOaXdpYm1GdFpTSTZJakUzTlRnNU5qZzJOamd1TWpFNE5qUXhJbjAuRVk2TlE1dTB5NE03UXVFTGYzbFZGYnJ3bFJCeTdTODVaaUN6WS1KbVZYLW03WkgzX2tQZ19OUzYtVEI0MVlic25HSWZuR29uUVhIeFlIbHZtc2EwVHc=";
         private readonly int IntegrationId = 5310230;
         private readonly int IframeId = 963970;
         private readonly string HppEndpoint = "https://accept.paymob.com/api/acceptance/payment_keys";
 
-        public PaymentController(IOrderService orderService, IHttpClientFactory httpClientFactory)
+        public PaymentController(IOrderService orderService, IHttpClientFactory httpClientFactory, UserManager<ApplicationUser> userManager)
         {
             _orderService = orderService;
             _httpClientFactory = httpClientFactory;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -81,6 +86,9 @@ namespace ERP_System_Project.Controllers.ECommerce
             string authToken = await GetAuthTokenAsync();
             var client = _httpClientFactory.CreateClient();
 
+            var user = await _userManager.GetUserAsync(User); // هجيب بيانات المستخدم الحالي
+            if (user == null) return "";
+
             var payload = new
             {
                 auth_token = authToken,
@@ -90,18 +98,18 @@ namespace ERP_System_Project.Controllers.ECommerce
                 integration_id = IntegrationId,
                 billing_data = new
                 {
-                    first_name = User.Identity.Name.Split(" ")[0],
-                    last_name = User.Identity.Name.Split(" ").Last(),
-                    email = User.Identity.Name + "@example.com",
-                    phone_number = "01200000000",
+                    first_name = user.FirstName,
+                    last_name = user.LastName,
+                    email = user.Email,
+                    phone_number = user.PhoneNumber,
                     apartment = "NA",
                     floor = "NA",
                     street = "NA",
                     building = "NA",
-                    shipping_method = "NA",
+                    shipping_method = "VISA",
                     postal_code = "NA",
-                    city = "NA",
-                    country = "NA",
+                    city = "Cairo",
+                    country = "Egypt",
                     state = "NA"
                 }
             };
@@ -111,6 +119,7 @@ namespace ERP_System_Project.Controllers.ECommerce
             var json = JObject.Parse(await response.Content.ReadAsStringAsync());
             return json["token"]?.ToString() ?? "";
         }
+
 
         [HttpGet]
         public async Task<IActionResult> PaymentCallback(string token, string success)
@@ -127,7 +136,7 @@ namespace ERP_System_Project.Controllers.ECommerce
                 var cart = await _orderService.GetCartFromPayment(userId);
                 if (cart == null || cart.productsCart.Count == 0)
                 {
-                    TempData["ErrorMessage"] = "Cart not found after payment.";
+                    TempData["SuccessMessage"] = "Your payment was successful and your order is on its way!";
                     return RedirectToAction("Index", "Market");
                 }
 
