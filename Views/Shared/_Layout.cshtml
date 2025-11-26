@@ -48,8 +48,6 @@
 
      <!-- SALES / E-COMMERCE -->
      <button id="iconMarket" title="Market"><i class="fa fa-bag-shopping"></i></button>
-     <button id="iconOrders" title="Orders"><i class="fa fa-cart-shopping"></i></button>
-     <button id="iconPayments" title="Payments"><i class="fa fa-credit-card"></i></button>
      <hr>
 
      <!-- PROCUREMENT -->
@@ -60,32 +58,22 @@
 
      <!-- CRM -->
      <button id="iconCust" title="Customers"><i class="fa fa-users"></i></button>
-     <button id="iconLeads" title="Leads & Opportunities"><i class="fa fa-lightbulb"></i></button>
-     <button id="iconActiv" title="Activities"><i class="fa-solid fa-handshake"></i></button>
      <hr>
 
      <!-- SYSTEM -->
      <button id="iconUsers" title="User Management"><i class="fa fa-user-gear"></i></button>
      <button id="iconRoles" title="Roles"><i class="fa fa-shield-halved"></i></button>
      <button id="iconAssPer" title="Assign Permissions"><i class="fa fa-universal-access"></i></button>
-     <button id="iconAudit" title="Audit Log"><i class="fa fa-file-lines"></i></button>
      <hr>
 
      <!-- SETTINGS -->
      <button id="iconSettings" title="Settings"><i class="fa fa-gear"></i></button>
      <hr>
 
-     <!-- LEAVE -->
-     <button id="iconLeave" title="Leave"><i class="fa fa-calendar-days"></i></button>
-     <hr>
+   
 
-     <!-- MANAGER -->
-     <button id="iconManager" title="Leave Management"><i class="bi bi-calendar3"></i></button>
-     <hr />
-
-     <!-- PROFILE -->
-     <button id="iconProfile" title="Profile"><i class="fa fa-user-circle"></i></button>
-     <button id="iconLogout" title="Logout"><i class="fa fa-right-from-bracket"></i></button>
+    
+    
  </div>
 
   <div class="overlay" id="overlay" aria-hidden="true"></div>
@@ -100,12 +88,13 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Market" asp-action="Index"><h5 class="mb-0 me-auto">Optima</h5></a>
 
                 <div class="d-flex align-items-center">
-                   <div class="mood">
-                       <button id="toggle-theme" class="btn btn-link text-decoration-none position-relative">
-                          <i class="fa-regular fa-moon"></i>
-                          <i class="fa-regular fa-sun"></i>
-                       </div>
-                        </button>
+                <div class="mood">
+                    <button id="toggle-theme" class="btn btn-link text-decoration-none position-relative">
+                        <i class="fa-regular fa-moon"></i>
+                        <i class="fa-regular fa-sun"></i>
+                    </button>
+                </div>
+
 
 
             <!-- Profile Dropdown -->
@@ -199,7 +188,7 @@
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="Index">Attendance</a></li>
-                        </li>
+                        
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="AttendanceStatusCode" asp-action="Index">Attendance Status Codes</a>
@@ -393,7 +382,7 @@
                                     <i class="bi bi-person-circle"></i> My Portal
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="employeeDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="Profile"><i class="bi bi-person-circle"></i> My Profile</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ViewProfile"><i class="bi bi-person-circle"></i> My Profile</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="MyLeaveRequests"><i class="bi bi-list-ul"></i> My Leave Requests</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="RequestLeave"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
