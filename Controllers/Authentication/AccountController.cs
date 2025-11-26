@@ -448,7 +448,14 @@ namespace ERP_System_Project.Controllers.Authentication
                     ModelState.AddModelError("", error.Description);
                 return View(model);
             }
-
+            var customer = await _customerService.GetCustomerByIdAsync(user.CustomerId);
+            if (customer != null)
+            {
+                customer.FirstName = model.FirstName;
+                customer.LastName = model.LastName;
+                await _customerService.UpdateAsync(customer);
+            }
+            
             TempData["SuccessMessage"] = "Profile updated successfully!";
             return RedirectToAction("ViewProfile");
         }
