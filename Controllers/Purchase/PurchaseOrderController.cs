@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ERP_System_Project.Models;
 using ERP_System_Project.Models.Inventory;
+using static Azure.Core.HttpHeader;
 
 namespace ERP_System_Project.Controllers
 {
@@ -45,7 +46,7 @@ namespace ERP_System_Project.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int SupplierId, int ProductId, int WarehouseId, decimal Quantity, string PoNumber, DateTime OrderDate)
+        public async Task<IActionResult> Create(int SupplierId, int ProductId, int WarehouseId, decimal Quantity, string PoNumber, DateTime OrderDate, string Notes)
         {
             if (SupplierId == 0 || ProductId == 0 || WarehouseId == 0 || Quantity <= 0)
             {
@@ -94,7 +95,8 @@ namespace ERP_System_Project.Controllers
                 PoNumber = PoNumber,
                 OrderDate = OrderDate,
                 StatusId = 1,
-                PaymentTermsId = 1
+                PaymentTermsId = 1,
+                Notes = Notes
             };
 
             _context.PurchaseOrders.Add(purchaseOrder);
@@ -108,7 +110,7 @@ namespace ERP_System_Project.Controllers
                 Quantity = Quantity,
                 TransactionType = "Purchase",
                 TransactionDate = DateTime.Now,
-                Notes = $"Purchase Order: {PoNumber}"
+                Notes = Notes
             };
             _context.InventoryTransactions.Add(inventoryTransaction);
             await _context.SaveChangesAsync();
