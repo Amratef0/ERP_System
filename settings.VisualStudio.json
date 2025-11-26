@@ -1,0 +1,5 @@
+/* Visual Studio Settings File */
+{
+  "projectsAndSolutions.aspNetCore.general.autoRefreshOption": "none",
+  "debugging.hotReload.enableHotReload": false
+}
