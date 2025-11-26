@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels.ECommerce;
@@ -144,5 +144,10 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             _httpContextAccessor.HttpContext.Session
                 .SetString(SessionKey, json);
         }
+        public async Task ClearCartAsync()
+        {
+            _httpContextAccessor.HttpContext.Session.Remove(SessionKey);
+        }
+
     }
 }
