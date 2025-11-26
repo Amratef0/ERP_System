@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.Models.CRM;
+using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Enums;
@@ -9,7 +9,6 @@ using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.ECommerce;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using System.Linq.Expressions;
 
 namespace ERP_System_Project.Services.Implementation.ECommerce
 {
@@ -17,10 +16,10 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly string SessionKey = "MyCart";
-        private readonly Dictionary<string, CartViewModel> _tempCarts = new();
         private readonly ICartService _cartService;
 
+        private const string SessionKey = "MyCart";
+        private readonly Dictionary<string, CartViewModel> _tempCarts = new();
 
         public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, ICartService cartService)
         {
@@ -29,6 +28,10 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             _cartService = cartService;
         }
 
+
+        // ===========================
+        //     GET CUSTOMER ORDERS
+        // ===========================
         public async Task<PageSourcePagination<MyOrdersVM>> GetCustomerOrdersAsync(string userId, int pageNumber, int pageSize)
         {
             var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
@@ -60,15 +63,15 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                             DiscountPercentage = oi.DiscountPercentage,
                             UnitPrice = oi.UnitPrice,
                             Quantity = oi.Quantity,
-                            LineTotal = oi.LineTotal,
-                        } ).ToList()
+                            LineTotal = oi.LineTotal
+                        }).ToList()
                     },
                     pageNumber: pageNumber,
                     pageSize: pageSize,
-                    include: o => 
-                    o.Include(o => o.Items).ThenInclude(oi => oi.Product)
-                    .Include(o => o.OrderStatusCode)
-                    .Include(o => o.PaymentMethodType)
+                    include: o =>
+                        o.Include(o => o.Items).ThenInclude(oi => oi.Product)
+                         .Include(o => o.OrderStatusCode)
+                         .Include(o => o.PaymentMethodType)
                 );
 
             return customerOrders;
@@ -76,6 +79,9 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
 
 
+        // ===========================
+        //         MAKE ORDER
+        // ===========================
         public async Task MakeOrderAsync(string userId, CartViewModel cart, PaymentMethod paymentMethod)
         {
             if (cart == null || cart.productsCart.Count == 0)
@@ -85,7 +91,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             var productQuantities = cart.productsCart.Select(p => p.Quantity).ToList();
             var numberOfItems = productIDs.Count;
 
-            // جلب العميل، لو مش موجود اعمل واحد جديد
+            // جلب العميل أو إنشاء واحد
             var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
                 .Include(c => c.CustomerAddresses)
                 .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
@@ -98,11 +104,12 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     FirstName = "Default",
                     LastName = "Name"
                 };
+
                 await _unitOfWork.Customers.AddAsync(customer);
                 await _unitOfWork.CompleteAsync();
             }
 
-            // التأكد من وجود عنوان فواتير
+            // عنوان الفواتير
             var billingAddress = customer.CustomerAddresses.FirstOrDefault();
             if (billingAddress == null)
             {
@@ -113,12 +120,14 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     City = "NA",
                     Country = "NA"
                 };
+
                 customer.CustomerAddresses.Add(billingAddress);
                 await _unitOfWork.CompleteAsync();
             }
 
             var orderItems = new List<OrderItem>();
 
+            // تقليل الكمية + حساب الأسعار
             for (int i = 0; i < numberOfItems; i++)
             {
                 await _unitOfWork.Products.GetAllAsIQueryable()
@@ -132,7 +141,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     .Include(p => p.Offer)
                     .FirstOrDefault(p => p.Id == productIDs[i]);
 
-                if (product == null) continue; // لو المنتج مش موجود تجاهله
+                if (product == null) continue;
 
                 var discountAmount = product.Offer != null ?
                     (product.StandardPrice * productQuantities[i])
@@ -155,6 +164,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 });
             }
 
+            // إنشاء الأوردر
             var order = new Order
             {
                 CustomerId = customer.Id,
@@ -172,6 +182,25 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.CompleteAsync();
+
+
+
+            // 1) مسح الكارت من الـ Session
+            ClearCartSession();
+
+            // 2) مسح الكارت من CartService نفسه
+            await _cartService.ClearCartAsync();
+
+        }
+
+
+
+        // ===========================
+        //       CLEAR CART
+        // ===========================
+        private void ClearCartSession()
+        {
+            _httpContextAccessor.HttpContext.Session.Remove(SessionKey);
         }
 
 
@@ -181,30 +210,18 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             var customerAddress = await _unitOfWork.CustomerAddresses.GetAllAsIQueryable()
                 .FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
-            string addressFormat = $"{customerAddress.ApartmentNumber} {customerAddress.BuildingNumber} {customerAddress.Street} | {customerAddress.City} {customerAddress.Country}";
-            return addressFormat;
+            return $"{customerAddress.ApartmentNumber} {customerAddress.BuildingNumber} {customerAddress.Street} | {customerAddress.City} {customerAddress.Country}";
         }
-        private void ClearCartSession(string sessionKey)
-           => _httpContextAccessor.HttpContext.Session.Remove(SessionKey);
 
 
-        private Dictionary<int, int> GetDictionaryFromSession(string sessionKey)
-        {
-            var json = _httpContextAccessor
-                .HttpContext.Session.GetString(SessionKey);
 
-            if (string.IsNullOrEmpty(json))
-                return new Dictionary<int, int>();
-
-            return JsonConvert.DeserializeObject<Dictionary<int, int>>(json)
-                ?? new Dictionary<int, int>(); ;
-        }
         public async Task<CartVM> GetCartVMAsync(string userId)
         {
-            // جلب السلة الحالية من الـ Session
-            var cart = await _cartService.GetAllFromCart();
-            return cart;
+            return await _cartService.GetAllFromCart();
         }
+
+
+
         public async Task SaveCartForPayment(string userId, CartViewModel cart)
         {
             var session = _httpContextAccessor.HttpContext.Session;
@@ -215,12 +232,12 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
         {
             var session = _httpContextAccessor.HttpContext.Session;
             var json = session.GetString("PaymentCart_" + userId);
+
             if (string.IsNullOrEmpty(json))
                 return null;
 
             return JsonConvert.DeserializeObject<CartViewModel>(json);
         }
-
 
     }
 }
