@@ -3,126 +3,114 @@
     ViewData["Title"] = "Add New Product";
 }
 
-<form method="post" enctype="multipart/form-data">
-    @Html.AntiForgeryToken()
-    <div asp-validation-summary="All" class="text-danger"></div>
+<div class="form-page create-product">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add New Product</h3>
 
+        <form method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Add New Product</h2>
-            <hr />
-        </div>
-
-        <!-- Basic Information -->
-        <div class="row">
-            <div class="mb-3 col-md-6">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
+            <!-- Basic Information -->
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name"></label>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label asp-for="Description" class="form-label"></label>
-                <input asp-for="Description" class="form-control" />
+            <div class="form-group">
+                <input asp-for="Description" class="form-control" placeholder=" " />
+                <label asp-for="Description"></label>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-        </div>
 
-        <!-- Pricing -->
-        <div class="row">
-            <div class="mb-3 col-md-6">
-                <label asp-for="UnitCost" class="form-label"></label>
-                <input asp-for="UnitCost" type="number" step="0.01" class="form-control" />
+            <!-- Pricing -->
+            <div class="number-field-group">
+                <label asp-for="UnitCost" class="number-label">Unit Cost</label>
+                <input asp-for="UnitCost" type="number" step="0.01" class="number-input" />
                 <span asp-validation-for="UnitCost" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-6">
-                <label asp-for="StandardPrice" class="form-label"></label>
-                <input asp-for="StandardPrice" type="number" step="0.01" class="form-control" />
+            <div class="number-field-group">
+                <label asp-for="StandardPrice" class="number-label">Standard Price</label>
+                <input asp-for="StandardPrice" type="number" step="0.01" class="number-input" />
                 <span asp-validation-for="StandardPrice" class="text-danger"></span>
             </div>
-        </div>
 
-        <!-- Inventory & Selection -->
-        <div class="row">
-            <div class="mb-3 col-md-4">
-                <label asp-for="Quantity" class="form-label"></label>
-                <input asp-for="Quantity" type="number" class="form-control" />
+            <!-- Inventory & Selection -->
+            <div class="number-field-group">
+                <label asp-for="Quantity" class="number-label">Quantity</label>
+                <input asp-for="Quantity" type="number" class="number-input" />
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-4">
-                <label asp-for="BrandId" class="form-label"></label>
+
+            <div class="form-group">
                 <select asp-for="BrandId" asp-items="@ViewBag.Brands" class="form-select">
                     <option value="">-- Select Brand --</option>
                 </select>
+                <label asp-for="BrandId">Brand</label>
                 <span asp-validation-for="BrandId" class="text-danger"></span>
             </div>
 
-            <div class="mb-3 col-md-4">
-                <label asp-for="CategoryId" class="form-label"></label>
+            <div class="form-group">
                 <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-select">
                     <option value="">-- Select Category --</option>
                 </select>
+                <label asp-for="CategoryId">Category</label>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-        </div>
-
-        <!-- Product Attributes -->
-        <div class="mb-3">
-            <label class="form-label">Product Attributes</label>
-            <div id="attributes-container">
-                @if (Model?.AttributesVM != null)
-                {
-                    @for (int i = 0; i < Model.AttributesVM.Count; i++)
+           <!-- Product Attributes -->
+            <div class="form-group full-width lists-section">
+                <h4>Product Attributes</h4>
+                <div id="attributes-container" class="item-list">
+                    @if (Model?.AttributesVM != null)
                     {
-                        <div class="attribute-group row mb-2">
-                            <div class="col-md-5">
-                                <select asp-for="AttributesVM[i].AtrributeId" asp-items="@ViewBag.Attributes" class="form-select">
-                                    <option value="">-- Select Attribute --</option>
-                                </select>
+                        @for (int i = 0; i < Model.AttributesVM.Count; i++)
+                        {
+                            <div class="attribute-group row mb-2">
+                                <div class="col-md-5">
+                                    <select asp-for="AttributesVM[i].AtrributeId" asp-items="@ViewBag.Attributes" class="form-select">
+                                        <option value="">-- Select Attribute --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5">
+                                    <input asp-for="AttributesVM[i].Value" class="form-control" placeholder=" " />
+                                    <label asp-for="AttributesVM[i].Value">Value</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger remove-attribute">Remove</button>
+                                </div>
                             </div>
-                            <div class="col-md-5">
-                                <input asp-for="AttributesVM[i].Value" class="form-control" placeholder="Value" />
-                            </div>
-                            <div class="col-md-2">
-                                <button type="button" class="btn btn-danger remove-attribute">Remove</button>
-                            </div>
-                        </div>
+                        }
                     }
-                }
+                </div>
+                <button type="button" id="add-attribute" class="btn btn-secondary mt-2">Add Attribute</button>
             </div>
-            <button type="button" id="add-attribute" class="btn btn-secondary mt-2">Add Attribute</button>
-        </div>
 
-        <!-- Image Upload -->
-        <div class="mb-3">
-            <label asp-for="Image" class="form-label"></label>
-            <input asp-for="Image" type="file" class="form-control" accept="image/*" />
-            <span asp-validation-for="Image" class="text-danger"></span>
-        </div>
+            <!-- Image Upload -->
+            <div class="form-group full-width">
+                <input asp-for="Image" type="file" class="form-control" placeholder=" " />
+                <label asp-for="Image">Choose Image</label>
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
 
-        <br />
-        <hr />
 
-        <!-- Action Buttons -->
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success" style="width:150px">
-                <i class="fas fa-plus"></i> Add Product
-            </button>
-            <a asp-action="Index" asp-controller="Product" class="btn btn-secondary" style="width:160px">
-                <i class="fas fa-arrow-left"></i> Back to Products
-            </a>
-        </div>
+            <!-- Action Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Add</button>
+                <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
     <script>
-        // Dynamic attribute management
+        // Dynamic attribute management (keeping original logic)
         document.addEventListener('DOMContentLoaded', function() {
             const attributesContainer = document.getElementById('attributes-container');
             const addAttributeBtn = document.getElementById('add-attribute');
@@ -156,11 +144,9 @@
                 attributeIndex++;
             });
 
-            // Remove attribute
             attributesContainer.addEventListener('click', function(e) {
                 if (e.target.classList.contains('remove-attribute')) {
                     e.target.closest('.attribute-group').remove();
-                    // Reindex remaining attributes if needed
                     reindexAttributes();
                 }
             });

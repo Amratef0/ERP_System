@@ -1,34 +1,41 @@
 ﻿@model CustomerTypeVM
 @{
-    ViewData["Title"] = "New";
+    ViewData["Title"] = "Creae";
 }
 
-<form method="post" enctype="multipart/form-data">
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Add New Brand</h2>
-            <hr />
-        </div>
-        <div class="mb-3">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+<div class="form-page">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add New Customer Type</h3>
 
-        <div class="mb-3">
-            <label asp-for="Description"></label>
-            <input asp-for="Description" class="form-control" />
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+        <form method="post" enctype="multipart/form-data">
 
-        <br />
-        <hr />
-        <button type="submit" class="btn btn-success" style="width:150px">Add</button>
-        <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary" style="width:150px">
-            back to Brands
-        </a>
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name"></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="Description" class="form-control" placeholder=" " />
+                <label asp-for="Description"></label>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Add</button>
+
+                <a asp-action="Index"
+                   asp-controller="CustomerType"
+                   class="btn btn-secondary">
+                    Back
+                </a>
+            </div>
+
+        </form>
     </div>
-</form>
+</div>
+
+<link rel="stylesheet" href="~/css/CRUD/Create.css">
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,4 +1,4 @@
-﻿:root {
+:root {
     --icons-width: 70px;
     --sub-width: 220px;
     --topbar-h: 70px;
@@ -24,6 +24,41 @@
     --color-accent: #8e7cff;
     --color-hover-accent: #8e7cff36;
     --color-active-accent: #fff;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* Animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 

@@ -21,6 +21,7 @@
 }
 
 /* ====== Title ====== */
+.bp-header h2,
 .list-page h2,
 .suppliers-page h2 {
     text-align: center;
@@ -151,6 +152,18 @@
         gap: 10px;
     }
 
+
+
+/* Make DELETE button same size as action <a> buttons */
+.action-buttons form button.btn-delete {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* ====== Active / Inactive Status ====== */
 .list-page .status,
@@ -303,3 +316,356 @@
         }
 }
 
+
+
+.preview-grid-create {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    width: 100%;
+}
+
+.preview-item-create {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--color-bg-container);
+    border-radius: 6px;
+    padding: 10px 12px;
+    border: 1px solid #eee;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+    .preview-item-create:hover {
+        transform: scale(1.02);
+        box-shadow: 0 1px 6px var(--color-hover-accent);
+    }
+
+
+
+
+/* Container Box */
+.currency-breakdown-box {
+    background: var(--color-bg-body);
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Title */
+.currency-breakdown-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-align: center;
+    margin: 0;
+}
+
+/* Items Grid */
+.currency-breakdown-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+/* Individual Currency Card */
+.currency-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-container);
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+    .currency-item:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+/* Label */
+.currency-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--color-accent);
+    margin-bottom: 6px;
+}
+
+/* Value */
+.currency-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #28a745;
+    margin-bottom: 4px;
+}
+
+/* Subtext */
+.currency-subtext {
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+
+.dark .currency-item {
+    background: var(--color-bg-container);
+    border: 1px solid #444;
+}
+
+    .currency-item:hover {
+        box-shadow: 0 4px 10px rgba(142,124,255,0.25);
+    }
+
+.list-page td.text-end {
+    white-space: nowrap;
+}
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    display: block;
+    white-space: nowrap; /* 🚨 يمنع نزول الأعمدة تحت بعض */
+}
+
+    .table-responsive table {
+        width: 100%;
+        min-width: 1400px; /* ✨ اجعلي الجدول كبير بما يكفي ليحتاج سكرول */
+    }
+
+.list-page thead th {
+    white-space: nowrap; /* يمنع النص من النزول لسطور */
+}
+
+
+
+/* === GRID === */
+.bp-summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* === CARD BASE === */
+.bp-card {
+    background: var(--color-bg-content);
+    border-radius: 14px;
+    box-shadow: 0 3px 8px #00000010;
+    border: 1px solid #00000010;
+    overflow: hidden;
+    color: var(--color-text-main);
+}
+
+/* === CARD HEADER === */
+.bp-card-header {
+    background: var(--color-bg-container);
+    padding: 0.9rem 1.2rem;
+    border-bottom: 1px solid #00000015;
+}
+
+.dark .bp-card-header {
+    border-bottom-color: #ffffff15;
+}
+
+/* === CARD BODY === */
+.bp-card-body {
+    padding: 1rem 1.2rem;
+    font-size: 0.95rem;
+}
+
+/* === INFO CARD (Accent) === */
+.bp-card-info .bp-card-header {
+    background: var(--color-accent);
+    color: var(--color-active-accent);
+}
+
+/* === ALERTS === */
+.bp-alert-warning,
+.bp-alert-info {
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.bp-alert-warning {
+    background: #ffcf3f26;
+    border: 1px solid #ffcf3f55;
+    color: #836700;
+}
+
+.bp-alert-info {
+    background: #3f9cff26;
+    border: 1px solid #3f9cff55;
+    color: #004a99;
+}
+
+.dark .bp-alert-info,
+.dark .bp-alert-warning {
+    border-color: #ffffff33;
+}
+
+/* === TABLE FOOTER (DARK + LIGHT SUPPORT) === */
+table tfoot {
+    background: var(--color-bg-container) !important;
+    color: var(--color-text-main) !important;
+    border-top: 2px solid var(--color-accent) !important;
+}
+
+    table tfoot td {
+        font-weight: 600;
+        color: var(--color-text-main) !important;
+    }
+
+/* === COLOR FIXES FOR DARK MODE INSIDE FOOTER === */
+.dark table tfoot td.text-success {
+    color: #4cd964 !important;
+}
+
+.dark table tfoot td.text-danger {
+    color: #ff6b6b !important;
+}
+
+.dark table tfoot td.text-primary {
+    color: var(--color-accent) !important;
+}
+
+/* === TABLE SCROLL SUPPORT === */
+.table-responsive {
+    overflow-x: auto;
+    background: var(--color-bg-content);
+    border-radius: 10px;
+    border: 1px solid #00000015;
+}
+
+    /* === SCROLLBAR STYLING === */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: var(--color-bg-container);
+        border-radius: 10px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: var(--color-text-muted);
+        border-radius: 10px;
+    }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: var(--color-accent);
+        }
+
+/* === DARK MODE SCROLLBAR FIX === */
+.dark .table-responsive::-webkit-scrollbar-track {
+    background: #111a2b;
+}
+
+.dark .table-responsive::-webkit-scrollbar-thumb {
+    background: #5f6b7a;
+}
+
+    .dark .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent);
+    }
+.card-section-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--color-text-main) !important;
+}
+
+.form-label {
+    transition: color 0.2s ease, font-weight 0.2s ease;
+    color: var(--color-text-main);
+}
+
+    .form-label.highlighted {
+        color: var(--color-accent);
+        font-weight: 600;
+    }
+
+/* Highlight label when parent div contains focus */
+.bp-search-form .col-md-2:focus-within label {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+.bp-search-card {
+    background-color: var(--color-bg-body);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ====== Calendar Card Styling ====== */
+.calendar-card {
+    font-family: Arial, sans-serif;
+    background: var(--color-bg-content, #fff);
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    padding: 15px;
+    width: 95%;
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    box-sizing: border-box;
+}
+
+.calendar-card-header {
+    background: var(--color-accent, #635BFF);
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.calendar-card-body {
+    padding: 15px;
+}
+
+.selected-date-box {
+    margin-top: 15px;
+    padding: 12px;
+    background: var(--color-bg-container, #f8f8f8);
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--color-accent, #635BFF);
+    transition: all 0.3s ease;
+}
+
+    .selected-date-box:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    }
+
+/* ====== Responsive ====== */
+@media (max-width: 768px) {
+    .calendar-card {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .calendar-card-header {
+        font-size: 16px;
+    }
+}

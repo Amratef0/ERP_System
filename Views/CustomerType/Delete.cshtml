@@ -1,30 +1,46 @@
 ﻿@model CustomerTypeVM
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Delete Customer Type";
 }
 
-<form method="post" asp-action="Delete">
-    <input asp-for="Id" hidden />
-    <div class="border p-3 mt-4">
-        <div class="row pb-2">
-            <h2 class="text-primary">Delete Brand</h2>
-            <hr />
-        </div>
-        <div class="mb-3">
-            <label asp-for="Name"></label>
-            <input asp-for="Name" disabled class="form-control" />
-        </div>
-        <div class="mb-3">
-            <label asp-for="Description"></label>
-            <input asp-for="Description" disabled class="form-control" />
-        </div>
-        
-        <br />
-        <hr />
-        <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
-        <a asp-action="Index" asp-controller="Brand" class="btn btn-secondary" style="width:150px">
-            back to Brands
-        </a>
-    </div>
-</form>
+<link rel="stylesheet" href="~/css/CRUD/Delete.css" />
 
+<div class="delete-wrapper">
+
+    <h2 class="title">Delete Customer Type</h2>
+
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+    }
+
+    <div class="details-section">
+        <h4 class="record-name">@Model.Name</h4>
+
+        <dl class="details-grid">
+
+            <div class="detail-item">
+                <dt>Name</dt>
+                <dd>@Model.Name</dd>
+            </div>
+
+            <div class="detail-item">
+                <dt>Description</dt>
+                <dd>@Model.Description</dd>
+            </div>
+
+        </dl>
+    </div>
+
+    <form asp-action="Delete" asp-controller="CustomerType" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="viewActions">
+            <div class="left-buttons">
+                <button type="submit" class="btn btn-delete">Delete</button>
+                <a asp-action="Index" asp-controller="CustomerType" class="btn btn-back">Cancel</a>
+            </div>
+        </div>
+    </form>
+
+</div>

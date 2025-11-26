@@ -7,118 +7,120 @@
 <!-- FullCalendar CSS -->
 <link href='https://cdn.jsdelivr.net/npm/fullcalendar@@6.1.10/index.global.min.css' rel='stylesheet' />
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-calendar-event"></i> Public Holidays</h2>
-                    <p class="text-muted">Manage public holidays and non-working days</p>
-                </div>
-                <div>
-                    <a asp-action="Create" class="btn btn-primary btn-lg">
-                        <i class="bi bi-plus-circle"></i> Add Public Holiday
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
+<div class="page-section">
+
+    <!-- Header -->
+    <div class="bp-header">
+        <h1><i class="bi bi-calendar-event"></i> Public Holidays</h1>
+        <p>Manage public holidays and non-working days</p>
     </div>
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-calendar-event"></i> Total Holidays</h6>
-                    <h2 class="mb-0">@Model.PublicHolidays.Count()</h2>
-                </div>
+    <div class = " list-page" >
+        <!-- Floating Add Button -->
+        <a href="javascript:void(0)" 
+           onclick="openModalWithAjax('@Url.Action("Create", "PublicHoliday")', 'Add Public Holiday')" 
+           class="floating-btn" 
+           title="Add Public Holiday">
+           <i class="fa-solid fa-plus"></i>
+        </a>
+
+    </div>
+    <!-- Stats Row -->
+    <div class="bp-stats-row">
+        <div class="bp-stat-card stat-1">
+            <div>
+                <h3>@Model.PublicHolidays.Count()</h3>
+                <p>Total Holidays</p>
             </div>
+            <i class="bi bi-calendar-event"></i>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-calendar-check"></i> This Year</h6>
-                    <h2 class="mb-0">@Model.PublicHolidays.Count(h => h.Date.Year == DateTime.Now.Year)</h2>
-                </div>
+
+        <div class="bp-stat-card stat-2">
+            <div>
+                <h3>@Model.PublicHolidays.Count(h => h.Date.Year == DateTime.Now.Year)</h3>
+                <p>This Year</p>
             </div>
+            <i class="bi bi-calendar-check"></i>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-globe"></i> Countries</h6>
-                    <h2 class="mb-0">@Model.Countries.Count()</h2>
-                </div>
+
+        <div class="bp-stat-card stat-3">
+            <div>
+                <h3>@Model.Countries.Count()</h3>
+                <p>Countries</p>
             </div>
+            <i class="bi bi-globe"></i>
         </div>
     </div>
-
-    <!-- Filters and Search -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters & Search</h5>
-        </div>
-        <div class="card-body">
-            <form id="searchForm">
+    <br>
+    <!-- Search & Filter Card -->
+    <div class="bp-search-card shadow-sm border-0 mb-4">
+        <div class="card-body p-3">
+            <form id="searchForm" class="bp-search-form row g-3 align-items-end">
                 @Html.AntiForgeryToken()
-                <div class="row">
-                    <div class="col-md-5">
-                        <label for="countryFilter" class="form-label">
-                            <i class="bi bi-globe"></i> Filter by Country
-                        </label>
-                        <select id="countryFilter" class="form-select form-select-lg" 
-                                asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
-                            <option value="">All Countries</option>
-                        </select>
-                    </div>
-                    <div class="col-md-5">
-                        <label class="form-label">
-                            <i class="bi bi-search"></i> Search Holiday
-                        </label>
-                        <input type="text" id="searchTerm" class="form-control form-control-lg" 
-                               placeholder="Search by holiday name..." />
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label d-block">&nbsp;</label>
-                        <button type="button" id="clearBtn" class="btn btn-secondary btn-lg w-100">
-                            <i class="bi bi-x-circle"></i> Clear
-                        </button>
+
+                <!-- Country Filter -->
+                <div class="col-md-3">
+                    <label class="form-label small text-muted">
+                        <i class="bi bi-globe"></i> Filter by Country
+                    </label>
+                    <select id="countryFilter" class="form-select bp-filter-select" 
+                            asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
+                        <option value="">All Countries</option>
+                    </select>
+                </div>
+
+                <!-- Search -->
+                <div class="col-md-5">
+                    <label class="form-label small text-muted">
+                        <i class="bi bi-search"></i> Search Holiday
+                    </label>
+                    <div class="bp-search-group">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="searchTerm" placeholder="Search by holiday name..." />
                     </div>
                 </div>
+
+                <!-- Clear Button -->
+                <div class="col-md-2">
+                    <button type="button" id="clearBtn" class="btn bp-btn-filter w-100">
+                        <i class="bi bi-x-circle me-2"></i> Clear
+                    </button>
+                </div>
+
             </form>
         </div>
     </div>
 
-    <!-- Calendar View -->
-    <div class="card">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="bi bi-calendar3"></i> Holiday Calendar</h5>
-        </div>
-        <div class="card-body">
-            <div id="calendar"></div>
-        </div>
-        <div class="card-footer">
-            <div class="d-flex justify-content-center gap-4 flex-wrap">
-                <div class="legend-item">
-                    <span class="legend-box bg-danger"></span>
-                    <span>National Holidays</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-box bg-primary"></span>
-                    <span>Religious Holidays</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-box bg-success"></span>
-                    <span>Cultural Events</span>
-                </div>
-                <div class="legend-item">
-                    <span class="legend-box bg-warning"></span>
-                    <span>Other Holidays</span>
-                </div>
+ <!-- Calendar View -->
+<div class="card bp-calendar-card shadow-sm border-0">
+    <div class="card-header bp-calendar-header">
+        <h4 class="mb-0"><i class="bi bi-calendar3"></i> Holiday Calendar</h4>
+    </div>
+    <div class="card-body bp-calendar-body">
+        <div id="calendar"></div>
+    </div>
+    <div class="card-footer bp-calendar-footer">
+        <div class="d-flex justify-content-center gap-4 flex-wrap">
+            <div class="legend-item">
+                <span class="legend-box bg-danger"></span>
+                <span>National Holidays</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-box bg-primary"></span>
+                <span>Religious Holidays</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-box bg-success"></span>
+                <span>Cultural Events</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-box bg-warning"></span>
+                <span>Other Holidays</span>
             </div>
         </div>
     </div>
+</div>
+
 
     @if (!Model.PublicHolidays.Any())
     {
@@ -127,7 +129,10 @@
         </div>
     }
 </div>
-
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/Calendar.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+@await Html.PartialAsync("_GeneralModal")
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     
@@ -272,90 +277,4 @@
         });
     </script>
 
-    <style>
-        /* Calendar styling */
-        #calendar {
-            max-width: 100%;
-            margin: 0 auto;
-            font-size: 0.95rem;
-        }
-
-        /* Blue navigation buttons */
-        .fc .fc-button {
-            background-color: #0d6efd !important;
-            border-color: #0d6efd !important;
-            color: white !important;
-        }
-
-        .fc .fc-button:hover {
-            background-color: #0b5ed7 !important;
-            border-color: #0a58ca !important;
-        }
-
-        .fc .fc-button:disabled {
-            background-color: #6c757d !important;
-            border-color: #6c757d !important;
-            opacity: 0.65;
-        }
-
-        .fc .fc-button-primary:not(:disabled):active,
-        .fc .fc-button-primary:not(:disabled).fc-button-active {
-            background-color: #0a58ca !important;
-            border-color: #0a53be !important;
-        }
-
-        .fc-event {
-            cursor: pointer;
-            border-radius: 3px;
-            padding: 2px 4px;
-            font-weight: 600;
-            border: 2px solid;
-        }
-
-        .fc-event:hover {
-            opacity: 0.85;
-            transform: scale(1.05);
-            transition: all 0.2s ease;
-        }
-
-        .fc .fc-daygrid-day.fc-day-today {
-            background-color: #fff3cd !important;
-        }
-
-        .fc-daygrid-day-frame {
-            min-height: 100px;
-        }
-
-        /* Legend styling */
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-
-        .legend-box {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            display: inline-block;
-            border: 2px solid #dee2e6;
-        }
-
-        /* Responsive */
-        @@media (max-width: 768px) {
-            .fc .fc-toolbar {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .fc .fc-toolbar-chunk {
-                margin: 5px 0;
-            }
-
-            .fc .fc-toolbar-title {
-                font-size: 1.2em !important;
-            }
-        }
-    </style>
 }

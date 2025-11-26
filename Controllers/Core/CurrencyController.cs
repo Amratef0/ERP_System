@@ -35,7 +35,7 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public ActionResult Create()
         {
-            return View("Create");
+            return PartialView("Create");
         }
 
         [HttpPost]
@@ -136,7 +136,7 @@ namespace ERP_System_Project.Controllers.Core
                     TempData["ErrorMessage"] = "Currency not found!";
                     return NotFound();
                 }
-                return View("Edit", currency);
+                return PartialView("Edit", currency);
             }
             catch (Exception ex)
             {

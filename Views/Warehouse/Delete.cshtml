@@ -1,4 +1,4 @@
-﻿@model ERP_System_Project.Models.Inventory.Warehouse
+@model ERP_System_Project.Models.Inventory.Warehouse
 @{
     ViewData["Title"] = "Delete Warehouse";
 }
@@ -23,7 +23,7 @@
         </dl>
     </div>
 
-    <form asp-action="DeleteConfirmed" method="post">
+    <form asp-action="Delete" asp-controller="Warehouse" method="post">
         <input type="hidden" asp-for="WarehouseId" />
         <div class="viewActions">
             <div class="left-buttons">
@@ -32,4 +32,5 @@
             </div>
         </div>
     </form>
+
 </div>

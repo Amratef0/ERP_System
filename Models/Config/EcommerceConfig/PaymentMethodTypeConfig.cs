@@ -16,6 +16,13 @@ namespace ERP_System_Project.Models.Config.EcommerceConfig
                     Id = 1,
                     Type = "Cash",
                     IsActive = true,
+                },
+                new PaymentMethodType
+                {
+                    Id = 2,
+                    Type = "Visa",
+                    Provider = "Paymob",
+                    IsActive = true,
                 }
                 );
         }

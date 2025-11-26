@@ -1,33 +1,83 @@
-﻿@model ERP_System_Project.Models.PurchaseOrder
+@model ERP_System_Project.Models.PurchaseOrder
 
-<h2>Purchase Order Details</h2>
+@{
+    ViewData["Title"] = "Purchase Order Details";
+}
 
-<div class="card p-3">
-    <dl class="row">
-        <dt class="col-sm-2">Po Number</dt>
-        <dd class="col-sm-10">@Model.PoNumber</dd>
+<link rel="stylesheet" href="~/css/CRUD/Details.css" />
 
-        <dt class="col-sm-2">Order Date</dt>
-        <dd class="col-sm-10">@Model.OrderDate.ToShortDateString()</dd>
+<div class="details-page">
 
-        <dt class="col-sm-2">Supplier</dt>
-        <dd class="col-sm-10">@Model.Supplier?.SupplierName</dd>
+    <!-- Title -->
+    <h2 class="title">Purchase Order Details</h2>
 
-        <dt class="col-sm-2">Product</dt>
-        <dd class="col-sm-10">@Model.WarehouseProduct?.Product?.Name</dd>
+    <!-- PO Number + Order Date -->
+    <h3 class="supplier-name">@Model.PoNumber (@Model.OrderDate.ToShortDateString())</h3>
 
-        <dt class="col-sm-2">Warehouse</dt>
-        <dd class="col-sm-10">@Model.WarehouseProduct?.Warehouse?.Name</dd>
+    <!-- MAIN DETAILS GRID -->
+    <dl class="details-grid">
 
-        <dt class="col-sm-2">Status</dt>
-        <dd class="col-sm-10">@Model.StatusId</dd>
+        <!-- PO Number -->
+        <div class="detail-item">
+            <dt>PO Number</dt>
+            <dd>@Model.PoNumber</dd>
+        </div>
 
-        <dt class="col-sm-2">Payment Terms</dt>
-        <dd class="col-sm-10">@Model.PaymentTermsId</dd>
+        <!-- Order Date -->
+        <div class="detail-item">
+            <dt>Order Date</dt>
+            <dd>@Model.OrderDate.ToShortDateString()</dd>
+        </div>
 
-        <dt class="col-sm-2">Notes</dt>
-        <dd class="col-sm-10">@Model.Notes</dd>
+        <!-- Supplier -->
+        <div class="detail-item">
+            <dt>Supplier</dt>
+            <dd>@Model.Supplier?.SupplierName</dd>
+        </div>
+
+        <!-- Product -->
+        <div class="detail-item">
+            <dt>Product</dt>
+            <dd>@Model.WarehouseProduct?.Product?.Name</dd>
+        </div>
+
+        <!-- Warehouse -->
+        <div class="detail-item">
+            <dt>Warehouse</dt>
+            <dd>@Model.WarehouseProduct?.Warehouse?.Name</dd>
+        </div>
+
+        <!-- Notes -->
+        <div class="detail-item">
+            <dt>Notes</dt>
+            <dd>@Model.Notes</dd>
+        </div>
+
     </dl>
 
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
+    <!-- INFO LIST -->
+    <div class="lists-section" style="margin-top:22px;">
+        <h4>Purchase Order Information</h4>
+        <ul class="item-list">
+            <li><strong>PO Number:</strong> Unique purchase order number</li>
+            <li><strong>Order Date:</strong> Date of the order</li>
+            <li><strong>Supplier:</strong> Supplier for this order</li>
+            <li><strong>Product:</strong> Selected product</li>
+            <li><strong>Warehouse:</strong> Storage location</li>
+            <li><strong>Status:</strong> Status identifier</li>
+            <li><strong>Payment Terms:</strong> Payment terms identifier</li>
+            <li><strong>Notes:</strong> Any additional information</li>
+        </ul>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="viewActions">
+        <div class="left-buttons">
+            <a asp-action="Edit" asp-route-id="@Model.PurchaseOrderId" class="btn btn-edit">Edit</a>
+        </div>
+        <div class="right-button">
+            <a asp-action="Index" class="btn btn-back">← Back</a>
+        </div>
+    </div>
+
 </div>

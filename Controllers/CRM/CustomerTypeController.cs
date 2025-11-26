@@ -39,7 +39,7 @@ namespace ERP_System_Project.Controllers.CRM
         }
         public IActionResult Create()
         {
-            return View();
+            return PartialView();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -79,7 +79,7 @@ namespace ERP_System_Project.Controllers.CRM
 
             var mappedType = _mapper.Map<CustomerType, CustomerTypeVM>(customerType);
 
-            return View(mappedType);
+            return PartialView(mappedType);
         }
         public async Task<IActionResult> Edit(int id)
         {
@@ -90,7 +90,7 @@ namespace ERP_System_Project.Controllers.CRM
             var vm = _mapper.Map<CustomerTypeVM>(customerType);
             vm.CustomerCount = await _uow.Customers.Count(c => c.CustomerTypeId == id);
 
-            return View(vm);
+            return PartialView(vm);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -135,7 +135,7 @@ namespace ERP_System_Project.Controllers.CRM
             if (customerType == null) return NotFound();
             var vm = _mapper.Map<CustomerTypeVM>(customerType);
             vm.CustomerCount = await _uow.Customers.Count(c => c.CustomerTypeId == id);
-            return View(vm);
+            return PartialView(vm);
 
         }
 

@@ -5,185 +5,132 @@
     string currentSearch = Context.Request.Query["searchValue"];
 }
 
-<div class="container-fluid py-4">
+<div class="page-section">
 
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h2 mb-1 text-primary fw-bold">All Customers</h1>
-            <p class="text-muted mb-0">Manage and view your registered customers</p>
-        </div>
-
-        <a asp-controller="Customer" asp-action="Create" class="btn btn-success">
-            <i class="bi bi-person-plus me-1"></i> Add New Customer
-        </a>
+    <!-- Header -->
+    <div class="bp-header">
+        <h1>All Customers</h1>
+        <p>Manage and view your registered customers</p>
     </div>
 
     <!-- Search Card -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body">
-            <form asp-action="Index" method="get" class="row g-3 align-items-end">
-                <div class="col-md-10">
-                    <label for="searchValue" class="form-label small text-muted">Search by Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0">
-                            <i class="bi bi-search text-muted"></i>
-                        </span>
-                        <input type="text" id="searchValue" name="searchValue"
-                               value="@currentSearch"
-                               class="form-control border-start-0"
-                               placeholder="Enter name..." />
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-funnel me-1"></i>Search
-                    </button>
-                </div>
-            </form>
+    <div class="bp-search-card top-search mt-4">
+        <form id="searchForm" class="bp-search-form">
+            @Html.AntiForgeryToken()
+            <div class="bp-search-group">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchTerm" name="searchValue" value="@currentSearch" placeholder="Search customers by name..." />
+            </div>
+            <button type="button" id="searchBtn">Search</button>
+        </form>
+    </div>
+
+    <!-- Stats Row (Optional) -->
+    <div class="bp-stats-row">
+        <div class="bp-stat-card stat-1">
+            <div>
+                <h3>@Model.Data.Count()</h3>
+                <p>Total Customers</p>
+            </div>
+            <i class="bi bi-people"></i>
+        </div>
+        <div class="bp-stat-card stat-2">
+            <div>
+                <h3>@Model.Data.Count(c => c.IsActive)</h3>
+                <p>Active</p>
+            </div>
+            <i class="bi bi-check-circle"></i>
+        </div>
+        <div class="bp-stat-card stat-3">
+            <div>
+                <h3>@Model.Data.Count(c => !c.IsActive)</h3>
+                <p>Inactive</p>
+            </div>
+            <i class="bi bi-x-circle"></i>
         </div>
     </div>
 
-    <!-- Table or Grid -->
-    @if (Model.Data.Any())
-    {
-        <div class="card shadow-sm border-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+    <!-- Customers Table -->
+    <div class="list-page customers-page mt-4">
+        <div class="card">
+            <h2>Customers List</h2>
+
+            <!-- Floating Add Button -->
+            <a href="javascript:void(0);" 
+               onclick="openModalWithAjax('@Url.Action("Create", "Customer")', 'Add New Customer')" 
+               class="floating-btn" 
+               title="Add New Customer">
+               <i class="fa-solid fa-plus"></i>
+            </a>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="customers">
+                    @foreach (var c in Model.Data)
+                    {
                         <tr>
-                            <th>ID</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Status</th>
-                            <th class="text-center">Actions</th>
+                            <td data-label="Full Name">@c.FullName</td>
+                            <td data-label="Email">@c.Email</td>
+                            <td data-label="Phone">@c.PhoneNumber</td>
+                            <td data-label="Status">
+                                @if (c.IsActive)
+                                {
+                                    <span class="status active">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="status inactive">Inactive</span>
+                                }
+                            </td>
+                            <td data-label="Actions">
+                                <div class="action-buttons">
+                                    <!-- View (AJAX) -->
+                                    <a href="javascript:void(0)" 
+                                       onclick="openModalWithAjax('@Url.Action("Details", "Customer", new { id = c.Id })', 'View Customer')"
+                                       class="btn btn-view btn-sm" title="View Customer">
+                                       <i class="fa-solid fa-eye"></i>
+                                    </a>
+
+                                    <!-- Edit (AJAX) -->
+                                    <a href="javascript:void(0)" 
+                                       onclick="openModalWithAjax('@Url.Action("Edit", "Customer", new { id = c.Id })', 'Edit Customer')"
+                                       class="btn btn-update btn-sm" title="Edit Customer">
+                                       <i class="fa-solid fa-pen"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0)"
+                                       onclick="openModalWithAjax('@Url.Action("Delete", "Customer", new { id = c.Id })', 'Delete Customer')"
+                                       class="btn btn-delete btn-sm"
+                                       title="Delete Customer">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var c in Model.Data)
-                        {
-                            <tr>
-                                <td>@c.Id</td>
-                                <td>@c.FullName</td>
-                                <td>@c.Email</td>
-                                <td>@c.PhoneNumber</td>
-                                <td>
-                                    @if (c.IsActive)
-                                    {
-                                        <span class="badge bg-success-subtle text-success">
-                                            <i class="bi bi-check-circle me-1"></i> Active
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger-subtle text-danger">
-                                            <i class="bi bi-x-circle me-1"></i> Inactive
-                                        </span>
-                                    }
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a asp-controller="Customer" asp-action="Details" asp-route-id="@c.Id"
-                                           class="btn btn-outline-secondary btn-sm">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a asp-controller="Customer" asp-action="Edit" asp-route-id="@c.Id"
-                                           class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <a asp-controller="Customer" asp-action="Delete" asp-route-id="@c.Id"
-                                           class="btn btn-outline-danger btn-sm"
-                                           onclick="return confirm('Are you sure you want to delete this customer?')">
-                                            <i class="bi bi-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    }
+                </tbody>
+            </table>
 
-        <!-- Pagination -->
-        @if (Model.TotalPages > 1)
-        {
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <div class="text-muted small">
-                    Showing page @Model.PageNumber of @Model.TotalPages
+            @if (!Model.Data.Any())
+            {
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle"></i> No customers found. Click "Add New Customer" to get started.
                 </div>
-                <nav aria-label="Customer pagination">
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item @(Model.PageNumber > 1 ? "" : "disabled")">
-                            <a class="page-link"
-                               asp-route-pageNumber="@(Model.PageNumber - 1)"
-                               asp-route-searchValue="@currentSearch">
-                                <i class="bi bi-chevron-left"></i> Previous
-                            </a>
-                        </li>
-
-                        @for (int i = 1; i <= Model.TotalPages; i++)
-                        {
-                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                                <a class="page-link"
-                                   asp-route-pageNumber="@i"
-                                   asp-route-searchValue="@currentSearch">@i</a>
-                            </li>
-                        }
-
-                        <li class="page-item @(Model.PageNumber < Model.TotalPages ? "" : "disabled")">
-                            <a class="page-link"
-                               asp-route-pageNumber="@(Model.PageNumber + 1)"
-                               asp-route-searchValue="@currentSearch">
-                                Next <i class="bi bi-chevron-right"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="text-center py-5 text-muted">
-            <i class="bi bi-people display-4 d-block mb-3"></i>
-            <h5>No customers found</h5>
-            <p class="mb-0">Try adjusting your search filters or add a new customer.</p>
+            }
         </div>
-    }
+    </div>
 </div>
 
-<style>
-    .card {
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-
-        .card:hover {
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-    .btn {
-        border-radius: 6px;
-        transition: all 0.2s ease;
-    }
-
-        .btn:hover {
-            transform: translateY(-1px);
-        }
-
-    .badge {
-        font-weight: 500;
-    }
-
-    .page-item.active .page-link {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-    }
-
-    .form-control:focus {
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
-        border-color: #86b7fe;
-    }
-</style>
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+<link rel="stylesheet" href="~/css/pagination.css" />
+@await Html.PartialAsync("_GeneralModal")

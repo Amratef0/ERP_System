@@ -1,8 +1,9 @@
-﻿using ERP_System_Project.Models.Authentication;
+using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Services.Implementation.Inventory;
 using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.Services.Interfaces.Inventory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -74,7 +75,6 @@ namespace ERP_System_Project.Controllers.ECommerce
             if (product != null) return View(product);
             return NotFound();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddToCart(int productId, int quantity)

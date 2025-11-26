@@ -4,96 +4,43 @@
     ViewData["Title"] = "Add Country";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-plus-circle"></i> Add New Country</h2>
-                    <p class="text-muted">Create a new country in the system</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
-            </div>
-            <hr />
-        </div>
-    </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
-    <!-- Add Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-globe"></i> Country Information</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Create" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Country Name Field -->
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label">
-                                <i class="bi bi-globe"></i> Country Name <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Name" class="form-control form-control-lg" placeholder="e.g., United States" autofocus />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                            <div class="form-text">Full official name of the country</div>
-                        </div>
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Add Country</h3>
 
-                        <!-- Country Code Field -->
-                        <div class="mb-3">
-                            <label asp-for="Code" class="form-label">
-                                <i class="bi bi-hash"></i> Country Code <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Code" class="form-control form-control-lg" placeholder="e.g., US" maxlength="3" style="text-transform: uppercase;" />
-                            <span asp-validation-for="Code" class="text-danger"></span>
-                            <div class="form-text">ISO 3166-1 alpha-2 or alpha-3 code (e.g., US, USA, GB, GBR)</div>
-                        </div>
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
 
-                        <!-- Phone Code Field -->
-                        <div class="mb-4">
-                            <label asp-for="PhoneCode" class="form-label">
-                                <i class="bi bi-telephone"></i> Phone Code
-                            </label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text">+</span>
-                                <input asp-for="PhoneCode" class="form-control" placeholder="1" />
-                            </div>
-                            <span asp-validation-for="PhoneCode" class="text-danger"></span>
-                            <div class="form-text">International dialing code (e.g., 1 for USA, 44 for UK, 20 for Egypt)</div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle"></i> Create Country
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Country Name -->
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name">Country Name <span class="text-danger">*</span></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Guidelines</h6>
-                    <ul class="mb-0 small">
-                        <li>Country code should follow ISO 3166-1 standards</li>
-                        <li>Country code must be unique in the system</li>
-                        <li>Phone code is used for international calling and validation</li>
-                        <li>Use official country names as recognized internationally</li>
-                    </ul>
-                </div>
+            <!-- Country Code -->
+            <div class="form-group">
+                <input asp-for="Code" class="form-control" placeholder=" " maxlength="3" style="text-transform: uppercase;" />
+                <label asp-for="Code">Country Code <span class="text-danger">*</span></label>
+                <span asp-validation-for="Code" class="text-danger"></span>
             </div>
-        </div>
+
+            <!-- Phone Code -->
+            <div class="number-field-group">
+                <label for="PhoneCode" class="number-label">Phone Code</label>
+                <input asp-for="PhoneCode" type="number" class="number-input" />
+                <span asp-validation-for="PhoneCode" class="text-danger"></span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+
+        </form>
     </div>
 </div>
 
@@ -103,6 +50,15 @@
         // Auto-uppercase country code
         document.querySelector('input[name="Code"]')?.addEventListener('input', function(e) {
             this.value = this.value.toUpperCase();
+        });
+
+        // Number field focus effect like Job Title
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            if (input.value) input.classList.add('has-value');
+            input.addEventListener('input', () => {
+                if (input.value) input.classList.add('has-value');
+                else input.classList.remove('has-value');
+            });
         });
     </script>
 }

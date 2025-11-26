@@ -1,0 +1,167 @@
+﻿/* Calendar Card */
+.bp-calendar-card {
+    border-radius: 15px;
+    overflow: hidden;
+    background: var(--color-bg-content);
+    color: var(--color-text-main);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Header */
+.bp-calendar-header {
+    background: linear-gradient(45deg, var(--color-accent), #128f53);
+    color: var(--color-active-accent);
+    padding: 15px 20px;
+    border-bottom: none;
+}
+
+/* Body */
+.bp-calendar-body {
+    padding: 20px;
+    background-color: var(--color-bg-container);
+    color: var(--color-text-main);
+}
+
+/* Footer */
+.bp-calendar-footer {
+    background: var(--color-bg-container);
+    border-top: 1px solid #e2e8f0;
+    padding: 15px 10px;
+}
+
+/* Legend Style */
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: var(--color-text-main);
+}
+
+.legend-box {
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Dark Mode Adjustments */
+.dark .bp-calendar-card {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.dark .bp-calendar-header {
+    background: linear-gradient(45deg, var(--color-accent), #635BFF);
+    color: var(--color-text-main);
+}
+
+.dark .bp-calendar-body {
+    background-color: var(--color-bg-body);
+    color: var(--color-text-main);
+}
+
+.dark .bp-calendar-footer {
+    background: var(--color-bg-body);
+    border-top: 1px solid #444;
+}
+
+.dark .legend-item {
+    color: var(--color-text-main);
+}
+
+.dark .legend-box {
+    border: 1px solid #555;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* FullCalendar Base Adjustments */
+.bp-calendar-body .fc {
+    color: var(--color-text-main);
+}
+
+/* Day Cells */
+.bp-calendar-body .fc-daygrid-day {
+    background-color: var(--color-bg-container);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Dark Mode Day Cells */
+.dark .bp-calendar-body .fc-daygrid-day {
+    background-color: var(--color-bg-body);
+    border: 1px solid #444;
+}
+
+/* Day numbers */
+.bp-calendar-body .fc-daygrid-day-number {
+    color: var(--color-text-main);
+    font-weight: 500;
+}
+
+/* Dark Mode Day numbers */
+.dark .bp-calendar-body .fc-daygrid-day-number {
+    color: var(--color-text-main);
+}
+
+/* Weekday headers (Mon, Tue, ...) */
+.bp-calendar-body .fc-col-header-cell-cushion {
+    color: var(--color-text-main);
+    font-weight: 600;
+}
+
+/* Dark Mode weekday headers */
+.dark .bp-calendar-body .fc-col-header-cell-cushion {
+    color: var(--color-text-main);
+}
+
+/* Event titles inside day cells */
+.bp-calendar-body .fc-event-title {
+    color: #fff; /* Event titles remain readable */
+}
+
+/* Dark Mode Event Titles */
+.dark .bp-calendar-body .fc-event-title {
+    color: #fff; /* Can tweak if needed based on event color */
+}
+/* Day Cells */
+.bp-calendar-body .fc-daygrid-day {
+    background-color: var(--color-bg-container) !important; /* Light Mode */
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Dark Mode Day Cells */
+.dark .bp-calendar-body .fc-daygrid-day {
+    background-color: var(--color-bg-body) !important; /* Dark Mode background */
+    border: 1px solid #444;
+}
+
+/* Day Numbers */
+.bp-calendar-body .fc-daygrid-day-number {
+    color: var(--color-text-main) !important;
+    font-weight: 500;
+}
+
+/* Dark Mode Day Numbers */
+.dark .bp-calendar-body .fc-daygrid-day-number {
+    color: var(--color-text-main) !important; /* رقم اليوم يبان كويس */
+}
+
+/* Optional: remove any inline bg color FullCalendar adds */
+.bp-calendar-body .fc-daygrid-day-top {
+    background-color: transparent !important;
+}
+/* Day Headers (Mon, Tue, ...) */
+.bp-calendar-body .fc-col-header-cell,
+.bp-calendar-body .fc-col-header-cell-cushion {
+    color: var(--color-text-main); /* Light Mode text */
+    background-color: var(--color-bg-container); /* Light Mode background */
+    font-weight: 600;
+}
+
+/* Dark Mode Day Headers */
+.dark .bp-calendar-body .fc-col-header-cell,
+.dark .bp-calendar-body .fc-col-header-cell-cushion {
+    color: var(--color-text-main); /* White-ish in dark mode */
+    background-color: var(--color-bg-body); /* Dark background */
+}

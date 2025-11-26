@@ -1,19 +1,1 @@
-<body>
 
-@if (!User.Identity.IsAuthenticated)
-{
-    <a class="btn btn-outline-primary me-2" href="@Url.Action("Login",
-"Account")">Login</a>
-    <a class="btn btn-primary" href="@Url.Action("Register",
-"Account")">Register</a>
-}
-else
-{
-    <form method="post" asp-controller="Account" asp-action="SignOut">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger">Logout</button>
-    </form>
-
-}
- 
-</body>

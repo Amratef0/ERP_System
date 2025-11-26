@@ -1,0 +1,209 @@
+﻿/* -------- General Card Styling -------- */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.card-body {
+    background-color: var(--color-bg-container);
+    color: var(--color-text-main);
+    padding: 1.5rem;
+}
+
+/* Inputs & selects */
+.form-control, .form-select, .number-input {
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
+    padding: 0.8rem;
+    font-size: 0.95rem;
+    background-color: var(--color-bg-content);
+    color: var(--color-text-main);
+    transition: all 0.2s ease;
+}
+
+    .form-control::placeholder {
+        color: var(--color-text-muted);
+    }
+
+    .form-control:focus, .form-select:focus, .number-input:focus {
+        border-color: var(--color-accent);
+        box-shadow: 0 0 6px rgba(99,91,255,0.3);
+        outline: none;
+    }
+
+/* Labels */
+.card-body label, .number-label, .form-check-label {
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+}
+
+/* Card-specific header colors */
+.card1 .card-header {
+    background-color: var(--card1-bg);
+    color: var(--card1-h3);
+}
+
+.card2 .card-header {
+    background-color: var(--card2-bg);
+    color: var(--card2-h3);
+}
+
+.card3 .card-header {
+    background-color: var(--card3-bg);
+    color: var(--card3-h3);
+}
+
+.card4 .card-header {
+    background-color: var(--card4-bg);
+    color: var(--card4-h3);
+}
+
+/* Checkbox styling */
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+}
+
+.form-check {
+    margin-top: 0.5rem;
+}
+
+
+
+
+/* ===========================
+   🔹 Employee Photo Card - Custom Details Style
+   =========================== */
+.my-image-section-wrapper {
+    max-width: 400px;
+    margin: 20px auto;
+}
+
+.image-card {
+    background: var(--color-bg-content, #fff);
+    border-radius: 1rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .image-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+/* ===== Header ===== */
+.image-card-header {
+    background: linear-gradient(90deg, #6a11cb, #2575fc); /* gradient افتراضي */
+    color: #fff;
+    padding: 10px 15px;
+}
+
+    .image-card-header h4 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+/* ===== Body ===== */
+.image-card-body {
+    text-align: center;
+    padding: 2rem 1.5rem;
+}
+
+.avatar-preview,
+.avatar-placeholder {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    object-fit: cover;
+    margin-bottom: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4.5rem;
+    color: #fff;
+    background-color: #6c757d;
+    transition: transform 0.2s ease;
+}
+
+    .avatar-preview:hover,
+    .avatar-placeholder:hover {
+        transform: scale(1.05);
+    }
+
+.image-card-body h4 {
+    font-weight: 600;
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: var(--color-text-main, #333);
+}
+
+.image-card-body p {
+    font-size: 14px;
+    color: var(--color-text-muted, #6c757d);
+    margin-bottom: 10px;
+}
+
+/* ===== Status Badge ===== */
+.image-card-body .badge {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+    .image-card-body .badge.bg-success {
+        background-color: rgba(15, 157, 88, 0.15);
+        color: #0f9d58;
+        border: 1px solid rgba(15, 157, 88, 0.3);
+    }
+
+    .image-card-body .badge.bg-danger {
+        background-color: rgba(217, 48, 37, 0.15);
+        color: #d93025;
+        border: 1px solid rgba(217, 48, 37, 0.3);
+    }
+
+/* ===== Responsive ===== */
+@@media (max-width: 500px) {
+    .image-card-body {
+        padding: 1.5rem 1rem;
+    }
+
+    .avatar-preview,
+    .avatar-placeholder {
+        width: 140px;
+        height: 140px;
+        font-size: 3.5rem;
+    }
+
+    .image-card-body h4 {
+        font-size: 18px;
+    }
+
+    .image-card-body p {
+        font-size: 13px;
+    }
+
+    .image-card-body .badge {
+        font-size: 12px;
+        padding: 0.4rem 0.8rem;
+    }
+}

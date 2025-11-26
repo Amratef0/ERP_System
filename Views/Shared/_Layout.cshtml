@@ -27,7 +27,7 @@
  <div class="sidebar-icons">
      <button id="menuToggle" title="Toggle submenu"><i class="fa fa-bars"></i></button>
 
-     <button id="iconHome" title="Home" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i></button>
+     <button id="iconHome" title="Home" asp-area="" asp-controller="Market" asp-action="Index"><i class="fa-solid fa-house"></i></button>
      <hr>
 
      <!-- HR -->
@@ -48,8 +48,6 @@
 
      <!-- SALES / E-COMMERCE -->
      <button id="iconMarket" title="Market"><i class="fa fa-bag-shopping"></i></button>
-     <button id="iconOrders" title="Orders"><i class="fa fa-cart-shopping"></i></button>
-     <button id="iconPayments" title="Payments"><i class="fa fa-credit-card"></i></button>
      <hr>
 
      <!-- PROCUREMENT -->
@@ -60,32 +58,22 @@
 
      <!-- CRM -->
      <button id="iconCust" title="Customers"><i class="fa fa-users"></i></button>
-     <button id="iconLeads" title="Leads & Opportunities"><i class="fa fa-lightbulb"></i></button>
-     <button id="iconActiv" title="Activities"><i class="fa-solid fa-handshake"></i></button>
      <hr>
 
      <!-- SYSTEM -->
      <button id="iconUsers" title="User Management"><i class="fa fa-user-gear"></i></button>
      <button id="iconRoles" title="Roles"><i class="fa fa-shield-halved"></i></button>
      <button id="iconAssPer" title="Assign Permissions"><i class="fa fa-universal-access"></i></button>
-     <button id="iconAudit" title="Audit Log"><i class="fa fa-file-lines"></i></button>
      <hr>
 
      <!-- SETTINGS -->
      <button id="iconSettings" title="Settings"><i class="fa fa-gear"></i></button>
      <hr>
 
-     <!-- LEAVE -->
-     <button id="iconLeave" title="Leave"><i class="fa fa-calendar-days"></i></button>
-     <hr>
+   
 
-     <!-- MANAGER -->
-     <button id="iconManager" title="Leave Management"><i class="bi bi-calendar3"></i></button>
-     <hr />
-
-     <!-- PROFILE -->
-     <button id="iconProfile" title="Profile"><i class="fa fa-user-circle"></i></button>
-     <button id="iconLogout" title="Logout"><i class="fa fa-right-from-bracket"></i></button>
+    
+    
  </div>
 
   <div class="overlay" id="overlay" aria-hidden="true"></div>
@@ -97,28 +85,47 @@
                      <i class="fa fa-bars"></i>
                   </button>
 
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><h5 class="mb-0 me-auto">Optima</h5></a>
+                <a class="navbar-brand" asp-area="" asp-controller="Market" asp-action="Index"><h5 class="mb-0 me-auto">Optima</h5></a>
 
                 <div class="d-flex align-items-center">
-                   <div class="mood">
-                       <button id="toggle-theme" class="btn btn-link text-decoration-none position-relative">
-                          <i class="fa-regular fa-moon"></i>
-                          <i class="fa-regular fa-sun"></i>
-                       </div>
-                        </button>
+                <div class="mood">
+                    <button id="toggle-theme" class="btn btn-link text-decoration-none position-relative">
+                        <i class="fa-regular fa-moon"></i>
+                        <i class="fa-regular fa-sun"></i>
+                    </button>
+                </div>
+
 
 
             <!-- Profile Dropdown -->
-            <div class="dropdown">
-              <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="fa-regular fa-circle-user fs-4"></i>
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">My Product</a></li>
-                <li><a class="dropdown-item text-danger" href="#">Sign Out</a></li>
-              </ul>
-            </div>
+                <div class="dropdown">
+                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fa-regular fa-circle-user fs-4"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ViewProfile">My Profile</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Order" asp-action="MyOrders">My Orders</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="CustomerWishlist" asp-action="Index">My Wishlist</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="CustomerFavorite" asp-action="Index">My Favorite</a></li>
+                            <li>
+                                <a class="dropdown-item" asp-area="" asp-controller="Cart" asp-action="Index"> My Cart</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" asp-area="" asp-controller="Account" asp-action="Signout">
+                                    <button type="submit" class="dropdown-item text-danger">Sign Out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Login">Sign In</a></li>
+                        }
+                    </ul>
+                </div>
+
             </nav>
 
         @* <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -139,7 +146,7 @@
                        <h6>Home</h6>
                        <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Market" asp-action="Index">Home</a>
                         </li>
                         </ul>
                    </div>
@@ -181,14 +188,14 @@
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="Index">Attendance</a></li>
-                        </li>
+                        
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="AttendanceStatusCode" asp-action="Index">Attendance Status Codes</a>
                         </li>
 
                         <li class="nav-item">
-                             <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="MonthlyReport"> Monthly Attendance Report</a><
+                             <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="MonthlyReport"> Monthly Attendance Report</a>
                         </li>
                    
                         <li class="nav-item">
@@ -375,7 +382,7 @@
                                     <i class="bi bi-person-circle"></i> My Portal
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="employeeDropdown">
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="Profile"><i class="bi bi-person-circle"></i> My Profile</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ViewProfile"><i class="bi bi-person-circle"></i> My Profile</a></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="MyLeaveRequests"><i class="bi bi-list-ul"></i> My Leave Requests</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="RequestLeave"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>

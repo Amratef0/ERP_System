@@ -29,6 +29,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Identity;
+using ERP_System_Project.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,12 +60,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<Erpdbcontext>()
     .AddDefaultTokenProviders();
 
-// Authentication (Google)
+// Authentication (External Providers)
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultScheme = IdentityConstants.ApplicationScheme;
-    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    options.DefaultChallengeScheme = "Google";
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;       // Cookie
+    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;    // External login
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme; // ? ??? ???? ?? ????? ????
 })
 .AddGoogle("Google", options =>
 {
@@ -76,11 +77,13 @@ builder.Services.AddAuthentication(options =>
     options.AppId = builder.Configuration["Authentication:Facebook:AppId"];
     options.AppSecret = builder.Configuration["Authentication:Facebook:AppSecret"];
 });
+
 // Token lifespan
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
     options.TokenLifespan = TimeSpan.FromHours(2);
 });
+
 
 // Antiforgery
 builder.Services.AddAntiforgery(options =>
@@ -181,6 +184,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddHttpClient<PaymobService>();
+
 
 var app = builder.Build();
 
@@ -252,7 +257,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Market}/{action=Index}/{id?}");
 
 app.UseMiddleware<EndpointPerformanceMiddleware>();
 

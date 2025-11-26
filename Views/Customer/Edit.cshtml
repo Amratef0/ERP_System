@@ -4,104 +4,62 @@
     ViewData["Title"] = "Edit Customer";
 }
 
-<div class="container-fluid py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Edit Customer</h4>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Edit" method="post">
-                        <input type="hidden" asp-for="Id" />
+<div class="form-page edit-customer">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Customer</h3>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="FirstName" class="form-label">First Name *</label>
-                                    <input asp-for="FirstName" class="form-control" />
-                                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-3">
-                                    <label asp-for="LastName" class="form-label">Last Name *</label>
-                                    <input asp-for="LastName" class="form-control" />
-                                    <span asp-validation-for="LastName" class="text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
+        <form asp-action="Edit" method="post">
 
-                        <div class="form-group mb-3">
-                            <label asp-for="Email" class="form-label">Email *</label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
+            <input type="hidden" asp-for="Id" />
 
-                        <div class="form-group mb-3">
-                            <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="DateOfBirth" class="form-label">Date of Birth *</label>
-                            <input asp-for="DateOfBirth" type="date" class="form-control"
-                                   max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" />
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="CustomerTypeId" class="form-label">Customer Type *</label>
-                            <select asp-for="CustomerTypeId" class="form-control"
-                                    asp-items="ViewBag.CustomerTypes">
-                                <option value="">Select Customer Type</option>
-                            </select>
-                            <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label">Customer Address</label>
-                            <!-- show main address and link to the addresses page -->
-                            <div class="form-group mb-3">
-                                <label class="form-label">Primary Address</label>
-                                <div class="d-flex align-items-center gap-2">
-                                    <div>
-                                        <small class="text-muted d-block">@Model.MainAddress"</small>
-                                    </div>
-
-                                    <a asp-controller="CustomerAddress"
-                                       asp-action="Index"
-                                       asp-route-customerId="@Model.Id"
-                                       class="btn btn-outline-info btn-sm">
-                                        <i class="bi bi-geo-alt-fill"></i> Manage Addresses
-                                    </a>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <div class="form-check form-switch">
-                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" />
-                                <label asp-for="IsActive" class="form-check-label">Active Customer</label>
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">Update Customer</button>
-                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
-                        </div>
-                    </form>
-                   
-
-                </div>
+            <!-- First Name -->
+            <div class="form-group">
+                <input asp-for="FirstName" class="form-control" placeholder=" " />
+                <label asp-for="FirstName"></label>
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
-        </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <input asp-for="LastName" class="form-control" placeholder=" " />
+                <label asp-for="LastName"></label>
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <input asp-for="Email" class="form-control" placeholder=" " />
+                <label asp-for="Email"></label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <input asp-for="PhoneNumber" class="form-control" placeholder=" " />
+                <label asp-for="PhoneNumber"></label>
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Customer Type -->
+            <div class="form-group">
+                <select asp-for="CustomerTypeId" class="form-select" asp-items="ViewBag.CustomerTypes">
+                    <option value="" disabled hidden>Select Customer Type</option>
+                </select>
+                <label asp-for="CustomerTypeId">Customer Type</label>
+                <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
+            </div>
+
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+
+        </form>
     </div>
 </div>
 
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

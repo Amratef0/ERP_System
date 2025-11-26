@@ -1,14 +1,96 @@
-﻿@{
+@{
     ViewData["Title"] = "Error";
 }
 
-<h2>Error</h2>
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
-<a href="@Url.Action("Index", "Main")" class="btn btn-secondary">Go Home</a> 
+<div class="error-container">
+    <div class="error-card animate-pop">
+        <h1 class="error-title"> Oops! Something went wrong</h1>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-box">@ViewBag.Error</div>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="error-box">@TempData["ErrorMessage"]</div>
+        }
+
+        <a href="@Url.Action("Index", "Main")" class="btn-home">
+            ⬅ Back to Home
+        </a>
+    </div>
+</div>
+<style>
+    /* Background container */
+    .error-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        padding: 20px;
+    }
+
+    /* Card */
+    .error-card {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10px);
+        padding: 40px;
+        border-radius: 25px;
+        color: white;
+        text-align: center;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        transition: .3s ease;
+    }
+
+        .error-card:hover {
+            transform: translateY(-5px);
+        }
+
+    /* Title */
+    .error-title {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    /* Error message box */
+    .error-box {
+        background: rgba(255, 0, 0, 0.22);
+        padding: 15px;
+        border-radius: 12px;
+        margin-bottom: 15px;
+        border-left: 4px solid #ff4d4d;
+        font-size: 17px;
+    }
+
+    /* Home button */
+    .btn-home {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 24px;
+        background: #ffffff22;
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 12px;
+        transition: .3s ease;
+        font-size: 18px;
+    }
+
+        .btn-home:hover {
+            background: #ffffff35;
+            transform: scale(1.07);
+        }
+
+    /* Animation */
+    
+
+    .animate-pop {
+        animation: popIn .6s ease-out;
+    }
+
+</style>

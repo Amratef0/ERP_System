@@ -1,0 +1,10 @@
+﻿@model ERP_System_Project.Controllers.ECommerce.PaymentViewModel
+
+@{
+    Layout = null;
+}
+
+<h2>Pay with Paymob</h2>
+
+<iframe src="https://accept.paymob.com/api/acceptance/iframes/@Model.IframeId?payment_token=@Model.PaymentToken"
+        width="100%" height="600px" frameborder="0"></iframe>

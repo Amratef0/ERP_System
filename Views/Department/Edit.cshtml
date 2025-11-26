@@ -4,105 +4,65 @@
     ViewData["Title"] = "Edit Department";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-pencil-square"></i> Edit Department</h2>
-                    <p class="text-muted">Update department information</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to List
-                    </a>
-                </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">Edit Department</h3>
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- Hidden ID -->
+            <input asp-for="Id" type="hidden" />
+
+            <div class="form-group">
+                <input asp-for="Name" class="form-control" placeholder=" " />
+                <label asp-for="Name">Department Name <span class="text-danger">*</span></label>
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <hr />
+
+            <div class="form-group">
+                <input asp-for="Code" class="form-control" placeholder=" " maxlength="10" />
+                <label asp-for="Code">Department Code <span class="text-danger">*</span></label>
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input asp-for="CostCenterCode" class="form-control" placeholder=" " />
+                <label asp-for="CostCenterCode">Cost Center Code</label>
+                <span asp-validation-for="CostCenterCode" class="text-danger"></span>
+            </div>
+
+
+            <!-- Status Checkbox -->
+            <div class="form-group form-check">
+                <input asp-for="IsActive" id="isActiveSwitch" type="checkbox" class="form-check-input" />
+                <label asp-for="IsActive" for="isActiveSwitch" class="form-check-label">
+                    Department is Active
+                </label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Update</button>
+                <a asp-action="Index" class="btn btn-secondary">Back</a>
+            </div>
+
+        </form>
+
+        <!-- Department Info -->
+        <div class="lists-section" style="margin-top:22px;">
+            <h4>Department Information</h4>
+
+            <ul class="item-list">
+                <li><strong>Department Name:</strong> Full name of the department</li>
+                <li><strong>Code:</strong> Short unique identifier (used in reports and systems)</li>
+                <li><strong>Cost Center:</strong> Optional code for financial reporting</li>
+                <li><strong>Status:</strong> Only active departments can have employees assigned</li>
+            </ul>
         </div>
-    </div>
 
-    <!-- Edit Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Department Information</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Edit" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                        
-                        <!-- Hidden ID field -->
-                        <input asp-for="Id" type="hidden" />
-                        
-                        <!-- Name Field -->
-                        <div class="mb-3">
-                            <label asp-for="Name" class="form-label">
-                                <i class="bi bi-tag"></i> Department Name <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Name" class="form-control form-control-lg" placeholder="Enter department name" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-
-                        <!-- Code Field -->
-                        <div class="mb-3">
-                            <label asp-for="Code" class="form-label">
-                                <i class="bi bi-hash"></i> Department Code <span class="text-danger">*</span>
-                            </label>
-                            <input asp-for="Code" class="form-control form-control-lg" placeholder="Enter department code" />
-                            <span asp-validation-for="Code" class="text-danger"></span>
-                            <div class="form-text">Unique identifier for the department</div>
-                        </div>
-
-                        <!-- Cost Center Code Field -->
-                        <div class="mb-3">
-                            <label asp-for="CostCenterCode" class="form-label">
-                                <i class="bi bi-currency-dollar"></i> Cost Center Code
-                            </label>
-                            <input asp-for="CostCenterCode" class="form-control form-control-lg" placeholder="Enter cost center code" />
-                            <span asp-validation-for="CostCenterCode" class="text-danger"></span>
-                            <div class="form-text">Optional cost center tracking code</div>
-                        </div>
-
-                        <!-- Is Active Field -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input asp-for="IsActive" class="form-check-input" type="checkbox" role="switch" id="isActiveSwitch" />
-                                <label class="form-check-label" for="isActiveSwitch">
-                                    <i class="bi bi-toggle-on"></i> Department is Active
-                                </label>
-                            </div>
-                            <div class="form-text">Inactive departments won't appear in selection lists</div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-warning btn-lg">
-                                <i class="bi bi-check-circle"></i> Update Department
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Tips</h6>
-                    <ul class="mb-0 small">
-                        <li>Department code must be unique across the system</li>
-                        <li>Cost center code is optional and used for financial tracking</li>
-                        <li>Deactivating a department will hide it from dropdown lists</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

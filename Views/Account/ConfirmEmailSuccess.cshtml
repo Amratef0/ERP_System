@@ -1,7 +1,65 @@
-﻿@{
+@{
     ViewData["Title"] = "Email Verified";
 }
 
-<h2>Congratulations!</h2>
-<p>Your email has been successfully verified. You can now log in.</p>
-<a href="@Url.Action("Login", "Account")" class="btn btn-success">Login</a>
+<div class="verify-container">
+    <div class="verify-card">
+        <h2 class="verify-title">Email Verified</h2>
+
+        <p class="verify-text">
+            Your email has been successfully verified. You can now log in.
+        </p>
+
+        <a href="@Url.Action("Login", "Account")" class="btn-verify">
+            Login
+        </a>
+    </div>
+</div>
+<style>
+    .verify-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f4f6f9;
+        padding: 20px;
+    }
+
+    .verify-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 0 18px rgba(0,0,0,0.12);
+        text-align: center;
+    }
+
+    .verify-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .verify-text {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 30px;
+    }
+
+    .btn-verify {
+        display: inline-block;
+        padding: 12px 26px;
+        background: #198754;
+        color: #fff;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .btn-verify:hover {
+            background: #157347;
+        }
+
+</style>

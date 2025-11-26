@@ -1,144 +1,122 @@
-@model WorkScheduleDayVM
+﻿@model WorkScheduleDayVM
 
 @{
     ViewData["Title"] = "Edit Work Schedule Day";
 }
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-pencil-square"></i> Edit Work Schedule Day</h2>
-                    <p class="text-muted">Update working hours for @Model.Day</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to Schedule
-                    </a>
-                </div>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
+<div class="form-page mt-4">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">
+            <i class="bi bi-pencil-square"></i> Edit Work Schedule Day
+        </h3>
+
+        <form asp-action="Edit" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            <!-- Hidden fields -->
+            <input asp-for="Id" type="hidden" />
+            <input asp-for="WorkScheduleId" type="hidden" />
+
+            <!-- Day Field -->
+            <div class="form-group">
+                <input asp-for="Day" class="form-control" placeholder=" " readonly />
+                <label asp-for="Day">Day of Week</label>
+                <span asp-validation-for="Day" class="text-danger"></span>
             </div>
-            <hr />
-        </div>
+
+            <!-- Is Work Day -->
+            <div class="form-group form-check">
+                <input asp-for="IsWorkDay" id="IsWorkDay" type="checkbox" class="form-check-input" />
+                <label asp-for="IsWorkDay" for="IsWorkDay" class="form-check-label">
+                     This is a Work Day
+                </label>
+            </div>
+
+
+            <!-- Work Time Section -->
+            <div id="workTimeSection">
+
+                <!-- Start Time -->
+                <div class="number-field-group">
+                    <label for="WorkStartTime" class="number-label">
+                        <i class="bi bi-clock"></i> Work Start Time
+                    </label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="time" asp-for="WorkStartTime" class="number-input" id="WorkStartTime" />
+                        <button id="clearStartTimeBtn" type="button" class="btn-clear-special">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="WorkStartTime" class="text-danger"></span>
+                    <span class="form-text">Time when work begins (e.g., 09:00)</span>
+                </div>
+                <br />
+
+                <!-- End Time -->
+                <div class="number-field-group">
+                    <label for="WorkEndTime" class="number-label">
+                        <i class="bi bi-clock-history"></i> Work End Time
+                    </label>
+                    <div style="display:flex; gap:8px; align-items:center;">
+                        <input type="time" asp-for="WorkEndTime" class="number-input" id="WorkEndTime" />
+                        <button id="clearEndTimeBtn" type="button" class="btn-clear-special">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="WorkEndTime" class="text-danger"></span>
+                    <span class="form-text">Time when work ends (e.g., 17:00)</span>
+                </div>
+
+                <!-- Duration -->
+                <div class="form-group full-width">
+                    <div class="symbol-preview-box">
+                        <div class="symbol-preview-content">
+                            <i class="bi bi-hourglass-split symbol-icon"></i>
+                            <div>
+                                <p class="symbol-title">Work Duration</p>
+                                <p id="durationDisplay" class="symbol-text">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> Update
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </a>
+            </div>
+
+        </form>
     </div>
+    <!-- Work Schedule Info -->
+<div class="lists-section" style="margin-top:22px;">
+    <h4>Schedule Information</h4>
 
-    <!-- Edit Form -->
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="bi bi-calendar-week"></i> @Model.Day Schedule</h5>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Edit" method="post">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-
-                        <!-- Hidden fields -->
-                        <input asp-for="Id" type="hidden" />
-                        <input asp-for="WorkScheduleId" type="hidden" />
-
-                        <!-- Day Field (Read-only) -->
-                        <div class="mb-3">
-                            <label asp-for="Day" class="form-label">
-                                <i class="bi bi-calendar3"></i> Day of Week
-                            </label>
-                            <input asp-for="Day" class="form-control form-control-lg" readonly style="background-color: #e9ecef;" />
-                            <span asp-validation-for="Day" class="text-danger"></span>
-                        </div>
-
-                        <!-- Is Work Day Field -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" asp-for="IsWorkDay" id="IsWorkDay" />
-                                <label class="form-check-label" for="IsWorkDay">
-                                    <i class="bi bi-briefcase"></i> This is a Work Day
-                                </label>
-                            </div>
-                            <div class="form-text">Uncheck to mark this as a day off</div>
-                        </div>
-
-                        <div id="workTimeSection">
-                            <!-- Work Start Time Field -->
-                            <div class="mb-3">
-                                <label asp-for="WorkStartTime" class="form-label">
-                                    <i class="bi bi-clock"></i> Work Start Time
-                                </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                                    <input type="time" asp-for="WorkStartTime" class="form-control" id="WorkStartTime" />
-                                    <button id="clearStartTimeBtn" class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-x-circle"></i> Clear
-                                    </button>
-                                </div>
-                                <span asp-validation-for="WorkStartTime" class="text-danger"></span>
-                                <div class="form-text">Time when work begins (e.g., 09:00)</div>
-                            </div>
-
-                            <!-- Work End Time Field -->
-                            <div class="mb-3">
-                                <label asp-for="WorkEndTime" class="form-label">
-                                    <i class="bi bi-clock-history"></i> Work End Time
-                                </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text"><i class="bi bi-clock-history"></i></span>
-                                    <input type="time" asp-for="WorkEndTime" class="form-control" id="WorkEndTime" />
-                                    <button id="clearEndTimeBtn" class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-x-circle"></i> Clear
-                                    </button>
-                                </div>
-                                <span asp-validation-for="WorkEndTime" class="text-danger"></span>
-                                <div class="form-text">Time when work ends (e.g., 17:00)</div>
-                            </div>
-
-                            <!-- Duration Display -->
-                            <div class="mb-4">
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-muted mb-2">
-                                            <i class="bi bi-hourglass-split"></i> Work Duration
-                                        </h6>
-                                        <h3 class="text-primary mb-0" id="durationDisplay">-</h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a asp-action="Index" class="btn btn-secondary btn-lg">
-                                <i class="bi bi-x-circle"></i> Cancel
-                            </a>
-                            <button type="submit" class="btn btn-warning btn-lg">
-                                <i class="bi bi-check-circle"></i> Update Schedule
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Info Card -->
-            <div class="card mt-3 border-info">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-info-circle"></i> Tips</h6>
-                    <ul class="mb-0 small">
-                        <li>Uncheck "This is a Work Day" for days off (typically weekends)</li>
-                        <li>Work hours must be set for work days</li>
-                        <li>End time should be after start time</li>
-                        <li>Standard work day is typically 8 hours (e.g., 09:00 to 17:00)</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+    <ul class="item-list">
+        <li><strong>Work Days:</strong> Days when employees are expected to work</li>
+        <li><strong>Off Days:</strong> Regular days off (typically weekends)</li>
+        <li><strong>Start/End Times:</strong> Standard working hours for each work day</li>
+        <li><strong>Duration:</strong> Total hours per work day</li>
+        <li><strong>Weekly Hours:</strong> Total working hours per week</li>
+    </ul>
 </div>
+</div>
+
+
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        // Clear time buttons
         document.getElementById('clearStartTimeBtn')?.addEventListener('click', function() {
             document.getElementById('WorkStartTime').value = '';
             calculateDuration();
@@ -149,32 +127,26 @@
             calculateDuration();
         });
 
-        // Toggle work time section based on IsWorkDay
         const isWorkDayCheckbox = document.getElementById('IsWorkDay');
         const workTimeSection = document.getElementById('workTimeSection');
-        
-        function toggleWorkTime() {
-            if (isWorkDayCheckbox.checked) {
-                workTimeSection.style.display = 'block';
-            } else {
-                workTimeSection.style.display = 'none';
-            }
-        }
-        
-        isWorkDayCheckbox?.addEventListener('change', toggleWorkTime);
-        toggleWorkTime(); // Initial state
 
-        // Calculate duration
+        function toggleWorkTime() {
+            workTimeSection.style.display = isWorkDayCheckbox.checked ? 'block' : 'none';
+        }
+
+        isWorkDayCheckbox?.addEventListener('change', toggleWorkTime);
+        toggleWorkTime();
+
         function calculateDuration() {
             const startTime = document.getElementById('WorkStartTime').value;
             const endTime = document.getElementById('WorkEndTime').value;
             const durationDisplay = document.getElementById('durationDisplay');
-            
+
             if (startTime && endTime) {
                 const start = new Date('1970-01-01T' + startTime);
                 const end = new Date('1970-01-01T' + endTime);
                 const diff = end - start;
-                
+
                 if (diff > 0) {
                     const hours = Math.floor(diff / 3600000);
                     const minutes = Math.floor((diff % 3600000) / 60000);
@@ -189,9 +161,9 @@
                 durationDisplay.className = 'text-muted mb-0';
             }
         }
-        
+
         document.getElementById('WorkStartTime')?.addEventListener('change', calculateDuration);
         document.getElementById('WorkEndTime')?.addEventListener('change', calculateDuration);
-        calculateDuration(); // Initial calculation
+        calculateDuration();
     </script>
 }

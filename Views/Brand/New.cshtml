@@ -8,8 +8,9 @@
     <div class="form"> 
         <h3 class="formTitle" id="form-title">Add New Brand</h3>
 
-        <form method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="Id" />
+
+        <form asp-action="New" asp-controller="Brand" method="post" enctype="multipart/form-data">
+
 
             <div class="form-group">
                 <input asp-for="Name" class="form-control" placeholder=" " />

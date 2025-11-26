@@ -1,0 +1,117 @@
+﻿@model ERP_System_Project.Models.Authentication.ViewProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">My Profile</h2>
+
+                    <div class="mb-3">
+                        <strong>First Name:</strong> @Model.FirstName
+                    </div>
+                    <div class="mb-3">
+                        <strong>Last Name:</strong> @Model.LastName
+                    </div>
+                    <div class="mb-3">
+                        <strong>Email:</strong> @Model.Email
+                    </div>
+                    <div class="mb-3">
+                        <strong>Phone Number:</strong> @Model.PhoneNumber
+                    </div>
+                    <div class="mb-3">
+                        <strong>Date of Birth:</strong> @Model.DateOfBirth.ToString("yyyy-MM-dd")
+                    </div>
+                    <div class="mb-3">
+                        <strong>Account Created At:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd")
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <a asp-action="EditProfile" class="btn btn-primary">Edit Profile</a>
+                        <a asp-action="ChangePassword" class="btn btn-secondary">Change Password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    <style >
+    /* خلفية الصفحة */
+    body {
+        background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* الكارد */
+    .card {
+        border-radius: 20px;
+        border: none;
+        background: #ffffffaa;
+        backdrop-filter: blur(10px);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+
+        /* العنوان */
+        .card h2 {
+            font-weight: 700;
+            color: #333;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* النصوص */
+        .card .mb-3 {
+            font-size: 1.1rem;
+            color: #555;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+    /* الأزرار */
+    .btn-primary, .btn-secondary {
+        border-radius: 50px;
+        font-weight: 600;
+        padding: 10px;
+        transition: all 0.3s;
+    }
+
+    .btn-primary {
+        background: #6a11cb;
+        background: linear-gradient(to right, #2575fc, #6a11cb);
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            transform: scale(1.05);
+        }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+        border: 1px solid #ddd;
+    }
+
+        .btn-secondary:hover {
+            background: #333;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+    /* تنسيق عام للـ container */
+    .container {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+</style>
+
+</style>

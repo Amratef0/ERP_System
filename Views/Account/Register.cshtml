@@ -1,141 +1,204 @@
-﻿@using ERP_System_Project.Models.Authentication
+@using ERP_System_Project.Models.Authentication
 @model RegisterViewModel
 
 @{
     ViewData["Title"] = "Register";
 }
 
+<div class="register-container">
+    <div class="register-card animate-slide">
+        <h2 class="text-center mb-4 fw-bold">Create Account</h2>
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg rounded">
-                <div class="card-header text-center bg-primary text-white">
-                    <h2>Register</h2>
+        <form asp-action="SaveRegister">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="FirstName" class="form-control cool-input" placeholder="First Name" />
+                        <label asp-for="FirstName">First Name</label>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form asp-action="SaveRegister">
-                        @Html.AntiForgeryToken()
-                        <div asp-validation-summary="All" class="text-danger mb
-3"></div>
 
-                        <div class="form-group mb-3">
-                            <label asp-for="FirstName" class="form
-label"></label>
-                            <input asp-for="FirstName" class="form-control"
-                                   placeholder="Enter your first name" />
-                            <span asp-validation-for="FirstName" class="text
-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="LastName" class="form
-label"></label>
-                            <input asp-for="LastName" class="form-control"
-                                   placeholder="Enter your last name" />
-                            <span asp-validation-for="LastName" class="text
-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="PhoneNumber" class="form
-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control"
-                                   placeholder="Enter your Phone number" />
-                            <span asp-validation-for="PhoneNumber" class="text
-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Email" class="form-label"></label>
-                            <input asp-for="Email" class="form-control"
-                                   placeholder="Enter your email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="DateOfBirth" class="form-label">Date Of Birth</label>
-                            <input asp-for="DateOfBirth" class="form-control"
-                                   placeholder="Enter your Date of Birth" />
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Country" class="form-label"></label>
-                            <input asp-for="Country" class="form-control"
-                                   placeholder="Enter your Country" />
-                            <span asp-validation-for="Country" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="City" class="form-label"></label>
-                            <input asp-for="City" class="form-control"
-                                   placeholder="Enter your City" />
-                            <span asp-validation-for="City" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="Street" class="form-label"></label>
-                            <input asp-for="Street" class="form-control"
-                                   placeholder="Enter your Street" />
-                            <span asp-validation-for="Street" class="text-danger"></span>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="BuildingNumber" class="form-label"></label>
-                            <input asp-for="BuildingNumber" class="form-control"
-                                   placeholder="Enter your BuildingNumber" />
-                            <span asp-validation-for="BuildingNumber" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="ApartmentNumber" class="form-label"></label>
-                            <input asp-for="ApartmentNumber" class="form-control"
-                                   placeholder="Enter your ApartmentNumber" />
-                            <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
-                        </div>
-                        
-
-                        <div class="form-group mb-3">
-                            <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" class="form-control"
-                                   type="password" placeholder="Enter your password" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label asp-for="ConfirmPassword" class="form-label"></label>
-                            <input asp-for="ConfirmPassword" class="form-control"
-                                   type="password" placeholder="Re-Enter your password" />
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        </div>
-
-                       
-
-                        <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary w-100">
-                                Sign
-                                Up
-                            </button>
-                        </div>
-<div class="form-group mb-3">
-    <a class="btn btn-danger w-100" asp-controller="Account" asp-action="GoogleLogin">
-        <i class="bi bi-google"></i> Sign up with Google
-    </a>
-</div>
-<div class="text-center mt-3">
-    <a class="btn btn-primary w-100" asp-controller="Account" asp-action="FacebookLogin">
-        <i class="bi bi-facebook"></i> Sign up with Facebook
-    </a>
-</div>
-                    </form>
-                </div>
-                <div class="card-footer text-center">
-                    <p>
-                        Already have an account? <a href="@Url.Action("Login",
-"Account")" class="text-primary">Login</a>
-                    </p>
+                <div class="col-md-6 mb-3">
+                    <div class="form-floating">
+                        <input asp-for="LastName" class="form-control cool-input" placeholder="Last Name" />
+                        <label asp-for="LastName">Last Name</label>
+                    </div>
                 </div>
             </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="PhoneNumber" class="form-control cool-input" placeholder="Phone Number" />
+                <label asp-for="PhoneNumber">Phone Number</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Email" class="form-control cool-input" placeholder="Email" />
+                <label asp-for="Email">Email</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="DateOfBirth" class="form-control cool-input" type="date" />
+                <label asp-for="DateOfBirth">Date of Birth</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Country" class="form-control cool-input" placeholder="Country" />
+                <label asp-for="Country">Country</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="City" class="form-control cool-input" placeholder="City" />
+                <label asp-for="City">City</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Street" class="form-control cool-input" placeholder="Street" />
+                <label asp-for="Street">Street</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="BuildingNumber" class="form-control cool-input" placeholder="Building Number" />
+                <label asp-for="BuildingNumber">Building Number</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="ApartmentNumber" class="form-control cool-input" placeholder="Apartment Number" />
+                <label asp-for="ApartmentNumber">Apartment Number</label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Password" type="password" class="form-control cool-input" placeholder="Password" />
+                <label asp-for="Password">Password</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input asp-for="ConfirmPassword" type="password" class="form-control cool-input" placeholder="Confirm Password" />
+                <label asp-for="ConfirmPassword">Confirm Password</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 big-btn">Sign Up</button>
+
+            <div class="mt-3">
+                <a class="btn btn-google w-100 mb-2" asp-controller="Account" asp-action="GoogleLogin">
+                    <i class="bi bi-google"></i> Sign up with Google
+                </a>
+                <a class="btn btn-facebook w-100" asp-controller="Account" asp-action="FacebookLogin">
+                    <i class="bi bi-facebook"></i> Sign up with Facebook
+                </a>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <p class="text-white">
+                Already have an account?
+                <a href="@Url.Action("Login","Account")" class="link-custom">Login</a>
+            </p>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #283e51, #4b79a1);
+        padding: 20px;
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 650px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        border-radius: 25px;
+        padding: 40px;
+        color: white;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+        .register-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+    /* Inputs */
+    .cool-input {
+        background: rgba(255,255,255,0.18);
+        border: none;
+        color: #fff;
+        border-radius: 10px;
+    }
+
+        .cool-input:focus {
+            background: rgba(255,255,255,0.28);
+            box-shadow: 0 0 10px rgba(255,255,255,0.4);
+            color: #fff;
+        }
+
+    /* Button */
+    .big-btn {
+        padding: 12px;
+        font-size: 19px;
+        border-radius: 12px;
+        transition: .3s ease;
+    }
+
+        .big-btn:hover {
+            transform: scale(1.05);
+        }
+
+    /* Google */
+    .btn-google {
+        background-color: #db4437;
+        color: white;
+        border-radius: 12px;
+        transition: .3s;
+    }
+
+        .btn-google:hover {
+            background-color: #c43c31;
+            transform: scale(1.03);
+        }
+
+    /* Facebook */
+    .btn-facebook {
+        background-color: #1877f2;
+        color: white;
+        border-radius: 12px;
+        transition: .3s;
+    }
+
+        .btn-facebook:hover {
+            background-color: #0f67d1;
+            transform: scale(1.03);
+        }
+
+    /* Link */
+    .link-custom {
+        color: #fff;
+        font-weight: bold;
+        transition: .3s;
+    }
+
+        .link-custom:hover {
+            color: #ddd;
+            text-decoration: underline;
+        }
+
+    
+
+    .animate-slide {
+        animation: slideUp .9s ease;
+    }
+
+</style>

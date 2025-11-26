@@ -1,0 +1,135 @@
+﻿/* ================= General Wrapper ================= */
+.performance-dashboard-wrapper {
+    background-color: var(--color-bg-container);
+    color: var(--color-text-main);
+    min-height: 100vh;
+}
+
+    /* Gradient Title */
+    .performance-dashboard-wrapper .text-gradient-primary {
+        background: linear-gradient(135deg, var(--color-accent) 0%, #3a0ca3 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Stat Cards */
+    .performance-dashboard-wrapper .stat-card {
+        border-radius: 12px;
+        transition: transform 0.2s ease;
+        background-color: var(--color-bg-content);
+        color: var(--color-text-main);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+        .performance-dashboard-wrapper .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+    /* Status Color Coding */
+    .performance-dashboard-wrapper .status-instant {
+        background-color: #198754;
+        color: #fff;
+    }
+
+    .performance-dashboard-wrapper .status-fast {
+        background-color: #0dcaf0;
+        color: #fff;
+    }
+
+    .performance-dashboard-wrapper .status-moderate {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    .performance-dashboard-wrapper .status-slow {
+        background-color: #fd7e14;
+        color: #fff;
+    }
+
+    .performance-dashboard-wrapper .status-very-slow {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    /* Badges */
+    .performance-dashboard-wrapper .response-time-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .performance-dashboard-wrapper .status-badge {
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Table Rows */
+    .performance-dashboard-wrapper .performance-row {
+        background-color: var(--color-bg-content);
+        transition: all 0.2s ease;
+    }
+
+        .performance-dashboard-wrapper .performance-row:hover {
+            background-color: var(--color-bg-sidebar);
+        }
+
+    /* Table Header */
+    .performance-dashboard-wrapper .card .table thead {
+        background-color: var(--color-bg-sidebar);
+        color: var(--color-text-main);
+    }
+
+    /* Activity & Distribution Items */
+    .performance-dashboard-wrapper .performance-distribution .distribution-item,
+    .performance-dashboard-wrapper .recent-activity .activity-item {
+        background-color: var(--color-bg-content);
+        color: var(--color-text-main);
+    }
+
+        .performance-dashboard-wrapper .recent-activity .activity-item:hover {
+            background-color: var(--color-bg-sidebar);
+        }
+
+    /* Activity Icon */
+    .performance-dashboard-wrapper .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        background-color: rgba(255,255,255,0.1);
+    }
+
+    /* Progress Bars */
+    .performance-dashboard-wrapper .progress {
+        background-color: rgba(255,255,255,0.1);
+    }
+
+    .performance-dashboard-wrapper .progress-bar {
+        border-radius: 4px;
+        color: #fff;
+    }
+
+    /* Table Padding */
+    .performance-dashboard-wrapper .table > :not(caption) > * > * {
+        padding: 1rem 1.5rem;
+        color: var(--color-text-main);
+    }
+
+    /* Card Borders */
+    .performance-dashboard-wrapper .card {
+        border-radius: 12px;
+        border: 1px solid rgba(0,0,0,0.05);
+        background-color: var(--color-bg-content);
+        color: var(--color-text-main);
+    }

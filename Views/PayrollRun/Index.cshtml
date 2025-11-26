@@ -7,41 +7,22 @@
     var selectedIsLocked = ViewBag.SelectedIsLocked as bool?;
 }
 
-<div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-cash-stack"></i> Payroll Runs</h2>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Generate New Payroll Run
-        </a>
+<div class="page-section">
+
+    <!-- Header -->
+    <div class="bp-header">
+        <h1>Payroll Runs</h1>
+        <p>Manage monthly payroll for employees</p>
     </div>
 
-    <!-- Success/Error Messages -->
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle"></i> @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+    <!-- Search / Filter Card -->
+    <div class="bp-search-card shadow-sm border-0 mb-4">
+        <div class="card-body p-3">
+            <form method="get" asp-action="Index" class="bp-search-form row g-3 align-items-end">
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle"></i> @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-
-    <!-- Filter Card -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-light">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
-        </div>
-        <div class="card-body">
-            <form method="get" asp-action="Index" class="row g-3">
                 <div class="col-md-3">
-                    <label for="year" class="form-label">Year</label>
-                    <select name="year" id="year" class="form-select">
+                    <label class="form-label small text-muted">Year</label>
+                    <select name="year" class="form-select bp-filter-select">
                         <option value="">All Years</option>
                         @for (int y = DateTime.Now.Year; y >= DateTime.Now.Year - 5; y--)
                         {
@@ -51,8 +32,8 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="month" class="form-label">Month</label>
-                    <select name="month" id="month" class="form-select">
+                    <label class="form-label small text-muted">Month</label>
+                    <select name="month" class="form-select bp-filter-select">
                         <option value="">All Months</option>
                         @for (int m = 1; m <= 12; m++)
                         {
@@ -63,151 +44,152 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label for="isLocked" class="form-label">Status</label>
-                    <select name="isLocked" id="isLocked" class="form-select">
+                    <label class="form-label small text-muted">Status</label>
+                    <select name="isLocked" class="form-select bp-filter-select">
                         <option value="">All</option>
                         <option value="false" selected="@(selectedIsLocked == false)">Draft</option>
                         <option value="true" selected="@(selectedIsLocked == true)">Confirmed</option>
                     </select>
                 </div>
 
-                <div class="col-md-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary me-2">
-                        <i class="bi bi-search"></i> Filter
+                <div class="col-md-2">
+                    <button type="submit" class="btn bp-btn-filter w-100">
+                        <i class="bi bi-funnel me-2"></i>Apply Filters
                     </button>
-                    <a asp-action="Index" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Clear
-                    </a>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Payroll Runs Table -->
-    <div class="card shadow-sm">
-        <div class="card-body">
+    <!-- List Section -->
+    <div class="list-page customers-page mt-4">
+
+        <div class="card">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="card-title fw-semibold">Payroll List</h2>
+                <span class="badge bg-primary rounded-pill">@Model.Count() Runs</span>
+            </div>
+
+            <!-- Floating Add Button -->
+            <a asp-action="Create"
+               class="floating-btn"
+               title="Generate Payroll Run">
+               <i class="fa-solid fa-plus"></i>
+            </a>
+
             @if (Model.Any())
             {
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-dark">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Payroll Name</th>
+                            <th>Period</th>
+                            <th>Employees</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Processed</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var run in Model)
+                        {
                             <tr>
-                                <th>Payroll Run Name</th>
-                                <th>Period</th>
-                                <th class="text-end">Employees</th>
-                                <th class="text-end">Total (Multi-Currency)</th>
-                                <th>Status</th>
-                                <th>Processed Date</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var run in Model)
-                            {
-                                <tr>
-                                    <td>
-                                        <strong>@run.Name</strong>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">
-                                            @run.PeriodStart.ToString("dd MMM") - @run.PeriodEnd.ToString("dd MMM yyyy")
+                                <td data-label="Payroll Name">
+                                    <strong>@run.Name</strong>
+                                </td>
+
+                                <td data-label="Period">
+                                    <small class="text-muted">
+                                        @run.PeriodStart.ToString("dd MMM") - @run.PeriodEnd.ToString("dd MMM yyyy")
+                                    </small>
+                                </td>
+
+                                <td data-label="Employees">
+                                    <span class="badge bg-secondary">@run.EmployeeCount</span>
+                                </td>
+
+                                <td data-label="Total">
+                                    @if (run.CurrencyTotals.Any())
+                                    {
+                                        <small>
+                                            @foreach (var total in run.CurrencyTotals.Take(2))
+                                            {
+                                                <div><strong>@total.Value.ToString("N2")</strong> @total.Key</div>
+                                            }
+                                            @if (run.CurrencyTotals.Count > 2)
+                                            {
+                                                <div class="text-muted">+@(run.CurrencyTotals.Count - 2) more...</div>
+                                            }
                                         </small>
-                                    </td>
-                                    <td class="text-end">
-                                        <span class="badge bg-secondary">@run.EmployeeCount</span>
-                                    </td>
-                                    <td class="text-end">
-                                        @if (run.CurrencyTotals.Any())
-                                        {
-                                            <small>
-                                                @foreach (var total in run.CurrencyTotals.Take(2))
-                                                {
-                                                    <div><strong>@total.Value.ToString("N2")</strong> @total.Key</div>
-                                                }
-                                                @if (run.CurrencyTotals.Count > 2)
-                                                {
-                                                    <div class="text-muted">+@(run.CurrencyTotals.Count - 2) more...</div>
-                                                }
-                                            </small>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted">N/A</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (run.IsLocked)
-                                        {
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-lock-fill"></i> Confirmed
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-warning text-dark">
-                                                <i class="bi bi-unlock-fill"></i> Draft
-                                            </span>
-                                        }
-                                    </td>
-                                    <td>
-                                        @if (run.ProcessedDate.HasValue)
-                                        {
-                                            <small>@run.ProcessedDate.Value.ToString("dd MMM yyyy HH:mm")</small>
-                                        }
-                                        else
-                                        {
-                                            <em class="text-muted">Not processed</em>
-                                        }
-                                    </td>
-                                    <td class="text-center">
-                                        <a asp-action="Details" asp-route-id="@run.Id" class="btn btn-sm btn-primary" title="View Details">
-                                            <i class="bi bi-eye"></i>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+
+                                <td data-label="Status">
+                                    @if (run.IsLocked)
+                                    {
+                                        <span class="status active"><i class="bi bi-lock-fill"></i> Confirmed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status inactive"><i class="bi bi-unlock-fill"></i> Draft</span>
+                                    }
+                                </td>
+
+                                <td data-label="Processed">
+                                    @if (run.ProcessedDate.HasValue)
+                                    {
+                                        <small>@run.ProcessedDate.Value.ToString("dd MMM yyyy HH:mm")</small>
+                                    }
+                                    else
+                                    {
+                                        <em class="text-muted">Not processed</em>
+                                    }
+                                </td>
+
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <a asp-action="Details" asp-route-id="@run.Id" class="btn btn-view btn-sm" title="View Details">
+                                            <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        
+
                                         @if (!run.IsLocked)
                                         {
-                                            <form asp-action="Delete" asp-route-id="@run.Id" method="post" style="display: inline;"
+                                            <form asp-action="Delete" asp-route-id="@run.Id" method="post"
+                                                  style="display: inline;"
                                                   onsubmit="return confirm('Are you sure you want to delete this payroll run?');">
                                                 @Html.AntiForgeryToken()
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Delete">
-                                                    <i class="bi bi-trash"></i>
+                                                <button type="submit" class="btn btn-delete btn-sm" title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
                                                 </button>
                                             </form>
                                         }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
             else
             {
-                <div class="text-center py-5">
-                    <i class="bi bi-inbox" style="font-size: 3rem; color: #ccc;"></i>
-                    <p class="text-muted mt-3">No payroll runs found. Generate a new payroll run to get started.</p>
-                    <a asp-action="Create" class="btn btn-primary mt-2">
-                        <i class="bi bi-plus-circle"></i> Generate New Payroll Run
-                    </a>
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox display-4 d-block mb-2"></i>
+                    No payroll runs found
                 </div>
             }
         </div>
     </div>
 
-    <!-- Info Card -->
-    <div class="card mt-4 border-info">
-        <div class="card-header bg-info text-white">
-            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Payroll System Information</h5>
-        </div>
-        <div class="card-body">
-            <ul class="mb-0">
-                <li><strong>Automatic Generation:</strong> Payroll runs are automatically generated on the last day of each month at 11:00 PM.</li>
-                <li><strong>Draft Status:</strong> New payroll runs start in "Draft" status, allowing HR to review and make adjustments.</li>
-                <li><strong>Confirm & Lock:</strong> Click "Confirm Payroll" to lock the run and send email notifications to all employees.</li>
-                <li><strong>Regenerate:</strong> If needed, you can regenerate a draft payroll run to recalculate all entries.</li>
-                <li><strong>Overtime Rate:</strong> 1.5x base hourly rate</li>
-                <li><strong>Tax Rate:</strong> 10% of gross salary</li>
-            </ul>
-        </div>
-    </div>
+
+
 </div>
+
+ 
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+<link rel="stylesheet" href="~/css/pagination.css" />

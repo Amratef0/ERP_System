@@ -35,7 +35,7 @@ namespace ERP_System_Project.Controllers.Core
         [HttpGet]
         public IActionResult Create()
         {
-            return View("Create");
+            return PartialView("Create");
         }
 
         [HttpPost]
@@ -88,7 +88,7 @@ namespace ERP_System_Project.Controllers.Core
                     TempData["ErrorMessage"] = "Country not found!";
                     return NotFound();
                 }
-                return View("Edit", country);
+                return PartialView("Edit", country);
             }
             catch (Exception ex)
             {
