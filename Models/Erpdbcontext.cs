@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.Models.Config.HRConfig;
+using ERP_System_Project.Models.Config.HRConfig;
 using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.CRM;
@@ -41,11 +41,13 @@ namespace ERP_System_Project.Models
         public DbSet<OrderStatusCode> OrderStatusCodes { get; set; }
         public DbSet<PaymentMethodType> PaymentMethodTypes { get; set; }
         public DbSet<Offer> Offers { get; set; }
+        public DbSet<TempCart> TempCarts { get; set; }
+
 
         #endregion
 
-         #region Inventory
- public DbSet<Brand> Brands { get; set; }
+        #region Inventory
+        public DbSet<Brand> Brands { get; set; }
  public DbSet<Category> Categories { get; set; }
  public DbSet<Product> Products { get; set; }
  public DbSet<ProductAttribute> ProductAttributes { get; set; }
