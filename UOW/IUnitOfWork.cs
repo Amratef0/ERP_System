@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.Models;
+using ERP_System_Project.Models;
 using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.ECommerce;
@@ -25,6 +25,8 @@ namespace ERP_System_Project.UOW
         IRepository<Warehouse> Warehouses { get; }
         IRepository<InventoryTransaction> InventoryTransactions { get; }
         IRepository<InventoryRequisition> InventoryRequisitions { get; }
+        IRepository<TempCart> TempCarts { get; }
+
 
         IRepository<Offer> Offers { get; }
         IRepository<Order> Orders { get; }
