@@ -12,17 +12,6 @@
         <p>Manage employee classifications and types</p>
     </div>
 
-    <!-- Search Card -->
-    <div class="bp-search-card top-search mt-4">
-        <form id="searchForm" class="bp-search-form">
-            @Html.AntiForgeryToken()
-            <div class="bp-search-group">
-                <i class="bi bi-search"></i>
-                <input type="text" id="searchTerm" placeholder="Search employee types by name..." />
-            </div>
-            <button type="button" id="searchBtn">Search</button>
-        </form>
-    </div>
 
     <!-- Stats Row -->
     <div class="bp-stats-row">
@@ -119,14 +108,6 @@
                                        class="btn btn-update btn-sm">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
-
-                                    <!-- Delete (Normal Submit, NOT AJAX, NOT MODAL) -->
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-delete btn-sm" title="Delete">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
 
 
                                 </div>

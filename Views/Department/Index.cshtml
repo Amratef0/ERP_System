@@ -18,7 +18,7 @@
             @Html.AntiForgeryToken()
             <div class="bp-search-group">
                 <i class="bi bi-search"></i>
-                <input type="text" id="searchTerm" placeholder="Search departments by name, code, or cost center..." />
+                <input type="text" id="searchTerm" placeholder="Search departments by name ..." />
             </div>
             <button type="button" id="searchBtn">Search</button>
         </form>
@@ -128,14 +128,6 @@
                                        title="Edit Department">
                                        <i class="fa-solid fa-pen"></i>
                                     </a>
-
-                                     <!-- Delete (NOT AJAX, NOT MODAL) -->
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post">
-                                    @Html.AntiForgeryToken()
-                                    <button type="submit" class="btn btn-delete btn-sm" title="Delete Job Title">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </form>
 
 
                                 </div>

@@ -12,17 +12,6 @@
         <p>Manage attendance status classifications</p>
     </div>
 
-    <!-- Search Card -->
-    <div class="bp-search-card top-search mt-4">
-        <form id="searchForm" class="bp-search-form">
-            @Html.AntiForgeryToken()
-            <div class="bp-search-group">
-                <i class="bi bi-search"></i>
-                <input type="text" id="searchTerm" placeholder="Search status codes by name or code..." />
-            </div>
-            <button type="button" id="searchBtn">Search</button>
-        </form>
-    </div>
 
     <!-- Stats Row -->
     <div class="bp-stats-row">
@@ -120,14 +109,6 @@
                                        title="Edit Job Title">
                                        <i class="fa-solid fa-pen"></i>
                                     </a>
-
-                                    <!-- Delete -->
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-delete btn-sm" title="Delete Job Title">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
 
                                 </div>
                             </td>

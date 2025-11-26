@@ -49,6 +49,7 @@
         transform: translateY(0);
     }
 }
+
 @keyframes fadeInUp {
     0% {
         opacity: 0;
@@ -176,15 +177,134 @@ html, body {
 }
 
 h5 {
-    font-family: "Bungee", sans-serif;
-    font-weight: 400;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 800;
     font-style: normal;
     color: var(--color-accent);
-    font-size: 25px;
-    letter-spacing: 7px;
-    margin-left: 25px;
-    text-shadow: var(--color-accent) -3px 2px 7px;
+    font-size: 32px;
+    letter-spacing: 3px;
+    margin-left: 15px;
+    margin-bottom: 0;
+    text-shadow: 0 0 20px rgba(99, 91, 255, 0.5), 0 0 40px rgba(99, 91, 255, 0.3);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
 }
+
+/* ========== Navbar Brand & Logo ========== */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    gap: 12px;
+    padding: 8px 16px;
+    border-radius: 15px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.navbar-brand::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--color-hover-accent), transparent);
+    transition: left 0.6s ease;
+}
+
+.navbar-brand:hover::before {
+    left: 100%;
+}
+
+.navbar-brand:hover {
+    background: linear-gradient(135deg, var(--color-hover-accent), transparent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 91, 255, 0.15);
+}
+
+.navbar-brand:hover h5 {
+    letter-spacing: 5px;
+    text-shadow: 0 0 25px rgba(99, 91, 255, 0.7), 0 0 50px rgba(99, 91, 255, 0.5), 0 0 75px rgba(99, 91, 255, 0.3);
+    transform: scale(1.05);
+}
+
+.navbar-logo {
+    height: 48px;
+    width: auto;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    filter: drop-shadow(0 4px 8px rgba(99, 91, 255, 0.25));
+    animation: logoFloat 3s ease-in-out infinite;
+}
+
+.navbar-brand:hover .navbar-logo {
+    transform: scale(1.15) rotate(5deg);
+    filter: drop-shadow(0 6px 15px rgba(99, 91, 255, 0.4)) brightness(1.1);
+}
+
+/* Logo Float Animation */
+@keyframes logoFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Pulse Effect on Logo */
+@keyframes logoPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(99, 91, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(99, 91, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(99, 91, 255, 0);
+    }
+}
+
+.navbar-brand:active .navbar-logo {
+    transform: scale(0.95);
+}
+
+/* Dark Mode Enhancement */
+.dark .navbar-logo {
+    filter: drop-shadow(0 4px 12px rgba(142, 124, 255, 0.35)) brightness(1.1);
+}
+
+.dark .navbar-brand:hover .navbar-logo {
+    filter: drop-shadow(0 6px 20px rgba(142, 124, 255, 0.5)) brightness(1.2);
+}
+
+/* Responsive Logo */
+@media (max-width: 768px) {
+    .navbar-logo {
+        height: 40px;
+    }
+    
+    h5 {
+        font-size: 24px;
+        letter-spacing: 2px;
+        font-weight: 700;
+    }
+    
+    .navbar-brand {
+        padding: 6px 12px;
+    }
+    
+    h6 {
+        font-size: 15px;
+        letter-spacing: 2px;
+    }
+    
+    .nav-link {
+        font-size: 13px;
+    }
+}
+
 
 /* sidebar-icons*/
 .sidebar-icons {
@@ -245,11 +365,25 @@ h5 {
             transform: scale(1.1);
         }
 
-        .sidebar-icons button.active,
         .nav-link.active {
             background: linear-gradient(90deg, #6A5BFF, #8E7CFF);
             border-radius: 10px;
             color: var(--color-active-accent);
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.3);
+        }
+
+        .nav-link.active::before {
+            width: 4px;
+            background: white;
+        }
+
+    .sidebar-icons button.active,
+        .sidebar-icons button.active {
+            background: linear-gradient(90deg, #6A5BFF, #8E7CFF);
+            border-radius: 10px;
+            color: var(--color-active-accent);
+            box-shadow: 0 4px 12px rgba(99, 91, 255, 0.4);
         }
 
             .nav-link.active:hover {
@@ -296,20 +430,61 @@ h5 {
 
 
 h6 {
+    font-family: "Rajdhani", sans-serif;
     color: var(--color-text-main);
     text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 400;
-    font-size: 17px;
+    letter-spacing: 2.5px;
+    font-weight: 600;
+    font-size: 16px;
     margin-bottom: 15px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+h6::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+    border-radius: 2px;
 }
 
 .nav-link {
+    font-family: "Poppins", sans-serif;
     color: var(--color-text-main);
+    font-weight: 400;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 60%;
+    background: var(--color-accent);
+    border-radius: 0 4px 4px 0;
+    transition: width 0.3s ease;
 }
 
     .nav-link:hover {
         color: var(--color-accent);
+        background: var(--color-hover-accent);
+        transform: translateX(5px);
+        font-weight: 500;
+    }
+
+    .nav-link:hover::before {
+        width: 4px;
     }
 
 .app {
