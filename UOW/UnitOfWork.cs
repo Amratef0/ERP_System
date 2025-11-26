@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.Models;
+using ERP_System_Project.Models;
 using ERP_System_Project.Models.Core;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.ECommerce;
@@ -36,6 +36,9 @@ namespace ERP_System_Project.UOW
         public IRepository<OrderItem> OrderItems { get; }
         public IRepository<OrderStatusCode> OrderStatusCodes { get; }
         public IRepository<PaymentMethodType> PaymentMethodTypes { get; }
+
+        public IRepository<TempCart> TempCarts { get; }
+
         #endregion
 
         #region CRM
@@ -96,6 +99,8 @@ namespace ERP_System_Project.UOW
             OrderItems = new Repository<OrderItem>(_db);
             OrderStatusCodes = new Repository<OrderStatusCode>(_db);
             PaymentMethodTypes = new Repository<PaymentMethodType>(_db);
+
+            TempCarts = new Repository<TempCart>(_db);
 
             Customers = new Repository<Customer>(_db);
             CustomerAddresses = new Repository<CustomerAddress>(_db);

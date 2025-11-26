@@ -1,7 +1,9 @@
+using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.Inventory;
 using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels.ECommerce;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NuGet.Protocol.Core.Types;
 using System.Drawing.Printing;
@@ -13,56 +15,16 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUnitOfWork _uow;
-        private readonly string SessionKey = "MyCart"; 
+        private readonly string SessionKey = "MyCart";
 
         public CartService(IHttpContextAccessor httpContextAccessor, IUnitOfWork unitOfWork)
         {
             _httpContextAccessor = httpContextAccessor;
             _uow = unitOfWork;
         }
+
         public async Task<CartVM> GetAllFromCart()
         {
-            //var productIds = GetProductsCartIds();
-            //var productsSessionDictionary = GetDictionaryFromSession(SessionKey);
-
-            //var productsCart = await _uow.Products.GetAllAsync(
-            //    selector: p => new ProductCartVM
-            //    {
-            //        Id = p.Id,
-            //        Name = p.Name,
-            //        ImageURL = p.ImageURL,
-
-            //        Price = p.StandardPrice,
-            //        HaveOffer = p.Offer != null,
-            //        DiscountPercentage = p.Offer != null ? p.Offer.DiscountPercentage : 0,
-            //        NetPrice =
-            //            p.Offer != null ?
-            //            p.StandardPrice - ((p.Offer.DiscountPercentage / 100m) * p.StandardPrice)
-            //            : p.StandardPrice,
-
-            //        Quantity =
-            //            productsSessionDictionary[p.Id] > p.Quantity 
-            //            ?
-            //            p.Quantity : productsSessionDictionary[p.Id]
-            //    },
-            //    filter: p => p.Quantity > 0 && productIds.Contains(p.Id),
-            //    Includes: new Expression<Func<Product, object>>[]
-            //    {
-            //        p => p.Offer,
-            //    }
-
-            //);
-
-            //decimal totalPrice = 0;
-            //foreach ( var product in productsCart ) 
-            //    totalPrice += product.NetPrice;
-
-            //return new CartVM
-            //{
-            //    productsCart = productsCart,
-            //    TotalPrice = totalPrice
-            //};
-
             var productsSessionDictionary = GetDictionaryFromSession(SessionKey);
             var productIds = productsSessionDictionary.Keys.ToList();
 
@@ -110,8 +72,8 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 productsCart = productsCart,
                 TotalPrice = totalPrice
             };
-
         }
+
         public void AddToCart(int productId, int quantity)
         {
             var dictionary = GetDictionaryFromSession(SessionKey);
@@ -128,26 +90,35 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
         private Dictionary<int, int> GetDictionaryFromSession(string sessionKey)
         {
-            var json = _httpContextAccessor
-                .HttpContext.Session.GetString(SessionKey);
-
+            var json = _httpContextAccessor.HttpContext.Session.GetString(SessionKey);
             if (string.IsNullOrEmpty(json))
                 return new Dictionary<int, int>();
 
-            return  JsonConvert.DeserializeObject<Dictionary<int, int>>(json)
-                ?? new Dictionary<int, int>(); ;
+            return JsonConvert.DeserializeObject<Dictionary<int, int>>(json) ?? new Dictionary<int, int>();
         }
 
         private void SaveDictionarySession(Dictionary<int, int> dictionary)
         {
             var json = JsonConvert.SerializeObject(dictionary);
-            _httpContextAccessor.HttpContext.Session
-                .SetString(SessionKey, json);
+            _httpContextAccessor.HttpContext.Session.SetString(SessionKey, json);
         }
+
         public async Task ClearCartAsync()
         {
             _httpContextAccessor.HttpContext.Session.Remove(SessionKey);
         }
 
+        public async Task SaveCartForPayment(string userId, CartViewModel cart)
+        {
+            var tempCart = new TempCart
+            {
+                UserId = userId,
+                CartDataJson = JsonConvert.SerializeObject(cart),
+                CreatedAt = DateTime.Now
+            };
+
+            await _uow.TempCarts.AddAsync(tempCart);
+            await _uow.CompleteAsync();
+        }
     }
 }
