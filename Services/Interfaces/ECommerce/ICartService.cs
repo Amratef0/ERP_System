@@ -1,4 +1,4 @@
-﻿using ERP_System_Project.ViewModels.ECommerce;
+using ERP_System_Project.ViewModels.ECommerce;
 
 namespace ERP_System_Project.Services.Interfaces.ECommerce
 {
@@ -7,5 +7,7 @@ namespace ERP_System_Project.Services.Interfaces.ECommerce
         Task<CartVM> GetAllFromCart();
         void AddToCart(int productId, int quantity);
         void RemoveFromCart(int productId);
+        Task ClearCartAsync();
+
     }
 }
