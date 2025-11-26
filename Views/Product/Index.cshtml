@@ -184,22 +184,22 @@
                                         <span class="text-muted">No Offer</span>
                                     }
                                 </td>
-                                <td data-label="Actions">
-                                    <div class="action-buttons">
-                                        <a asp-controller="Offer" asp-action="Set" asp-route-productId="@product.Id" class="btn btn-update btn-sm" title="Set Offer">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </a>
-                                        <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-update btn-sm" title="Edit Product">
-                                            <i class="fa-solid fa-pen"></i>
-                                        </a>
-                                        <a href="javascript:void(0)"
-                                           onclick="openModalWithAjax('@Url.Action("Delete", "Product", new { id = product.Id })', 'Delete Customer')"
-                                           class="btn btn-delete btn-sm"
-                                           title="Delete Customer">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                 <td data-label="Actions">
+     <div class="action-buttons">
+         <a asp-controller="Offer" asp-action="Set" asp-route-productId="@product.Id" class="btn btn-success btn-sm" title="Set Offer">
+             <i class="fa-solid fa-tag"></i> 
+         </a>
+         <a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-update btn-sm" title="Edit Product">
+             <i class="fa-solid fa-pen"></i> 
+         </a>
+         <a href="javascript:void(0)"
+            onclick="openModalWithAjax('@Url.Action("Delete", "Product", new { id = product.Id })', 'Delete Customer')"
+            class="btn btn-delete btn-sm"
+            title="Delete Customer">
+             <i class="fa-solid fa-trash"></i>
+         </a>
+     </div>
+ </td>
                             </tr>
                         }
                     }
