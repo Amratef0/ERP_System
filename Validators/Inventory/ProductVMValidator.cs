@@ -5,6 +5,8 @@ namespace ERP_System_Project.Validators.Inventory
 {
     public class ProductVMValidator : AbstractValidator<ProductVM>
     {
+        private readonly string[] _validExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+        private readonly int _maxFileSizeInMB = 1 * 1024 * 1024;
         public ProductVMValidator()
         {
             RuleFor(x => x.Name)
@@ -61,7 +63,10 @@ namespace ERP_System_Project.Validators.Inventory
 
 
             RuleFor(x => x.Image)
-                .NotNull().WithMessage("Image is required.");
+                .NotNull().WithMessage("Image is required.")
+                .Must(image => _validExtensions.Contains(Path.GetExtension(image.FileName).ToLower()))
+                .WithMessage($"Invalid Extension. Allowed Extensions : {string.Join(',',_validExtensions)}")
+                .Must(image => image.Length <= _maxFileSizeInMB).WithMessage($"Image size cannot exceed 1MB.");
         }
     }
 

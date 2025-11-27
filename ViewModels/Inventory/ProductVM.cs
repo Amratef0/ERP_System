@@ -30,7 +30,7 @@ namespace ERP_System_Project.ViewModels.Inventory
         public int OfferPercentege { get; set; } = 0;
         public int Quantity { get; set; }
 
-        [ImageFile]
+        //[ImageFile]
         public IFormFile Image { get; set; } = null!;
         public string? ImageURL { get; set; }
 
