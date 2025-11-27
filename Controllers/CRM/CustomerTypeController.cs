@@ -41,33 +41,38 @@ namespace ERP_System_Project.Controllers.CRM
         {
             return PartialView();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CustomerTypeVM model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var cusomerType = _mapper.Map<CustomerType>(model);
-                var existing = await _uow.CustomerTypes.AnyAsync(ct=>ct.Name == model.Name);
-                if (existing)
-                {
-                    ModelState.AddModelError(string.Empty, "A customer type with the same Name already exists.");
-                    return View(model);
-                }
-                try
-                {
-                    await _uow.CustomerTypes.AddAsync(cusomerType);
-                    await _uow.CompleteAsync();
-                    TempData["Success"] = "Customer type created successfully!";
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError(string.Empty, "An error occurred while creating the customer type. Please try again.");
-
-                }
+                return PartialView(model);
             }
-                return View(model);
+
+            var existing = await _uow.CustomerTypes.AnyAsync(ct => ct.Name == model.Name);
+            if (existing)
+            {
+                ModelState.AddModelError(nameof(model.Name), "A customer type with the same Name already exists.");
+                return PartialView(model);
+            }
+
+            try
+            {
+                var customerType = _mapper.Map<CustomerType>(model);
+                await _uow.CustomerTypes.AddAsync(customerType);
+                await _uow.CompleteAsync();
+
+                TempData["Success"] = "Customer type created successfully!";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while creating the customer type.");
+                ModelState.AddModelError(string.Empty, ex.Message); // temporary for debugging
+                return PartialView(model);
+            }
         }
         public async Task<IActionResult> Details(int? id)
         {

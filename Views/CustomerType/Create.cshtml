@@ -7,7 +7,8 @@
     <div class="form">
         <h3 class="formTitle" id="form-title">Add New Customer Type</h3>
 
-        <form method="post" enctype="multipart/form-data">
+        <form asp-action="Create" asp-controller="CustomerType" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
 
             <div class="form-group">
                 <input asp-for="Name" class="form-control" placeholder=" " />
@@ -30,8 +31,8 @@
                     Back
                 </a>
             </div>
-
         </form>
+
     </div>
 </div>
 
