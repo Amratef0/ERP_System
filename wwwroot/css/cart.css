@@ -1,0 +1,209 @@
+﻿/* Override Bootstrap Light/Dark Colors to match theme variables */
+.bg-light,
+.card-header.bg-light {
+    background: var(--color-bg-content) !important;
+}
+
+.text-dark,
+.h6.text-dark,
+.card-title.text-dark {
+    color: var(--color-text-main) !important;
+}
+
+.text-primary,
+.h5.text-primary,
+.btn-primary .text-primary {
+    color: var(--color-accent) !important;
+}
+
+/* Empty Cart - Auto Dark Mode */
+.card.shadow-sm.border-0 .card-body.text-center {
+    background: var(--color-bg-content) !important;
+    color: var(--color-text-main) !important;
+    border-radius: 12px;
+}
+
+/* Text inside empty cart */
+.card-body.text-center h3,
+.card-body.text-center p {
+    color: var(--color-text-main) !important;
+}
+
+/* Icon */
+.card-body.text-center i {
+    color: var(--color-text-muted) !important;
+}
+
+/* Button */
+.card-body.text-center .btn-primary {
+    background: var(--color-accent) !important;
+    color: var(--color-bg-content) !important;
+    border: none !important;
+}
+
+    .card-body.text-center .btn-primary:hover {
+        background: var(--color-hover-accent) !important;
+        color: var(--color-accent) !important;
+    }
+
+
+/* Override Buttons with bg-primary coming from Bootstrap */
+.btn-primary:not(.custom) {
+    background: var(--color-accent) !important;
+    color: var(--color-bg-content) !important;
+    border: none !important;
+}
+
+    .btn-primary:not(.custom):hover {
+        background: var(--color-hover-accent) !important;
+        color: var(--color-accent) !important;
+    }
+
+/* Empty Cart Card */
+.card.text-center {
+    background: var(--color-bg-content) !important;
+    border: 1px solid var(--color-text-muted) !important;
+}
+
+    .card.text-center h3,
+    .card.text-center p {
+        color: var(--color-text-main) !important;
+    }
+
+    .card.text-center i {
+        color: var(--color-text-muted) !important;
+    }
+
+.btn-primary.btn-lg {
+    background: var(--color-accent) !important;
+    color: var(--color-bg-content) !important;
+}
+
+/* ===== Global Page Colors ===== */
+.container-fluid {
+    background: var(--color-bg-container);
+    color: var(--color-text-main);
+}
+
+/* ===== Header ===== */
+h1.h2 {
+    color: var(--color-accent);
+}
+
+.text-muted {
+    color: var(--color-text-muted) !important;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    transition: .25s;
+    background: var(--color-bg-content);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-text-muted);
+}
+
+    .btn:hover {
+        background: var(--color-hover-accent);
+        color: var(--color-accent);
+        transform: translateY(-2px);
+    }
+
+/* Outline Primary */
+.btn-outline-primary {
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
+}
+
+    .btn-outline-primary:hover {
+        background: var(--color-accent);
+        color: var(--color-bg-content);
+    }
+
+/* Primary Gradient */
+.btn-primary {
+    background: var(--color-accent);
+    color: var(--color-bg-content);
+    border: none;
+}
+
+    .btn-primary:hover {
+        background: var(--color-hover-accent);
+        color: var(--color-accent);
+        transform: translateY(-3px);
+    }
+
+/* ===== Cart Item ===== */
+.cart-item {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-text-muted);
+    border-radius: 14px;
+    transition: .25s;
+}
+
+    .cart-item:hover {
+        background: var(--color-hover-accent);
+        border-color: var(--color-accent);
+    }
+
+    /* Product Name Hover */
+    .cart-item a:hover h6 {
+        color: var(--color-accent) !important;
+    }
+
+/* Prices */
+.text-decoration-line-through {
+    color: var(--color-text-muted) !important;
+}
+
+h6.fw-bold,
+.h6.fw-bold,
+.card-title {
+    color: var(--color-text-main);
+}
+
+/* ===== Summary Card ===== */
+.card.sticky-top {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-text-muted);
+    border-radius: 14px;
+}
+
+/* ===== Payment Modal ===== */
+.payment-option-card {
+    background: var(--color-bg-content);
+    border: 1px solid var(--color-text-muted);
+    border-radius: 14px;
+    transition: .25s;
+}
+
+    .payment-option-card:hover {
+        background: var(--color-hover-accent);
+        border-color: var(--color-accent);
+    }
+
+    .payment-option-card.selected {
+        border: 2px solid var(--color-accent);
+        background: var(--color-hover-accent);
+    }
+
+.payment-check {
+    color: var(--color-accent) !important;
+}
+
+/* Modal Header */
+.modal-content {
+    background: var(--color-bg-content);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-text-muted);
+}
+
+.btn-close {
+    filter: invert(var(--icon-invert, 0));
+}
+
+/* Empty Cart Icon */
+.card.text-center i {
+    color: var(--color-text-muted);
+}

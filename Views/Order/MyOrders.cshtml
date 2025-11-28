@@ -241,124 +241,164 @@
 </div>
 
 <style>
-    .bg-gradient-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    }
+/* ===========================
+   My Orders Page Styling (Auto Dark/Light)
+   =========================== */
 
-    .hover-lift {
-        transition: all 0.3s ease;
-    }
+/* ===== General ===== */
+.container-fluid {
+    color: var(--color-text-main);
+}
 
-        .hover-lift:hover {
-            transform: translateY(-5px);
-        }
+.text-dark {
+    color: var(--color-text-main) !important;
+}
 
-    .hover-shadow-sm:hover {
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-    }
+.text-muted {
+    color: var(--color-text-muted) !important;
+}
 
-    .order-icon {
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+.bg-light {
+    background: var(--color-bg-content) !important;
+}
 
-    .badge {
-        font-size: 0.75rem;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+/* ===== Cards ===== */
+.card {
+    background: var(--color-bg-container);
+    border: 1px solid var(--color-text-muted);
+    border-radius: 16px;
+    transition: 0.3s ease;
+}
 
-    /* Status Color Coding */
-    .status-pending {
-        background: linear-gradient(135deg, #ffc107, #ff8c00);
-        color: #000;
-    }
+.card-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
 
-    .status-processing {
-        background: linear-gradient(135deg, #17a2b8, #20c997);
-        color: white;
-    }
+.card-body {
+    background: var(--color-bg-content);
+}
 
-    .status-shipped {
-        background: linear-gradient(135deg, #007bff, #6610f2);
-        color: white;
-    }
+/* Hover lift */
+.hover-lift:hover {
+    transform: translateY(-4px);
+}
 
-    .status-delivered {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-    }
+/* Hover shadow */
+.hover-shadow-sm:hover {
+    box-shadow: 0 0.6rem 1.2rem rgba(0,0,0,0.15);
+}
 
-    .status-cancelled {
-        background: linear-gradient(135deg, #dc3545, #e83e8c);
-        color: white;
-    }
+/* ===== Header Gradient (Primary) ===== */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-hover-accent) 100%) !important;
+    color: white;
+}
 
-    .status-returned {
-        background: linear-gradient(135deg, #6c757d, #868e96);
-        color: white;
-    }
+/* Icon container */
+.order-icon {
+    width: 55px;
+    height: 55px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .product-image-container {
-        position: relative;
-        transition: transform 0.3s ease;
-    }
+/* ===== Badges (Statuses) ===== */
+.badge {
+    font-size: 0.7rem;
+    padding: 0.45rem 1.1rem;
+    font-weight: 600;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
 
-        .product-image-container:hover {
-            transform: scale(1.05);
-        }
+/* Keep your gradients but make dark mode readable */
+.status-pending    { color: #000; }
+.status-processing,
+.status-shipped,
+.status-delivered,
+.status-cancelled,
+.status-returned   { color: #fff; }
 
-    .empty-state {
-        max-width: 500px;
-        margin: 0 auto;
-    }
+/* ===== Order Meta Info ===== */
+.border-end {
+    border-right: 1px solid var(--color-text-muted) !important;
+}
 
-    .empty-state-icon {
-        opacity: 0.5;
-    }
+.small {
+    color: var(--color-text-muted);
+}
 
-    .page-item.active .page-link {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-color: #667eea;
-    }
+.bg-light.rounded-top {
+    background: var(--color-bg-content) !important;
+}
 
-    .page-link {
-        border: none;
-        margin: 0 2px;
-        border-radius: 8px !important;
-        color: #6c757d;
-        font-weight: 500;
-    }
+/* ===== Product Image ===== */
+.product-image-container img {
+    border: 1px solid var(--color-text-muted);
+    background: var(--color-bg-container);
+}
 
-        .page-link:hover {
-            background-color: #f8f9fa;
-            color: #667eea;
-        }
+/* Hover zoom */
+.product-image-container:hover {
+    transform: scale(1.05);
+}
 
-    .display-6 {
-        font-size: 2.5rem;
-    }
+/* ===== Pagination ===== */
+.page-link {
+    background: var(--color-bg-content);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-text-muted);
+    border-radius: 10px !important;
+    transition: 0.2s;
+}
 
-    .py-8 {
-        padding-top: 6rem !important;
-        padding-bottom: 6rem !important;
-    }
+.page-link:hover {
+    background: var(--color-hover-accent);
+    color: var(--color-accent);
+}
 
-    .mb-6 {
-        margin-bottom: 4rem !important;
-    }
+.page-item.active .page-link {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-hover-accent));
+    color: white !important;
+    border: none;
+}
 
-    .mt-6 {
-        margin-top: 4rem !important;
-    }
+/* ===== Empty State ===== */
+.empty-state-icon i {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: var(--color-text-main) !important;
+}
+
+.empty-state p {
+    color: var(--color-text-muted) !important;
+}
+
+.btn-primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.btn-primary:hover {
+    background: var(--color-hover-accent);
+    border-color: var(--color-hover-accent);
+}
+
+/* ===== Amounts ===== */
+.total-amount {
+    color: white !important;
+}
+
+.text-primary {
+    color: var(--color-accent) !important;
+}
+
 </style>
 
 <!-- Font Awesome for icons -->

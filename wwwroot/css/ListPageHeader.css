@@ -77,6 +77,7 @@
         transform: translateY(0);
     }
 }
+
 @keyframes fadeInUp {
     0% {
         opacity: 0;
@@ -379,8 +380,8 @@
 /* ===== Search Card ===== */
 .page-section .bp-search-card {
     width: 100%;
-    margin-bottom: 20px; /* مسافة تحت السيرش */
-    background: var(--color-bg-content);
+    margin-bottom: 20px;
+    background: var(--color-bg-body);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -388,7 +389,7 @@
 
 .page-section .bp-search-form {
     display: flex;
-    flex-wrap: wrap; /* عشان يبقى مرن على الموبايل */
+    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -432,6 +433,10 @@
     .page-section button:hover {
         background: #5349e8;
     }
+/* Fix placeholder in dark */
+.dark .bp-search-group input::placeholder {
+    color: var(--color-text-muted);
+}
 
 /* ===== Stats Grid ===== */
 .bp-stats-row {
@@ -583,18 +588,18 @@ button.quick-action-btn {
 /* تبقي باقي الكلاسات زي ما هي */
 
 
-    /* أيقونات جوه الزرار */
-    .quick-action-btn i {
-        font-size: 1.2rem;
-        margin-right: 0.5rem;
-    }
+/* أيقونات جوه الزرار */
+.quick-action-btn i {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+}
 
-    /* Hover effect */
-    .quick-action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        background-color: var(--hover-bg); /* لون الخلفية عند hover */
-    }
+/* Hover effect */
+.quick-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    background-color: var(--hover-bg); /* لون الخلفية عند hover */
+}
 /* الألوان والحدود حسب card */
 .card1 {
     color: var(--card1-h3);
@@ -665,23 +670,4 @@ button.quick-action-btn {
 
     .bp-btn-filter:hover {
         background: #5349e8;
-    }
-
-/* ===== DARK MODE SUPPORT ===== */
-
-.dark .bp-search-card,
-.dark .bp-search-group,
-.dark .bp-filter-select {
-    background: var(--color-bg-container);
-    border-color: #555 !important;
-}
-
-    .dark .bp-filter-select option {
-        background: var(--color-bg-container);
-        color: var(--color-text-main);
-    }
-
-    /* Fix placeholder in dark */
-    .dark .bp-search-group input::placeholder {
-        color: var(--color-text-muted);
     }

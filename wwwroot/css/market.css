@@ -1,0 +1,158 @@
+﻿
+/* Search & Filter Card */
+.search-filter-card {
+    background-color: var(--color-bg-body) !important;
+    color: var(--color-text-main) !important;
+    border-radius: 0.75rem !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05) !important;
+    padding: 1rem !important;
+}
+
+    /* Labels */
+    .search-filter-card .form-label {
+        color: var(--color-text-muted) !important;
+        transition: color 0.3s;
+    }
+
+    .search-filter-card input.form-control,
+    .search-filter-card select.form-select {
+        background-color: var(--color-bg-container) !important;
+        color: var(--color-text-main) !important;
+        border: 1px solid transparent !important;
+        border-radius: 0.5rem !important;
+        transition: all 0.3s;
+        box-shadow: none !important;
+    }
+
+    /* Input Group Text */
+    .search-filter-card .input-group-text {
+        background-color: var(--color-bg-content) !important;
+        color: var(--color-text-muted) !important;
+        border: 1px solid transparent !important;
+        border-radius: 0.5rem 0 0 0.5rem !important;
+    }
+
+    /* Focus effect */
+    .search-filter-card input.form-control:focus,
+    .search-filter-card select.form-select:focus {
+        border-color: var(--color-accent) !important;
+        box-shadow: 0 0 0 0.2rem var(--color-accent)33 !important;
+        outline: none !important;
+    }
+
+        /* Label changes on focus */
+        .search-filter-card input.form-control:focus + .form-label,
+        .search-filter-card select.form-select:focus + .form-label {
+            color: var(--color-accent) !important;
+        }
+
+    /* Buttons */
+    .search-filter-card .btn-accent {
+        background-color: var(--color-accent) !important;
+        color: var(--color-active-accent) !important;
+        border: none !important;
+        border-radius: 20px;
+        transition: all 0.3s;
+    }
+
+        .search-filter-card .btn-accent:hover {
+            background-color: var(--color-hover-accent) !important;
+            color: var(--color-text-main) !important;
+        }
+
+
+
+/* Product Card Styling */
+.product-card {
+    background: var(--color-bg-content);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all .3s ease;
+    border: 1px solid #ececec20;
+}
+
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+    }
+
+    /* Product Image */
+    .product-card img.card-img-top {
+        border-bottom: 1px solid #00000010;
+    }
+
+    /* Badge Offer */
+    .product-card .badge {
+        font-size: .75rem;
+        border-radius: 12px;
+        letter-spacing: .5px;
+    }
+
+    /* Brand Section */
+    .product-card .brand-container small {
+        color: var(--color-text-muted);
+    }
+
+    /* Product Name */
+    .product-card .card-title {
+        color: var(--color-text-main) !important;
+        font-weight: 600;
+    }
+
+    .product-card .text-price {
+        color: var(--color-text-main);
+    }
+    /* Category Badge */
+    .product-card .badge.bg-light {
+        background: var(--color-bg-sidebar) !important;
+        color: var(--color-text-main) !important;
+        border-color: var(--color-text-muted) !important;
+    }
+
+    /* Price */
+    .product-card .price-new {
+        color: var(--color-accent) !important;
+    }
+
+    .product-card .price-old {
+        color: var(--color-text-muted) !important;
+    }
+
+    /* Buttons */
+    .product-card .btn {
+        font-weight: 500;
+        border-radius: 8px;
+        transition: .2s ease;
+    }
+
+    /* Details Button */
+    .product-card .btn-primary {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+        .product-card .btn-primary:hover {
+            background: var(--color-hover-accent);
+            border-color: var(--color-accent);
+            color: var(--color-accent);
+        }
+
+    /* Favorite + Wishlist */
+    .product-card .btn-outline-danger,
+    .product-card .btn-outline-primary {
+        border-width: 1.5px;
+    }
+
+        .product-card .btn-outline-danger:hover {
+            background: #ff5b5b1a;
+        }
+
+        .product-card .btn-outline-primary:hover {
+            background: var(--color-hover-accent);
+        }
+
+    /* Rating Stars */
+    .product-card i.text-warning {
+        color: #ffb547 !important;
+    }
