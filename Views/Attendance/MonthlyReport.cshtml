@@ -895,6 +895,12 @@
         .dark .general-modal-wrapper .modal-header { background: linear-gradient(135deg, var(--color-accent), #6f63ff); }
         .dark #deptTable tbody tr { background: var(--color-bg-content); }
 
+        /* Dark mode: ensure dept table text is visible */
+        .dark #deptTable,
+        .dark #deptTable th,
+        .dark #deptTable td { color: var(--color-text-main) !important; border-color: rgba(255,255,255,0.15) !important; }
+        .dark #deptTable thead th { background: var(--color-bg-container) !important; }
+
         /* Print: force light theme for readability */
         @@media print {
             :root, body, .dark, .dark * { background: #fff !important; color: #000 !important; box-shadow: none !important; }
