@@ -1,14 +1,15 @@
+using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.Config.HRConfig;
 using ERP_System_Project.Models.Core;
-using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.CRM;
+using ERP_System_Project.Models.ECommerce;
+using ERP_System_Project.Models.ECommerece;
+using ERP_System_Project.Models.HR;
 using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Models.Logs;
+using ERP_System_Project.Models.Roles;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ERP_System_Project.Models.HR;
-using ERP_System_Project.Models.ECommerece;
-using ERP_System_Project.Models.Authentication;
-using ERP_System_Project.Models.Logs;
 
 namespace ERP_System_Project.Models
 {
@@ -87,6 +88,7 @@ namespace ERP_System_Project.Models
 
         #endregion
 
+        public DbSet<Permission> Permissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

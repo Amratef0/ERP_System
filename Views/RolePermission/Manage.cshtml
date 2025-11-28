@@ -1,0 +1,195 @@
+﻿@model ERP_System_Project.ViewModels.User.PermissionVM
+@using Microsoft.AspNetCore.Identity
+@{
+    ViewData["Title"] = "Manage Role Permissions";
+    var roles = ViewBag.Roles as List<IdentityRole> ?? new List<IdentityRole>();
+}
+
+<div class="form-page permissions-page">
+    <div class="form">
+        <h3 class="formTitle" id="form-title">
+            <i class="bi bi-shield-lock"></i> Manage Permissions
+        </h3>
+
+        <div class="card-body">
+
+            <!-- Select Role -->
+            <div class="form-group">
+                <select id="roleSelect" class="form-select" onchange="if(this.value) location.href='?roleId=' + this.value">
+                    <option value="" disabled selected hidden>-- Choose Role --</option>
+                    @foreach (var r in roles)
+                    {
+                        if (r.Id == Model.RoleId)
+                        {
+                            <option value="@r.Id" selected>@r.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@r.Id">@r.Name</option>
+                        }
+                    }
+                </select>
+                <label for="roleSelect">Select Role</label>
+                <span class="text-danger"></span>
+            </div>
+            <br />
+
+            @if (!string.IsNullOrEmpty(Model.RoleId))
+            {
+                <!-- Filter Module -->
+                <div class="form-group">
+                    <select id="moduleSelect" class="form-select" onchange="filterByModule()">
+                        <option value="" disabled selected hidden>All Modules</option>
+                        @foreach (var m in Model.Permissions.Select(p => p.Module).Distinct())
+                        {
+                            if (ViewBag.SelectedModule != null && ViewBag.SelectedModule.ToString() == m)
+                            {
+                                <option value="@m" selected>@m</option>
+                            }
+                            else
+                            {
+                                <option value="@m">@m</option>
+                            }
+                        }
+                    </select>
+                    <label for="moduleSelect">Filter Module (View Only)</label>
+                    <span class="text-danger"></span>
+                </div>
+
+                @if (Model.Permissions != null && Model.Permissions.Any())
+                {
+                    <form asp-action="SavePermissions" method="post" id="permissionsForm">
+                        <input asp-for="RoleId" type="hidden" />
+                        <input type="hidden" name="currentModule" value="@ViewBag.SelectedModule" />
+
+                        <!-- Permissions Table -->
+                        <div class="list-page permissions-page mt-4">
+                            <div class="card">
+                                <h2>Permissions List</h2>
+
+                                <table class="permissions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Module</th>
+                                            <th>Controller</th>
+                                            <th>Action</th>
+                                            <th class="text-center"> Allow?
+                                                <div class="permission-actions mt-1">
+                                                    <small>
+                                                        <a href="javascript:void(0)" onclick="selectAllPermissions()" class="text-success">All</a> |
+                                                        <a href="javascript:void(0)" onclick="clearAllPermissions()" class="text-danger">None</a>
+                                                    </small>
+                                                </div>
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Permissions.Count; i++)
+                                        {
+                                            <tr>
+                                                <td data-label="Module">@Html.DisplayFor(m => m.Permissions[i].Module)</td>
+                                                <td data-label="Controller">@Html.DisplayFor(m => m.Permissions[i].Controller)</td>
+                                                <td data-label="Action">@Html.DisplayFor(m => m.Permissions[i].Action)</td>
+                                                <td class="text-center">
+                                                    @Html.HiddenFor(m => m.Permissions[i].Module)
+                                                    @Html.HiddenFor(m => m.Permissions[i].Controller)
+                                                    @Html.HiddenFor(m => m.Permissions[i].Action)
+                                                    <label class="swaggle-toggle">
+                                                        @Html.CheckBoxFor(m => m.Permissions[i].Allowed, new { @class = "permission-checkbox" })
+                                                        <span class="slider"></span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div> 
+
+                            <!-- Submit Button OUTSIDE the card but INSIDE the form -->
+                            <div class="text-center">
+                                <button type="submit" class="btn save-btn"> Save</button>
+                            </div>
+                        </div> 
+                    </form>
+                }
+                else
+                {
+                    <p class="text-muted">No permissions found for this role/module.</p>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/ListPageHeader.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
+
+<script>
+ function filterByModule() {
+     const module = document.getElementById("moduleSelect").value;
+     const role = document.getElementById("roleSelect").value;
+     location.href = `?roleId=${role}&module=${module}`;
+ }
+
+ async function selectAllPermissions() {
+     const role = document.getElementById("roleSelect").value;
+     const module = document.getElementById("moduleSelect").value;
+
+     const checkboxes = document.querySelectorAll('.permission-checkbox');
+     checkboxes.forEach(checkbox => {
+         checkbox.checked = true;
+     });
+
+     const formData = new FormData();
+     formData.append("RoleId", role);
+     formData.append("currentModule", module);
+     formData.append("actionType", "selectAll");
+
+     try {
+         await fetch('/RolePermission/SavePermissions', {
+             method: 'POST',
+             body: formData,
+             headers: {
+                 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+             }
+         });
+     } catch (err) {
+         console.error(err);
+     }
+ }
+
+ async function clearAllPermissions() {
+     const role = document.getElementById("roleSelect").value;
+     const module = document.getElementById("moduleSelect").value;
+
+     const checkboxes = document.querySelectorAll('.permission-checkbox');
+     checkboxes.forEach(checkbox => {
+         checkbox.checked = false;
+     });
+
+     const formData = new FormData();
+     formData.append("RoleId", role);
+     formData.append("currentModule", module);
+     formData.append("actionType", "clearAll");
+
+     try {
+         await fetch('/RolePermission/SavePermissions', {
+             method: 'POST',
+             body: formData,
+             headers: {
+                 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+             }
+         });
+     } catch (err) {
+         console.error(err);
+     }
+ }
+</script>
+<style>
+
+
+
+</style>

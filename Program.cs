@@ -186,6 +186,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHttpClient<PaymobService>();
 
+//permission
+builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<ReflectionService>();
+
 
 var app = builder.Build();
 
@@ -255,10 +259,12 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<PermissionMiddleware>();
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Market}/{action=Index}/{id?}");
 
-app.UseMiddleware<EndpointPerformanceMiddleware>();
 
 await app.RunAsync();
