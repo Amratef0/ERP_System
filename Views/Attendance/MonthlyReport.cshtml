@@ -28,58 +28,58 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
-<div class="container-fluid mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h2><i class="bi bi-file-earmark-bar-graph"></i> Monthly Attendance Report</h2>
-                    <p class="text-muted">View comprehensive attendance analytics by month</p>
-                </div>
-                <div>
-                    <a asp-action="Index" class="btn btn-secondary btn-lg">
-                        <i class="bi bi-arrow-left"></i> Back to Attendance
-                    </a>
-                </div>
-            </div>
-            <hr />
+<div class="page-section">
+   <!-- Header Section -->
+<div class="bp-header">
+    <div class="bp-header-content">
+        <div>
+            <h2><i class="bi bi-file-earmark-bar-graph"></i> Monthly Attendance Report</h2>
+            <p>View comprehensive attendance analytics by month</p>
+        </div>
+        <div>
+            <a asp-action="Index" class="bp-back-btn btn-lg">
+                <i class="bi bi-arrow-left"></i> Back to Attendance
+            </a>
         </div>
     </div>
+</div>
+
+
 
     <!-- Filters Section -->
-    <div class="card mb-4 shadow">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Report Filters</h5>
+    <div class="bp-search-card shadow-sm border-0 mb-4">
+        <!-- Header -->
+        <div class="p-2 mb-2" style="background: linear-gradient(90deg, var(--color-accent), #8E7CFF); color: white; border-radius: 20px;">
+            <h4 class="mb-0"><i class="bi bi-funnel"></i> Report Filters</h4>
         </div>
-        <div class="card-body">
+        <div class="card-body p-3">
             <form id="reportForm">
                 @Html.AntiForgeryToken()
                 <div class="row">
                     <!-- Year -->
                     <div class="col-md-2 mb-3">
-                        <label for="yearFilter" class="form-label">
+                        <label for="yearFilter" class="form-label small">
                             <i class="bi bi-calendar"></i> Year <span class="text-danger">*</span>
                         </label>
-                        <select id="yearFilter" class="form-select form-select-lg" asp-items="years">
+                        <select id="yearFilter" class="form-select bp-filter-select" asp-items="years">
                         </select>
                     </div>
 
                     <!-- Month -->
                     <div class="col-md-2 mb-3">
-                        <label for="monthFilter" class="form-label">
+                        <label for="monthFilter" class="form-label small">
                             <i class="bi bi-calendar3"></i> Month <span class="text-danger">*</span>
                         </label>
-                        <select id="monthFilter" class="form-select form-select-lg" asp-items="months">
+                        <select id="monthFilter" class="form-select bp-filter-select" asp-items="months">
                         </select>
                     </div>
 
                     <!-- Country -->
                     <div class="col-md-2 mb-3">
-                        <label for="countryFilter" class="form-label">
+                        <label for="countryFilter" class="form-label small">
                             <i class="bi bi-globe"></i> Country
                         </label>
-                        <select id="countryFilter" class="form-select form-select-lg" 
+                        <select id="countryFilter" class="form-select bp-filter-select" 
                                 asp-items="@(new SelectList(Model.Countries, "Id", "Name"))">
                             <option value="">All Countries</option>
                         </select>
@@ -87,10 +87,10 @@
 
                     <!-- Branch -->
                     <div class="col-md-2 mb-3">
-                        <label for="branchFilter" class="form-label">
+                        <label for="branchFilter" class="form-label small">
                             <i class="bi bi-building"></i> Branch
                         </label>
-                        <select id="branchFilter" class="form-select form-select-lg" 
+                        <select id="branchFilter" class="form-select bp-filter-select" 
                                 asp-items="@(new SelectList(Model.Branches, "Id", "Name"))">
                             <option value="">All Branches</option>
                         </select>
@@ -98,10 +98,10 @@
 
                     <!-- Department -->
                     <div class="col-md-2 mb-3">
-                        <label for="departmentFilter" class="form-label">
+                        <label for="departmentFilter" class="form-label small">
                             <i class="bi bi-diagram-3"></i> Department
                         </label>
-                        <select id="departmentFilter" class="form-select form-select-lg" 
+                        <select id="departmentFilter" class="form-select bp-filter-select" 
                                 asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
                             <option value="">All Departments</option>
                         </select>
@@ -109,10 +109,10 @@
 
                     <!-- Employee Type -->
                     <div class="col-md-2 mb-3">
-                        <label for="employeeTypeFilter" class="form-label">
+                        <label for="employeeTypeFilter" class="form-label small">
                             <i class="bi bi-person-lines-fill"></i> Type
                         </label>
-                        <select id="employeeTypeFilter" class="form-select form-select-lg" 
+                        <select id="employeeTypeFilter" class="form-select bp-filter-select" 
                                 asp-items="@(new SelectList(Model.EmployeeTypes, "Id", "Name"))">
                             <option value="">All Types</option>
                         </select>
@@ -120,29 +120,31 @@
 
                     <!-- Job Title -->
                     <div class="col-md-2 mb-3">
-                        <label for="jobTitleFilter" class="form-label">
+                        <label for="jobTitleFilter" class="form-label small">
                             <i class="bi bi-briefcase"></i> Job Title
                         </label>
-                        <select id="jobTitleFilter" class="form-select form-select-lg" 
+                        <select id="jobTitleFilter" class="form-select bp-filter-select" 
                                 asp-items="@(new SelectList(Model.JobTitles, "Id", "Name"))">
                             <option value="">All Job Titles</option>
                         </select>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="col-md-10 mb-3 d-flex align-items-end gap-2">
-                        <button type="button" id="generateReportBtn" class="btn btn-primary btn-lg">
-                            <i class="bi bi-graph-up"></i> Generate Report
-                        </button>
-                        <button type="button" id="compareBtn" class="btn btn-info btn-lg" disabled>
-                            <i class="bi bi-bar-chart-line"></i> Compare Months
-                        </button>
-                        <button type="button" id="deptSummaryBtn" class="btn btn-success btn-lg" disabled>
-                            <i class="bi bi-diagram-2"></i> Department Summary
-                        </button>
-                        <button type="button" id="clearBtn" class="btn btn-secondary btn-lg">
-                            <i class="bi bi-x-circle"></i> Clear Filters
-                        </button>
+                    <div class="col-md-12 mb-3">
+                        <div class="d-flex gap-3 flex-wrap">
+                            <button type="button" id="generateReportBtn" class="quick-action-btn card1">
+                                <i class="bi bi-graph-up me-2"></i> <span>Generate Report</span>
+                            </button>
+                            <button type="button" id="compareBtn" class="quick-action-btn card2" disabled>
+                                <i class="bi bi-bar-chart-line me-2"></i> <span>Compare Months</span>
+                            </button>
+                            <button type="button" id="deptSummaryBtn" class="quick-action-btn card4" disabled>
+                                <i class="bi bi-diagram-2 me-2"></i> <span>Department Summary</span>
+                            </button>
+                            <button type="button" id="clearBtn" class="quick-action-btn card3">
+                                <i class="bi bi-x-circle me-2"></i> <span>Clear Filters</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -150,64 +152,62 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row mb-4" id="statsSection" style="display: none;">
-        <div class="col-md-3">
-            <div class="card bg-primary text-white shadow">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-people"></i> Total Employees</h6>
-                    <h2 class="mb-0" id="totalEmployees">0</h2>
-                </div>
+    <div class="bp-stats-row" id="statsSection" style="display: none;">
+        <div class="bp-stat-card" style="background: var(--card1-bg);">
+            <div>
+                <h3 style="color: var(--card1-h3);" id="totalEmployees">0</h3>
+                <p style="color: var(--card1-p);">Total Employees</p>
             </div>
+            <i class="bi bi-people" style="color: var(--card1-icon);"></i>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white shadow">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-percent"></i> Avg Attendance Rate</h6>
-                    <h2 class="mb-0"><span id="avgAttendanceRate">0</span>%</h2>
-                </div>
+        <div class="bp-stat-card" style="background: var(--card2-bg);">
+            <div>
+                <h3 style="color: var(--card2-h3);"><span id="avgAttendanceRate">0</span>%</h3>
+                <p style="color: var(--card2-p);">Avg Attendance Rate</p>
             </div>
+            <i class="bi bi-percent" style="color: var(--card2-icon);"></i>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white shadow">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-clock"></i> Total Hours</h6>
-                    <h2 class="mb-0" id="totalWorkingHours">0</h2>
-                </div>
+        <div class="bp-stat-card" style="background: var(--card3-bg);">
+            <div>
+                <h3 style="color: var(--card3-h3);" id="totalWorkingHours">0</h3>
+                <p style="color: var(--card3-p);">Total Hours</p>
             </div>
+            <i class="bi bi-clock" style="color: var(--card3-icon);"></i>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-warning text-dark shadow">
-                <div class="card-body">
-                    <h6 class="card-title"><i class="bi bi-clock-fill"></i> Overtime Hours</h6>
-                    <h2 class="mb-0" id="totalOvertimeHours">0</h2>
-                </div>
+        <div class="bp-stat-card" style="background: var(--card4-bg);">
+            <div>
+                <h3 style="color: var(--card4-h3);" id="totalOvertimeHours">0</h3>
+                <p style="color: var(--card4-p);">Overtime Hours</p>
             </div>
+            <i class="bi bi-clock-fill" style="color: var(--card4-icon);"></i>
         </div>
     </div>
+<br>
 
     <!-- Charts Section -->
     <div class="row mb-4" id="chartsSection" style="display: none;">
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0"><i class="bi bi-pie-chart"></i> Attendance Distribution</h6>
+            <div class="bp-search-card shadow-sm border-0">
+                <div class="p-2 mb-2" style="background-color: #17a2b8; color: white; border-radius: 20px;">
+                    <h4 class="mb-0"><i class="bi bi-pie-chart"></i> Attendance Distribution</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <canvas id="attendanceChart" height="250"></canvas>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h6 class="mb-0"><i class="bi bi-bar-chart"></i> Top 10 Performers</h6>
+            <div class="bp-search-card shadow-sm border-0">
+                <div class="p-2 mb-2" style="background-color: #28a745; color: white; border-radius: 20px;">
+                    <h4 class="mb-0"><i class="bi bi-bar-chart"></i> Top 10 Performers</h4>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-3">
                     <canvas id="performersChart" height="250"></canvas>
                 </div>
             </div>
         </div>
     </div>
+<br>
 
     <!-- Alert Messages -->
     <div class="row mb-3">
@@ -217,39 +217,40 @@
     </div>
 
     <!-- Report Table -->
-    <div class="card shadow" id="reportSection" style="display: none;">
-        <div class="card-header bg-dark text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0"><i class="bi bi-table"></i> Employee Attendance Summary</h5>
-                <div>
-                    <span id="reportTitle" class="badge bg-light text-dark fs-6 me-2"></span>
-                    <button type="button" id="exportExcelBtn" class="btn btn-sm btn-success me-1">
-                        <i class="bi bi-file-earmark-excel"></i> Excel
-                    </button>
-                    <button type="button" id="exportPdfBtn" class="btn btn-sm btn-danger">
-                        <i class="bi bi-file-earmark-pdf"></i> PDF
-                    </button>
-                </div>
+    <div class="list-page" id="reportSection" style="display: none;">
+        <div class="card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="card-title fw-semibold"><i class="bi bi-table"></i> Employee Attendance Summary</h2>
+                <span id="reportTitle" class="badge bg-primary rounded-pill fs-6"></span>
             </div>
-        </div>
-        <div class="card-body p-0">
+
+            <!-- Floating Export Buttons -->
+            <div style="position: fixed; bottom: 25px; right: 25px; display: flex; flex-direction: column; gap: 10px; z-index: 999;">
+                <button type="button" id="exportExcelBtn" class="floating-btn" title="Export to Excel" style="background: linear-gradient(90deg, #198754, #20c997);">
+                    <i class="bi bi-file-earmark-excel"></i>
+                </button>
+                <button type="button" id="exportPdfBtn" class="floating-btn" title="Export to PDF" style="background: linear-gradient(90deg, #dc3545, #fd7e14);">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                </button>
+            </div>
+
             <div class="table-responsive">
-                <table class="table table-hover table-striped mb-0" id="reportTable">
-                    <thead class="table-light">
+                <table id="reportTable">
+                    <thead>
                         <tr>
                             <th class="text-center">#</th>
-                            <th><i class="bi bi-person"></i> Employee Name</th>
-                            <th><i class="bi bi-building"></i> Branch</th>
-                            <th><i class="bi bi-diagram-3"></i> Department</th>
-                            <th><i class="bi bi-person-badge"></i> Type</th>
-                            <th><i class="bi bi-briefcase"></i> Job Title</th>
-                            <th class="text-center"><i class="bi bi-calendar-check"></i> Present</th>
-                            <th class="text-center"><i class="bi bi-calendar-x"></i> Absent</th>
-                            <th class="text-center"><i class="bi bi-clock-history"></i> Late</th>
-                            <th class="text-center"><i class="bi bi-calendar-event"></i> Leave</th>
-                            <th class="text-center"><i class="bi bi-hourglass-split"></i> Total Hours</th>
-                            <th class="text-center"><i class="bi bi-clock-fill"></i> Overtime</th>
-                            <th class="text-center"><i class="bi bi-percent"></i> Attendance %</th>
+                            <th>Employee Name</th>
+                            <th>Branch</th>
+                            <th>Department</th>
+                            <th>Type</th>
+                            <th>Job Title</th>
+                            <th class="text-center">Present</th>
+                            <th class="text-center">Absent</th>
+                            <th class="text-center">Late</th>
+                            <th class="text-center">Leave</th>
+                            <th class="text-center">Total Hours</th>
+                            <th class="text-center">Overtime</th>
+                            <th class="text-center">Attendance %</th>
                         </tr>
                     </thead>
                     <tbody id="reportTableBody">
@@ -257,60 +258,71 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer text-muted bg-light">
-            <small><i class="bi bi-info-circle"></i> Showing monthly attendance summary for selected period and filters</small>
-        </div>
     </div>
+<br>
 
     <!-- Empty State -->
-    <div class="card shadow" id="emptyState">
-        <div class="card-body text-center py-5">
-            <i class="bi bi-file-earmark-text" style="font-size: 4rem; opacity: 0.3;"></i>
-            <h4 class="mt-3 text-muted">No Report Generated</h4>
-            <p class="text-muted">Select year and month, then click "Generate Report" to view attendance analytics</p>
-        </div>
-    </div>
-
-    <!-- Comparison Modal -->
-    <div class="modal fade" id="comparisonModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title"><i class="bi bi-bar-chart-line"></i> Month-to-Month Comparison</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <canvas id="comparisonChart" height="100"></canvas>
+    <div class="list-page" id="emptyState">
+        <div class="card">
+            <div style="padding: 0; border: none; width: 100%;">
+                <div class="empty-state-container" style="padding: 60px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 350px; background-color: var(--color-bg-container); width: 100%;">
+                    <i class="bi bi-file-earmark-text" style="font-size: 4.5rem; opacity: 0.3; color: var(--color-text-muted);"></i>
+                    <h4 class="mt-4 mb-3" style="color: var(--color-text-main); font-weight: 600; text-align: center;">No Report Generated</h4>
+                    <p class="text-muted mb-2" style="font-size: 1.1rem; text-align: center; max-width: 600px;">Select year and month, then click "Generate Report" to view attendance analytics</p>
+                    <p class="text-muted" style="font-size: 0.95rem; text-align: center;"><i class="bi bi-info-circle me-2"></i>Use the filters above to customize your report</p>
                 </div>
             </div>
         </div>
     </div>
+<br>
 
-    <!-- Department Summary Modal -->
-    <div class="modal fade" id="deptSummaryModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title"><i class="bi bi-diagram-2"></i> Department-wise Summary</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <!-- Comparison & Department Summary Modals with general styling -->
+    <div class="general-modal-wrapper">
+        <!-- Comparison Modal -->
+        <div class="modal fade" id="comparisonModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-bar-chart-line"></i> Month-to-Month Comparison</h5>
+                        <div class="shine-overlay"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <canvas id="comparisonChart" height="100"></canvas>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <canvas id="deptChart" height="80"></canvas>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="table-responsive">
-                                <table class="table table-sm" id="deptTable">
-                                    <thead>
-                                        <tr>
-                                            <th>Department</th>
-                                            <th class="text-end">Employees</th>
-                                            <th class="text-end">Avg %</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="deptTableBody"></tbody>
-                                </table>
+            </div>
+        </div>
+
+        <!-- Department Summary Modal -->
+        <div class="modal fade" id="deptSummaryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-diagram-2"></i> Department-wise Summary</h5>
+                        <div class="shine-overlay"></div>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="dept-chart-wrapper" style="height: 250px;">
+                                    <canvas id="deptChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table class="table table-sm" id="deptTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Department</th>
+                                                <th class="text-end">Employees</th>
+                                                <th class="text-end">Avg %</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="deptTableBody"></tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -318,7 +330,13 @@
             </div>
         </div>
     </div>
+ </div>
+
 </div>
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+<link rel="stylesheet" href="~/css/pagination.css" />
+<link rel="stylesheet" href="~/css/GeneralModal.css" />
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -833,6 +851,55 @@
             .card-body .row > div {
                 margin-bottom: 1rem;
             }
+        }
+
+        /* ===== General Modal integration for Monthly Report ===== */
+        .general-modal-wrapper .modal { z-index: 1300; }
+        .general-modal-wrapper .modal-dialog { max-width: 1200px; }
+        .general-modal-wrapper .modal-content { border-radius: 18px; }
+        .general-modal-wrapper .modal-body { max-height: calc(100vh - 220px); overflow-y: auto; }
+
+        /* Place above any sticky top bars */
+        .modal-backdrop { z-index: 1290; }
+
+        /* Department table column widths inside modal */
+        #deptTable { table-layout: fixed; width: 100%; margin: 0; }
+        #deptTable thead th:nth-child(1) { width: 50%; }
+        #deptTable thead th:nth-child(2) { width: 25%; }
+        #deptTable thead th:nth-child(3) { width: 25%; }
+        #deptTable td, #deptTable th { white-space: normal; overflow-wrap: anywhere; padding: 6px 8px; }
+        #deptTable .text-end { padding-right: 8px; }
+
+        /* Control Department chart height */
+        .dept-chart-wrapper { height: 140px; }
+        .dept-chart-wrapper canvas { width: 100% !important; height: 100% !important; display: block; }
+
+        /* Allow horizontal scroll if needed to avoid truncation */
+        #deptSummaryModal .table-responsive { overflow-x: hidden; }
+        #deptSummaryModal .table-responsive table { width: 100% !important; min-width: 0 !important; }
+
+        /* Ensure modal close button is visible on gradient headers (force white X) */
+        .general-modal-wrapper .modal-header .btn-close {
+            filter: none !important;
+            opacity: 1 !important;
+            background: none !important;
+            width: 1em; height: 1em;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='M.293 1.707a1 1 0 0 1 1.414-1.414L8 6.586l6.293-6.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293A1 1 0 0 1 .293 14.293L6.586 8 .293 1.707Z'/%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-size: 100% 100% !important;
+        }
+
+        /* Dark mode fixes for modal content and charts wrapper */
+        .dark .general-modal-wrapper .modal-content { background: var(--color-bg-content); color: var(--color-text-main); }
+        .dark .general-modal-wrapper .modal-body { background: var(--color-bg-content); }
+        .dark .general-modal-wrapper .modal-header { background: linear-gradient(135deg, var(--color-accent), #6f63ff); }
+        .dark #deptTable tbody tr { background: var(--color-bg-content); }
+
+        /* Print: force light theme for readability */
+        @@media print {
+            :root, body, .dark, .dark * { background: #fff !important; color: #000 !important; box-shadow: none !important; }
+            .modal, .modal-content, .general-modal-wrapper .modal-body { background: #fff !important; color: #000 !important; }
+            #deptTable, #deptTable th, #deptTable td { color: #000 !important; }
         }
     </style>
 }
