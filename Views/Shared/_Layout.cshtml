@@ -79,12 +79,13 @@
      <hr>
     }
 
-    @if (!User.IsInRole("User"))
-    {
-     <!-- SETTINGS -->
-     <button id="iconSettings" title="Settings"><i class="fa fa-gear"></i></button>
-     <hr>
-    }
+    
+        @if (User.Identity.IsAuthenticated && !User.IsInRole("User"))
+        {
+            <!-- SETTINGS -->
+            <button id="iconSettings" title="Settings"><i class="fa fa-gear"></i></button>
+            <hr>
+        }
    
 
     
