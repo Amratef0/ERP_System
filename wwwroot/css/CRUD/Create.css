@@ -580,7 +580,7 @@ select:-webkit-autofill:focus {
     align-items: center;
     width: 36px;
     height: 36px;
-    background-color: #FF6B6B; /* لون مميز */
+    background-color: #FF6B6B; 
     color: #fff;
     border: none;
     border-radius: 12px;
@@ -712,10 +712,9 @@ button.quick-action-btn {
     min-width: 180px;
     justify-content: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-    /* الخلفية العامة للصفحة حسب المود */
     background-color: var(--color-bg-body);
-    border: 2px solid currentColor; /* لون الحد نفس لون النص */
-    color: inherit; /* يرث لون الـ card */
+    border: 2px solid currentColor;
+    color: inherit; 
     cursor: pointer;
 }
 
@@ -729,7 +728,7 @@ button.quick-action-btn {
     .quick-action-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        opacity: 0.9; /* خفيف على hover */
+        opacity: 0.9;
     }
 
 /* ألوان الزرار حسب card */
@@ -823,3 +822,99 @@ form .preview-box-create {
     .dark .preview-item-create:hover {
         box-shadow: 0 1px 4px rgba(142, 124, 255, 0.25);
     }
+
+
+.swaggle-toggle {
+    position: relative;
+    display: inline-block;
+    width: 40px; 
+    height: 20px; 
+    cursor: pointer;
+}
+
+    .swaggle-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .swaggle-toggle .slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--color-bg-container);
+        border: 2px solid var(--color-text-muted);
+        border-radius: 20px;
+        transition: 0.3s;
+    }
+
+        .swaggle-toggle .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 1px;
+            background-color: var(--color-active-accent);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+    .swaggle-toggle input:checked + .slider {
+        background-color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+        .swaggle-toggle input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+
+.save-btn {
+    background-color: var(--color-accent);
+    color: var(--color-text-main);
+    border: none;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    animation: slideUp 0.5s ease forwards;
+}
+
+    .save-btn:hover {
+        background-color: var(--color-hover-accent);
+        color: var(--color-active-accent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .save-btn i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+
+.permissions-table th .permission-actions {
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+    .permissions-table th .permission-actions a {
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+
+        .permissions-table th .permission-actions a:hover {
+            text-decoration: underline;
+        }

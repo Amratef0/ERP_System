@@ -30,45 +30,61 @@
      <button id="iconHome" title="Home" asp-area="" asp-controller="Market" asp-action="Index"><i class="fa-solid fa-house"></i></button>
      <hr>
 
-     <!-- HR -->
-     <button id="iconEmp" title="Employees"><i class="fa fa-id-badge"></i></button>
-     <button id="iconDept" title="Departments"><i class="fa fa-sitemap"></i></button>
-     <button id="iconJob" title="Job Title"><i class="fa fa-briefcase"></i></button>
-     <button id="iconAttend" title="Attendance"><i class="fa fa-clipboard-user"></i></button>
-     <button id="iconPayroll" title="Payroll"><i class="fa fa-money-bill"></i></button>
-     <hr>
+     @if (User.IsInRole("Admin") || User.IsInRole("HR Manager"))
+        {
+            <!-- HR -->
+            <button id="iconEmp" title="Employees"><i class="fa fa-id-badge"></i></button>
+            <button id="iconDept" title="Departments"><i class="fa fa-sitemap"></i></button>
+            <button id="iconJob" title="Job Title"><i class="fa fa-briefcase"></i></button>
+            <button id="iconAttend" title="Attendance"><i class="fa fa-clipboard-user"></i></button>
+            <button id="iconPayroll" title="Payroll"><i class="fa fa-money-bill"></i></button>
+            <hr>
 
-     <!-- INVENTORY -->
+            <button id="iconPortal" title="Assign Permissions"><i class="fa fa-universal-access"></i></button>
+            <hr />
+        }
+     @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
+    {
+        <!-- INVENTORY -->
      <button id="iconProd" title="Products"><i class="fa fa-box"></i></button>
      <button id="iconCat" title="Categories"><i class="fa fa-layer-group"></i></button>
      <button id="iconStock" title="Stock Transactions"><i class="fa fa-exchange-alt"></i></button>
      <button id="iconWare" title="Warehouse"><i class="fa-solid fa-warehouse"></i></button>
      <button id="iconBrands" title="Brands"><i class="bi bi-award"></i></button>
      <hr>
+    }
 
      <!-- SALES / E-COMMERCE -->
      <button id="iconMarket" title="Market"><i class="fa fa-bag-shopping"></i></button>
      <hr>
 
+     @if (User.IsInRole("Admin") || User.IsInRole("Purchase"))
+    {
      <!-- PROCUREMENT -->
      <button id="iconSupp" title="Suppliers"><i class="fa fa-truck"></i></button>
      <button id="iconPO" title="Purchase Orders"><i class="fa fa-money-check-dollar"></i></button>
      <hr>
+    }
 
+    @if (User.IsInRole("Admin") || User.IsInRole("CRM"))
+    {
      <!-- CRM -->
      <button id="iconCust" title="Customers"><i class="fa fa-users"></i></button>
      <hr>
-
+    }
+    @if (User.IsInRole("Admin"))
+    {
      <!-- SYSTEM -->
-     <button id="iconUsers" title="User Management"><i class="fa fa-user-gear"></i></button>
      <button id="iconRoles" title="Roles"><i class="fa fa-shield-halved"></i></button>
-     <button id="iconAssPer" title="Assign Permissions"><i class="fa fa-universal-access"></i></button>
      <hr>
+    }
 
+    @if (!User.IsInRole("User"))
+    {
      <!-- SETTINGS -->
      <button id="iconSettings" title="Settings"><i class="fa fa-gear"></i></button>
      <hr>
-
+    }
    
 
     
@@ -130,16 +146,7 @@
 
             </nav>
 
-        @* <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ERP_System_Project</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between"> *@
-
-
+      
                     <div class="main">
 
                      <aside id="submenu" class="submenu" aria-expanded="true">
@@ -232,6 +239,29 @@
                         </li>
                        </ul>
                    </div>
+
+
+                   <div class="submenu-section hidden" id="Portal">
+                        <h6>My Portal</h6>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ViewProfile">
+                                   My Profile
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="MyLeaveRequests">
+                                   My Leave Requests
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="RequestLeave">
+                                    Request Leave
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
 
                         <!-- E-Commerce -->
                         <div class="submenu-section hidden" id="Market">
@@ -371,26 +401,14 @@
                        <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="RoleManagement" asp-action="AssignRole"> Assign Roles (Testing)</a>
                         </li>
+                       <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">User Management</a>
+                        </li>
+                       <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="RolePermission" asp-action="Manage"> Permission</a>
+                        </li>
                        </ul>
                    </div>
-
-
-                   
-                        <!-- Employee Self-Service (Only for Employees) -->
-                        @if (User.IsInRole("Employee"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="employeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-person-circle"></i> My Portal
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="employeeDropdown">
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="ViewProfile"><i class="bi bi-person-circle"></i> My Profile</a></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="MyLeaveRequests"><i class="bi bi-list-ul"></i> My Leave Requests</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-area="" asp-controller="Employee" asp-action="RequestLeave"><i class="bi bi-calendar-plus"></i> Request Leave</a></li>
-                                </ul>
-                            </li>
-                        }
 
                         <!-- Manager Portal (Only for Managers & HR) -->
                         @if (User.IsInRole("HR Manager") || User.IsInRole("Manager") || User.IsInRole("Admin"))

@@ -4,39 +4,98 @@
     ViewData["Title"] = "Users";
 }
 
-<h3>Users</h3>
+<partial name="_Toast" />
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>UserName</th>
-            <th>Email</th>
-            <th>Active</th>
-            <th>EmployeeId</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var user in Model)
-    {
-        <tr>
-            <td>@user.Id</td>
-            <td>@user.UserName</td>
-            <td>@user.Email</td>
-            <td>@user.IsActive</td>
-            <td>@user.EmployeeId</td>
-            <td>@string.Join(", ", user.Roles ?? Enumerable.Empty<string>())</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Edit</a>
-                <form asp-action="Delete" method="post" style="display:inline;">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="id" value="@user.Id" />
-                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete user?');">Delete</button>
-                </form>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="page-section">
+
+    <!-- Header -->
+    <div class="bp-header">
+        <h1>Users</h1>
+        <p>Manage your system users and their roles</p>
+    </div>
+
+    <!-- Stats + Search -->
+    <div class="bp-grid">
+
+        <!-- Stats Card -->
+        <div class="bp-stat-card">
+            <div>
+                <h3>@Model.Count()</h3>
+                <p>Total Users</p>
+            </div>
+            <i class="bi bi-people"></i>
+        </div>
+</div>
+
+<div class="list-page users-page">
+    <div class="card">
+        <h2>User List</h2>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>User Details</th>
+                    <th>Roles</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <!-- User Details column -->
+                        <td data-label="User Details">
+                            <div class="d-flex align-items-center gap-2">
+                                <div>
+                                    <strong>@user.UserName</strong><br />
+                                    <small class="text-muted">ID: @user.Id | Email: @user.Email | EmployeeId: @user.EmployeeId</small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Roles column -->
+                        <td data-label="Roles">
+                            @string.Join(", ", user.Roles ?? Enumerable.Empty<string>())
+                        </td>
+
+                        <!-- Status column -->
+                        <td data-label="Status">
+                            <span class="status @(user.IsActive ? "active" : "inactive")">
+                                <i class="fa-solid @(user.IsActive ? "fa-circle-check" : "fa-circle-xmark") me-1"></i>
+                                @(user.IsActive ? "Active" : "Inactive")
+                            </span>
+                        </td>
+
+                        <!-- Actions column -->
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <!-- Edit -->
+                                <a href="javascript:void(0)" 
+                                   onclick="openModalWithAjax('@Url.Action("Edit", "Users", new { id = user.Id })', 'Edit User')" 
+                                   class="btn btn-update" 
+                                   title="Edit User">
+                                   <i class="fa-solid fa-pen"></i>
+                                </a>
+
+                                <!-- Delete -->
+                                <form asp-action="Delete" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit" class="btn btn-delete" onclick="return confirm('Delete user?');" title="Delete User">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<link rel="stylesheet" href="@(Url.Content("~/css/ListPageHeader.css"))" />
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+@await Html.PartialAsync("_GeneralModal")
