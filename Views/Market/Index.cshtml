@@ -10,19 +10,20 @@
 <link rel="stylesheet" href="~/css/ListPageHeader.css" />
 <link rel="stylesheet" href="~/css/CRUD/Index.css" />
 <link rel="stylesheet" href="~/css/pagination.css" />
+<link rel="stylesheet" href="~/css/market.css" />
 
 <partial name="_Toast" />
 
 <div class="page-section">
 
-    <!-- Header with buttons on the same row -->
-    <div class="bp-header d-flex justify-content-between align-items-center">
+    <!-- Header with buttons -->
+    <div class="bp-header d-flex flex-wrap justify-content-between align-items-center gap-3">
         <div>
             <h1 class="text-primary fw-bold mb-1">Marketplace</h1>
             <p class="text-muted mb-0">Browse and discover amazing products</p>
         </div>
 
-        <div class="d-flex gap-3">
+        <div class="d-flex gap-3 flex-wrap">
             <a asp-controller="CustomerFavorite" asp-action="Index" asp-route-customerId="@ViewBag.CustomerId"
                class="quick-action-btn card1">
                 <i class="bi bi-heart-fill me-2"></i> Favorites
@@ -37,12 +38,11 @@
 
 </div>
 
-
 <!-- Search and Filter Card -->
 <div class="card shadow-sm border-0 mb-4 search-filter-card">
     <div class="card-body p-3">
         <form method="get" asp-controller="Market" asp-action="Index" class="row g-3 align-items-end">
-            <div class="col-md-3">
+            <div class="col-12 col-md-3">
                 <label for="searchInput" class="form-label small text-muted">Search Products</label>
                 <div class="input-group">
                     <span class="input-group-text border-end-0">
@@ -53,7 +53,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-12 col-md-2">
                 <label for="brandFilter" class="form-label small text-muted">Brand</label>
                 <select class="form-select" id="brandFilter" name="brandName">
                     <option value="">All Brands</option>
@@ -67,7 +67,7 @@
                 </select>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-12 col-md-2">
                 <label for="categoryFilter" class="form-label small text-muted">Category</label>
                 <select class="form-select" id="categoryFilter" name="categoryName">
                     <option value="">All Categories</option>
@@ -81,7 +81,7 @@
                 </select>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <label for="minPrice" class="form-label small text-muted">Min Price</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
@@ -92,7 +92,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-6 col-md-2">
                 <label for="maxPrice" class="form-label small text-muted">Max Price</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="col-md-1">
+            <div class="col-12 col-md-1">
                 <button type="submit" class="btn btn-accent w-100">
                     <i class="bi bi-funnel me-1"></i>Filter
                 </button>
@@ -112,151 +112,128 @@
     </div>
 </div>
 
+<!-- Products Grid -->
+@if (Model.Data.Any())
+{
+    <div class="row g-4">
+        @foreach (var product in Model.Data)
+        {
+            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                <div class="card product-card h-100 border-0 shadow-sm">
+                    <div class="position-relative">
+                        <img src="@product.ImageURL" class="card-img-top product-img" alt="@product.Name">
+                        @if (product.HaveOffer)
+                        {
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge bg-danger rounded-pill px-3 py-2">
+                                    -@product.DiscountPercentage% OFF
+                                </span>
+                            </div>
+                        }
+                    </div>
 
-    <!-- Products Grid -->
-    @if (Model.Data.Any())
-    {
-        <div class="row g-4">
-            @foreach (var product in Model.Data)
-            {
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                    <div class="card product-card h-100 border-0 shadow-sm">
-                        <div class="position-relative">
-                            <!-- Product Image -->
-                            <img src="@product.ImageURL" class="card-img-top" alt="@product.Name"
-                                 style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="@product.BrandImageURL" alt="@product.BrandName"
+                                 class="rounded-circle me-2" style="width: 24px; height: 24px; object-fit: cover;">
+                            <small class="text-muted">@product.BrandName</small>
+                        </div>
 
-                            <!-- Offer Badge -->
+                        <h6 class="card-title fw-bold text-dark mb-1" style="min-height: 2.5rem;">
+                            @product.Name
+                        </h6>
+
+                        <div class="mb-2">
+                            <div class="d-flex align-items-center gap-1">
+                                @{
+                                    double rating = product.TotalRate;
+                                    int fullStars = (int)rating;
+                                    bool hasHalfStar = (rating - fullStars) >= 0.5;
+                                    int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+                                }
+                                @for (int i = 0; i < fullStars; i++)
+                                {
+                                    <i class="bi bi-star-fill text-warning" style="font-size: 0.8rem;"></i>
+                                }
+                                @if (hasHalfStar)
+                                {
+                                    <i class="bi bi-star-half text-warning" style="font-size: 0.8rem;"></i>
+                                }
+                                @for (int i = 0; i < emptyStars; i++)
+                                {
+                                    <i class="bi bi-star text-warning" style="font-size: 0.8rem;"></i>
+                                }
+                                <span class="text-muted small ms-1">
+                                    @product.TotalRate.ToString("0.0") (@product.NumberOfReviews)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <span class="badge bg-light text-dark border">
+                                <i class="bi bi-tag me-1"></i>@product.CategoryName
+                            </span>
+                        </div>
+
+                        <div class="mt-auto">
                             @if (product.HaveOffer)
                             {
-                                <div class="position-absolute top-0 start-0 m-2">
-                                    <span class="badge bg-danger rounded-pill px-3 py-2">
-                                        -@product.DiscountPercentage% OFF
-                                    </span>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="h5 mb-0 fw-bold text-success">$@product.NetPrice.ToString("N2")</span>
+                                    <span class="text-muted text-decoration-line-through small">$@product.Price.ToString("N2")</span>
                                 </div>
+                            }
+                            else
+                            {
+                                <span class="h5 mb-0 fw-bold text-price">$@product.Price.ToString("N2")</span>
                             }
                         </div>
 
-                        <div class="card-body d-flex flex-column">
-                            <!-- Brand -->
-                            <div class="d-flex align-items-center mb-2">
-                                <img src="@product.BrandImageURL" alt="@product.BrandName"
-                                     class="rounded-circle me-2" style="width: 24px; height: 24px; object-fit: cover;">
-                                <small class="text-muted">@product.BrandName</small>
-                            </div>
+                        <div class="d-flex gap-2 mt-3 flex-wrap">
+                            <a asp-controller="Market"
+                               asp-action="ProductDetails"
+                               asp-route-productId="@product.Id"
+                               class="btn btn-primary btn-sm flex-fill">
+                                <i class="bi bi-eye"></i> Show Details
+                            </a>
 
-                            <!-- Product Name -->
-                            <h6 class="card-title fw-bold text-dark mb-1" style="min-height: 2.5rem;">
-                                @product.Name
-                            </h6>
+                            <button class="btn btn-outline-danger btn-sm btn-favorite flex-fill"
+                                    data-product-id="@product.Id"
+                                    data-customer-id="@(ViewBag.CustomerId ?? 0)">
+                                <i class="bi bi-heart"></i>
+                            </button>
 
-                            <!-- Star Rating -->
-                            <div class="mb-2">
-                                <div class="d-flex align-items-center gap-1">
-                                    @{
-                                        double rating = product.TotalRate;
-                                        int fullStars = (int)rating;
-                                        bool hasHalfStar = (rating - fullStars) >= 0.5;
-                                        int emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-                                    }
-
-                                    <!-- Stars -->
-                                    @for (int i = 0; i < fullStars; i++)
-                                    {
-                                        <i class="bi bi-star-fill text-warning" style="font-size: 0.8rem;"></i>
-                                    }
-
-                                    @if (hasHalfStar)
-                                    {
-                                        <i class="bi bi-star-half text-warning" style="font-size: 0.8rem;"></i>
-                                    }
-
-                                    @for (int i = 0; i < emptyStars; i++)
-                                    {
-                                        <i class="bi bi-star text-warning" style="font-size: 0.8rem;"></i>
-                                    }
-
-                                    <!-- Rating Number -->
-                                    <span class="text-muted small ms-1">
-                                        @product.TotalRate.ToString("0.0") (@product.NumberOfReviews)
-                                    </span>
-                                </div>
-                            </div>
-
-                            <!-- Category -->
-                            <div class="mb-3">
-                                <span class="badge bg-light text-dark border">
-                                    <i class="bi bi-tag me-1"></i>@product.CategoryName
-                                </span>
-                            </div>
-
-                            <!-- Pricing -->
-                            <div class="mt-auto">
-                                @if (product.HaveOffer)
-                                {
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="h5 mb-0 fw-bold text-success">$@product.NetPrice.ToString("N2")</span>
-                                        <span class="text-muted text-decoration-line-through small">$@product.Price.ToString("N2")</span>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <span class="h5 mb-0 fw-bold text-price">$@product.Price.ToString("N2")</span>
-                                }
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="d-flex gap-2 mt-3">
-                                <a asp-controller="Market"
-                                   asp-action="ProductDetails"
-                                   asp-route-productId="@product.Id"
-                                   class="btn btn-primary btn-sm flex-fill">
-                                    <i class="bi bi-eye"></i>
-                                    Show Details
-                                </a>
-
-                                <!-- Favorite button -->
-                                <button class="btn btn-outline-danger btn-sm btn-favorite"
-                                        data-product-id="@product.Id"
-                                        data-customer-id="@(ViewBag.CustomerId ?? 0)">
-                                    <i class="bi bi-heart"></i>
-                                </button>
-
-                                <!-- Wishlist button -->
-                                 <button class="btn btn-outline-primary btn-sm btn-wishlist"
-                                        data-product-id="@product.Id"
-                                        data-customer-id="@(ViewBag.CustomerId ?? 0)">
-                                    <i class="bi bi-bookmark"></i>
-                                </button> 
-                            </div>
+                            <button class="btn btn-outline-primary btn-sm btn-wishlist flex-fill"
+                                    data-product-id="@product.Id"
+                                    data-customer-id="@(ViewBag.CustomerId ?? 0)">
+                                <i class="bi bi-bookmark"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="text-center py-5 text-muted">
-            <i class="bi bi-search display-4 d-block mb-3"></i>
-            <h5>No products found</h5>
-            <p class="mb-0">Try adjusting your search filters</p>
-        </div>
-    }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-search display-4 d-block mb-3"></i>
+        <h5>No products found</h5>
+        <p class="mb-0">Try adjusting your search filters</p>
+    </div>
+}
 
-   <!-- Pagination -->
+<!-- Pagination -->
 @if (Model.TotalPages > 1)
 {
-    <div class="pagination-container d-flex justify-content-between align-items-center mt-4">
-        <!-- Info -->
-        <div class="pagination-info text-muted small">
-            Showing page @Model.PageNumber of @Model.TotalPages • @Model.TotalRecords total products
+    <div class="pagination-container d-flex flex-wrap justify-content-between align-items-center mt-4">
+        <div class="pagination-info text-muted small mb-2 mb-md-0">
+            Showing page @Model.PageNumber of @Model.TotalPages â€¢ @Model.TotalRecords total products
         </div>
 
-        <!-- Controls -->
         <div class="pagination-controls">
-            <ul class="pagination pagination-sm mb-0">
-                <!-- Previous -->
+            <ul class="pagination pagination-sm mb-0 flex-wrap">
                 <li class="page-item @(Model.PageNumber > 1 ? "" : "disabled")">
                     <a class="page-link"
                        asp-controller="Market"
@@ -272,7 +249,6 @@
                     </a>
                 </li>
 
-                <!-- Page Numbers -->
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
                     <li class="page-item @(i == Model.PageNumber ? "active" : "")">
@@ -289,7 +265,6 @@
                     </li>
                 }
 
-                <!-- Next -->
                 <li class="page-item @(Model.PageNumber < Model.TotalPages ? "" : "disabled")">
                     <a class="page-link"
                        asp-controller="Market"
@@ -310,12 +285,16 @@
 }
 
 </div>
+
 @section Scripts {
     <partial name="~/Views/Shared/_ProductCardsScripts.cshtml" />
-
 }
-<link rel="stylesheet" href="@(Url.Content("~/css/pagination.css"))" />
 
-<link rel="stylesheet" href="@(Url.Content("~/css/market.css"))" />
-
-
+<style>
+    .product-img {
+        width: 100%;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+    }
+</style>
