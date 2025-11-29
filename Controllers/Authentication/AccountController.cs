@@ -310,25 +310,28 @@ namespace ERP_System_Project.Controllers.Authentication
                 info.ProviderKey,
                 isPersistent: false);
 
+            ApplicationUser user = null;
+
             if (!signInResult.Succeeded)
             {
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 if (email != null)
                 {
-                    var user = await _userManager.FindByEmailAsync(email);
+                    user = await _userManager.FindByEmailAsync(email);
                     if (user == null)
                     {
                         user = new ApplicationUser
                         {
                             UserName = email,
-                            Email = email
+                            Email = email,
+                            EmailConfirmed = true // التأكد من البريد مباشرة
                         };
                         await _userManager.CreateAsync(user);
 
-                        if (!await _roleManager.RoleExistsAsync("User"))
-                            await _roleManager.CreateAsync(new IdentityRole("User"));
+                        if (!await _roleManager.RoleExistsAsync("Admin"))
+                            await _roleManager.CreateAsync(new IdentityRole("Admin"));
 
-                        await _userManager.AddToRoleAsync(user, "User");
+                        await _userManager.AddToRoleAsync(user, "Admin"); // دور الادمن
                     }
 
                     var existingLogins = await _userManager.GetLoginsAsync(user);
@@ -336,13 +339,25 @@ namespace ERP_System_Project.Controllers.Authentication
                     {
                         await _userManager.AddLoginAsync(user, info);
                     }
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
                 }
+            }
+            else
+            {
+                // لو المستخدم موجود مسبقاً
+                user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            }
+
+            // تسجيل الدخول وتحديث الـ Claims
+            if (user != null)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                await _signInManager.RefreshSignInAsync(user); // تحديث الـ Claims عشان Middleware يشوف الدور
             }
 
             return LocalRedirect(returnUrl);
         }
+
+
         [HttpGet]
         public IActionResult FacebookLogin(string returnUrl = "/")
         {
@@ -378,10 +393,10 @@ namespace ERP_System_Project.Controllers.Authentication
                         };
                         await _userManager.CreateAsync(user);
 
-                        if (!await _roleManager.RoleExistsAsync("User"))
-                            await _roleManager.CreateAsync(new IdentityRole("User"));
+                        if (!await _roleManager.RoleExistsAsync("Admin"))
+                            await _roleManager.CreateAsync(new IdentityRole("Admin"));
 
-                        await _userManager.AddToRoleAsync(user, "User");
+                        await _userManager.AddToRoleAsync(user, "Admin"); // هنا دور الادمن
                     }
 
                     var existingLogins = await _userManager.GetLoginsAsync(user);
