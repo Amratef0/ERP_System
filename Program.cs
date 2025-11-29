@@ -31,6 +31,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using ERP_System_Project.Services;
 using Microsoft.EntityFrameworkCore;
+using SendGrid;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,8 +115,9 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddMemoryCache();
 
 // SMTP Email
-builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
-builder.Services.AddScoped<IEmailService, EmailSender>();
+builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGridSettings"));
+builder.Services.AddScoped<IEmailService, SendGridEmailSender>();
+
 
 
 // Validators Service
