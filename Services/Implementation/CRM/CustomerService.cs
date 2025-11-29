@@ -25,63 +25,65 @@ namespace ERP_System_Project.Services.Implementation.CRM
 
 
 
-        public async Task CreateCustomerByApplicationUserAsync(ApplicationUser user, RegisterViewModel model)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
+         public async Task CreateCustomerByApplicationUserAsync(ApplicationUser user, RegisterViewModel model)
+ {
+     if (user == null)
+         throw new ArgumentNullException(nameof(user));
 
-            try
-            {
-                // Get customer types and use the first active one
-                var customerType= await _uow.CustomerTypes.GetAllAsIQueryable().FirstOrDefaultAsync();
+     try
+     {
+         // Check if customer already exists
+         var existingCustomer = await _uow.Customers
+             .GetAllAsIQueryable()
+             .FirstOrDefaultAsync(c => c.ApplicationUserId == user.Id);
 
+         if (existingCustomer != null)
+             return;
 
-                if (customerType == null)
-                    throw new InvalidOperationException("No customer types available in the system");
+         var customerType = await _uow.CustomerTypes.GetAllAsIQueryable().FirstOrDefaultAsync();
 
-                var customer = new Customer
-                {
-                    ApplicationUserId = user.Id,
-                    ApplicationUser = user,
+         if (customerType == null)
+             throw new InvalidOperationException("No customer types available in the system");
 
-                    CustomerTypeId = customerType.Id,
-                    CustomerType = customerType,
+         var customer = new Customer
+         {
+             ApplicationUserId = user.Id,
+             ApplicationUser = user,
 
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = string.IsNullOrWhiteSpace(model.Email) ? user.Email: model.Email,
-                    PhoneNumber = string.IsNullOrWhiteSpace(model.PhoneNumber) ? user.PhoneNumber : model.PhoneNumber,
-                    DateOfBirth = user.DateOfBirth,
+             CustomerTypeId = customerType.Id,
+             CustomerType = customerType,
 
-                    RegistrationDate = user.CreatedAt,
-                    IsActive = true,
-                    LastLoginDate = DateTime.Now,
-                    ModifiedDate = null,
-                    DeactivatedAt = null
-                };
+             FirstName = user.FirstName,
+             LastName = user.LastName,
+             Email = string.IsNullOrWhiteSpace(model.Email) ? user.Email : model.Email,
+             PhoneNumber = string.IsNullOrWhiteSpace(model.PhoneNumber) ? user.PhoneNumber : model.PhoneNumber,
+             DateOfBirth = user.DateOfBirth,
 
-                var customerAddress = new CustomerAddress
-                {
-                    Customer = customer, 
-                    Country = model.Country,
-                    City = model.City,
-                    Street = model.Street,
-                    BuildingNumber = model.BuildingNumber,
-                    ApartmentNumber = model.ApartmentNumber
-                };
-                customer.CustomerAddresses.Add(customerAddress);
+             RegistrationDate = user.CreatedAt,
+             IsActive = true,
+             LastLoginDate = DateTime.Now
+         };
 
-                await _uow.Customers.AddAsync(customer);
-                await _uow.CompleteAsync();
-                user.CustomerId = customer.Id; 
+         var customerAddress = new CustomerAddress
+         {
+             Customer = customer,
+             Country = model.Country,
+             City = model.City,
+             Street = model.Street,
+             BuildingNumber = model.BuildingNumber,
+             ApartmentNumber = model.ApartmentNumber
+         };
+         customer.CustomerAddresses.Add(customerAddress);
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to create customer for user {user.Email}: {ex.Message}", ex);
-            }
-        }
-
+         await _uow.Customers.AddAsync(customer);
+         await _uow.CompleteAsync();
+         user.CustomerId = customer.Id;
+     }
+     catch (Exception ex)
+     {
+         throw new Exception($"Failed to create customer for user {user.Email}: {ex.Message}", ex);
+     }
+ }
 
 
         public async Task<IEnumerable<Customer>> GetAllCustomersAsync(bool includeInactive = false)
