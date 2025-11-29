@@ -50,65 +50,70 @@ namespace ERP_System_Project.Controllers.Authentication
 
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveRegister(RegisterViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return View("Register", model);
+         [HttpPost]
+ [ValidateAntiForgeryToken]
+ public async Task<IActionResult> SaveRegister(RegisterViewModel model)
+ {
+     if (!ModelState.IsValid)
+         return View("Register", model);
 
-            var appuser = new ApplicationUser
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                UserName = $"{model.FirstName} {model.LastName}",
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                DateOfBirth = model.DateOfBirth,
-                CreatedAt = DateTime.Now,
-            };
+     var appuser = new ApplicationUser
+     {
+         FirstName = model.FirstName,
+         LastName = model.LastName,
+         UserName = $"{model.FirstName} {model.LastName}",
+         Email = model.Email,
+         PhoneNumber = model.PhoneNumber,
+         DateOfBirth = model.DateOfBirth,
+         CreatedAt = DateTime.Now,
+     };
 
 
-            var result = await _userManager.CreateAsync(appuser, model.Password);
+     var result = await _userManager.CreateAsync(appuser, model.Password);
 
-            if (!result.Succeeded)
-            {
-                var existingUser = await _userManager.FindByNameAsync(appuser.UserName);
+     if (!result.Succeeded)
+     {
+         var existingUser = await _userManager.FindByNameAsync(appuser.UserName);
 
-                if (existingUser != null && !await _userManager.IsEmailConfirmedAsync(existingUser))
-                {
-                    appuser = existingUser;
-                }
-                else
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
-                    return View("Register", model);
-                }
-            }
-            await _customerService.CreateCustomerByApplicationUserAsync(appuser, model);
-            await _userManager.UpdateAsync(appuser);
+         if (existingUser != null && !await _userManager.IsEmailConfirmedAsync(existingUser))
+         {
+             appuser = existingUser;
+         }
+         else
+         {
+             foreach (var error in result.Errors)
+             {
+                 ModelState.AddModelError(string.Empty, error.Description);
+             }
+             return View("Register", model);
+         }
+     }
+     var existingCustomer = await _customerService.GetCustomerByUserIdAsync(appuser.Id);
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(appuser);
+     if (existingCustomer == null)
+     {
+         await _customerService.CreateCustomerByApplicationUserAsync(appuser, model);
+     }
+     await _userManager.UpdateAsync(appuser);
 
-            var confirmationLink = Url.Action("ConfirmEmailToken", "Account",
-                new { userId = appuser.Id, token = token }, Request.Scheme);
+     var token = await _userManager.GenerateEmailConfirmationTokenAsync(appuser);
 
-            await _emailSender.SendEmailAsync(
-                model.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>."
-            );
+     var confirmationLink = Url.Action("ConfirmEmailToken", "Account",
+         new { userId = appuser.Id, token = token }, Request.Scheme);
 
-            if (!await _roleManager.RoleExistsAsync("User"))
-                await _roleManager.CreateAsync(new IdentityRole("User"));
+     await _emailSender.SendEmailAsync(
+         model.Email,
+         "Confirm your email",
+         $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>."
+     );
 
-            await _userManager.AddToRoleAsync(appuser, "User");
+     if (!await _roleManager.RoleExistsAsync("Admin"))
+         await _roleManager.CreateAsync(new IdentityRole("Admin"));
 
-            return View("RegisterConfirmation");
-        }
+     await _userManager.AddToRoleAsync(appuser, "Admin");
+
+     return View("RegisterConfirmation");
+ }
 
 
         public IActionResult VerifyEmail()
@@ -493,6 +498,7 @@ namespace ERP_System_Project.Controllers.Authentication
     }
 
 }
+
 
 
 
