@@ -303,12 +303,12 @@ namespace ERP_System_Project.Services.Implementation.CRM
                 return false;
             }
         }
-        public async Task<Customer> GetCustomerByUserIdAsync(string userId)
+       public async Task<Customer?> GetCustomerByUserIdAsync(string userId)
 {
-    return await _context.Customers
-        .FirstOrDefaultAsync(c => c.UserId == userId);
+    return await _uow.Customers
+        .GetAllAsIQueryable()
+        .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 }
-
 
 
 
