@@ -23,6 +23,8 @@ namespace ERP_System_Project.Services.Interfaces.CRM
         Task<CustomerVM?> GetCustomerVMByIdAsync(int id);
         Task<bool> CreateCustomerVMAsync(CustomerVM customerVM);
         Task<bool> UpdateCustomerVMAsync(CustomerVM customerVM);
+                Task<Customer?> GetCustomerByUserIdAsync(string userId);
+
 
     }
 }
