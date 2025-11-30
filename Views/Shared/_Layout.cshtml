@@ -10,103 +10,106 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-      <!-- BootStrap -->
+    <!-- BootStrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ERP_System_Project.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 
 </head>
 <body>
 
-     <!-- icons sidebar -->
- <div class="sidebar-icons">
-     <button id="menuToggle" title="Toggle submenu"><i class="fa fa-bars"></i></button>
+    <!-- icons sidebar -->
+    <div class="sidebar-icons">
+        <button id="menuToggle" title="Toggle submenu"><i class="fa fa-bars"></i></button>
 
-     <button id="iconHome" title="Home" asp-area="" asp-controller="Market" asp-action="Index"><i class="fa-solid fa-house"></i></button>
-     <hr>
+        <button id="iconHome" title="Home" asp-area="" asp-controller="Market" asp-action="Index"><i class="fa-solid fa-house"></i></button>
+        <hr>
 
-     @if (User.IsInRole("Admin") || User.IsInRole("HR Manager"))
+        @if (User.IsInRole("Admin") || User.IsInRole("HR Manager") || User.IsInRole("Employee"))
         {
             <!-- HR -->
             <button id="iconEmp" title="Employees"><i class="fa fa-id-badge"></i></button>
             <button id="iconDept" title="Departments"><i class="fa fa-sitemap"></i></button>
             <button id="iconJob" title="Job Title"><i class="fa fa-briefcase"></i></button>
             <button id="iconAttend" title="Attendance"><i class="fa fa-clipboard-user"></i></button>
+            <button id="iconLeaveType" title="Leave"><i class="fa-solid fa-plane-departure"></i></button>
+            <button id="iconManager" title="Manager"><i class="fa fa-user-tie"></i></button>
+
             <button id="iconPayroll" title="Payroll"><i class="fa fa-money-bill"></i></button>
             <hr>
 
-            <button id="iconPortal" title="Assign Permissions"><i class="fa fa-universal-access"></i></button>
+            <button id="iconPortal" title="Leave"><i class="fa-solid fa-plane-departure"></i></button>
             <hr />
         }
-     @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
-    {
-        <!-- INVENTORY -->
-     <button id="iconProd" title="Products"><i class="fa fa-box"></i></button>
-     <button id="iconCat" title="Categories"><i class="fa fa-layer-group"></i></button>
-     <button id="iconStock" title="Stock Transactions"><i class="fa fa-exchange-alt"></i></button>
-     <button id="iconWare" title="Warehouse"><i class="fa-solid fa-warehouse"></i></button>
-     <button id="iconBrands" title="Brands"><i class="bi bi-award"></i></button>
-     <hr>
-    }
+        @if (User.IsInRole("Admin") || User.IsInRole("Inventory"))
+        {
+            <!-- INVENTORY -->
+            <button id="iconProd" title="Products"><i class="fa fa-box"></i></button>
+            <button id="iconCat" title="Categories"><i class="fa fa-layer-group"></i></button>
+            <button id="iconStock" title="Stock Transactions"><i class="fa fa-exchange-alt"></i></button>
+            <button id="iconWare" title="Warehouse"><i class="fa-solid fa-warehouse"></i></button>
+            <button id="iconBrands" title="Brands"><i class="bi bi-award"></i></button>
+            <hr>
+        }
 
-     <!-- SALES / E-COMMERCE -->
-     <button id="iconMarket" title="Market"><i class="fa fa-bag-shopping"></i></button>
-     <hr>
+        <!-- SALES / E-COMMERCE -->
+        <button id="iconMarket" title="Market"><i class="fa fa-bag-shopping"></i></button>
+        <hr>
 
-     @if (User.IsInRole("Admin") || User.IsInRole("Purchase"))
-    {
-     <!-- PROCUREMENT -->
-     <button id="iconSupp" title="Suppliers"><i class="fa fa-truck"></i></button>
-     <button id="iconPO" title="Purchase Orders"><i class="fa fa-money-check-dollar"></i></button>
-     <hr>
-    }
+        @if (User.IsInRole("Admin") || User.IsInRole("Purchase"))
+        {
+            <!-- PROCUREMENT -->
+            <button id="iconSupp" title="Suppliers"><i class="fa fa-truck"></i></button>
+            <button id="iconPO" title="Purchase Orders"><i class="fa fa-money-check-dollar"></i></button>
+            <hr>
+        }
 
-    @if (User.IsInRole("Admin") || User.IsInRole("CRM"))
-    {
-     <!-- CRM -->
-     <button id="iconCust" title="Customers"><i class="fa fa-users"></i></button>
-     <hr>
-    }
-    @if (User.IsInRole("Admin"))
-    {
-     <!-- SYSTEM -->
-     <button id="iconRoles" title="Roles"><i class="fa fa-shield-halved"></i></button>
-     <hr>
-    }
+        @if (User.IsInRole("Admin") || User.IsInRole("CRM"))
+        {
+            <!-- CRM -->
+            <button id="iconCust" title="Customers"><i class="fa fa-users"></i></button>
+            <hr>
+        }
+        @if (User.IsInRole("Admin"))
+        {
+            <!-- SYSTEM -->
+            <button id="iconRoles" title="Roles"><i class="fa fa-shield-halved"></i></button>
+            <hr>
+        }
 
-    
+
         @if (User.Identity.IsAuthenticated && !User.IsInRole("User"))
         {
             <!-- SETTINGS -->
             <button id="iconSettings" title="Settings"><i class="fa fa-gear"></i></button>
             <hr>
         }
-   
 
-    
-    
- </div>
 
-  <div class="overlay" id="overlay" aria-hidden="true"></div>
 
-  <!-- navbar -->
-         <div class="app" id="app">
-              <nav class="topbar">
-                 <button id="menuToggleMobile" class="btn btn-link d-lg-none" aria-expanded="false" aria-label="Toggle sidebar">
-                     <i class="fa fa-bars"></i>
-                  </button>
 
-                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Market" asp-action="Index">
-                    <img src="~/optima-logo.webp" alt="Optima Logo" class="navbar-logo" />
-                    <h5 class="mb-0 me-auto">Optima</h5>
-                </a>
+    </div>
 
-                <div class="d-flex align-items-center">
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+
+    <!-- navbar -->
+    <div class="app" id="app">
+        <nav class="topbar">
+            <button id="menuToggleMobile" class="btn btn-link d-lg-none" aria-expanded="false" aria-label="Toggle sidebar">
+                <i class="fa fa-bars"></i>
+            </button>
+
+            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Market" asp-action="Index">
+                <img src="~/optima-logo.webp" alt="Optima Logo" class="navbar-logo" />
+                <h5 class="mb-0 me-auto">Optima</h5>
+            </a>
+
+            <div class="d-flex align-items-center">
                 <div class="mood">
                     <button id="toggle-theme" class="btn btn-link text-decoration-none position-relative">
                         <i class="fa-regular fa-moon"></i>
@@ -116,7 +119,7 @@
 
 
 
-            <!-- Profile Dropdown -->
+                <!-- Profile Dropdown -->
                 <div class="dropdown">
                     <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
                         <i class="fa-regular fa-circle-user fs-4"></i>
@@ -145,69 +148,69 @@
                     </ul>
                 </div>
 
-            </nav>
+        </nav>
 
-      
-                    <div class="main">
 
-                     <aside id="submenu" class="submenu" aria-expanded="true">
-                    <div class="submenu-section hidden" id="Home">
+        <div class="main">
 
-                       <h6>Home</h6>
-                       <ul class="nav flex-column">
+            <aside id="submenu" class="submenu" aria-expanded="true">
+                <div class="submenu-section hidden" id="Home">
+
+                    <h6>Home</h6>
+                    <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Market" asp-action="Index">Home</a>
                         </li>
-                        </ul>
-                   </div>
+                    </ul>
+                </div>
 
-                   <!-- HR -->
-                     <div class="submenu-section hidden" id="Emp">
-                       <h6>Employees</h6>
-                       <ul class="nav flex-column">
-                         <li class="nav-item">
+                <!-- HR -->
+                <div class="submenu-section hidden" id="Emp">
+                    <h6>Employees</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="EmployeeType" asp-action="Index">Employee Types</a>
                         </li>
-                      </ul>
-                   </div>
+                    </ul>
+                </div>
 
-                   <div class="submenu-section hidden" id="Dept">
-                       <h6>Departments</h6>
-                       <ul class="nav flex-column">
+                <div class="submenu-section hidden" id="Dept">
+                    <h6>Departments</h6>
+                    <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Department" asp-action="Index">Departments</a>
                         </li>
-                       </ul>
-                   </div>
+                    </ul>
+                </div>
 
-                   <div class="submenu-section hidden" id="Job">
-                       <h6>Job Title</h6>
-                       <ul class="nav flex-column">
+                <div class="submenu-section hidden" id="Job">
+                    <h6>Job Title</h6>
+                    <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="JobTitle" asp-action="Index">Job Title</a>
                         </li>
-                       </ul>
-                   </div>
+                    </ul>
+                </div>
 
-                   <div class="submenu-section hidden" id="Attend">
-                       <h6>Attendance</h6>
-                       <ul class="nav flex-column">
+                <div class="submenu-section hidden" id="Attend">
+                    <h6>Attendance</h6>
+                    <ul class="nav flex-column">
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="Index">Attendance</a></li>
-                        
+
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="AttendanceStatusCode" asp-action="Index">Attendance Status Codes</a>
                         </li>
 
                         <li class="nav-item">
-                             <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="MonthlyReport"> Monthly Attendance Report</a>
+                            <a class="nav-link" asp-area="" asp-controller="Attendance" asp-action="MonthlyReport"> Monthly Attendance Report</a>
                         </li>
-                   
+
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="PublicHoliday" asp-action="Index">Public Holidays</a>
                         </li>
@@ -215,44 +218,41 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="WorkSchedule" asp-action="Index">Work Schedule</a>
                         </li>
-                        </ul>
-                   </div>
+                    </ul>
+                </div>
 
-                   <div class="submenu-section hidden" id="LeaveType">
-                       <h6>Leave</h6>
-                       <ul class="nav flex-column">
+                <div class="submenu-section hidden" id="LeaveType">
+                    <h6>Leave</h6>
+                    <ul class="nav flex-column">
 
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="LeaveType" asp-action="Index">Leave Types</a>
                         </li>
 
-                         <li  class="nav-item">
-                             <a class="nav-link" asp-area="" asp-controller="EmployeeLeaveBalance" asp-action="Index"> Leave Balances</a>
-                         </li>
-                        </ul>
-                   </div>
-
-                   <div class="submenu-section hidden" id="Payroll">
-                       <h6>Payroll</h6>
-                       <ul class="nav flex-column">
-                        <li class="nav-item">
-                              <a class="dropdown-item" asp-area="" asp-controller="PayrollRun" asp-action="Index"> Payroll Runs</a>
+                        <li  class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="EmployeeLeaveBalance" asp-action="Index"> Leave Balances</a>
                         </li>
-                       </ul>
-                   </div>
+                    </ul>
+                </div>
 
+                <div class="submenu-section hidden" id="Payroll">
+                    <h6>Payroll</h6>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="dropdown-item" asp-area="" asp-controller="PayrollRun" asp-action="Index"> Payroll Runs</a>
+                        </li>
+                    </ul>
+                </div>
 
-                   <div class="submenu-section hidden" id="Portal">
+                
+
+                    <div class="submenu-section hidden" id="Portal">
                         <h6>My Portal</h6>
                         <ul class="nav flex-column">
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ViewProfile">
-                                   My Profile
-                                </a>
-                            </li>
+
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Employee" asp-action="MyLeaveRequests">
-                                   My Leave Requests
+                                    My Leave Requests
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -262,7 +262,7 @@
                             </li>
                         </ul>
                     </div>
-
+                
 
                         <!-- E-Commerce -->
                         <div class="submenu-section hidden" id="Market">
