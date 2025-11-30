@@ -73,14 +73,42 @@ namespace ERP_System_Project.Middlewares
                 return;
             }
 
-            var roleIds = context.User.Claims
+            // Claims provide role NAMES, but permissions table stores Role IDs. Map names -> IDs.
+            var roleNames = context.User.Claims
                 .Where(c => c.Type == ClaimTypes.Role)
                 .Select(c => c.Value)
                 .ToList();
 
+            if (!roleNames.Any())
+            {
+                context.Response.Redirect("/Home/AccessDenied");
+                return;
+            }
+
+            var roleIds = await db.Roles
+                .Where(r => roleNames.Contains(r.Name))
+                .Select(r => r.Id)
+                .ToListAsync();
+
             if (!roleIds.Any())
             {
                 context.Response.Redirect("/Home/AccessDenied");
+                return;
+            }
+
+            // Bypass for self-service employee actions (do not require explicit permission rows)
+            var selfServiceEmployeeActions = new HashSet<(string Controller,string Action)>(new [] {
+                ("Employee","Profile"),
+                ("Employee","MyLeaveRequests"),
+                ("Employee","RequestLeave"),
+                ("Employee","CancelLeaveRequest"),
+                ("Employee","CalculateLeaveDays"),
+                ("Employee","GetAvailableBalance")
+            }, new TupleIgnoreCaseComparer());
+
+            if (selfServiceEmployeeActions.Contains((controller, action)) && context.User.IsInRole("Employee"))
+            {
+                await _next(context);
                 return;
             }
 
@@ -101,4 +129,14 @@ namespace ERP_System_Project.Middlewares
             await _next(context);
         }
     }
+
+// Case-insensitive comparer for (controller, action) tuple
+internal sealed class TupleIgnoreCaseComparer : IEqualityComparer<(string Controller,string Action)>
+{
+    public bool Equals((string Controller, string Action) x, (string Controller, string Action) y)
+        => string.Equals(x.Controller, y.Controller, StringComparison.OrdinalIgnoreCase)
+           && string.Equals(x.Action, y.Action, StringComparison.OrdinalIgnoreCase);
+    public int GetHashCode((string Controller, string Action) obj)
+        => HashCode.Combine(obj.Controller?.ToLowerInvariant(), obj.Action?.ToLowerInvariant());
+}
 }
