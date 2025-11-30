@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.Enums;
 using ERP_System_Project.Models.HR;
@@ -596,7 +596,6 @@ namespace ERP_System_Project.Controllers.HR
         /// My Leave Requests - Shows all leave requests for logged-in employee
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> MyLeaveRequests()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -614,7 +613,6 @@ namespace ERP_System_Project.Controllers.HR
         /// Create Leave Request - GET
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> RequestLeave()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -638,7 +636,6 @@ namespace ERP_System_Project.Controllers.HR
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> RequestLeave(LeaveRequestVM model)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -678,7 +675,6 @@ namespace ERP_System_Project.Controllers.HR
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> CancelLeaveRequest(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -701,7 +697,6 @@ namespace ERP_System_Project.Controllers.HR
         /// Calculate Leave Days (AJAX)
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> CalculateLeaveDays(string startDate, string endDate)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -723,7 +718,6 @@ namespace ERP_System_Project.Controllers.HR
         /// Get Available Balance for Leave Type (AJAX)
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> GetAvailableBalance(int leaveTypeId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -747,7 +741,6 @@ namespace ERP_System_Project.Controllers.HR
         /// Pending Approvals - Shows all pending leave requests for manager's department
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "HR Manager, Manager, Admin")]
         public async Task<IActionResult> PendingApprovals()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -792,7 +785,6 @@ namespace ERP_System_Project.Controllers.HR
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "HR Manager, Manager, Admin")]
         public async Task<IActionResult> RejectLeaveRequest(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -815,7 +807,6 @@ namespace ERP_System_Project.Controllers.HR
         /// View Leave Request Details (for managers)
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "HR Manager, Manager, Admin")]
         public async Task<IActionResult> LeaveRequestDetails(int id)
         {
             var request = await _leaveRequestService.GetByIdWithDetailsAsync(id);
@@ -841,7 +832,6 @@ namespace ERP_System_Project.Controllers.HR
         /// Team Leave Calendar - Shows all approved leaves for the team
         /// </summary>
         [HttpGet]
-        [Authorize(Roles = "HR Manager, Manager, Admin")]
         public async Task<IActionResult> TeamLeaveCalendar()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
