@@ -61,6 +61,25 @@ namespace ERP_System_Project.Services.Implementation.HR
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<LeaveRequest>> GetApprovedLeaveRequestsAsync(int? departmentId = null)
+        {
+            var query = _repository
+                .GetAllAsIQueryable()
+                .Include(lr => lr.Employee)
+                    .ThenInclude(e => e.Department)
+                .Include(lr => lr.Employee)
+                    .ThenInclude(e => e.Branch)
+                .Include(lr => lr.LeaveType)
+                .Where(lr => lr.Status == LeaveRequestStatus.Approved);
+
+            if (departmentId.HasValue)
+                query = query.Where(lr => lr.Employee.DepartmentId == departmentId.Value);
+
+            return await query
+                .OrderBy(lr => lr.StartDate)
+                .ToListAsync();
+        }
+
         public async Task<(bool Success, string? ErrorMessage)> CreateLeaveRequestAsync(LeaveRequest leaveRequest)
         {
             // Validate dates

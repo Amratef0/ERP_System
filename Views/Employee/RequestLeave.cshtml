@@ -3,12 +3,28 @@
 @{
     ViewData["Title"] = "Request Leave";
 }
+<!-- General styles -->
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+<link rel="stylesheet" href="~/css/GeneralModal.css" />
 
-<div class="container mt-4">
+<div class="page-section">
+    <div class="bp-header mb-4">
+        <div class="bp-header-content">
+            <div>
+                <h2><i class="bi bi-calendar-plus"></i> Request Leave</h2>
+                <p>Submit a new leave request for manager approval</p>
+            </div>
+            <div>
+                <a asp-action="MyLeaveRequests" class="bp-back-btn btn-lg">
+                    <i class="bi bi-arrow-left"></i> My Requests
+                </a>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <h2><i class="bi bi-calendar-plus"></i> Request Leave</h2>
-            <hr />
 
             <!-- Alert Messages -->
             @if (TempData["SuccessMessage"] != null)
@@ -28,14 +44,12 @@
 
             <div asp-validation-summary="All" class="text-danger"></div>
 
-            <form asp-action="RequestLeave" method="post" id="leaveRequestForm">
+            <form asp-action="RequestLeave" method="post" id="leaveRequestForm" class="bp-search-card shadow-sm border-0">
                 @Html.AntiForgeryToken()
 
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">Leave Request Form</h5>
-                    </div>
-                    <div class="card-body">
+                <div class="card border-0">
+                    <div class="card-body p-4">
+                        <h5 class="mb-3"><i class="bi bi-file-earmark-text"></i> Leave Request Form</h5>
                         <!-- Leave Type -->
                         <div class="mb-3">
                             <label asp-for="LeaveTypeId" class="form-label"></label>
@@ -103,15 +117,15 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <i class="bi bi-send"></i> Submit Request
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        <button type="submit" class="quick-action-btn card1" id="submitBtn">
+                            <i class="bi bi-send me-2"></i><span>Submit</span>
                         </button>
-                        <a asp-action="MyLeaveRequests" class="btn btn-secondary">
-                            <i class="bi bi-x-circle"></i> Cancel
+                        <a asp-action="MyLeaveRequests" class="quick-action-btn card2">
+                            <i class="bi bi-list-ul me-2"></i><span>My Requests</span>
                         </a>
-                        <a asp-action="Profile" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left"></i> Back to Profile
+                        <a asp-action="Profile" class="quick-action-btn card3">
+                            <i class="bi bi-person-circle me-2"></i><span>Profile</span>
                         </a>
                     </div>
                 </div>

@@ -24,6 +24,11 @@ namespace ERP_System_Project.Services.Interfaces.HR
         Task<IEnumerable<LeaveRequest>> GetPendingLeaveRequestsAsync(int? departmentId = null);
 
         /// <summary>
+        /// Gets approved leave requests (for team calendar).
+        /// </summary>
+        Task<IEnumerable<LeaveRequest>> GetApprovedLeaveRequestsAsync(int? departmentId = null);
+
+        /// <summary>
         /// Creates a leave request and validates against balance.
         /// </summary>
         Task<(bool Success, string? ErrorMessage)> CreateLeaveRequestAsync(LeaveRequest leaveRequest);

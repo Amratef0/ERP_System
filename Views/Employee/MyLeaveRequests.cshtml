@@ -4,12 +4,24 @@
     ViewData["Title"] = "My Leave Requests";
 }
 
-<div class="container-fluid mt-4">
+<!-- General styles -->
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+<link rel="stylesheet" href="~/css/GeneralModal.css" />
+
+<div class="page-section">
     <!-- Header -->
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <h2><i class="bi bi-list-ul"></i> My Leave Requests</h2>
-            <hr />
+    <div class="bp-header">
+        <div class="bp-header-content">
+            <div>
+                <h2><i class="bi bi-list-ul"></i> My Leave Requests</h2>
+                <p>Review and track all your submitted leave requests</p>
+            </div>
+            <div>
+                <a asp-action="Profile" class="bp-back-btn btn-lg">
+                    <i class="bi bi-arrow-left"></i> Back to Profile
+                </a>
+            </div>
         </div>
     </div>
 
@@ -30,13 +42,13 @@
     }
 
     <!-- Action Buttons -->
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <a asp-action="RequestLeave" class="btn btn-primary">
-                <i class="bi bi-calendar-plus"></i> Request New Leave
+    <div class="bp-search-card shadow-sm border-0 mb-4">
+        <div class="card-body p-3 d-flex gap-2 flex-wrap">
+            <a asp-action="RequestLeave" class="quick-action-btn card1">
+                <i class="bi bi-calendar-plus me-2"></i><span>Request Leave</span>
             </a>
-            <a asp-action="Profile" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to Profile
+            <a asp-action="Profile" class="quick-action-btn card2">
+                <i class="bi bi-person-circle me-2"></i><span>My Profile</span>
             </a>
         </div>
     </div>

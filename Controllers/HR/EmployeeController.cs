@@ -842,14 +842,9 @@ namespace ERP_System_Project.Controllers.HR
 
             // Get all approved requests for manager's department
             int? departmentId = User.IsInRole("Admin") ? null : manager.DepartmentId;
-            var allRequests = await _leaveRequestService.GetPendingLeaveRequestsAsync(departmentId);
-
-            // Include approved requests as well
-            var approvedRequests = allRequests.Where(r =>
-                r.Status == LeaveRequestStatus.Approved &&
-                r.StartDate >= DateOnly.FromDateTime(DateTime.Today));
-
-            return View(approvedRequests);
+            var approvedRequests = await _leaveRequestService.GetApprovedLeaveRequestsAsync(departmentId);
+            var upcoming = approvedRequests.Where(r => r.StartDate >= DateOnly.FromDateTime(DateTime.Today));
+            return View(upcoming);
         }
     }
 }

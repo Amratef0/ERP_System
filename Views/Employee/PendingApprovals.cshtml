@@ -4,13 +4,24 @@
     ViewData["Title"] = "Pending Leave Approvals";
 }
 
-<div class="container-fluid mt-4">
+<!-- General styles -->
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+<link rel="stylesheet" href="~/css/CRUD/Index.css" />
+<link rel="stylesheet" href="~/css/GeneralModal.css" />
+
+<div class="page-section">
     <!-- Header -->
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <h2><i class="bi bi-clipboard-check"></i> Pending Leave Approvals</h2>
-            <p class="text-muted">Review and process employee leave requests</p>
-            <hr />
+    <div class="bp-header">
+        <div class="bp-header-content">
+            <div>
+                <h2><i class="bi bi-clipboard-check"></i> Pending Leave Approvals</h2>
+                <p>Review and process employee leave requests awaiting action</p>
+            </div>
+            <div>
+                <a asp-action="TeamLeaveCalendar" class="bp-back-btn btn-lg">
+                    <i class="bi bi-calendar3"></i> Team Calendar
+                </a>
+            </div>
         </div>
     </div>
 
@@ -30,42 +41,39 @@
         </div>
     }
 
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card bg-warning text-dark">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-clock-history"></i> Pending Requests</h5>
-                    <h2 class="mb-0">@Model.Count()</h2>
-                    <small>Awaiting your approval</small>
-                </div>
+    <!-- Statistics Cards (Unified Style) -->
+    <div class="bp-stats-row mb-4">
+        <div class="bp-stat-card" style="background: var(--card1-bg);">
+            <div>
+                <h3 style="color: var(--card1-h3);">@Model.Count()</h3>
+                <p style="color: var(--card1-p);">Pending Requests</p>
+                <small style="color: var(--card1-p);">Awaiting approval</small>
             </div>
+            <i class="bi bi-clock-history" style="color: var(--card1-icon);"></i>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-people"></i> Employees</h5>
-                    <h2 class="mb-0">@Model.Select(r => r.EmployeeId).Distinct().Count()</h2>
-                    <small>Requesting leave</small>
-                </div>
+        <div class="bp-stat-card" style="background: var(--card2-bg);">
+            <div>
+                <h3 style="color: var(--card2-h3);">@Model.Select(r => r.EmployeeId).Distinct().Count()</h3>
+                <p style="color: var(--card2-p);">Employees</p>
+                <small style="color: var(--card2-p);">Requesting leave</small>
             </div>
+            <i class="bi bi-people" style="color: var(--card2-icon);"></i>
         </div>
-        <div class="col-md-4">
-            <div class="card bg-primary text-white">
-                <div class="card-body">
-                    <h5 class="card-title"><i class="bi bi-calendar3"></i> Total Days</h5>
-                    <h2 class="mb-0">@Model.Sum(r => r.TotalDays).ToString("F1")</h2>
-                    <small>Days requested</small>
-                </div>
+        <div class="bp-stat-card" style="background: var(--card3-bg);">
+            <div>
+                <h3 style="color: var(--card3-h3);">@Model.Sum(r => r.TotalDays).ToString("F1")</h3>
+                <p style="color: var(--card3-p);">Total Days</p>
+                <small style="color: var(--card3-p);">Requested</small>
             </div>
+            <i class="bi bi-calendar3" style="color: var(--card3-icon);"></i>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <a asp-action="TeamLeaveCalendar" class="btn btn-outline-primary">
-                <i class="bi bi-calendar3"></i> Team Leave Calendar
+    <div class="bp-search-card shadow-sm border-0 mb-4">
+        <div class="card-body p-3 d-flex gap-2 flex-wrap">
+            <a asp-action="TeamLeaveCalendar" class="quick-action-btn card3">
+                <i class="bi bi-calendar3 me-2"></i><span>Team Calendar</span>
             </a>
         </div>
     </div>
