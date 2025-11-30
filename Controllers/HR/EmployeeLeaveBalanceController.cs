@@ -2,6 +2,7 @@ using ERP_System_Project.Models.HR;
 using ERP_System_Project.Services.Interfaces.Core;
 using ERP_System_Project.Services.Interfaces.HR;
 using ERP_System_Project.ViewModels.HR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ERP_System_Project.Controllers.HR
@@ -10,6 +11,8 @@ namespace ERP_System_Project.Controllers.HR
     /// Controller for managing Employee Leave Balances.
     /// Provides CRUD operations and bulk actions for HR managers.
     /// </summary>
+    /// 
+
     public class EmployeeLeaveBalanceController : Controller
     {
         private readonly IEmployeeLeaveBalanceService _leaveBalanceService;
