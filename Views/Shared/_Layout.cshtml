@@ -104,7 +104,7 @@
                 <i class="fa fa-bars"></i>
             </button>
 
-            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Market" asp-action="Index">
+            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Market" asp-action="Index" asp-route-pageSize="25" asp-route-pageNumber="1">
                 <img src="~/optima-logo.webp" alt="Optima Logo" class="navbar-logo" />
                 <h5 class="mb-0 me-auto">Optima</h5>
             </a>
@@ -159,7 +159,7 @@
                     <h6>Home</h6>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Market" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-controller="Market" asp-action="Index" asp-route-pageSize="25" asp-route-pageNumber="1">Home</a>
                         </li>
                     </ul>
                 </div>

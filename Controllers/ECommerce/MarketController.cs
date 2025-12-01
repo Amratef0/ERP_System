@@ -51,7 +51,7 @@ namespace ERP_System_Project.Controllers.ECommerce
         }
 
         public async Task<IActionResult> Index(
-            int pageNumber, int pageSize,
+            int pageNumber = 1, int pageSize = 25,
             string? searchByName = null, string? brandName = null, string? categoryName = null,
             int? minPrice = null, int? maxPrice = null)
         {
