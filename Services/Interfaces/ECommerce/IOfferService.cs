@@ -6,5 +6,6 @@ namespace ERP_System_Project.Services.Interfaces.ECommerce
     {
         Task<OfferVM> GetOfferAsync(int productId);
         Task SetOfferAsync(OfferVM model);
+        Task DeleteOffer(int productId);
     }
 }

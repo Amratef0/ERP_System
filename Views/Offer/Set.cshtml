@@ -41,6 +41,14 @@
                 <a asp-action="Index" asp-controller="Product" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
+        @if (Model.IsHasOffer)
+        {
+            <form asp-action="Delete" asp-controller="Offer" asp-route-productId="@Model.ProductId" method="post" style="display:inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+
+        }
     </div>
 </div>
 

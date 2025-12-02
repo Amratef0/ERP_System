@@ -7,6 +7,7 @@ namespace ERP_System_Project.ViewModels.ECommerce
     public class OfferVM
     {
         public int ProductId { get; set; }
+        public bool IsHasOffer { get; set; }
         public string Name { get; set; } = null!;
         public int DiscountPercentage { get; set; }
         public int OfferDays { get; set; }

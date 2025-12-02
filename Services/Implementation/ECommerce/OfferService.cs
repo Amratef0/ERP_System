@@ -2,6 +2,8 @@
 using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels.ECommerce;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace ERP_System_Project.Services.Implementation.ECommerce
 {
@@ -24,6 +26,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 OfferDays = 0,
                 Name = "New Offer",
                 ProductId = productId,
+                IsHasOffer = false
             };
 
 
@@ -39,7 +42,8 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     Name = offer.Name,
                     DiscountPercentage = offer.DiscountPercentage,
                     OfferDays = offer.EndDate.Subtract(offer.StartDate).Days,
-                    StartDate = offer.StartDate
+                    StartDate = offer.StartDate,
+                    IsHasOffer = true
                 };
                 return offerVM;
             }
@@ -70,6 +74,16 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             }
 
             await _uow.CompleteAsync();
+        }
+
+        public async Task DeleteOffer(int productId)
+        {
+            var offer = await _uow.Offers.GetAllAsIQueryable().FirstOrDefaultAsync(o => o.ProductId == productId);
+            if(offer is not null)
+            {
+                _uow.Offers.Delete(offer.Id);
+                await _uow.CompleteAsync();
+            }
         }
     }
 }

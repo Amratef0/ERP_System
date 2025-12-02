@@ -40,5 +40,13 @@ namespace ERP_System_Project.Controllers.ECommerce
             return View(model);
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int productId)
+        {
+            await _offerService.DeleteOffer(productId);
+            return RedirectToAction("Index", "Product");
+        }
     }
 }
