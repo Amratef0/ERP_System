@@ -18,6 +18,11 @@ namespace ERP_System_Project.ViewModels.CRM
         public string Description { get; set; }
 
         [Display(Name = "Number of Customers")]
+
         public int CustomerCount { get; set; }
+
+        [Range(0, 100, ErrorMessage = "Discount Percentage must be between 0 and 100")]
+        public double DiscountPercentage { get; set; }
+
     }
 }

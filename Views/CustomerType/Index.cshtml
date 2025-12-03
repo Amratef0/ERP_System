@@ -53,6 +53,7 @@
                 <thead>
                     <tr>
                         <th>Type Name</th>
+                        <th>Discount</th>
                         <th>Description</th>
                         <th>Customers</th>
                         <th>Actions</th>
@@ -66,6 +67,11 @@
                         {
                             <tr>
                                 <td data-label="Type Name"><strong>@type.Name</strong></td>
+                                <td data-label="Discount">
+                                    <span class="badge @(type.DiscountPercentage > 0 ? "bg-success" : "bg-secondary")">
+                                        @type.DiscountPercentage%
+                                    </span>
+                                </td>
                                 <td data-label="Description">
                                     <span class="text-muted text-truncate" style="max-width:360px;">
                                         @(string.IsNullOrEmpty(type.Description) ? "-" : (type.Description.Length > 50 ? type.Description.Substring(0,50) + "..." : type.Description))

@@ -17,6 +17,13 @@
             </div>
 
             <div class="form-group">
+                <input asp-for="DiscountPercentage" type="number" step="0.01" min="0" max="100"
+                       class="form-control" placeholder=" " />
+                <label asp-for="DiscountPercentage"></label>
+                <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+                <small class="form-text text-muted">Discount percentage (0-100%)</small>
+            </div>
+            <div class="form-group">
                 <input asp-for="Description" class="form-control" placeholder=" " />
                 <label asp-for="Description"></label>
                 <span asp-validation-for="Description" class="text-danger"></span>
