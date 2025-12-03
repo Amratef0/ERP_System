@@ -94,6 +94,7 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             // جلب العميل أو إنشاء واحد
             var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
                 .Include(c => c.CustomerAddresses)
+                .Include(c => c.CustomerType)
                 .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
             if (customer == null)
@@ -125,6 +126,8 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 await _unitOfWork.CompleteAsync();
             }
 
+
+
             var orderItems = new List<OrderItem>();
 
             // تقليل الكمية + حساب الأسعار
@@ -143,23 +146,39 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
                 if (product == null) continue;
 
-                var discountAmount = product.Offer != null ?
-                    (product.StandardPrice * productQuantities[i])
-                    - (product.StandardPrice - ((product.Offer.DiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
-                    : 0;
 
-                var lineTotal = product.Offer != null ?
-                    (product.StandardPrice - ((product.Offer.DiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
-                    : product.StandardPrice * productQuantities[i];
+
+
+
+
+
+
+
+                var offerDiscount = product.Offer?.DiscountPercentage ?? 0;
+                var customerTypeDiscount = customer.CustomerType?.DiscountPercentage ?? 0;
+                decimal totalDiscount = (decimal)offerDiscount + (decimal)customerTypeDiscount;
+                if (totalDiscount > 100m) totalDiscount = 100m;
+                var quantity = productQuantities[i];
+                decimal discountPerUnit = product.StandardPrice * (totalDiscount / 100m);
+                decimal discountedPrice = product.StandardPrice - discountPerUnit;
+                decimal lineTotal = discountedPrice * quantity;
+                //var discountAmount = product.Offer != null ?
+                //    (product.StandardPrice * productQuantities[i])
+                //    - (product.StandardPrice - ((totalDiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
+                //    : 0;
+
+                //var lineTotal = product.Offer != null ?
+                //    (product.StandardPrice - ((totalDiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
+                //    : product.StandardPrice * productQuantities[i];
 
                 orderItems.Add(new OrderItem
                 {
                     ProductId = productIDs[i],
-                    Quantity = productQuantities[i],
+                    Quantity = quantity,
                     CreatedDate = DateTime.Now,
                     UnitPrice = product.StandardPrice,
-                    DiscountPercentage = product.Offer?.DiscountPercentage ?? 0,
-                    DiscountAmount = discountAmount,
+                    DiscountPercentage = totalDiscount,
+                    DiscountAmount = discountPerUnit * quantity,
                     LineTotal = lineTotal
                 });
             }
