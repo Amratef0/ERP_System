@@ -289,73 +289,113 @@ namespace ERP_System_Project.Controllers.Authentication
         [HttpGet]
         public IActionResult GoogleLogin(string returnUrl = "/")
         {
-            var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
-            return Challenge(properties, "Google");
+            try
+            {
+                var redirectUrl = Url.Action("GoogleResponse", "Account", new { ReturnUrl = returnUrl });
+                var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+                return Challenge(properties, "Google");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"GoogleLogin Error: {ex.Message}";
+                return RedirectToAction("Login");
+            }
         }
-
-
-
-
 
         [HttpGet]
         public async Task<IActionResult> GoogleResponse(string returnUrl = "/")
         {
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-                return RedirectToAction("Login");
-
-            var signInResult = await _signInManager.ExternalLoginSignInAsync(
-                info.LoginProvider,
-                info.ProviderKey,
-                isPersistent: false);
-
-            ApplicationUser user = null;
-
-            if (!signInResult.Succeeded)
+            try
             {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-                if (email != null)
+                var info = await _signInManager.GetExternalLoginInfoAsync();
+                if (info == null)
+                    return RedirectToAction("Login");
+
+                var signInResult = await _signInManager.ExternalLoginSignInAsync(
+                    info.LoginProvider,
+                    info.ProviderKey,
+                    isPersistent: false);
+
+                if (signInResult.Succeeded)
                 {
-                    user = await _userManager.FindByEmailAsync(email);
-                    if (user == null)
+                    var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                    await _signInManager.RefreshSignInAsync(user);
+                    return LocalRedirect(returnUrl);
+                }
+
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName) ?? "";
+                var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname) ?? "";
+
+                if (email == null)
+                {
+                    TempData["ErrorMessage"] = "Google account does not provide an email.";
+                    return RedirectToAction("Login");
+                }
+
+                var userExisting = await _userManager.FindByEmailAsync(email);
+
+                if (userExisting == null)
+                {
+                    string userName = (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
+                        ? $"{firstName}{lastName}"
+                        : email.Replace("@", "_").Replace(".", "_");
+
+                    userExisting = new ApplicationUser
                     {
-                        user = new ApplicationUser
-                        {
-                            UserName = email,
-                            Email = email,
-                            EmailConfirmed = true // التأكد من البريد مباشرة
-                        };
-                        await _userManager.CreateAsync(user);
+                        UserName = userName,
+                        Email = email,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        CreatedAt = DateTime.Now,
+                        EmailConfirmed = true
+                    };
 
-                        if (!await _roleManager.RoleExistsAsync("Admin"))
-                            await _roleManager.CreateAsync(new IdentityRole("Admin"));
-
-                        await _userManager.AddToRoleAsync(user, "Admin"); // دور الادمن
+                    var createResult = await _userManager.CreateAsync(userExisting);
+                    if (!createResult.Succeeded)
+                    {
+                        TempData["ErrorMessage"] = "Error creating user: " + string.Join(", ", createResult.Errors.Select(e => e.Description));
+                        return RedirectToAction("Login");
                     }
 
-                    var existingLogins = await _userManager.GetLoginsAsync(user);
-                    if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+                    if (!await _roleManager.RoleExistsAsync("Admin"))
+                        await _roleManager.CreateAsync(new IdentityRole("Admin"));
+
+                    await _userManager.AddToRoleAsync(userExisting, "Admin");
+                    await _userManager.AddClaimAsync(userExisting, new Claim(ClaimTypes.Role, "Admin"));
+
+                    var existingCustomer = await _customerService.GetCustomerByUserIdAsync(userExisting.Id);
+                    if (existingCustomer == null)
                     {
-                        await _userManager.AddLoginAsync(user, info);
+                        await _customerService.CreateCustomerByApplicationUserAsync(userExisting, new RegisterViewModel
+                        {
+                            FirstName = firstName,
+                            LastName = lastName,
+                            Email = email
+                        });
                     }
                 }
-            }
-            else
-            {
-                // لو المستخدم موجود مسبقاً
-                user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-            }
 
-            // تسجيل الدخول وتحديث الـ Claims
-            if (user != null)
-            {
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                await _signInManager.RefreshSignInAsync(user); // تحديث الـ Claims عشان Middleware يشوف الدور
-            }
+                var existingLogins = await _userManager.GetLoginsAsync(userExisting);
+                if (!existingLogins.Any(l => l.LoginProvider == info.LoginProvider))
+                {
+                    await _userManager.AddLoginAsync(userExisting, info);
+                }
 
-            return LocalRedirect(returnUrl);
+                await _signInManager.SignInAsync(userExisting, isPersistent: false);
+                await _signInManager.RefreshSignInAsync(userExisting);
+
+                return LocalRedirect(returnUrl);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"GoogleResponse Error: {ex.Message}";
+                return RedirectToAction("Login");
+            }
         }
+
+
+
 
 
         [HttpGet]
