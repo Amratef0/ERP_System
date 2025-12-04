@@ -54,7 +54,7 @@ namespace ERP_System_Project.Controllers
                 return RedirectToAction(nameof(Create), new { supplierId = SupplierId });
             }
 
-            // احضار أو إنشاء WarehouseProduct
+            // احضار أو إنشاء WarehouseProduct (لكن بدون زيادة QuantityOnHand)
             var warehouseProduct = await _context.WarehouseProducts
                 .FirstOrDefaultAsync(wp => wp.ProductId == ProductId && wp.WarehouseId == WarehouseId);
 
@@ -64,28 +64,13 @@ namespace ERP_System_Project.Controllers
                 {
                     ProductId = ProductId,
                     WarehouseId = WarehouseId,
-                    QuantityOnHand = Quantity
+                    QuantityOnHand = 0 // ما نزودش دلوقتي
                 };
                 _context.WarehouseProducts.Add(warehouseProduct);
                 await _context.SaveChangesAsync(); // حفظ لتوليد Id
             }
-            else
-            {
-                warehouseProduct.QuantityOnHand += Quantity;
-                _context.WarehouseProducts.Update(warehouseProduct);
-                await _context.SaveChangesAsync();
-            }
 
-            // تحديث Quantity في جدول Product الحقيقي
-            var product = await _context.Products.FindAsync(ProductId);
-            if (product != null)
-            {
-                product.Quantity += (int)Quantity;
-                _context.Products.Update(product);
-                await _context.SaveChangesAsync();
-            }
-
-            // إضافة الـ PurchaseOrder
+            // إضافة الـ PurchaseOrder بحالة Pending
             var purchaseOrder = new PurchaseOrder
             {
                 SupplierId = SupplierId,
@@ -94,7 +79,7 @@ namespace ERP_System_Project.Controllers
                 Quantity = Quantity,
                 PoNumber = PoNumber,
                 OrderDate = OrderDate,
-                StatusId = 1,
+                StatusId = 1, // Pending
                 PaymentTermsId = 1,
                 Notes = Notes
             };
@@ -102,7 +87,7 @@ namespace ERP_System_Project.Controllers
             _context.PurchaseOrders.Add(purchaseOrder);
             await _context.SaveChangesAsync();
 
-            // إنشاء سجل في InventoryTransaction
+            // إنشاء سجل في InventoryTransaction (مش لازم نزود الكمية لحد ما يبقى Delivered)
             var inventoryTransaction = new InventoryTransaction
             {
                 ProductId = ProductId,
@@ -118,6 +103,48 @@ namespace ERP_System_Project.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeStatus(int id, int newStatusId)
+        {
+            var order = await _context.PurchaseOrders
+                .Include(po => po.WarehouseProduct)
+                .ThenInclude(wp => wp.Product)
+                .FirstOrDefaultAsync(po => po.PurchaseOrderId == id);
+
+            if (order == null)
+                return NotFound();
+
+            order.StatusId = newStatusId;
+            order.ModifiedDate = DateTime.Now;
+
+            // لو الـ Delivered زود الكمية
+            if (newStatusId == 2 && order.WarehouseProduct != null)
+            {
+                order.WarehouseProduct.QuantityOnHand += order.Quantity;
+                if (order.WarehouseProduct.Product != null)
+                {
+                    order.WarehouseProduct.Product.Quantity += (int)order.Quantity;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(AdminPending));
+        }
+
+        // GET: PurchaseOrder/AdminPending
+        public async Task<IActionResult> AdminPending()
+        {
+            var pendingOrders = await _context.PurchaseOrders
+                .Include(po => po.Supplier)
+                .Include(po => po.WarehouseProduct)
+                    .ThenInclude(wp => wp.Product)
+                .Include(po => po.WarehouseProduct.Warehouse)
+                .Where(po => po.StatusId == 1) // Pending
+                .ToListAsync();
+
+            return View(pendingOrders);
+        }
 
 
 

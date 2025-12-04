@@ -104,10 +104,15 @@
                 <i class="fa fa-bars"></i>
             </button>
 
-            <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Market" asp-action="Index" asp-route-pageSize="25" asp-route-pageNumber="1">
-                <img src="~/optima-logo.webp" alt="Optima Logo" class="navbar-logo" />
-                <h5 class="mb-0 me-auto">Optima</h5>
+            <a class="navbar-brand d-flex align-items-center flex-nowrap"
+               asp-area="" asp-controller="Market" asp-action="Index"
+               asp-route-pageSize="25" asp-route-pageNumber="1">
+                <img src="~/optima-logo.webp" alt="Optima Logo"
+                     class="navbar-logo me-2"
+                     style="max-height:40px; width:auto;" />
+                <h5 class="mb-0 d-none d-sm-block">Optima</h5>
             </a>
+
 
             <div class="d-flex align-items-center">
                 <div class="mood">

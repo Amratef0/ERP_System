@@ -9,10 +9,10 @@
         <h2>Purchase Orders</h2>
 
         <!-- Floating Add Button -->
-        <a asp-action="Create" 
-           class="floating-btn" 
+        <a asp-action="Create"
+           class="floating-btn"
            title="Create New Purchase Order">
-           <i class="fa-solid fa-plus"></i>
+            <i class="fa-solid fa-plus"></i>
         </a>
 
         <table>
@@ -23,6 +23,7 @@
                     <th>Supplier</th>
                     <th>Product</th>
                     <th>Warehouse</th>
+                    <th>Status</th> <!-- جديد -->
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -35,6 +36,16 @@
                         <td data-label="Supplier">@item.Supplier?.SupplierName</td>
                         <td data-label="Product">@item.WarehouseProduct?.Product?.Name</td>
                         <td data-label="Warehouse">@item.WarehouseProduct?.Warehouse?.Name</td>
+                        <td data-label="Status">
+                            @if (item.StatusId == 1)
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (item.StatusId == 2)
+                            {
+                                <span class="badge bg-success">Delivered</span>
+                            }
+                        </td>
                         <td data-label="Actions">
                             <div class="action-buttons">
                                 <!-- Details -->
@@ -42,15 +53,15 @@
                                    asp-route-id="@item.PurchaseOrderId"
                                    class="btn btn-view btn-sm"
                                    title="Details">
-                                   <i class="fa-solid fa-eye"></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </a>
 
                                 <!-- Edit -->
-                                <a asp-action="Edit" 
+                                <a asp-action="Edit"
                                    asp-route-id="@item.PurchaseOrderId"
                                    class="btn btn-update btn-sm"
                                    title="Edit">
-                                   <i class="fa-solid fa-pen"></i>
+                                    <i class="fa-solid fa-pen"></i>
                                 </a>
 
                                 <!-- Delete -->
@@ -58,7 +69,7 @@
                                    onclick="openModalWithAjax('@Url.Action("Delete", "PurchaseOrder", new { id = item.PurchaseOrderId })', 'Delete Purchase Order')"
                                    class="btn btn-delete btn-sm"
                                    title="Delete">
-                                   <i class="fa-solid fa-trash"></i>
+                                    <i class="fa-solid fa-trash"></i>
                                 </a>
                             </div>
                         </td>
