@@ -6,6 +6,7 @@ using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.CRM;
 using LinqKit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -14,12 +15,15 @@ namespace ERP_System_Project.Services.Implementation.CRM
     public class CustomerService :GenericService<Customer>, ICustomerService
     {
         private readonly IUnitOfWork _uow;
+        //private readonly UserManager<ApplicationUser> _userManager;
 
 
         public CustomerService(IUnitOfWork uow) : base(uow)
         {
 
+
             _uow = uow;
+            //_userManager = userManager;
         }
 
 
@@ -286,12 +290,40 @@ namespace ERP_System_Project.Services.Implementation.CRM
                 customer.LastName = customerVM.LastName;
                 customer.Email = customerVM.Email;
                 customer.PhoneNumber = customerVM.PhoneNumber;
-                customer.DateOfBirth = customerVM.DateOfBirth;
+                //customer.DateOfBirth = customerVM.DateOfBirth;
                 customer.IsActive = customerVM.IsActive;
                 customer.CustomerTypeId = customerVM.CustomerTypeId;
                 customer.ModifiedDate = DateTime.Now;
-                customer.ApplicationUserId = customerVM.ApplicationUserId;
-                customer.LastLoginDate = DateTime.Now; 
+                //customer.ApplicationUserId = customer.ApplicationUserId;
+                //customer.LastLoginDate = DateTime.Now;
+                
+
+
+
+
+                //var existingUser = await _userManager.FindByIdAsync(customer.ApplicationUserId);
+
+                //existingUser.FirstName = customerVM.FirstName;
+                //existingUser.LastName = customerVM.LastName;
+                //existingUser.UserName = $"{customerVM.FirstName} {customerVM.LastName}";   
+                //existingUser.NormalizedEmail = customerVM.Email.ToUpper();    
+                //existingUser.NormalizedUserName = customerVM.Email.ToUpper(); 
+                //existingUser.Email = customerVM.Email;
+                //existingUser.PhoneNumber = customerVM.PhoneNumber;
+                //existingUser.DateOfBirth = customerVM.DateOfBirth;
+                //var result = await _userManager.UpdateAsync(existingUser);
+
+                //if (!result.Succeeded)
+                //{
+                //    foreach (var error in result.Errors)
+                //    {
+                //        Console.WriteLine("=============================");
+                //        Console.WriteLine($"Identity Error: {error.Description}");
+                //        Console.WriteLine("=============================");
+                //    }
+                //    return false;
+                //}
+
 
                 _uow.Customers.Update(customer);
                 return await _uow.CompleteAsync() > 0;
