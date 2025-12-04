@@ -8,12 +8,14 @@ namespace ERP_System_Project.ViewModels.ECommerce
 {
     public class MyOrdersVM
     {
-        public string OrderStatus { get; set; }
+        public int OrderId { get; set; }
+
+        public string? OrderStatus { get; set; }
         public decimal TotalAmount { get; set; }
         public decimal TaxAmount { get; set; }
         public decimal ShippingAmount { get; set; }
-        public string BillingAddress { get; set; }
-        public string PaymentMethodType { get; set; }
+        public string? BillingAddress { get; set; }
+        public string? PaymentMethodType { get; set; }
         public DateTime? EstimatedDeliveryDate { get; set; }
         public DateTime OrderDate { get; set; }
 

@@ -1,32 +1,109 @@
+using ERP_System_Project.Models.Authentication;
 using ERP_System_Project.Models.CRM;
 using ERP_System_Project.Models.ECommerce;
 using ERP_System_Project.Models.ECommerece;
 using ERP_System_Project.Models.Enums;
 using ERP_System_Project.Models.Inventory;
+using ERP_System_Project.Services.Implementation.CRM;
+using ERP_System_Project.Services.Interfaces;
+using ERP_System_Project.Services.Interfaces.CRM;
 using ERP_System_Project.Services.Interfaces.ECommerce;
 using ERP_System_Project.UOW;
 using ERP_System_Project.ViewModels;
 using ERP_System_Project.ViewModels.ECommerce;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using SendGrid.Helpers.Mail;
 
 namespace ERP_System_Project.Services.Implementation.ECommerce
 {
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEmailService _emailSender;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICartService _cartService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         private const string SessionKey = "MyCart";
         private readonly Dictionary<string, CartViewModel> _tempCarts = new();
 
-        public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, ICartService cartService)
+        public OrderService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor, ICartService cartService,UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
+        IEmailService emailSender)
         {
             _unitOfWork = unitOfWork;
             _httpContextAccessor = httpContextAccessor;
             _cartService = cartService;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+            _emailSender = emailSender;
         }
+        public async Task UpdateOrderStatusAsync(int orderId, int statusId)
+        {
+            // 1) جلب الأوردر
+            var order = await _unitOfWork.Orders.GetAllAsIQueryable()
+                .Include(o => o.Customer)
+                .ThenInclude(c => c.ApplicationUser)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null)
+                return;
+
+            // 2) تحديث الحالة
+            order.StatusId = statusId;
+            order.ModifiedDate = DateTime.Now;
+            await _unitOfWork.CompleteAsync();
+
+            // 3) جلب اسم الحالة الجديدة
+            var newStatus = await _unitOfWork.OrderStatusCodes.GetAllAsIQueryable()
+                .Where(s => s.Id == statusId)
+                .Select(s => s.Name)
+                .FirstOrDefaultAsync();
+
+            // 4) ارسال الايميل بصيغة HTML
+            string email = order.Customer.ApplicationUser.Email;
+            string subject = $"Order Status Updated - #{order.Id}";
+
+            string htmlBody = $@"
+<html>
+<head>
+  <style>
+    body {{ font-family: Arial, sans-serif; color: #333; }}
+    .header {{ background-color: #2196F3; color: white; padding: 10px; text-align: center; }}
+    .content {{ padding: 20px; }}
+    .status {{ font-size: 16px; font-weight: bold; color: #4CAF50; }}
+    .footer {{ margin-top: 20px; font-size: 12px; color: #777; text-align: center; }}
+  </style>
+</head>
+<body>
+  <div class='header'>
+    <h2>Order Status Update</h2>
+  </div>
+
+  <div class='content'>
+    <p>Hi {order.Customer.FirstName},</p>
+    <p>Your order <strong>#{order.Id}</strong> status has been updated to:</p>
+    <p class='status'>{newStatus}</p>
+    <p>Thank you for shopping with us!</p>
+  </div>
+
+  <div class='footer'>
+    &copy; {DateTime.Now.Year} YourCompany. All rights reserved.<br/>
+    Contact us: support@yourcompany.com
+  </div>
+</body>
+</html>";
+
+            await _emailSender.SendEmailAsync(email, subject, htmlBody);
+
+        }
+
 
 
         // ===========================
@@ -34,27 +111,34 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
         // ===========================
         public async Task<PageSourcePagination<MyOrdersVM>> GetCustomerOrdersAsync(string userId, int pageNumber, int pageSize)
         {
+            // جلب العميل
             var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
                 .Include(c => c.CustomerAddresses)
                 .FirstOrDefaultAsync(c => c.ApplicationUserId == userId);
 
-            var customerAddress = await GetCustomerAddressAsync(customer.Id);
+            if (customer == null)
+                throw new Exception("Customer not found");
 
+            // جلب الأوردرات مع الـ pagination
             var customerOrders = await _unitOfWork.Orders
                 .GetAllPaginatedEnhancedAsync(
                     filter: o => o.CustomerId == customer.Id,
-                    orderBy: o => o.OrderByDescending(o => o.OrderDate),
+                    orderBy: o => o.OrderByDescending(o => o.OrderDate), // أحدث أوردر فوق
                     selector: o => new MyOrdersVM
                     {
-                        BillingAddress = customerAddress,
-                        OrderDate = o.OrderDate,
-                        EstimatedDeliveryDate = o.EstimatedDeliveryDate,
+                        OrderId = o.Id,
+                        BillingAddress = o.BillingAddress != null
+                            ? $"{o.BillingAddress.ApartmentNumber} {o.BillingAddress.BuildingNumber} {o.BillingAddress.Street} | {o.BillingAddress.City} {o.BillingAddress.Country}"
+                            : "NA",
+                        OrderDate = o.OrderDate.ToLocalTime(), // تحويل DateTime عادي
+                        EstimatedDeliveryDate = o.EstimatedDeliveryDate.HasValue
+                                                ? o.EstimatedDeliveryDate.Value.ToLocalTime()
+                                                : (DateTime?)null, // تحويل DateTime? لو موجود
                         OrderStatus = o.OrderStatusCode.Name,
                         PaymentMethodType = o.PaymentMethodType.Type,
                         ShippingAmount = o.ShippingAmount,
                         TaxAmount = o.TaxAmount,
                         TotalAmount = o.TotalAmount,
-
                         OrderItemsVMs = o.Items.Select(oi => new MyOrderItemsVM
                         {
                             ProductName = oi.Product.Name,
@@ -68,10 +152,10 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     },
                     pageNumber: pageNumber,
                     pageSize: pageSize,
-                    include: o =>
-                        o.Include(o => o.Items).ThenInclude(oi => oi.Product)
-                         .Include(o => o.OrderStatusCode)
-                         .Include(o => o.PaymentMethodType)
+                    include: o => o.Include(o => o.Items).ThenInclude(oi => oi.Product)
+                                  .Include(o => o.OrderStatusCode)
+                                  .Include(o => o.PaymentMethodType)
+                                  .Include(o => o.BillingAddress)
                 );
 
             return customerOrders;
@@ -79,19 +163,18 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
 
 
+
+
         // ===========================
         //         MAKE ORDER
         // ===========================
+        // OrderService - MakeOrderAsync
         public async Task MakeOrderAsync(string userId, CartViewModel cart, PaymentMethod paymentMethod)
         {
             if (cart == null || cart.productsCart.Count == 0)
                 throw new Exception("Cart is empty");
 
-            var productIDs = cart.productsCart.Select(p => p.ProductId).ToList();
-            var productQuantities = cart.productsCart.Select(p => p.Quantity).ToList();
-            var numberOfItems = productIDs.Count;
-
-            // جلب العميل أو إنشاء واحد
+            // 1) جلب العميل أو إنشاء واحد
             var customer = await _unitOfWork.Customers.GetAllAsIQueryable()
                 .Include(c => c.CustomerAddresses)
                 .Include(c => c.CustomerType)
@@ -103,14 +186,13 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 {
                     ApplicationUserId = userId,
                     FirstName = "Default",
-                    LastName = "Name"
+                    LastName = "Name",
                 };
-
                 await _unitOfWork.Customers.AddAsync(customer);
                 await _unitOfWork.CompleteAsync();
             }
 
-            // عنوان الفواتير
+            // 2) التأكد من وجود BillingAddress
             var billingAddress = customer.CustomerAddresses.FirstOrDefault();
             if (billingAddress == null)
             {
@@ -121,69 +203,45 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                     City = "NA",
                     Country = "NA"
                 };
-
                 customer.CustomerAddresses.Add(billingAddress);
                 await _unitOfWork.CompleteAsync();
             }
 
-
-
+            // 3) إنشاء OrderItems
             var orderItems = new List<OrderItem>();
-
-            // تقليل الكمية + حساب الأسعار
-            for (int i = 0; i < numberOfItems; i++)
+            foreach (var item in cart.productsCart)
             {
-                await _unitOfWork.Products.GetAllAsIQueryable()
-                   .Where(p => p.Id == productIDs[i])
-                   .ExecuteUpdateAsync(p => p.SetProperty(
-                       p => p.Quantity,
-                       p => p.Quantity - productQuantities[i]));
-
-                var product = _unitOfWork.Products
-                    .GetAllAsIQueryable()
+                var product = await _unitOfWork.Products.GetAllAsIQueryable()
                     .Include(p => p.Offer)
-                    .FirstOrDefault(p => p.Id == productIDs[i]);
+                    .FirstOrDefaultAsync(p => p.Id == item.ProductId);
 
                 if (product == null) continue;
 
-
-
-
-
-
-
-
+                // تقليل الكمية
+                product.Quantity -= item.Quantity;
 
                 var offerDiscount = product.Offer?.DiscountPercentage ?? 0;
                 var customerTypeDiscount = customer.CustomerType?.DiscountPercentage ?? 0;
-                decimal totalDiscount = (decimal)offerDiscount + (decimal)customerTypeDiscount;
-                if (totalDiscount > 100m) totalDiscount = 100m;
-                var quantity = productQuantities[i];
+
+                decimal totalDiscount = Math.Min((decimal)offerDiscount + (decimal)customerTypeDiscount, 100m);
+
                 decimal discountPerUnit = product.StandardPrice * (totalDiscount / 100m);
                 decimal discountedPrice = product.StandardPrice - discountPerUnit;
-                decimal lineTotal = discountedPrice * quantity;
-                //var discountAmount = product.Offer != null ?
-                //    (product.StandardPrice * productQuantities[i])
-                //    - (product.StandardPrice - ((totalDiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
-                //    : 0;
-
-                //var lineTotal = product.Offer != null ?
-                //    (product.StandardPrice - ((totalDiscountPercentage / 100m) * product.StandardPrice)) * productQuantities[i]
-                //    : product.StandardPrice * productQuantities[i];
+                decimal lineTotal = discountedPrice * item.Quantity;
 
                 orderItems.Add(new OrderItem
                 {
-                    ProductId = productIDs[i],
-                    Quantity = quantity,
-                    CreatedDate = DateTime.Now,
+                    ProductId = product.Id,
+                    Quantity = item.Quantity,
                     UnitPrice = product.StandardPrice,
                     DiscountPercentage = totalDiscount,
-                    DiscountAmount = discountPerUnit * quantity,
-                    LineTotal = lineTotal
+                    DiscountAmount = discountPerUnit * item.Quantity,
+                    LineTotal = lineTotal,
+                    CreatedDate = DateTime.Now
                 });
             }
 
-            // إنشاء الأوردر
+            // 4) إنشاء الأوردر
             var order = new Order
             {
                 CustomerId = customer.Id,
@@ -192,9 +250,9 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
                 StatusId = (int)OrderStatus.Pending,
                 PaymentMethodTypeId = paymentMethod == PaymentMethod.Cash ? (int)PaymentMethod.Cash : (int)PaymentMethod.Visa,
                 OrderDate = DateTime.Now,
+                EstimatedDeliveryDate = DateTime.Now.AddDays(1),
                 ShippingAmount = 0,
                 TaxAmount = 0,
-                EstimatedDeliveryDate = DateTime.Now.AddDays(1),
                 TotalAmount = orderItems.Sum(oi => oi.LineTotal),
                 Items = orderItems
             };
@@ -202,15 +260,14 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
             await _unitOfWork.Orders.AddAsync(order);
             await _unitOfWork.CompleteAsync();
 
+            
 
 
-            // 1) مسح الكارت من الـ Session
-            ClearCartSession();
-
-            // 2) مسح الكارت من CartService نفسه
+            // 5) مسح الكارت
+            _httpContextAccessor.HttpContext.Session.Remove(SessionKey);
             await _cartService.ClearCartAsync();
-
         }
+
 
 
 
@@ -257,6 +314,52 @@ namespace ERP_System_Project.Services.Implementation.ECommerce
 
             return JsonConvert.DeserializeObject<CartViewModel>(json);
         }
+        public async Task<List<OrderStatusCode>> GetOrderStatusListAsync()
+        {
+            return await _unitOfWork.OrderStatusCodes.GetAllAsIQueryable().ToListAsync();
+        }
+        public async Task<PageSourcePagination<MyOrdersVM>> GetAllOrdersAsync(int pageNumber, int pageSize)
+        {
+            var orders = await _unitOfWork.Orders
+                .GetAllPaginatedEnhancedAsync(
+                    filter: null, // كل الأوردرات
+                    orderBy: o => o.OrderByDescending(o => o.OrderDate),
+                    selector: o => new MyOrdersVM
+                    {
+                        OrderId = o.Id,
+                        BillingAddress = o.BillingAddress != null
+                            ? $"{o.BillingAddress.ApartmentNumber} {o.BillingAddress.BuildingNumber} {o.BillingAddress.Street} | {o.BillingAddress.City} {o.BillingAddress.Country}"
+                            : "NA",
+                        OrderDate = o.OrderDate.ToLocalTime(), // تحويل DateTime عادي
+                        EstimatedDeliveryDate = o.EstimatedDeliveryDate.HasValue
+                                                ? o.EstimatedDeliveryDate.Value.ToLocalTime()
+                                                : (DateTime?)null, // تحويل DateTime? لو موجود
+                        OrderStatus = o.OrderStatusCode.Name,
+                        ShippingAmount = o.ShippingAmount,
+                        TaxAmount = o.TaxAmount,
+                        TotalAmount = o.TotalAmount,
+                        OrderItemsVMs = o.Items.Select(oi => new MyOrderItemsVM
+                        {
+                            ProductName = oi.Product.Name,
+                            ProductImagePath = oi.Product.ImageURL,
+                            DiscountAmount = oi.DiscountAmount,
+                            DiscountPercentage = oi.DiscountPercentage,
+                            UnitPrice = oi.UnitPrice,
+                            Quantity = oi.Quantity,
+                            LineTotal = oi.LineTotal
+                        }).ToList()
+                    },
+                    pageNumber: pageNumber,
+                    pageSize: pageSize,
+                    include: o => o.Include(o => o.Items).ThenInclude(oi => oi.Product)
+                                  .Include(o => o.OrderStatusCode)
+                                  .Include(o => o.PaymentMethodType)
+                                  .Include(o => o.BillingAddress)
+                );
+
+            return orders;
+        }
+
 
     }
 }

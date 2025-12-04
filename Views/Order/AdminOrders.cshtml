@@ -1,0 +1,102 @@
+﻿@model PageSourcePagination<MyOrdersVM>
+
+@{
+    ViewData["Title"] = "All Orders - Admin";
+    var statusColors = new Dictionary<string, string>
+    {
+        { "Pending", "status-pending" },
+        { "Processing", "status-processing" },
+        { "Shipped", "status-shipped" },
+        { "Delivered", "status-delivered" },
+        { "Cancelled", "status-cancelled" },
+        { "Returned", "status-returned" }
+    };
+}
+
+<div class="container-fluid py-4">
+    <h1 class="h2 fw-bold text-dark mb-4">All Orders</h1>
+
+    @if (Model.Data?.Any() == true)
+    {
+        <div class="row g-4">
+            @foreach (var order in Model.Data)
+            {
+                var statusClass = statusColors.ContainsKey(order.OrderStatus) ? statusColors[order.OrderStatus] : "status-pending";
+
+                <div class="col-12">
+                    <div class="card border-0 shadow-lg hover-lift">
+                        <div class="card-header bg-gradient-primary text-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="fw-bold">Order #ORD-@(order.OrderDate.ToString("yyyyMMdd"))-@(Model.Data.IndexOf(order) + 1)</h5>
+                                    <span class="badge @statusClass">@order.OrderStatus</span>
+                                </div>
+                                <div>
+                                    <strong>$@order.TotalAmount.ToString("F2")</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <p><strong>Customer:</strong> @order.BillingAddress</p>
+                            <p><strong>Order Date:</strong> @order.OrderDate.ToString("MMM dd, yyyy")</p>
+
+                            <h6>Order Items (@order.OrderItemsVMs.Count)</h6>
+                            <ul>
+                                @foreach (var item in order.OrderItemsVMs)
+                                {
+                                    <li>@item.ProductName - Qty: @item.Quantity - $@item.LineTotal.ToString("F2")</li>
+                                }
+                            </ul>
+
+                            <form asp-action="UpdateOrderStatusAdmin" asp-controller="Order" method="post" class="d-inline">
+                                <input type="hidden" name="orderId" value="@order.OrderId" />
+                                <select name="statusId" class="form-select form-select-sm d-inline w-auto"
+                                        onchange="this.form.submit()">
+                                  @foreach (var status in ViewBag.StatusList)
+{
+                                        <option value="@status.Id" selected="@(status.Name == order.OrderStatus)">
+                                            @status.Name
+                                        </option>
+
+}
+
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination">
+                    <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                        <a class="page-link" href="?pageNumber=@(Model.PageNumber - 1)&pageSize=@Model.PageSize">Previous</a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" href="?pageNumber=@i&pageSize=@Model.PageSize">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" href="?pageNumber=@(Model.PageNumber + 1)&pageSize=@Model.PageSize">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="text-center py-8">
+            <h3>No orders found</h3>
+            <p>There are currently no orders to display.</p>
+        </div>
+    }
+</div>

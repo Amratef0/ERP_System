@@ -16,6 +16,11 @@ namespace ERP_System_Project.Services.Interfaces.ECommerce
 
         Task SaveCartForPayment(string userName, CartViewModel cart);
         Task<CartViewModel> GetCartFromPayment(string userName);
+        Task UpdateOrderStatusAsync(int orderId, int statusId);
+        Task<List<OrderStatusCode>> GetOrderStatusListAsync();
+        Task<PageSourcePagination<MyOrdersVM>> GetAllOrdersAsync(int pageNumber, int pageSize);
+
+
     }
 
 }
