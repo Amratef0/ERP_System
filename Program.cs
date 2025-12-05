@@ -205,7 +205,7 @@ using (var scope = app.Services.CreateScope())
 
     var seeder = services.GetRequiredService<SeedService>();
 
-    await seeder.SeedAttendanceRecordsAsync();
+    await seeder.SeedAttendanceRecordsAsync(true);
 }
 
 // Hangfire Dashboard
