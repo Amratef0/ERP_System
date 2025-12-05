@@ -61,7 +61,7 @@ namespace ERP_System_Project.Controllers.Users
                 AllRoles = allRoles
             };
 
-            return View(model);
+            return PartialView(model);
         }
 
         [HttpPost]
