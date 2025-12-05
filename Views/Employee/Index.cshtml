@@ -254,31 +254,31 @@
                 if (response && response.length > 0) {
                     var newRows = "";
                     var token = $('input[name="__RequestVerificationToken"]').val();
-                    
+
                     response.forEach(function (employee) {
                         newRows += `<tr>
-                                        <td><strong>${employee.fullName}</strong></td>
-                                        <td><span class="badge bg-primary">${employee.branch.name}</span></td>
-                                        <td><span class="badge bg-info">${employee.department.name}</span></td>
-                                        <td><span class="badge bg-secondary">${employee.type.name}</span></td>
-                                        <td><span class="badge bg-success">${employee.jobTitle.name}</span></td>
-                                        <td class="text-center">
-                                            <div class="btn-group" role="group">
-                                                <a href="/Employee/Details/${employee.id}" class="btn btn-sm btn-info" title="View Details">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="/Employee/Edit/${employee.id}" class="btn btn-sm btn-warning" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-danger" onclick="if(confirm('Delete ${employee.fullName}?')) { document.getElementById('deleteForm${employee.id}').submit(); }" title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
-                                            <form id="deleteForm${employee.id}" action="/Employee/Delete/${employee.id}" method="post" style="display:none;">
-                                                <input type="hidden" name="__RequestVerificationToken" value="${token}" />
-                                            </form>
-                                        </td>
-                                    </tr>`;
+                            <td data-label="Full Name"><strong>${employee.fullName}</strong></td>
+                            <td data-label="Branch"><span>${employee.branch.name}</span></td>
+                            <td data-label="Department"><span>${employee.department.name}</span></td>
+                            <td data-label="Type"><span>${employee.type.name}</span></td>
+                            <td data-label="Job Title"><span>${employee.jobTitle.name}</span></td>
+                            <td data-label="Actions">
+                                <div class="action-buttons">
+                                    <a href="/Employee/Details/${employee.id}" class="btn btn-view btn-sm" title="View Employee">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                    <a href="/Employee/Edit/${employee.id}" class="btn btn-update btn-sm" title="Edit Employee">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <form id="deleteForm${employee.id}" action="/Employee/Delete/${employee.id}" method="post" style="display:inline;">
+                                        <input type="hidden" name="__RequestVerificationToken" value="${token}" />
+                                        <button type="button" class="btn btn-delete btn-sm" title="Delete Employee" onclick="if(confirm('Delete ${employee.fullName}?')) { document.getElementById('deleteForm${employee.id}').submit(); }">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>`;
                     });
                     tableBody.html(newRows);
                 } else {
