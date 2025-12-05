@@ -24,21 +24,6 @@
         </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="row mb-3">
-        <div class="col-md-12">
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Create New Balance
-            </a>
-            <a asp-action="GenerateBalances" class="btn btn-success">
-                <i class="bi bi-gear"></i> Generate Balances
-            </a>
-            <a asp-action="CarryForward" class="btn btn-warning">
-                <i class="bi bi-arrow-right-circle"></i> Carry Forward
-            </a>
-        </div>
-    </div>
-
     <!-- Alert Messages -->
     @if (TempData["SuccessMessage"] != null)
     {
@@ -65,7 +50,7 @@
     <!-- Filter Section -->
     <div class="bp-search-card shadow-sm border-0 mb-4">
         <div class="p-2 mb-2" style="background: linear-gradient(90deg, var(--color-accent), #8E7CFF); color:#fff; border-radius: 14px;">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filters</h5>
+            <h4 class="mb-0"><i class="bi bi-funnel"></i> Filters</h4>
         </div>
         <div class="card-body">
             <form id="filterForm">
@@ -151,7 +136,7 @@
     <!-- Results Table -->
     <div class="bp-search-card shadow-sm border-0">
         <div class="p-2 mb-2" style="background-color:#6c757d; color:#fff; border-radius: 14px;">
-            <h5 class="mb-0"><i class="bi bi-table"></i> Leave Balance Records</h5>
+            <h4 class="mb-0"><i class="bi bi-table"></i> Leave Balance Records</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">

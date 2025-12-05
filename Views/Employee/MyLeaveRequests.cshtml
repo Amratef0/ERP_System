@@ -9,6 +9,36 @@
 <link rel="stylesheet" href="~/css/CRUD/Index.css" />
 <link rel="stylesheet" href="~/css/GeneralModal.css" />
 
+<style>
+    /* Make filter tabs visible against a white background */
+    .nav-tabs .nav-link {
+        background-color: #f7f7f9; /* light gray */
+        color: #333; /* dark text for contrast */
+        border: 1px solid #dee2e6;
+        margin-right: 2px;
+        border-top-left-radius: .375rem;
+        border-top-right-radius: .375rem;
+    }
+    .nav-tabs .nav-link:hover {
+        background-color: #eef0f3;
+        color: #222;
+        border-color: #cfd4da;
+    }
+    .nav-tabs .nav-link.active {
+        background-color: #e9ecef; /* active state slightly darker */
+        color: #000;
+        border-color: #cfd4da #cfd4da #e9ecef; /* blend with tab content */
+    }
+    /* Ensure tab content has a subtle border to delineate from tabs */
+    .tab-content {
+        border: 1px solid #dee2e6;
+        border-top: none;
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 0 .375rem .375rem .375rem;
+    }
+</style>
+
 <div class="page-section">
     <!-- Header -->
     <div class="bp-header">
@@ -41,17 +71,6 @@
         </div>
     }
 
-    <!-- Action Buttons -->
-    <div class="bp-search-card shadow-sm border-0 mb-4">
-        <div class="card-body p-3 d-flex gap-2 flex-wrap">
-            <a asp-action="RequestLeave" class="quick-action-btn card1">
-                <i class="bi bi-calendar-plus me-2"></i><span>Request Leave</span>
-            </a>
-            <a asp-action="Profile" class="quick-action-btn card2">
-                <i class="bi bi-person-circle me-2"></i><span>My Profile</span>
-            </a>
-        </div>
-    </div>
 
     <!-- Filter Tabs -->
     <ul class="nav nav-tabs mb-3" id="statusTabs" role="tablist">
