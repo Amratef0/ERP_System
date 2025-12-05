@@ -14,6 +14,7 @@
     }
 
     .general-modal-wrapper .modal.show .modal-dialog {
+        margin-top: calc(var(--topbar-h) + 20px) !important;
         transform: scale(1) translateY(0);
         opacity: 1;
     }
@@ -78,6 +79,14 @@
             letter-spacing: 0.3px;
             color: #fff;
         }
+.general-modal-wrapper .modal {
+    align-items: flex-start !important;
+}
+
+body.modal-open {
+    padding-top: 0 !important;
+}
+
 
     /* Shine Overlay Animation */
     .general-modal-wrapper .shine-overlay {
