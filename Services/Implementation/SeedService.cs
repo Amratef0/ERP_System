@@ -73,6 +73,8 @@ namespace ERP_System_Project.Services.Implementation
                     if ((isHoliday || isDayOff) && absentStatusId > 0)
                     {
                         statusId = absentStatusId;
+                        // Set a non-null default check-in to avoid null issues; keep checkout null
+                        checkIn = new TimeOnly(0, 0);
                         notes = isHoliday ? "Public Holiday" : "Day Off";
                     }
                     else
