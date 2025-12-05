@@ -8,7 +8,13 @@
     <div class="form">
 
         <h3 class="formTitle"><i class="bi bi-plus-circle me-1"></i> Generate New Payroll Run</h3>
-
+        
+            <!-- Warning -->
+            <div class="alert alert-warning mt-2">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Note:</strong> This will generate payroll entries for all active employees. The process may take a few moments.
+            </div>
+            <br />
         @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
@@ -65,14 +71,6 @@
     </div>
 
 </div>
-
-
-
-            <!-- Warning -->
-            <div class="alert alert-warning mt-2">
-                <i class="bi bi-exclamation-triangle"></i>
-                <strong>Note:</strong> This will generate payroll entries for all active employees. The process may take a few moments.
-            </div>
 
             <!-- Action Buttons -->
             <div class="form-buttons">

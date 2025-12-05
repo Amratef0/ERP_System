@@ -69,7 +69,7 @@ namespace ERP_System_Project.Controllers.CRM
         {
             int customerId = await GetLoggedInUserCustomerId();
             var vm = new CustomerAddressVM { CustomerId = customerId };
-            return View(vm);
+            return PartialView(vm);
         }
 
         // POST: /CustomerAddress/Create
@@ -120,7 +120,7 @@ namespace ERP_System_Project.Controllers.CRM
             if (model.CustomerId != customerId )
                 return Forbid();
 
-            return View(model);
+            return PartialView(model);
         }
 
         // POST: /CustomerAddress/Edit/5

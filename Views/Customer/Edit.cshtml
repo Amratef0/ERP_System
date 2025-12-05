@@ -49,45 +49,41 @@
                 <span asp-validation-for="CustomerTypeId" class="text-danger"></span>
             </div>
             <br />
-            <div class="form-group">
-                <div class="form-check">
-                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
-                    <label asp-for="IsActive" class="form-check-label">Active Customer</label>
+            <div class="form-group form-check">
+                    <input asp-for="IsActive" id="isActiveSwitch" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsActive" for="isActiveSwitch" class="form-check-label">Active Customer</label>
+                    <span asp-validation-for="IsActive" class="text-danger"></span>
+            </div>
+
+            
+                        <!-- Customer Address (Full Width Section) -->
+            <div class="form-section full-width">
+                <label class="section-label">Customer Address</label>
+
+                <div class="address-card">
+                    <div class="address-content">
+                        <small class="text-muted d-block mb-1">Primary Address</small>
+
+                        @if (!string.IsNullOrEmpty(Model.MainAddress))
+                        {
+                            <span class="address-text">@Model.MainAddress</span>
+                        }
+                        else
+                        {
+                            <span class="no-address">No address available</span>
+                        }
+                    </div>
+
+                    <a asp-controller="CustomerAddress"
+                       asp-action="Index"
+                       asp-route-customerId="@Model.Id"
+                       class="btn-manage">
+                        <i class="bi bi-gear"></i> Manage
+                    </a>
                 </div>
-                <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
 
 
-
-
-            <div class="form-group mb-3">
-                <div class="form-group mb-3">
-                    <label class="form-label">Customer Address</label>
-
-                    <!-- Primary Address Display -->
-                    <div class="card p-3 mb-2 border">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="flex-grow-1">
-                                <small class="text-muted d-block mb-1">Primary Address</small>
-                                <div class="primary-address-text">
-                                    @if (!string.IsNullOrEmpty(Model.MainAddress))
-                                    {
-                                        <span class="fw-medium">@Model.MainAddress</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted fst-italic">No address available</span>
-                                    }
-                                </div>
-                            </div>
-
-                            <a asp-controller="CustomerAddress"
-                               asp-action="Index"
-                               asp-route-customerId="@Model.Id"
-                               class="btn btn-outline-info btn-sm ms-3">
-                                <i class="bi bi-gear"></i> Manage
-                            </a>
-                        </div>
 
             <div class="form-buttons">
                 <button type="submit" class="btn btn-primary">Save</button>

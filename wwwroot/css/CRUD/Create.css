@@ -918,3 +918,65 @@ form .preview-box-create {
         .permissions-table th .permission-actions a:hover {
             text-decoration: underline;
         }
+
+/* ============================
+   Address Section (Matches Form Style)
+   ============================ */
+
+.form-section.full-width {
+    grid-column: 1 / -1 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.section-label {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--color-accent);
+    margin-left: 5px;
+}
+
+.address-card {
+    background: var(--color-bg-content);
+    border-radius: 15px;
+    padding: 18px 20px;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+    transition: 0.2s ease;
+}
+
+    .address-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
+
+.address-text {
+    font-weight: 600;
+    color: var(--color-text-main);
+}
+
+.no-address {
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+.btn-manage {
+    border: 1px solid var(--color-accent);
+    background: transparent;
+    color: var(--color-accent);
+    padding: 8px 14px;
+    border-radius: 10px;
+    transition: 0.25s ease;
+    font-size: 14px;
+}
+
+    .btn-manage:hover {
+        background: var(--color-accent);
+        color: var(--color-active-accent);
+        transform: scale(1.05);
+    }

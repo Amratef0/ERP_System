@@ -56,9 +56,10 @@
 .details-page .details-grid,
 .supplier-details-wrapper .details-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
     gap: 8px;
     margin-top: 10px;
+    grid-auto-rows: auto;
 }
 
 .details-page .detail-item,
@@ -71,6 +72,7 @@
     border: 1px solid #eee;
     font-size: 13px;
     transition: all 0.3s ease;
+    height: auto;
 }
 
     .details-page .detail-item:hover,
@@ -92,6 +94,9 @@
         font-size: 13px;
         color: var(--color-text-main);
         margin: 0;
+        white-space: normal;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
     }
 
 /* ================== Lists (Products & Purchase Orders) ================== */
@@ -332,6 +337,21 @@
 
 /* Extra small screens */
 @media (max-width: 420px) {
+    .details-page .detail-item,
+    .supplier-details-wrapper .detail-item {
+        padding: 4px 6px;
+        font-size: 11px;
+    }
+
+        .details-page .detail-item dt,
+        .supplier-details-wrapper .detail-item dt {
+            font-size: 11px;
+        }
+
+        .details-page .detail-item dd,
+        .supplier-details-wrapper .detail-item dd {
+            font-size: 11px;
+        }
     .details-page,
     .supplier-details-wrapper {
         padding: 4px;
