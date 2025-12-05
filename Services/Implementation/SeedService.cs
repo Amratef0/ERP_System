@@ -21,6 +21,9 @@ namespace ERP_System_Project.Services.Implementation
                 return;
             }
 
+            // Clear existing attendance records before seeding
+            await _db.AttendanceRecords.ExecuteDeleteAsync();
+
             var employeeIds = _db.Employees.Select(u => u.Id).ToList();
             var statusIds = await _db.AttendanceStatusCodes.Select(s => s.Id).ToListAsync();
 
@@ -73,18 +76,41 @@ namespace ERP_System_Project.Services.Implementation
                     if ((isHoliday || isDayOff) && absentStatusId > 0)
                     {
                         statusId = absentStatusId;
-                        // Set a non-null default check-in to avoid null issues; keep checkout null
+                        // Sentinel times for absence to avoid nulls
                         checkIn = new TimeOnly(0, 0);
+                        checkOut = null;
+                        totalHours = 0m;
+                        overtime = 0m;
                         notes = isHoliday ? "Public Holiday" : "Day Off";
                     }
                     else
                     {
-                        statusId = faker.PickRandom(statusIds);
-                        checkIn = new TimeOnly(faker.Random.Int(8, 10), faker.Random.Int(0, 59));
+                        // Working day: determine Present/Late based on check-in hour
+                        var hour = faker.Random.Int(8, 10);
+                        var minute = faker.Random.Int(0, 59);
+                        checkIn = new TimeOnly(hour, minute);
                         checkOut = checkIn.Value.AddHours(faker.Random.Double(7, 10));
                         totalHours = (decimal)((checkOut.Value - checkIn.Value).TotalHours);
                         overtime = totalHours > 8 ? totalHours - 8 : 0;
-                        notes = faker.Random.Bool(0.2f) ? faker.Lorem.Sentence(5) : null;
+                        notes = null;
+
+                        // Pick status respecting time
+                        // Assume: hour >= 9 is Late, else Present
+                        var presentStatusId = await _db.AttendanceStatusCodes
+                                                      .Where(c => c.Code == "P" || c.Name == "Present")
+                                                      .Select(c => c.Id)
+                                                      .FirstOrDefaultAsync();
+                        var lateStatusId = await _db.AttendanceStatusCodes
+                                                   .Where(c => c.Code == "LATE" || c.Name == "Late")
+                                                   .Select(c => c.Id)
+                                                   .FirstOrDefaultAsync();
+
+                        if (hour >= 9 && lateStatusId > 0)
+                            statusId = lateStatusId;
+                        else if (presentStatusId > 0)
+                            statusId = presentStatusId;
+                        else
+                            statusId = faker.PickRandom(statusIds);
                     }
 
                     recordsToAdd.Add(new AttendanceRecord
