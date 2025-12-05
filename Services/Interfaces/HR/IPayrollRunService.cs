@@ -47,6 +47,12 @@ namespace ERP_System_Project.Services.Interfaces.HR
         Task<(bool Success, string? ErrorMessage)> DeletePayrollRunAsync(int payrollRunId);
 
         /// <summary>
+        /// Deletes a payroll run along with all associated payroll entries (only if not locked).
+        /// First deletes all PayrollEntry records, then deletes the PayrollRun.
+        /// </summary>
+        Task<(bool Success, string? ErrorMessage)> DeletePayrollRunWithEntriesAsync(int payrollRunId);
+
+        /// <summary>
         /// Checks if a payroll run already exists for a specific period.
         /// </summary>
         Task<bool> PayrollRunExistsAsync(int year, int month);

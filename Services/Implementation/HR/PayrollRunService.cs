@@ -304,6 +304,40 @@ namespace ERP_System_Project.Services.Implementation.HR
             }
         }
 
+        public async Task<(bool Success, string? ErrorMessage)> DeletePayrollRunWithEntriesAsync(int payrollRunId)
+        {
+            try
+            {
+                var payrollRun = await _repository
+                    .GetAllAsIQueryable()
+                    .Include(pr => pr.PayrollEntries)
+                    .FirstOrDefaultAsync(pr => pr.Id == payrollRunId);
+
+                if (payrollRun == null)
+                    return (false, "Payroll run not found.");
+
+                if (payrollRun.IsLocked)
+                    return (false, "Cannot delete a locked payroll run. Please unlock it first.");
+
+                // First, delete all associated payroll entries
+                var entryCount = payrollRun.PayrollEntries.Count;
+                foreach (var entry in payrollRun.PayrollEntries.ToList())
+                {
+                    await _entryService.DeletePayrollEntryAsync(entry.Id);
+                }
+
+                // Then, delete the payroll run
+                _repository.Delete(payrollRunId);
+                await _uow.CompleteAsync();
+
+                return (true, $"Payroll run and {entryCount} associated entries deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, $"Error deleting payroll run: {ex.Message}");
+            }
+        }
+
         public async Task<bool> PayrollRunExistsAsync(int year, int month)
         {
             var periodStart = new DateOnly(year, month, 1);

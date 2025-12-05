@@ -259,11 +259,12 @@ namespace ERP_System_Project.Controllers.HR
         {
             try
             {
-                var result = await _payrollRunService.DeletePayrollRunAsync(id);
+                // Delete all associated payroll entries first, then delete the payroll run
+                var result = await _payrollRunService.DeletePayrollRunWithEntriesAsync(id);
 
                 if (result.Success)
                 {
-                    TempData["SuccessMessage"] = result.ErrorMessage ?? "Payroll run deleted successfully!";
+                    TempData["SuccessMessage"] = result.ErrorMessage ?? "Payroll run and all associated entries deleted successfully!";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -276,7 +277,7 @@ namespace ERP_System_Project.Controllers.HR
                      dbEx.InnerException.Message.Contains("FOREIGN KEY constraint") ||
                      dbEx.InnerException.Message.Contains("DELETE statement conflicted")))
                 {
-                    TempData["ErrorMessage"] = "Cannot delete this payroll run because it has associated payroll entries. Please delete the entries first or the payroll run is locked.";
+                    TempData["ErrorMessage"] = "Cannot delete this payroll run due to database constraints. The payroll run may be locked or referenced by other records.";
                 }
                 else
                 {
