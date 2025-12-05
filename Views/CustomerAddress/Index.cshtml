@@ -5,6 +5,9 @@
     int customerId = ViewBag.CustomerId;
 }
 
+<link rel="stylesheet" href="@(Url.Content("~/css/CRUD/Index.css"))" />
+<link rel="stylesheet" href="~/css/ListPageHeader.css" />
+
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
@@ -14,62 +17,91 @@
     <div class="alert alert-success">@TempData["Success"]</div>
 }
 
-<div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Addresses — @ViewData["Title"]</h3>
-        <div>
-            <a asp-action="Create" asp-route-customerId="@customerId" class="btn btn-success btn-sm">
-                <i class="bi bi-plus-lg"></i> Add Address
-            </a>
-            <a asp-controller="Customer" asp-action="Edit" asp-route-id="@customerId" class="btn btn-secondary btn-sm">
-                <i class="bi bi-arrow-left"></i> Back to Customer
-            </a>
-        </div>
-    </div>
+<div class="list-page addresses-page">
+    <div class="card">
 
-    @if (Model.Any())
-    {
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Country</th>
-                    <th>City</th>
-                    <th>Street</th>
-                    <th>Building</th>
-                    <th>Apt</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var a in Model)
-                {
+    <div class="header-row" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h2 style="margin: 0;">@ViewData["Title"]</h2>
+
+        <a href="@Url.Action("Index", "Customer")"
+           class="quick-action-btn card3">
+            Back to Customer
+        </a>
+
+     </div>
+
+        <!-- Floating Add Button (AJAX) -->
+        <a href="javascript:void(0)"
+           onclick="openModalWithAjax('@Url.Action("Create", "CustomerAddress", new { customerId = customerId })', 'Create Address')"
+           class="floating-btn"
+           title="Add Address">
+            <i class="fa-solid fa-plus"></i>
+        </a>
+
+
+        @if (Model.Any())
+        {
+            <table>
+                <thead>
                     <tr>
-                        <td>@a.Id</td>
-                        <td>@a.Country</td>
-                        <td>@a.City</td>
-                        <td>@a.Street</td>
-                        <td>@a.BuildingNumber</td>
-                        <td>@a.ApartmentNumber</td>
-                        <td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@a.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-
-                            <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this address?');">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@a.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                            </form>
-                        </td>
-
-                        </td>
+                        <th>Id</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Street</th>
+                        <th>Building</th>
+                        <th>Apt</th>
+                        <th>Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div class="alert alert-info">No addresses yet for this customer.</div>
-    }
+                </thead>
+
+                <tbody>
+                    @foreach (var a in Model)
+                    {
+                        <tr>
+                            <td data-label="Id">@a.Id</td>
+                            <td data-label="Country">@a.Country</td>
+                            <td data-label="City">@a.City</td>
+                            <td data-label="Street">@a.Street</td>
+                            <td data-label="Building">@a.BuildingNumber</td>
+                            <td data-label="Apt">@a.ApartmentNumber</td>
+
+                            <td data-label="Actions">
+                                <div class="action-buttons">
+
+                                    <!-- Edit Address (AJAX) -->
+                                    <a href="javascript:void(0)" 
+                                       onclick="openModalWithAjax('@Url.Action("Edit", "CustomerAddress", new { id = a.Id })', 'Edit Address')"
+                                       class="btn btn-update btn-sm" 
+                                       title="Edit Address">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+
+
+                                    <!-- Delete -->
+                                    <form asp-action="Delete"
+                                          method="post"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to delete this address?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@a.Id" />
+                                        <button type="submit"
+                                                class="btn btn-delete btn-sm"
+                                                title="Delete Address">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-info">No addresses yet for this customer.</div>
+        }
+    </div>
 </div>
+@await Html.PartialAsync("_GeneralModal")

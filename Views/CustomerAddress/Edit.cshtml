@@ -3,47 +3,63 @@
     ViewData["Title"] = "Edit Address";
 }
 
-<h2>Edit Address</h2>
+<link rel="stylesheet" href="~/css/CRUD/Create.css" />
 
-<form asp-action="Edit" method="post">
-    <div asp-validation-summary="All" class="text-danger"></div>
+<div class="form-page mt-4">
+    <div class="form">
 
-    <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="CustomerId" />
+        <h3 class="formTitle" id="form-title">Edit Address</h3>
 
-    <div class="form-group">
-        <label asp-for="Country"></label>
-        <input asp-for="Country" class="form-control" />
-        <span asp-validation-for="Country" class="text-danger"></span>
+        <form asp-action="Edit" method="post" novalidate>
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CustomerId" />
+
+            <!-- Country -->
+            <div class="form-group">
+                <input asp-for="Country" class="form-control" placeholder=" " />
+                <label asp-for="Country">Country <span class="text-danger">*</span></label>
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+
+            <!-- City -->
+            <div class="form-group">
+                <input asp-for="City" class="form-control" placeholder=" " />
+                <label asp-for="City">City <span class="text-danger">*</span></label>
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+
+            <!-- Street -->
+            <div class="form-group">
+                <input asp-for="Street" class="form-control" placeholder=" " />
+                <label asp-for="Street">Street <span class="text-danger">*</span></label>
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+
+            <!-- Building Number -->
+            <div class="number-field-group">
+                <label for="BuildingNumber" class="number-label">Building Number</label>
+                <input asp-for="BuildingNumber" type="number" class="number-input" />
+                <span asp-validation-for="BuildingNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Apartment Number -->
+            <div class="number-field-group">
+                <label for="ApartmentNumber" class="number-label">Apartment Number</label>
+                <input asp-for="ApartmentNumber" type="number" class="number-input" />
+                <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-buttons">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-action="Index" asp-controller="CustomerAddress" asp-route-id="@Model.CustomerId" class="btn btn-secondary">Cancel</a>
+            </div>
+
+        </form>
     </div>
-
-    <div class="form-group">
-        <label asp-for="City"></label>
-        <input asp-for="City" class="form-control" />
-        <span asp-validation-for="City" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Street"></label>
-        <input asp-for="Street" class="form-control" />
-        <span asp-validation-for="Street" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="BuildingNumber"></label>
-        <input asp-for="BuildingNumber" class="form-control" />
-        <span asp-validation-for="BuildingNumber" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="ApartmentNumber"></label>
-        <input asp-for="ApartmentNumber" class="form-control" />
-        <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-2">Save</button>
-    <a asp-action="Details" asp-controller="Customer" asp-route-id="@Model.CustomerId" class="btn btn-secondary mt-2">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
