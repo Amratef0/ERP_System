@@ -16,7 +16,7 @@ namespace ERP_System_Project.Models.HR
         public DateOnly Date { get; set; }
 
         [Display(Name = "Actual Start Time")]
-        public TimeOnly CheckInTime { get; set; }
+        public TimeOnly? CheckInTime { get; set; }
 
         [Display(Name = "Actual End Time")]
         public TimeOnly? CheckOutTime { get; set; }
