@@ -37,44 +37,73 @@ namespace ERP_System_Project.Services.Implementation
                                           .Select(c => c.Id)
                                           .FirstOrDefaultAsync();
 
-            var recordFaker = new Bogus.Faker<AttendanceRecord>()
-               .RuleFor(r => r.EmployeeId, f => f.PickRandom(employeeIds))
-               .RuleFor(r => r.Date, f => DateOnly.FromDateTime(f.Date.Between(DateTime.Now.AddMonths(-1), DateTime.Now)))
-               .RuleFor(r => r.StatusCodeId, (f, r) =>
-               {
-                   bool isHoliday = holidayDates.Contains(r.Date);
-                   bool isDayOff = dayOffDays.Contains(r.Date.DayOfWeek);
-                   if ((isHoliday || isDayOff) && absentStatusId > 0)
-                   {
-                       return absentStatusId;
-                   }
-                   return f.PickRandom(statusIds);
-               })
-               .RuleFor(r => r.CheckInTime, (f, r) =>
-               {
-                   if (r.StatusCodeId == absentStatusId)
-                       return null;
-                   return new TimeOnly(f.Random.Int(8, 10), f.Random.Int(0, 59));
-               })
-               .RuleFor(r => r.CheckOutTime, (f, r) =>
-               {
-                   if (r.StatusCodeId == absentStatusId)
-                       return null;
-                   return r.CheckInTime!.Value.AddHours(f.Random.Double(7, 10));
-               })
-               .RuleFor(r => r.TotalHours, (f, r) =>
-               {
-                   if (r.CheckInTime == null || r.CheckOutTime == null)
-                       return 0m;
-                   return (decimal)((r.CheckOutTime!.Value - r.CheckInTime.Value).TotalHours);
-               })
-               .RuleFor(r => r.OverTimeHours, (f, r) => r.TotalHours > 8 ? r.TotalHours - 8 : 0)
-               .RuleFor(r => r.Notes, f => f.Random.Bool(0.2f) ? f.Lorem.Sentence(5) : null)
-               .RuleFor(r => r.CreatedDate, f => f.Date.Recent(30));
+            // Build a set of days to seed within the last month
+            var startDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(-1));
+            var endDate = DateOnly.FromDateTime(DateTime.Today);
 
-            var attendanceRecords = recordFaker.Generate(count);
+            var allDays = new List<DateOnly>();
+            for (var d = startDate; d <= endDate; d = d.AddDays(1))
+            {
+                allDays.Add(d);
+            }
 
-            await _db.AttendanceRecords.AddRangeAsync(attendanceRecords);
+            // Randomly pick up to 'count' days (or all if count >= total days)
+            var faker = new Bogus.Faker();
+            var daysToSeed = count >= allDays.Count ? allDays : faker.Random.ListItems(allDays, Math.Min(count, allDays.Count));
+
+            var recordsToAdd = new List<AttendanceRecord>();
+
+            foreach (var day in daysToSeed)
+            {
+                foreach (var employeeId in employeeIds)
+                {
+                    // Skip if a record already exists for this employee/day
+                    bool exists = await _db.AttendanceRecords.AnyAsync(ar => ar.EmployeeId == employeeId && ar.Date == day);
+                    if (exists) continue;
+
+                    bool isHoliday = holidayDates.Contains(day);
+                    bool isDayOff = dayOffDays.Contains(day.DayOfWeek);
+                    int statusId;
+                    TimeOnly? checkIn = null;
+                    TimeOnly? checkOut = null;
+                    decimal totalHours = 0m;
+                    decimal overtime = 0m;
+                    string? notes = null;
+
+                    if ((isHoliday || isDayOff) && absentStatusId > 0)
+                    {
+                        statusId = absentStatusId;
+                        notes = isHoliday ? "Public Holiday" : "Day Off";
+                    }
+                    else
+                    {
+                        statusId = faker.PickRandom(statusIds);
+                        checkIn = new TimeOnly(faker.Random.Int(8, 10), faker.Random.Int(0, 59));
+                        checkOut = checkIn.Value.AddHours(faker.Random.Double(7, 10));
+                        totalHours = (decimal)((checkOut.Value - checkIn.Value).TotalHours);
+                        overtime = totalHours > 8 ? totalHours - 8 : 0;
+                        notes = faker.Random.Bool(0.2f) ? faker.Lorem.Sentence(5) : null;
+                    }
+
+                    recordsToAdd.Add(new AttendanceRecord
+                    {
+                        EmployeeId = employeeId,
+                        Date = day,
+                        StatusCodeId = statusId,
+                        CheckInTime = checkIn,
+                        CheckOutTime = checkOut,
+                        TotalHours = totalHours,
+                        OverTimeHours = overtime,
+                        Notes = notes,
+                        CreatedDate = faker.Date.Recent(30)
+                    });
+                }
+            }
+
+            if (recordsToAdd.Count > 0)
+            {
+                await _db.AttendanceRecords.AddRangeAsync(recordsToAdd);
+            }
             await _db.SaveChangesAsync();
         }
     }
