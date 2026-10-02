@@ -15,7 +15,6 @@ A comprehensive **Enterprise Resource Planning (ERP)** web application built wit
 ## 📌 Table of Contents
 
 - [Tech Stack](#-tech-stack)
-- [Screenshots](#-screenshots)
 - [Quick Start (Docker)](#-quick-start-docker)
 - [CI/CD](#-cicd)
 - [Project Structure](#-project-structure)
@@ -45,20 +44,6 @@ A comprehensive **Enterprise Resource Planning (ERP)** web application built wit
 | [GitHub Actions](https://github.com/features/actions) | CI/CD (build + publish image to GHCR) |
 | C# / Razor Views | Backend logic & HTML templating |
 | HTML5, CSS3, JavaScript | Frontend UI |
-
----
-
-## 📸 Screenshots
-
-> Add your screenshots to `docs/screenshots/` and update the paths below.
-
-| Market | HR Dashboard |
-|---|---|
-| ![Market](docs/screenshots/market.png) | ![HR](docs/screenshots/hr.png) |
-
-| Inventory | Hangfire Dashboard |
-|---|---|
-| ![Inventory](docs/screenshots/inventory.png) | ![Hangfire](docs/screenshots/hangfire.png) |
 
 ---
 
