@@ -8,7 +8,7 @@
 
 A comprehensive **Enterprise Resource Planning (ERP)** web application built with **ASP.NET Core MVC (.NET 8)**. The system integrates multiple business modules including HR, Inventory, E-Commerce, CRM, and System Security — all under one platform with role-based permissions, background job scheduling, email notifications, and payment gateway integration.
 
-> 🏆 **1st Place — Software Development Track, Egypt's Digital Pioneers Initiative (رواد مصر الرقمية)**
+> 🏆 **1st Place — Software Development Track, Egypt's Digital Pioneers Initiative (DEPI) (رواد مصر الرقمية)**
 
 ---
 
